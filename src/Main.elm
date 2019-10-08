@@ -21,7 +21,7 @@ main =
 
 
 todoListC =
-    ol [ class "list pl0 measure center" ]
+    ol [ class "list pl0" ]
 
 
 viewTodoListItem title =
