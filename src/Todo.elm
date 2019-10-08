@@ -117,7 +117,7 @@ viewListItem config todo =
 
 li : List (Html msg) -> Html msg
 li =
-    Html.li [ class "flex lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+    Html.li [ class "flex items-center lh-copy pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
 viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
@@ -133,10 +133,10 @@ viewIsCompleted config todo =
         toggleMsg =
             config.toggle <| id todo
     in
-    button [ class "pa1 bn bg-inherit color-inherit", onClick toggleMsg ]
+    button [ class "pa2 bn bg-inherit color-inherit", onClick toggleMsg ]
         [ Emoji.view emoji ]
 
 
 viewTitle : Todo -> Html msg
 viewTitle todo =
-    div [ class "flex-grow-1" ] [ text <| title todo ]
+    div [ class "pa2 flex-grow-1" ] [ text <| title todo ]
