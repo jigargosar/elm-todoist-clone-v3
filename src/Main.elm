@@ -36,9 +36,6 @@ generateInitialTodoList _ =
         ts =
             Timestamp.zero
 
-        _ =
-            Random.weighted
-
         boolGen : Generator Bool
         boolGen =
             Random.weighted ( 2, True ) [ ( 1, False ) ]
