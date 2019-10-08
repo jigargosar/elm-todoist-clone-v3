@@ -36,20 +36,16 @@ generateInitialTodoList _ =
         ts =
             Timestamp.zero
 
+        _ =
+            Random.weighted
+
+        boolGen : Generator Bool
         boolGen =
-            Random.int 0 1 |> Random.map ((==) 0)
+            Random.weighted ( 2, True ) [ ( 1, False ) ]
 
         toggleGen : Todo -> Generator Todo
         toggleGen todo =
-            boolGen
-                |> Random.map
-                    (\bool ->
-                        if bool then
-                            Todo.toggle todo
-
-                        else
-                            todo
-                    )
+            boolGen |> Random.map (always >> flip Todo.mapCompleted todo)
 
         gen : String -> Generator Todo
         gen title =

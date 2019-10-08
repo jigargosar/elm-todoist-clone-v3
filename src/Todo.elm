@@ -1,4 +1,4 @@
-module Todo exposing (Todo, generatorFromTitle, id, idx, mapIdx, title, toggle, viewList)
+module Todo exposing (Todo, generatorFromTitle, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
 
 import Emoji
 import Html exposing (..)
