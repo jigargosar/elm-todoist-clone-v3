@@ -37,6 +37,7 @@ generateInitialTodoList _ =
         |> List.foldr (Random.map2 (::)) (Random.constant [])
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
+        |> List.indexedMap (\idx -> Todo.mapIdx (always idx))
 
 
 todoList =
