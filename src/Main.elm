@@ -64,7 +64,7 @@ generateInitialTodoList _ =
         |> singleGeneratorFromListOfGenerators
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
-        |> List.indexedMap (\idx -> Todo.mapIdx (always idx))
+        |> List.indexedMap (always >> Todo.mapIdx)
 
 
 todoList =
