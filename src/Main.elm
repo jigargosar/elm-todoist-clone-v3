@@ -12,12 +12,24 @@ todoList =
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
 
 
+
+-- MODEL
+
+
 init _ =
     ( (), Cmd.none )
 
 
+
+-- UPDATE
+
+
 update _ _ =
     ( (), Cmd.none )
+
+
+
+-- VIEW
 
 
 view _ =
@@ -39,6 +51,10 @@ viewTodoListItem title =
 
 todoListLi =
     li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+
+
+
+-- MAIN
 
 
 main : Program () () ()
