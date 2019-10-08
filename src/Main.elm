@@ -11,7 +11,7 @@ todoList =
 
 main =
     div []
-        [ toolbar [ filler, addIconBtn ]
+        [ toolbar [ search, filler, addIconBtn ]
         , main_ [ class "measure center" ]
             [ ol [ class "list pl0 measure center" ]
                 (List.map viewTodoListItem todoList)
@@ -19,8 +19,16 @@ main =
         ]
 
 
+search =
+    input [ class "pa1 br2 bn", placeholder "🔍 Search" ] []
+
+
 heavy_plus_sign =
-    '➕'
+    "➕"
+
+
+magnifying_glass =
+    "🔍"
 
 
 filler =
@@ -34,7 +42,7 @@ toolbar c =
 
 addIconBtn =
     button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
-        [ text <| String.fromChar heavy_plus_sign
+        [ text heavy_plus_sign
         ]
 
 
