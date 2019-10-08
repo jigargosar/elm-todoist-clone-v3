@@ -52,7 +52,7 @@ generateInitialTodoList _ =
             Random.weighted ( falseWeight, False ) [ ( trueWeight, True ) ]
 
         mostlyPendingTodoGenerator todo =
-            Random.map (flip Todo.setCompleted todo) mostlyFalseGenerator
+            Random.map (always >> flip Todo.mapCompleted todo) mostlyFalseGenerator
 
         todoGenerator : String -> Generator Todo
         todoGenerator title =

@@ -1,4 +1,4 @@
-module Todo exposing (Todo, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, setCompleted, title, toggle, viewList)
+module Todo exposing (Todo, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
 
 import Debug exposing (log)
 import Emoji
@@ -82,11 +82,6 @@ map func =
 mapCompleted : (Bool -> Bool) -> Todo -> Todo
 mapCompleted func =
     map (\t -> { t | isCompleted = func t.isCompleted })
-
-
-setCompleted : Bool -> Todo -> Todo
-setCompleted =
-    log "setCompleted" >> always >> mapCompleted
 
 
 toggle : Todo -> Todo
