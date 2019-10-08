@@ -15,7 +15,7 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: 'public',
-    watchContentBase: true,
+    hot: true,
+    overlay: true,
   },
 }
