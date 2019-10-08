@@ -4,6 +4,10 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 
 
+
+-- MODEL
+
+
 type Todo
     = Todo Internal
 
@@ -27,14 +31,18 @@ unwrap (Todo m) =
     m
 
 
-li : List (Html msg) -> Html msg
-li =
-    Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+
+-- VIEW
 
 
 view : Todo -> Html msg
 view todo =
     li [ span [] [ text <| title todo ] ]
+
+
+li : List (Html msg) -> Html msg
+li =
+    Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
 viewList : List Todo -> Html msg
