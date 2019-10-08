@@ -46,6 +46,7 @@ update message model =
 -- VIEW
 
 
+view : Model -> Html Msg
 view model =
     div []
         [ UI.topBar [ UI.search, UI.filler, UI.addIconBtn ]
