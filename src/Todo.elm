@@ -24,7 +24,6 @@ type alias Internal =
     , modifiedAt : Timestamp
     , title : String
     , isCompleted : Bool
-    , projectIdx : Int
     }
 
 
@@ -42,7 +41,6 @@ fromTitle title_ timestamp id_ =
         , modifiedAt = timestamp
         , title = title_
         , isCompleted = False
-        , projectIdx = 0
         }
 
 
