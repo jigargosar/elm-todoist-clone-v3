@@ -1,7 +1,9 @@
 module Todo exposing (Todo, fromTitle, title, viewList)
 
+import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import UI
 
 
 
@@ -31,13 +33,31 @@ unwrap (Todo m) =
     m
 
 
+isCompleted =
+    unwrap >> .isCompleted
+
+
 
 -- VIEW
 
 
 view : Todo -> Html msg
 view todo =
-    li [ span [] [ text <| title todo ] ]
+    li [ viewDoneCheck <| isCompleted todo, span [] [ text <| title todo ] ]
+
+
+viewDoneCheck isChecked =
+    let
+        emoji =
+            if isChecked then
+                Emoji.heavy_plus_sign
+
+            else
+                Emoji.heavy_plus_sign
+    in
+    button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
+        [ text emoji
+        ]
 
 
 li : List (Html msg) -> Html msg
