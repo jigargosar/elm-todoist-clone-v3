@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Appbar
+import Basics.More exposing (flip)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
