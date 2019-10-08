@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "devDependencies": {
+    "elm-hot-webpack-loader": "^1.1.2",
+    "elm-webpack-loader": "^6.0.0",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.41.0"
   },
@@ -11,5 +13,10 @@
   },
   "keywords": [],
   "author": "Jigar Gosar <jigar.gosar@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "css-loader": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "tachyons": "^4.11.1"
+  }
 }
