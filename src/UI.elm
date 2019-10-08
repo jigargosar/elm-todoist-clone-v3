@@ -11,7 +11,7 @@ filler =
 
 
 topBar c =
-    div [ class "fixed top-0 min-w-100 ph2 pv1 bg-black white bn shadow-1" ]
+    div [ class "fixed w-100 ph2 pv1 bg-black white bn shadow-1" ]
         [ div [ class "measure center flex" ] c ]
 
 
