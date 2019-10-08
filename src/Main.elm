@@ -50,17 +50,9 @@ view model =
     div []
         [ UI.topBar [ UI.search, UI.filler, UI.addIconBtn ]
         , main_ [ class "measure center" ]
-            [ todoListC (List.map viewTodoListItem (getTodoList model))
+            [ Todo.viewList (getTodoList model)
             ]
         ]
-
-
-todoListC =
-    ol [ class "list pl0" ]
-
-
-viewTodoListItem todo =
-    Todo.li [ text <| Todo.title todo ]
 
 
 
