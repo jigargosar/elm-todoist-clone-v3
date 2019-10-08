@@ -59,7 +59,7 @@ update message model =
             ( model, Cmd.none )
 
         Toggle todoId ->
-            ( mapTodoDict (TodoDict.toggle todoId) model, Cmd.none )
+            ( mapTodoDict (TodoDict.toggleCompleted todoId) model, Cmd.none )
 
 
 mapTodoDict func model =

@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, empty, fromList, toggle)
+module TodoDict exposing (TodoDict, empty, fromList, toggleCompleted)
 
 import Dict exposing (Dict)
 import Todo exposing (Todo)
@@ -33,6 +33,7 @@ insert todo =
     map (TodoId.insert (Todo.id todo) todo)
 
 
-toggle : TodoId -> TodoDict -> TodoDict
-toggle todoId =
+toggleCompleted : TodoId -> TodoDict -> TodoDict
+toggleCompleted todoId =
+    --Dict.update (TodoId.toString todoId) (Maybe.map (\t -> {isCompleted=}))
     identity
