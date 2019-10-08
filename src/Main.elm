@@ -40,8 +40,8 @@ generateInitialTodoList _ =
         ts =
             Timestamp.zero
 
-        mostlyFalseGen : Generator Bool
-        mostlyFalseGen =
+        mostlyFalseGenerator : Generator Bool
+        mostlyFalseGenerator =
             let
                 falseWeight =
                     60
@@ -54,7 +54,7 @@ generateInitialTodoList _ =
         todoGenerator : String -> Generator Todo
         todoGenerator title =
             Todo.fromTitleAndTimestamp title ts
-                |> Random.andThen (flip Todo.setCompleted >> flip Random.map mostlyFalseGen)
+                |> Random.andThen (flip Todo.setCompleted >> flip Random.map mostlyFalseGenerator)
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map todoGenerator
