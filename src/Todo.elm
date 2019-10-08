@@ -102,12 +102,26 @@ type alias Config msg =
     { toggle : TodoId -> msg }
 
 
-view : Config msg -> Todo -> Html msg
-view config todo =
+viewList : Config msg -> List Todo -> Html msg
+viewList config =
+    listContainer << List.map (viewListItem config)
+
+
+listContainer =
+    ol [ class "list pl0" ]
+
+
+viewListItem : Config msg -> Todo -> Html msg
+viewListItem config todo =
     li [ viewDoneCheck config todo, span [] [ text <| title todo ] ]
 
 
-viewDoneCheck : Config msg -> Todo -> Html msg
+li : List (Html msg) -> Html msg
+li =
+    Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+
+
+viewDoneCheck : { a | toggle : TodoId -> msg } -> Todo -> Html msg
 viewDoneCheck config todo =
     let
         emoji =
@@ -123,17 +137,3 @@ viewDoneCheck config todo =
     button [ class "pa1 lh-solid bn bg-inherit color-inherit", onClick toggleMsg ]
         [ text emoji
         ]
-
-
-li : List (Html msg) -> Html msg
-li =
-    Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
-
-
-viewList : Config msg -> List Todo -> Html msg
-viewList config =
-    listContainer << List.map (view config)
-
-
-listContainer =
-    ol [ class "list pl0" ]
