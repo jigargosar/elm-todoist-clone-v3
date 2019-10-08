@@ -36,9 +36,25 @@ generateInitialTodoList _ =
         ts =
             Timestamp.zero
 
+        boolGen =
+            Random.int 0 1 |> Random.map ((==) 0)
+
+        toggleGen : Todo -> Generator Todo
+        toggleGen todo =
+            boolGen
+                |> Random.map
+                    (\bool ->
+                        if bool then
+                            Todo.toggle todo
+
+                        else
+                            todo
+                    )
+
         gen : String -> Generator Todo
         gen title =
             Todo.generatorFromTitle title ts
+                |> Random.andThen toggleGen
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map gen
