@@ -51,10 +51,13 @@ generateInitialTodoList _ =
             in
             Random.weighted ( falseWeight, False ) [ ( trueWeight, True ) ]
 
+        setMostlyPendingGenerator todo =
+            Random.map (flip Todo.setCompleted todo) mostlyFalseGenerator
+
         todoGenerator : String -> Generator Todo
         todoGenerator title =
             Todo.fromTitleAndTimestamp title ts
-                |> Random.andThen (flip Todo.setCompleted >> flip Random.map mostlyFalseGenerator)
+                |> Random.andThen setMostlyPendingGenerator
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map todoGenerator
