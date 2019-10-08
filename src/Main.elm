@@ -12,7 +12,7 @@ todoList =
 
 main =
     div []
-        [ toolbar [ search, filler, addIconBtn ]
+        [ topBar [ search, filler, addIconBtn ]
         , main_ [ class "measure center" ]
             [ todoListC (List.map viewTodoListItem todoList)
             ]
@@ -31,7 +31,7 @@ filler =
     div [ class "flex-grow-1" ] []
 
 
-toolbar c =
+topBar c =
     div [ class "ph2 pv1 bg-black white bn shadow-1" ]
         [ div [ class "measure center flex" ] c ]
 
