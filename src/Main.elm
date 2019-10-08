@@ -90,7 +90,6 @@ view : Model -> Html Msg
 view model =
     div []
         [ Appbar.view
-        , div [ style "height" "2.5rem" ] []
         , main_ [ class "measure center" ]
             [ Todo.viewList { toggle = Toggle } (todoList model)
             ]
