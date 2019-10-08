@@ -38,8 +38,8 @@ view todo =
 
 
 viewList : List Todo -> Html.Html msg
-viewList todoList =
-    listContainer (List.map view todoList)
+viewList =
+    listContainer << List.map view
 
 
 listContainer =
