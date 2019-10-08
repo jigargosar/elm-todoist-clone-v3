@@ -33,6 +33,10 @@ init _ =
 generateInitialTodoList : Model -> List Todo
 generateInitialTodoList _ =
     let
+        generatorFromList : List (Generator a) -> Generator (List a)
+        generatorFromList =
+            List.foldr (Random.map2 (::)) (Random.constant [])
+
         ts =
             Timestamp.zero
 
@@ -54,7 +58,7 @@ generateInitialTodoList _ =
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map todoGenerator
-        |> List.foldr (Random.map2 (::)) (Random.constant [])
+        |> generatorFromList
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
         |> List.indexedMap (\idx -> Todo.mapIdx (always idx))
