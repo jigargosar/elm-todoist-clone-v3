@@ -52,6 +52,7 @@ generateInitialTodoList _ =
         |> List.indexedMap (always >> Todo.mapIdx)
 
 
+todoList : Model -> List Todo
 todoList =
     .todoDict
         >> TodoDict.toList
