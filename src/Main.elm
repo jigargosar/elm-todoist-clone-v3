@@ -38,7 +38,14 @@ generateInitialTodoList _ =
 
         mostlyFalseGen : Generator Bool
         mostlyFalseGen =
-            Random.weighted ( 60, False ) [ ( 40, True ) ]
+            let
+                falseWeight =
+                    60
+
+                trueWeight =
+                    100 - falseWeight
+            in
+            Random.weighted ( falseWeight, False ) [ ( trueWeight, True ) ]
 
         gen : String -> Generator Todo
         gen title =
