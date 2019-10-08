@@ -51,8 +51,8 @@ title =
     unwrap >> .title
 
 
-unwrap (Todo m) =
-    m
+unwrap (Todo t) =
+    t
 
 
 isCompleted =
