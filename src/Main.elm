@@ -13,9 +13,35 @@ foo =
     onClick
 
 
+buttonClass =
+    """
+    f6 f5-ns fw6 dib
+    ba br-pill b--black-20
+    bg-blue white
+    ph3 ph4-ns pv2 pv3-ns
+    grow no-underline
+    """
+
+
 main =
-    ol [ class "list pl0 measure center" ]
-        (List.map viewTodoListItem todoList)
+    div []
+        [ header [ class "pa4" ]
+            [ button
+                [ class buttonClass, class "mr2" ]
+                [ text <| String.fromChar heavy_plus_sign ]
+            , button
+                [ class buttonClass, class "mr2" ]
+                [ text "+" ]
+            ]
+        , main_ []
+            [ ol [ class "list pl0 measure center" ]
+                (List.map viewTodoListItem todoList)
+            ]
+        ]
+
+
+heavy_plus_sign =
+    '➕'
 
 
 viewTodoListItem title =
