@@ -40,14 +40,14 @@ generateInitialTodoList _ =
         boolGen =
             Random.weighted ( 2, True ) [ ( 1, False ) ]
 
-        toggleGen : Todo -> Generator Todo
-        toggleGen todo =
-            boolGen |> Random.map (always >> flip Todo.mapCompleted todo)
+        markFewCompletedGen : Todo -> Generator Todo
+        markFewCompletedGen todo =
+            boolGen |> Random.map (flip Todo.setCompleted todo)
 
         gen : String -> Generator Todo
         gen title =
             Todo.generatorFromTitle title ts
-                |> Random.andThen toggleGen
+                |> Random.andThen markFewCompletedGen
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map gen
