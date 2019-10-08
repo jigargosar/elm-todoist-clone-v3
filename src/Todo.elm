@@ -1,4 +1,4 @@
-module Todo exposing (Todo, fromTitle, title, view, viewList)
+module Todo exposing (Todo, fromTitle, title, viewList)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
