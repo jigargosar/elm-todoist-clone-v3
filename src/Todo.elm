@@ -10,11 +10,12 @@ type Todo
 
 type alias Internal =
     { title : String
+    , isCompleted : Bool
     }
 
 
 fromTitle title_ =
-    Todo <| { title = title_ }
+    Todo <| { title = title_, isCompleted = False }
 
 
 title : Todo -> String
