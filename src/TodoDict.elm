@@ -30,10 +30,14 @@ map func (TodoDict dict) =
 
 insert : Todo -> TodoDict -> TodoDict
 insert todo =
-    map (TodoId.insert (Todo.id todo) todo)
+    map (Dict.insert (key todo) todo)
+
+
+key : Todo -> String
+key =
+    Todo.id >> TodoId.toDictKey
 
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
-    --Dict.update (TodoId.toString todoId) (Maybe.map (\t -> {isCompleted=}))
-    identity
+    map (Dict.update (TodoId.toDictKey todoId) (Maybe.map Todo.toggle))

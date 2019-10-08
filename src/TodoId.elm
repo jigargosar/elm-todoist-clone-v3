@@ -1,4 +1,4 @@
-module TodoId exposing (TodoId, generator, insert)
+module TodoId exposing (TodoId, generator, toDictKey)
 
 import Dict exposing (Dict)
 import Random exposing (Generator)
@@ -14,9 +14,9 @@ generator =
         |> Random.map (String.fromInt >> (++) "TodoId-" >> TodoId)
 
 
-insert : TodoId -> value -> Dict String value -> Dict String value
-insert =
-    Dict.insert << unwrap
+toDictKey : TodoId -> String
+toDictKey =
+    unwrap
 
 
 unwrap : TodoId -> String

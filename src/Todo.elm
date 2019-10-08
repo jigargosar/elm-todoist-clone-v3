@@ -1,4 +1,4 @@
-module Todo exposing (Todo, generatorFromTitle, id, title, viewList)
+module Todo exposing (Todo, generatorFromTitle, id, title, toggle, viewList)
 
 import Emoji
 import Html exposing (..)
@@ -53,6 +53,25 @@ id =
 
 
 
+-- UPDATE
+
+
+map : (Internal -> Internal) -> Todo -> Todo
+map func =
+    unwrap >> func >> Todo
+
+
+mapCompleted : (Bool -> Bool) -> Todo -> Todo
+mapCompleted func =
+    map (\t -> { t | isCompleted = func t.isCompleted })
+
+
+toggle : Todo -> Todo
+toggle =
+    mapCompleted not
+
+
+
 -- VIEW
 
 
@@ -75,10 +94,10 @@ viewDoneCheck config todo =
             else
                 Emoji.heavy_large_circle
 
-        toggle =
+        toggleMsg =
             config.toggle <| id todo
     in
-    button [ class "pa1 lh-solid bn bg-inherit color-inherit", onClick toggle ]
+    button [ class "pa1 lh-solid bn bg-inherit color-inherit", onClick toggleMsg ]
         [ text emoji
         ]
 
