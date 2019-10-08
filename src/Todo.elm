@@ -24,6 +24,7 @@ type alias Internal =
     , modifiedAt : Timestamp
     , title : String
     , isCompleted : Bool
+    , projectIdx : Int
     }
 
 
@@ -35,7 +36,14 @@ generatorFromTitle title_ timestamp =
 
 fromTitle : String -> Posix -> TodoId -> Todo
 fromTitle title_ timestamp id_ =
-    Todo <| { id = id_, createdAt = timestamp, modifiedAt = timestamp, title = title_, isCompleted = False }
+    Todo <|
+        { id = id_
+        , createdAt = timestamp
+        , modifiedAt = timestamp
+        , title = title_
+        , isCompleted = False
+        , projectIdx = 0
+        }
 
 
 title : Todo -> String
