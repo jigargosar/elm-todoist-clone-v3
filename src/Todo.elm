@@ -1,6 +1,5 @@
 module Todo exposing (Todo, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
 
-import Debug exposing (log)
 import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -135,5 +134,5 @@ viewDoneCheck config todo =
             config.toggle <| id todo
     in
     button [ class "pa1  bn bg-inherit color-inherit", onClick toggleMsg ]
-        [ span [ class "dib lh-solid", style "width" "1em" ] [ text emoji ]
+        [ Emoji.view emoji
         ]
