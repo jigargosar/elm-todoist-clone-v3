@@ -8,10 +8,6 @@ import Html.Events exposing (..)
 import UI
 
 
-todoList =
-    [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
-
-
 
 -- MODEL
 
@@ -22,6 +18,11 @@ type alias Model =
 
 init _ =
     ( {}, Cmd.none )
+
+
+getTodoList : Model -> List String
+getTodoList _ =
+    [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
 
 
 
@@ -43,11 +44,11 @@ update message model =
 -- VIEW
 
 
-view _ =
+view model =
     div []
         [ UI.topBar [ UI.search, UI.filler, UI.addIconBtn ]
         , main_ [ class "measure center" ]
-            [ todoListC (List.map viewTodoListItem todoList)
+            [ todoListC (List.map viewTodoListItem (getTodoList model))
             ]
         ]
 
