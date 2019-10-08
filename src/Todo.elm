@@ -117,7 +117,7 @@ viewListItem config todo =
 
 li : List (Html msg) -> Html msg
 li =
-    Html.li [ class "flex items-center lh-copy pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+    Html.li [ class "flex items-center lh-copy pv2 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
 viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
