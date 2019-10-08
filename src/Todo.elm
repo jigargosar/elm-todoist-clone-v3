@@ -112,7 +112,7 @@ listContainer =
 
 viewListItem : Config msg -> Todo -> Html msg
 viewListItem config todo =
-    li [ viewIsCompleted config todo, span [] [ text <| title todo ] ]
+    li [ viewIsCompleted config todo, viewTitle todo ]
 
 
 li : List (Html msg) -> Html msg
@@ -135,3 +135,8 @@ viewIsCompleted config todo =
     in
     button [ class "pa1 bn bg-inherit color-inherit", onClick toggleMsg ]
         [ Emoji.view emoji ]
+
+
+viewTitle : Todo -> Html msg
+viewTitle todo =
+    span [] [ text <| title todo ]
