@@ -1,0 +1,15 @@
+{
+  "name": "minimal-elm-todoist-clone",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.41.0"
+  },
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "keywords": [],
+  "author": "Jigar Gosar <jigar.gosar@gmail.com>",
+  "license": "ISC"
+}
