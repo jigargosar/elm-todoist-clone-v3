@@ -5,6 +5,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random exposing (Generator)
+import Random.More as Random
 import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
@@ -33,26 +34,11 @@ init _ =
 generateInitialTodoList : Model -> List Todo
 generateInitialTodoList _ =
     let
-        singleGeneratorFromListOfGenerators : List (Generator a) -> Generator (List a)
-        singleGeneratorFromListOfGenerators =
-            List.foldr (Random.map2 (::)) (Random.constant [])
-
         ts =
             Timestamp.zero
 
-        mostlyFalseGenerator : Generator Bool
-        mostlyFalseGenerator =
-            let
-                falseWeight =
-                    60
-
-                trueWeight =
-                    100 - falseWeight
-            in
-            Random.weighted ( falseWeight, False ) [ ( trueWeight, True ) ]
-
         mostlyPendingTodoGenerator todo =
-            Random.map (always >> flip Todo.mapCompleted todo) mostlyFalseGenerator
+            Random.map (always >> flip Todo.mapCompleted todo) Random.mostlyFalse
 
         todoGenerator : String -> Generator Todo
         todoGenerator title =
@@ -61,7 +47,7 @@ generateInitialTodoList _ =
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map todoGenerator
-        |> singleGeneratorFromListOfGenerators
+        |> Random.fromList
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
         |> List.indexedMap (always >> Todo.mapIdx)
