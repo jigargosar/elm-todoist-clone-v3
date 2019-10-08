@@ -61,4 +61,9 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.element { init = init, view = view, update = update, subscriptions = \_ -> Sub.none }
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = \_ -> Sub.none
+        }
