@@ -20,7 +20,7 @@ main =
 
 
 search =
-    input [ class "pa1 br2 bn", placeholder "🔍 Search" ] []
+    input [ class "pa1 br2 bn", placeholder <| magnifying_glass ++ " Search" ] []
 
 
 heavy_plus_sign =
