@@ -18,13 +18,19 @@ type alias Model =
     { todoDict : TodoDict }
 
 
+emptyModel : Model
+emptyModel =
+    { todoDict = TodoDict.empty
+    }
+
+
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( { todoDict = TodoDict.empty }, Cmd.none )
+    ( { todoDict = TodoDict.fromList (generateInitialTodoList emptyModel) }, Cmd.none )
 
 
-getTodoList : Model -> List Todo
-getTodoList _ =
+generateInitialTodoList : Model -> List Todo
+generateInitialTodoList _ =
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map Todo.generatorFromTitle
         |> List.foldr (Random.map2 (::)) (Random.constant [])
@@ -69,7 +75,7 @@ view model =
     div []
         [ Appbar.view
         , main_ [ class "measure center" ]
-            [ Todo.viewList { toggle = Toggle } (getTodoList model)
+            [ Todo.viewList { toggle = Toggle } (generateInitialTodoList model)
             ]
         ]
 

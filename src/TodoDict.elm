@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, empty, toggle)
+module TodoDict exposing (TodoDict, empty, fromList, toggle)
 
 import Dict exposing (Dict)
 import Todo exposing (Todo)
@@ -16,6 +16,11 @@ type alias Internal =
 empty : TodoDict
 empty =
     TodoDict Dict.empty
+
+
+fromList : List Todo -> TodoDict
+fromList =
+    List.foldl insert empty
 
 
 map : (Internal -> Internal) -> TodoDict -> TodoDict
