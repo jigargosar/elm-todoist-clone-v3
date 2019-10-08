@@ -49,7 +49,7 @@ generateInitialTodoList _ =
 
         todoFromTitleGen : String -> Generator Todo
         todoFromTitleGen title =
-            Todo.generatorFromTitle title ts
+            Todo.generatorFromTitleAndTS title ts
                 |> Random.andThen (\todo -> mostlyFalseGen |> Random.map (flip Todo.setCompleted todo))
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
