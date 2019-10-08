@@ -1,9 +1,11 @@
-module Todo exposing (Todo, fromTitle, title, viewList)
+module Todo exposing (Todo, generatorFromTitle, title, viewList)
 
 import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import UI
+import Html.Events exposing (..)
+import Random
+import TodoId exposing (TodoId)
 
 
 
@@ -15,13 +17,21 @@ type Todo
 
 
 type alias Internal =
-    { title : String
+    { id : TodoId
+    , title : String
     , isCompleted : Bool
     }
 
 
-fromTitle title_ =
-    Todo <| { title = title_, isCompleted = False }
+generatorFromTitle : String -> Random.Generator Todo
+generatorFromTitle title_ =
+    TodoId.generator
+        |> Random.map (fromTitle title_)
+
+
+fromTitle : String -> TodoId -> Todo
+fromTitle title_ id_ =
+    Todo <| { id = id_, title = title_, isCompleted = False }
 
 
 title : Todo -> String
@@ -37,25 +47,37 @@ isCompleted =
     unwrap >> .isCompleted
 
 
+id =
+    unwrap >> .id
+
+
 
 -- VIEW
 
 
-view : Todo -> Html msg
-view todo =
-    li [ viewDoneCheck <| isCompleted todo, span [] [ text <| title todo ] ]
+type alias Config msg =
+    { toggle : TodoId -> msg }
 
 
-viewDoneCheck isChecked =
+view : Config msg -> Todo -> Html msg
+view config todo =
+    li [ viewDoneCheck config todo, span [] [ text <| title todo ] ]
+
+
+viewDoneCheck : Config msg -> Todo -> Html msg
+viewDoneCheck config todo =
     let
         emoji =
-            if isChecked then
+            if isCompleted todo then
                 Emoji.heavy_check_mark
 
             else
                 Emoji.heavy_large_circle
+
+        toggle =
+            config.toggle <| id todo
     in
-    button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
+    button [ class "pa1 lh-solid bn bg-inherit color-inherit", onClick toggle ]
         [ text emoji
         ]
 
@@ -65,9 +87,9 @@ li =
     Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
-viewList : List Todo -> Html msg
-viewList =
-    listContainer << List.map view
+viewList : Config msg -> List Todo -> Html msg
+viewList config =
+    listContainer << List.map (view config)
 
 
 listContainer =

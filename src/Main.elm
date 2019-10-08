@@ -2,12 +2,11 @@ module Main exposing (..)
 
 import Appbar
 import Browser
-import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Random
 import Todo exposing (Todo)
-import UI
+import TodoId exposing (TodoId)
 
 
 
@@ -25,7 +24,15 @@ init _ =
 getTodoList : Model -> List Todo
 getTodoList _ =
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
-        |> List.map Todo.fromTitle
+        |> List.map Todo.generatorFromTitle
+        |> List.foldr (Random.map2 (::)) (Random.constant [])
+        |> flip Random.step (Random.initialSeed 0)
+        |> Tuple.first
+
+
+flip : (c -> b -> a) -> b -> c -> a
+flip func b a =
+    func a b
 
 
 
@@ -34,12 +41,16 @@ getTodoList _ =
 
 type Msg
     = NoOp
+    | Toggle TodoId
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
+            ( model, Cmd.none )
+
+        Toggle todoId ->
             ( model, Cmd.none )
 
 
@@ -52,7 +63,7 @@ view model =
     div []
         [ Appbar.view
         , main_ [ class "measure center" ]
-            [ Todo.viewList (getTodoList model)
+            [ Todo.viewList { toggle = Toggle } (getTodoList model)
             ]
         ]
 
