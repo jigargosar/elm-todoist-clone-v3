@@ -1,4 +1,4 @@
-module Todo exposing (Todo, generatorFromTitle, id, title, toggle, viewList)
+module Todo exposing (Todo, generatorFromTitle, id, mapIdx, title, toggle, viewList)
 
 import Emoji
 import Html exposing (..)
@@ -81,6 +81,11 @@ mapCompleted func =
 toggle : Todo -> Todo
 toggle =
     mapCompleted not
+
+
+mapIdx : (Int -> Int) -> Todo -> Todo
+mapIdx func =
+    map (\t -> { t | idx = func t.idx })
 
 
 
