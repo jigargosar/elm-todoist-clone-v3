@@ -16,16 +16,27 @@ todoList =
 -- MODEL
 
 
+type alias Model =
+    {}
+
+
 init _ =
-    ( (), Cmd.none )
+    ( {}, Cmd.none )
 
 
 
 -- UPDATE
 
 
-update _ _ =
-    ( (), Cmd.none )
+type Msg
+    = NoOp
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update message model =
+    case message of
+        NoOp ->
+            ( model, Cmd.none )
 
 
 
@@ -57,6 +68,6 @@ todoListLi =
 -- MAIN
 
 
-main : Program () () ()
+main : Program () Model Msg
 main =
     Browser.element { init = init, view = view, update = update, subscriptions = \_ -> Sub.none }
