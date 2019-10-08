@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Appbar
 import Browser
 import Emoji
 import Html exposing (..)
@@ -49,7 +50,7 @@ update message model =
 view : Model -> Html Msg
 view model =
     div []
-        [ UI.topBar [ UI.search, UI.filler, UI.addIconBtn ]
+        [ Appbar.view
         , main_ [ class "measure center" ]
             [ Todo.viewList (getTodoList model)
             ]
