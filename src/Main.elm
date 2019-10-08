@@ -14,9 +14,9 @@ foo =
 
 
 main =
-    ol []
+    ol [ class "list pl0 measure center" ]
         (List.map viewTodoListItem todoList)
 
 
 viewTodoListItem title =
-    div [ class "" ] [ text title ]
+    li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ] [ text title ]
