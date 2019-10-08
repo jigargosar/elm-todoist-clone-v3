@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random
 import Todo exposing (Todo)
+import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 
 
@@ -14,11 +15,12 @@ import TodoId exposing (TodoId)
 
 
 type alias Model =
-    {}
+    { todoDict : TodoDict }
 
 
+init : () -> ( Model, Cmd msg )
 init _ =
-    ( {}, Cmd.none )
+    ( { todoDict = TodoDict.empty }, Cmd.none )
 
 
 getTodoList : Model -> List Todo
@@ -51,7 +53,11 @@ update message model =
             ( model, Cmd.none )
 
         Toggle todoId ->
-            ( model, Cmd.none )
+            ( mapTodoDict (TodoDict.toggle todoId) model, Cmd.none )
+
+
+mapTodoDict func model =
+    { model | todoDict = func model.todoDict }
 
 
 

@@ -1,8 +1,8 @@
-module TodoDict exposing (TodoDict, empty)
+module TodoDict exposing (TodoDict, empty, toggle)
 
 import Dict exposing (Dict)
 import Todo exposing (Todo)
-import TodoId
+import TodoId exposing (TodoId)
 
 
 type TodoDict
@@ -26,3 +26,8 @@ map func (TodoDict dict) =
 insert : Todo -> TodoDict -> TodoDict
 insert todo =
     map (TodoId.insert (Todo.id todo) todo)
+
+
+toggle : TodoId -> TodoDict -> TodoDict
+toggle todoId =
+    identity
