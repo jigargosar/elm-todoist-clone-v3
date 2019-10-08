@@ -1,4 +1,4 @@
-module Main exposing (..)
+module Main exposing (main)
 
 import Appbar
 import Basics.More exposing (flip)
@@ -29,7 +29,7 @@ emptyModel =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( { todoDict = TodoDict.fromList mockTodoList }, Cmd.none )
+    ( { emptyModel | todoDict = TodoDict.fromList mockTodoList }, Cmd.none )
 
 
 mockTodoList : List Todo
