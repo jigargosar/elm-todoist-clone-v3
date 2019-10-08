@@ -41,7 +41,9 @@ generateInitialTodoList _ =
 
 
 todoList =
-    .todoDict >> TodoDict.toList
+    .todoDict
+        >> TodoDict.toList
+        >> List.sortBy Todo.idx
 
 
 flip : (c -> b -> a) -> b -> c -> a
