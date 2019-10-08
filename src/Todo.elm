@@ -107,7 +107,7 @@ viewList config =
 
 
 listContainer =
-    ol [ class "list pl0" ]
+    ol [ class "list pl0 ma0" ]
 
 
 viewListItem : Config msg -> Todo -> Html msg
