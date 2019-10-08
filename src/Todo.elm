@@ -1,4 +1,4 @@
-module Todo exposing (Todo, generatorFromTitle, title, viewList)
+module Todo exposing (Todo, generatorFromTitle, id, title, viewList)
 
 import Emoji
 import Html exposing (..)
@@ -47,6 +47,7 @@ isCompleted =
     unwrap >> .isCompleted
 
 
+id : Todo -> TodoId
 id =
     unwrap >> .id
 
