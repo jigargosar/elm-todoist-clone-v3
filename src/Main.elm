@@ -19,10 +19,6 @@ main =
         ]
 
 
-search =
-    input [ class "pa1 br2 bn", placeholder <| magnifying_glass ++ " Search" ] []
-
-
 heavy_plus_sign =
     "➕"
 
@@ -44,6 +40,14 @@ addIconBtn =
     button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
         [ text heavy_plus_sign
         ]
+
+
+search =
+    input
+        [ class "pa1 br2 bn"
+        , placeholder <| magnifying_glass ++ " Search"
+        ]
+        []
 
 
 viewTodoListItem title =
