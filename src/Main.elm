@@ -29,11 +29,11 @@ emptyModel =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( { todoDict = TodoDict.fromList (generateInitialTodoList emptyModel) }, Cmd.none )
+    ( { todoDict = TodoDict.fromList mockTodoList }, Cmd.none )
 
 
-generateInitialTodoList : Model -> List Todo
-generateInitialTodoList _ =
+mockTodoList : List Todo
+mockTodoList =
     let
         ts =
             Timestamp.zero
