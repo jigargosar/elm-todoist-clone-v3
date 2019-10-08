@@ -50,10 +50,10 @@ viewDoneCheck isChecked =
     let
         emoji =
             if isChecked then
-                Emoji.heavy_plus_sign
+                Emoji.heavy_check_mark
 
             else
-                Emoji.heavy_plus_sign
+                Emoji.heavy_large_circle
     in
     button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
         [ text emoji
