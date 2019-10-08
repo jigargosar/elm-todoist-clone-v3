@@ -134,5 +134,4 @@ viewDoneCheck config todo =
             config.toggle <| id todo
     in
     button [ class "pa1  bn bg-inherit color-inherit", onClick toggleMsg ]
-        [ Emoji.view emoji
-        ]
+        [ Emoji.view emoji ]
