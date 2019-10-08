@@ -36,18 +36,14 @@ generateInitialTodoList _ =
         ts =
             Timestamp.zero
 
-        boolGen : Generator Bool
-        boolGen =
+        mostlyTrueGen : Generator Bool
+        mostlyTrueGen =
             Random.weighted ( 2, True ) [ ( 1, False ) ]
-
-        markFewCompletedGen : Todo -> Generator Todo
-        markFewCompletedGen todo =
-            boolGen |> Random.map (flip Todo.setCompleted todo)
 
         gen : String -> Generator Todo
         gen title =
             Todo.generatorFromTitle title ts
-                |> Random.andThen markFewCompletedGen
+                |> Random.andThen (\todo -> mostlyTrueGen |> Random.map (flip Todo.setCompleted todo))
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
         |> List.map gen
