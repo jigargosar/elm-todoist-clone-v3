@@ -4,7 +4,7 @@ import Html exposing (..)
 
 
 todoList =
-    [ "Get Milk", "Remember to call", "Do Stuff!" ]
+    [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
 
 
 main =
