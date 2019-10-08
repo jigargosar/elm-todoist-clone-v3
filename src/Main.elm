@@ -47,13 +47,13 @@ generateInitialTodoList _ =
             in
             Random.weighted ( falseWeight, False ) [ ( trueWeight, True ) ]
 
-        todoFromTitleGen : String -> Generator Todo
-        todoFromTitleGen title =
-            Todo.generatorFromTitleAndTS title ts
+        todoGen : String -> Generator Todo
+        todoGen title =
+            Todo.fromTitleAndTimestamp title ts
                 |> Random.andThen (\todo -> mostlyFalseGen |> Random.map (flip Todo.setCompleted todo))
     in
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
-        |> List.map todoFromTitleGen
+        |> List.map todoGen
         |> List.foldr (Random.map2 (::)) (Random.constant [])
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first

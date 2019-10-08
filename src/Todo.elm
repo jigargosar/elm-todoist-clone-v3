@@ -1,4 +1,4 @@
-module Todo exposing (Todo, generatorFromTitleAndTS, id, idx, mapCompleted, mapIdx, setCompleted, title, toggle, viewList)
+module Todo exposing (Todo, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, setCompleted, title, toggle, viewList)
 
 import Debug exposing (log)
 import Emoji
@@ -29,8 +29,8 @@ type alias Internal =
     }
 
 
-generatorFromTitleAndTS : String -> Posix -> Random.Generator Todo
-generatorFromTitleAndTS title_ timestamp =
+fromTitleAndTimestamp : String -> Posix -> Random.Generator Todo
+fromTitleAndTimestamp title_ timestamp =
     TodoId.generator
         |> Random.map (fromTitle title_ timestamp)
 
