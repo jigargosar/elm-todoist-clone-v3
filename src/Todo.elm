@@ -112,7 +112,7 @@ listContainer =
 
 viewListItem : Config msg -> Todo -> Html msg
 viewListItem config todo =
-    li [ viewDoneCheck config todo, span [] [ text <| title todo ] ]
+    li [ viewIsCompleted config todo, span [] [ text <| title todo ] ]
 
 
 li : List (Html msg) -> Html msg
@@ -120,8 +120,8 @@ li =
     Html.li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
-viewDoneCheck : { a | toggle : TodoId -> msg } -> Todo -> Html msg
-viewDoneCheck config todo =
+viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
+viewIsCompleted config todo =
     let
         emoji =
             if isCompleted todo then
