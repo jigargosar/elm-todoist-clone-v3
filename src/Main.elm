@@ -38,7 +38,7 @@ generateInitialTodoList _ =
 
         mostlyFalseGen : Generator Bool
         mostlyFalseGen =
-            Random.weighted ( 30, True ) [ ( 70, False ) ]
+            Random.weighted ( 60, False ) [ ( 40, True ) ]
 
         gen : String -> Generator Todo
         gen title =
@@ -50,7 +50,7 @@ generateInitialTodoList _ =
         |> List.foldr (Random.map2 (::)) (Random.constant [])
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
-        |> List.indexedMap (\idx -> Todo.mapIdx (always idx) >> Todo.toggle)
+        |> List.indexedMap (\idx -> Todo.mapIdx (always idx))
 
 
 todoList =

@@ -1,5 +1,6 @@
 module Todo exposing (Todo, generatorFromTitle, id, idx, mapCompleted, mapIdx, setCompleted, title, toggle, viewList)
 
+import Debug exposing (log)
 import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -85,7 +86,7 @@ mapCompleted func =
 
 setCompleted : Bool -> Todo -> Todo
 setCompleted =
-    always >> mapCompleted
+    log "setCompleted" >> always >> mapCompleted
 
 
 toggle : Todo -> Todo
