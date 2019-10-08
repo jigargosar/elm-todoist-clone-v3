@@ -23,8 +23,8 @@ title =
     unwrap >> .title
 
 
-unwrap (Todo i) =
-    i
+unwrap (Todo m) =
+    m
 
 
 li : List (Html.Html msg) -> Html.Html msg
