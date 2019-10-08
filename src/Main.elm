@@ -13,10 +13,17 @@ main =
     div []
         [ toolbar [ search, filler, addIconBtn ]
         , main_ [ class "measure center" ]
-            [ ol [ class "list pl0 measure center" ]
-                (List.map viewTodoListItem todoList)
+            [ todoListC (List.map viewTodoListItem todoList)
             ]
         ]
+
+
+todoListC =
+    ol [ class "list pl0 measure center" ]
+
+
+viewTodoListItem title =
+    todoListLi [ text title ]
 
 
 heavy_plus_sign =
@@ -50,5 +57,5 @@ search =
         []
 
 
-viewTodoListItem title =
-    li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ] [ text title ]
+todoListLi =
+    li [ class "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
