@@ -5,6 +5,7 @@ import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Todo exposing (Todo)
 import UI
 
 
@@ -20,9 +21,10 @@ init _ =
     ( {}, Cmd.none )
 
 
-getTodoList : Model -> List String
+getTodoList : Model -> List Todo
 getTodoList _ =
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
+        |> List.map Todo.fromTitle
 
 
 
@@ -57,8 +59,8 @@ todoListC =
     ol [ class "list pl0" ]
 
 
-viewTodoListItem title =
-    todoListLi [ text title ]
+viewTodoListItem todo =
+    todoListLi [ text <| Todo.title todo ]
 
 
 todoListLi =
