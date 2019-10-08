@@ -5,6 +5,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Random
+import Time exposing (Posix)
+import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)
 
 
@@ -18,20 +20,22 @@ type Todo
 
 type alias Internal =
     { id : TodoId
+    , createdAt : Timestamp
+    , modifiedAt : Timestamp
     , title : String
     , isCompleted : Bool
     }
 
 
-generatorFromTitle : String -> Random.Generator Todo
-generatorFromTitle title_ =
+generatorFromTitle : String -> Posix -> Random.Generator Todo
+generatorFromTitle title_ timestamp =
     TodoId.generator
-        |> Random.map (fromTitle title_)
+        |> Random.map (fromTitle title_ timestamp)
 
 
-fromTitle : String -> TodoId -> Todo
-fromTitle title_ id_ =
-    Todo <| { id = id_, title = title_, isCompleted = False }
+fromTitle : String -> Posix -> TodoId -> Todo
+fromTitle title_ timestamp id_ =
+    Todo <| { id = id_, createdAt = timestamp, modifiedAt = timestamp, title = title_, isCompleted = False }
 
 
 title : Todo -> String

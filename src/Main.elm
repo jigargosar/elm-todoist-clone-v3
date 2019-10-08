@@ -5,6 +5,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random
+import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -32,7 +33,7 @@ init _ =
 generateInitialTodoList : Model -> List Todo
 generateInitialTodoList _ =
     [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
-        |> List.map Todo.generatorFromTitle
+        |> List.map (flip Todo.generatorFromTitle Timestamp.zero)
         |> List.foldr (Random.map2 (::)) (Random.constant [])
         |> flip Random.step (Random.initialSeed 0)
         |> Tuple.first
