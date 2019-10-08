@@ -5,6 +5,10 @@ import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 
 
+
+-- MODEL
+
+
 type TodoDict
     = TodoDict Internal
 
@@ -23,8 +27,22 @@ fromList =
     List.foldl insert empty
 
 
+toList : TodoDict -> List Todo
+toList =
+    unwrap >> Dict.values
+
+
 unwrap (TodoDict dict) =
     dict
+
+
+key : Todo -> String
+key =
+    Todo.id >> TodoId.toDictKey
+
+
+
+-- UPDATE
 
 
 map : (Internal -> Internal) -> TodoDict -> TodoDict
@@ -37,16 +55,6 @@ insert todo =
     map (Dict.insert (key todo) todo)
 
 
-key : Todo -> String
-key =
-    Todo.id >> TodoId.toDictKey
-
-
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
     map (Dict.update (TodoId.toDictKey todoId) (Maybe.map Todo.toggle))
-
-
-toList : TodoDict -> List Todo
-toList =
-    unwrap >> Dict.values
