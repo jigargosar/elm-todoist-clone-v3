@@ -38,6 +38,10 @@ generateInitialTodoList _ =
         |> Tuple.first
 
 
+todoList =
+    .todoDict >> TodoDict.toList
+
+
 flip : (c -> b -> a) -> b -> c -> a
 flip func b a =
     func a b
@@ -75,7 +79,7 @@ view model =
     div []
         [ Appbar.view
         , main_ [ class "measure center" ]
-            [ Todo.viewList { toggle = Toggle } (generateInitialTodoList model)
+            [ Todo.viewList { toggle = Toggle } (todoList model)
             ]
         ]
 

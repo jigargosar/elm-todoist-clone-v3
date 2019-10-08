@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, empty, fromList, toggleCompleted)
+module TodoDict exposing (TodoDict, empty, fromList, toList, toggleCompleted)
 
 import Dict exposing (Dict)
 import Todo exposing (Todo)
@@ -23,9 +23,13 @@ fromList =
     List.foldl insert empty
 
 
+unwrap (TodoDict dict) =
+    dict
+
+
 map : (Internal -> Internal) -> TodoDict -> TodoDict
-map func (TodoDict dict) =
-    func dict |> TodoDict
+map func =
+    unwrap >> func >> TodoDict
 
 
 insert : Todo -> TodoDict -> TodoDict
@@ -41,3 +45,8 @@ key =
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
     map (Dict.update (TodoId.toDictKey todoId) (Maybe.map Todo.toggle))
+
+
+toList : TodoDict -> List Todo
+toList =
+    unwrap >> Dict.values
