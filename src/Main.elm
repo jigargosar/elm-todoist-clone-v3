@@ -10,9 +10,12 @@ todoList =
 
 
 main =
-    div []
-        [ header [ class "pa4" ]
-            []
+    div [ class "measure center" ]
+        [ header [ class "pa0" ]
+            [ button [ class "pa1 lh-solid ma0 bn bg-white" ]
+                [ text <| String.fromChar heavy_plus_sign
+                ]
+            ]
         , main_ []
             [ ol [ class "list pl0 measure center" ]
                 (List.map viewTodoListItem todoList)
