@@ -109,29 +109,30 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
+    viewLayout [ text "header" ] [ text "sidebar" ] [ text "main" ]
+
+
+viewLayout h s m =
     let
         centeredContent attrs =
             div <|
-                [ class "flex center w-100"
-                , style "max-width" "800px"
+                [ class "flex center w-100 max-w-app"
                 ]
                     ++ attrs
     in
-    div [ class "flex flex-column bg-body", style "min-height" "100vh" ]
-        [ header [ class "flex top-0 bg-light-red white ttu tracked w-100 h-header", style "position" "sticky" ]
-            [ centeredContent [ class "pa3" ] [ text "header" ]
+    div [ class "bg-body" ]
+        [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
+            [ centeredContent [ class "h-100" ] h
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside
-                [ class "fixed top-sidebar bottom-0 w-sidebar pa3 hover-overflow-y br b--main"
-                , style "position" "fixed"
+                [ class "fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br b--main"
                 ]
-                [ div [ style "height" "200vh" ] [ text "aside sidebar" ] ]
+                s
             , main_
-                [ class "ml-main pa3 flex-grow-1 bg-white br b--main"
+                [ class "ml-main pt-main min-h-main flex-grow-1 bg-white br b--main"
                 ]
-                [ div [ style "height" "" ] [ text "main content" ]
-                ]
+                m
             ]
         ]
 

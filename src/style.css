@@ -36,8 +36,17 @@ body {
   width: var(--sidebar-width);
 }
 
+.min-h-main {
+  min-height: calc(100vh);
+}
+.max-w-app {
+  max-width: var(--app-width);
+}
 .top-sidebar {
   top: var(--header-height);
+}
+.pt-main {
+  padding-top: var(--header-height);
 }
 
 .ml-main {
