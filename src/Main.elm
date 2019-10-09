@@ -109,6 +109,27 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
+    let
+        centeredContent attrs =
+            div <|
+                [ class "flex center w-100"
+                , style "max-width" "800px"
+                ]
+                    ++ attrs
+    in
+    div [ class "flex flex-column", style "min-height" "100vh" ]
+        [ header [ class "bg-black-80 white ttu tracked w-100 shadow-4" ]
+            [ centeredContent [ class "pa3" ] [ text "header" ]
+            ]
+        , centeredContent [ class "flex-grow-1" ]
+            [ aside [ class "pa3 bg-black-20 w-30" ] [ text "aside sidebar" ]
+            , main_ [ class "pa3 flex-grow-1 w-70 bg-lightest-blue" ] [ text "main content" ]
+            ]
+        , footer [ class "pa3 bg-black-80 white" ] [ centeredContent [ class "pa3" ] [ text "footer" ] ]
+        ]
+
+
+view2 model =
     div []
         [ Appbar.view
         , main_ [ class "measure center" ]
