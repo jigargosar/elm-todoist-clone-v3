@@ -115,14 +115,14 @@ view model =
 viewLayout h s m =
     let
         centeredContent attrs =
-            div <|
-                [ class "flex center w-100 max-w-app"
-                ]
-                    ++ attrs
+            div (centeredAttributes ++ attrs)
+
+        centeredAttributes =
+            [ class "flex center w-100 max-w-app" ]
     in
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
-            [ centeredContent [ class "h-100" ] h
+            [ h (centeredAttributes ++ [ class "h-100" ])
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside
@@ -137,16 +137,14 @@ viewLayout h s m =
         ]
 
 
-view2 model =
-    div [] <|
-        Appbar.view
-            ++ [ main_ [ class "measure center" ]
-                    [ Todo.viewList { toggle = Toggle } (todoList model)
-                    ]
-               ]
 
-
-
+--view2 model =
+--    div [] <|
+--        Appbar.view
+--            ++ [ main_ [ class "measure center" ]
+--                    [ Todo.viewList { toggle = Toggle } (todoList model)
+--                    ]
+--               ]
 -- MAIN
 
 
