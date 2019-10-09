@@ -6,7 +6,10 @@ Module.Elm.Main.init({
   node: document.getElementById('root'),
 })
 
-const w = new SharedWorker('worker.js')
+// const W = Worker
+const W = window['SharedWorker']
+console.debug()
+const w = new W('worker.js', { name: 'worker' })
 
 console.log(w)
 
