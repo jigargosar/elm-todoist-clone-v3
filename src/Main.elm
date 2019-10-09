@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random exposing (Generator)
 import Random.More as Random
+import Screen exposing (Screen)
 import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
@@ -18,12 +19,19 @@ import TodoId exposing (TodoId)
 
 
 type alias Model =
-    { todoDict : TodoDict }
+    { todoDict : TodoDict
+    , screen : Screen
+    }
+
+
+screen =
+    Screen.system (\_ -> NoOp) (\_ _ -> NoOp)
 
 
 emptyModel : Model
 emptyModel =
     { todoDict = TodoDict.empty
+    , screen = screen.model
     }
 
 
