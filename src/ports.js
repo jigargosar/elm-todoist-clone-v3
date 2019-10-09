@@ -1,4 +1,4 @@
-import { isEmpty, mapObjIndexed, omit, pathOr } from 'ramda'
+import { concat, isEmpty, mapObjIndexed, omit, pathOr } from 'ramda'
 
 export default function ports(pubNames = [], subs = {}, app) {
   const pubs = pubNames.map(name => {
@@ -27,7 +27,8 @@ export default function ports(pubNames = [], subs = {}, app) {
     }
   })(subs)
 
-  const unhandledPorts = omit(Object.keys(subs) + pubNames, app.ports)
+  const unhandledPorts = omit(concat(Object.keys(subs) , pubNames), app.ports)
+
   const unhandledPortNames = Object.keys(unhandledPorts)
   if (!isEmpty(unhandledPortNames)) {
     console.warn('unhandledPorts', unhandledPortNames)
