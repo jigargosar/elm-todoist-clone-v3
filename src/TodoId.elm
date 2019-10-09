@@ -1,8 +1,6 @@
 module TodoId exposing (TodoId, decoder, toDictKey)
 
-import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
-import Random exposing (Generator)
 
 
 type TodoId
