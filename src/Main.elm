@@ -123,7 +123,7 @@ view model =
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside
-                [ class "top-sidebar bottom-0 w-sidebar pa3 bg-black-20 w-sidebar overflow-auto"
+                [ class "fixed top-sidebar bottom-0 w-sidebar pa3 bg-black-20 hover-overflow-y"
                 , style "position" "fixed"
                 ]
                 [ div [ style "height" "200vh" ] [ text "aside sidebar" ] ]

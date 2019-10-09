@@ -1,3 +1,8 @@
+body {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 :root {
   --header-height: 50px;
   --sidebar-width: 150px;
@@ -10,8 +15,17 @@
 .w-sidebar {
   width: var(--sidebar-width);
 }
-.top-sidebar{
-  top: var(--header-height)
+.top-sidebar {
+  top: var(--header-height);
+}
+
+.hover-overflow-y,
+.hover-overflow-y:hover {
+  overflow-y: hidden;
+}
+
+.hover-overflow-y:hover {
+  overflow-y: auto;
 }
 
 .ml-main {
