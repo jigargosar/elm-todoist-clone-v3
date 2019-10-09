@@ -1,9 +1,10 @@
-module Todo exposing (Todo, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
+module Todo exposing (Todo, decoder, fromTitleAndTimestamp, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
 
 import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as JD exposing (Decoder)
 import Random
 import Time exposing (Posix)
 import Timestamp exposing (Timestamp)
@@ -26,6 +27,23 @@ type alias Internal =
     , isCompleted : Bool
     , idx : Int
     }
+
+
+andMap : Decoder a -> Decoder (a -> b) -> Decoder b
+andMap =
+    JD.map2 (|>)
+
+
+decoder : Decoder Todo
+decoder =
+    JD.succeed Internal
+        |> andMap (JD.field "id" TodoId.decoder)
+        |> andMap (JD.field "createdAt" Timestamp.decoder)
+        |> andMap (JD.field "modifiedAt" Timestamp.decoder)
+        |> andMap (JD.field "title" JD.string)
+        |> andMap (JD.field "isCompleted" JD.bool)
+        |> andMap (JD.field "idx" JD.int)
+        |> JD.map Todo
 
 
 fromTitleAndTimestamp : String -> Posix -> Random.Generator Todo

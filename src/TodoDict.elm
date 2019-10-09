@@ -1,6 +1,8 @@
-module TodoDict exposing (TodoDict, empty, fromList, toList, toggleCompleted)
+module TodoDict exposing (TodoDict, empty, fromEncodedList, fromList, toList, toggleCompleted)
 
 import Dict exposing (Dict)
+import Json.Decode as JD exposing (Decoder)
+import Json.Encode exposing (Value)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 
@@ -20,6 +22,11 @@ type alias Internal =
 empty : TodoDict
 empty =
     TodoDict Dict.empty
+
+
+fromEncodedList : Value -> Result JD.Error TodoDict
+fromEncodedList =
+    JD.decodeValue (JD.list Todo.decoder |> JD.map fromList)
 
 
 fromList : List Todo -> TodoDict

@@ -4,6 +4,7 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser
 import Html exposing (..)
+import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Random exposing (Generator)
 import Random.More as Random
@@ -46,7 +47,11 @@ emptyModel =
 
 
 init : Flags -> ( Model, Cmd msg )
-init _ =
+init flags =
+    let
+        todoListResult =
+            JD.decodeValue TodoDict.fromEncodedList flags.todoList
+    in
     ( { emptyModel
         | todoDict = TodoDict.fromList mockTodoList
       }
