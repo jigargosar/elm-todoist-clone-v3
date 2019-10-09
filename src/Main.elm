@@ -37,7 +37,11 @@ emptyModel =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( { emptyModel | todoDict = TodoDict.fromList mockTodoList }, Cmd.none )
+    ( { emptyModel
+        | todoDict = TodoDict.fromList mockTodoList
+      }
+    , Cmd.none
+    )
 
 
 mockTodoList : List Todo
