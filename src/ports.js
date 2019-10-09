@@ -1,7 +1,7 @@
 import { concat, isEmpty, mapObjIndexed, omit, pathOr } from 'ramda'
 
 export default function ports(pubNames = [], subs = {}, app) {
-  const pubs = pubNames.reduce((name, pubs) => {
+  const pubs = pubNames.reduce((pubsAcc = {}, name) => {
     const send = pathOr(null, ['ports', name, 'send'])
     if (!send) {
       console.warn('Elm Sub Port Not Found', name)
@@ -16,8 +16,8 @@ export default function ports(pubNames = [], subs = {}, app) {
         send(payload)
       }
     }
-    return Object.assign(pubs, {[name]:pub})
-  },{})
+    return Object.assign(pubsAcc, { [name]: pub })
+  }, {})
 
   mapObjIndexed((fn, subName) => {
     const subscribe = pathOr(null, ['ports', subName, 'subscribe'])
@@ -28,7 +28,10 @@ export default function ports(pubNames = [], subs = {}, app) {
     }
   })(subs)
 
-  const unhandledPorts = omit(concat(Object.keys(subs) , pubNames), app.ports)
+  const unhandledPorts = omit(
+    concat(Object.keys(subs), pubNames),
+    app.ports,
+  )
 
   const unhandledPortNames = Object.keys(unhandledPorts)
   if (!isEmpty(unhandledPortNames)) {
