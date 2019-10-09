@@ -109,14 +109,17 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
-    viewLayout Appbar.view [ text "sidebar" ] [ text "main" ]
+    viewLayout Appbar.view
+        [ text "sidebar" ]
+        [ Todo.viewList { toggle = Toggle } (todoList model)
+        ]
 
 
 viewLayout h s m =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
-                ([ class "center w-100 max-w-app ph1" ]
+                ([ class "center w-100 max-w-app ph2" ]
                     ++ [ class "h-100", class "flex items-center" ]
                 )
                 h
