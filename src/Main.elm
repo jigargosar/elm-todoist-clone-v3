@@ -4,7 +4,7 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Json.Encode exposing (Value)
 import Random exposing (Generator)
 import Random.More as Random
 import Screen exposing (Screen)
@@ -13,6 +13,14 @@ import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
+
+
+
+-- Flags
+
+
+type alias Flags =
+    { todoList : Value }
 
 
 
@@ -37,7 +45,7 @@ emptyModel =
     }
 
 
-init : () -> ( Model, Cmd msg )
+init : Flags -> ( Model, Cmd msg )
 init _ =
     ( { emptyModel
         | todoDict = TodoDict.fromList mockTodoList
@@ -134,7 +142,7 @@ mainView model =
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
