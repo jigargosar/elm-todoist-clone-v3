@@ -1,6 +1,14 @@
 body {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa;
+}
+
+.bg--body{
+  background-color: #fafafa;
+}
+.b--main{
+  border-color: #f1f1f1;
 }
 
 :root {

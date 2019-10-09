@@ -117,18 +117,18 @@ view model =
                 ]
                     ++ attrs
     in
-    div [ class "flex flex-column", style "min-height" "100vh" ]
-        [ header [ class "flex top-0 bg-black-80 white ttu tracked w-100 shadow-4 h-header", style "position" "sticky" ]
+    div [ class "flex flex-column bg-body", style "min-height" "100vh" ]
+        [ header [ class "flex top-0 bg-light-red white ttu tracked w-100 h-header", style "position" "sticky" ]
             [ centeredContent [ class "pa3" ] [ text "header" ]
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside
-                [ class "fixed top-sidebar bottom-0 w-sidebar pa3 bg-black-20 hover-overflow-y"
+                [ class "fixed top-sidebar bottom-0 w-sidebar pa3 hover-overflow-y br b--main"
                 , style "position" "fixed"
                 ]
                 [ div [ style "height" "200vh" ] [ text "aside sidebar" ] ]
             , main_
-                [ class "ml-main ml-auto pa3 flex-grow-1 w-70 bg-lightest-blue"
+                [ class "ml-main pa3 flex-grow-1 bg-white br b--main"
                 ]
                 [ div [ style "height" "" ] [ text "main content" ]
                 ]
