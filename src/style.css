@@ -1,19 +1,30 @@
+/* General Utilities */
+.hover-overflow-y,
+.hover-overflow-y:hover {
+  overflow-y: hidden;
+}
+
+.hover-overflow-y:hover {
+  overflow-y: auto;
+}
+
+/* App specific functional styles*/
+
 body {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
-}
-
-.bg--body{
-  background-color: #fafafa;
-}
-.b--main{
-  border-color: #f1f1f1;
 }
 
 :root {
   --header-height: 50px;
   --sidebar-width: 150px;
+}
+
+.bg--body {
+  background-color: #fafafa;
+}
+.b--main {
+  border-color: #f1f1f1;
 }
 
 .h-header {
@@ -23,17 +34,9 @@ body {
 .w-sidebar {
   width: var(--sidebar-width);
 }
+
 .top-sidebar {
   top: var(--header-height);
-}
-
-.hover-overflow-y,
-.hover-overflow-y:hover {
-  overflow-y: hidden;
-}
-
-.hover-overflow-y:hover {
-  overflow-y: auto;
 }
 
 .ml-main {
