@@ -65,6 +65,7 @@ subscriptions _ =
     Sub.batch [ onResize Changed ]
 
 
+view : List (Html msg) -> List (Html msg) -> List (Html msg) -> Html msg
 view top side main =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
