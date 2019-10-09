@@ -20,6 +20,8 @@ module.exports = (_, config) => {
       ],
     },
     devServer: {
+      contentBase: 'public',
+      watchContentBase: true,
       hot: true,
       overlay: true,
     },
