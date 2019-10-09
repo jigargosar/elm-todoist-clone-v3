@@ -1,0 +1,19 @@
+:root {
+  --header-height: 50px;
+  --sidebar-width: 150px;
+}
+
+.h-header {
+  height: var(--header-height);
+}
+
+.w-sidebar {
+  width: var(--sidebar-width);
+}
+.top-sidebar{
+  top: var(--header-height)
+}
+
+.ml-main {
+  margin-left: var(--sidebar-width);
+}

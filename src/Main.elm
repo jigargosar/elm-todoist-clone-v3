@@ -118,14 +118,21 @@ view model =
                     ++ attrs
     in
     div [ class "flex flex-column", style "min-height" "100vh" ]
-        [ header [ class "bg-black-80 white ttu tracked w-100 shadow-4" ]
+        [ header [ class "flex top-0 bg-black-80 white ttu tracked w-100 shadow-4 h-header", style "position" "sticky" ]
             [ centeredContent [ class "pa3" ] [ text "header" ]
             ]
         , centeredContent [ class "flex-grow-1" ]
-            [ aside [ class "pa3 bg-black-20 w-30" ] [ text "aside sidebar" ]
-            , main_ [ class "pa3 flex-grow-1 w-70 bg-lightest-blue" ] [ div [ style "height" "100vh" ] [ text "main content" ] ]
+            [ aside
+                [ class "top-sidebar bottom-0 w-sidebar pa3 bg-black-20 w-sidebar overflow-auto"
+                , style "position" "fixed"
+                ]
+                [ div [ style "height" "200vh" ] [ text "aside sidebar" ] ]
+            , main_
+                [ class "ml-main ml-auto pa3 flex-grow-1 w-70 bg-lightest-blue"
+                ]
+                [ div [ style "height" "" ] [ text "main content" ]
+                ]
             ]
-        , footer [ class "pa3 bg-black-80 white" ] [ centeredContent [ class "pa3" ] [ text "footer" ] ]
         ]
 
 
