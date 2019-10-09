@@ -10,7 +10,7 @@ const mockTodoList = [
   'Do Stuff!',
   'And More',
 ].map((title, idx) => ({
-  id: `TodoId_${nanoid()}`,
+  id: `TodoId-${nanoid()}`,
   title,
   createdAt: Date.now(),
   modifiedAt: Date.now(),
@@ -22,5 +22,6 @@ const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
   flags: { todoList: mockTodoList },
 })
+
 
 ports([], { logError: err => console.error('Elm Error', err) }, app)
