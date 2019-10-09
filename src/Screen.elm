@@ -1,4 +1,4 @@
-module Screen exposing (Msg, Screen, system, view)
+module Screen exposing (Msg, Screen, system)
 
 import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
@@ -25,6 +25,7 @@ type alias System msg =
     { model : Screen
     , init : ( Screen, Cmd Msg )
     , update : Msg -> Screen -> ( Screen, Cmd msg )
+    , view : List (Html msg) -> List (Html msg) -> List (Html msg) -> Screen -> Html msg
     , subscriptions : Screen -> Sub msg
     }
 
@@ -33,6 +34,7 @@ system : (Msg -> msg) -> (Int -> Int -> msg) -> System msg
 system toMsg onSize =
     { model = initial
     , init = init
+    , view = view
     , update = update (\w h -> onSize w h |> succeed |> perform identity)
     , subscriptions = subscriptions >> Sub.map toMsg
     }
@@ -65,8 +67,8 @@ subscriptions _ =
     Sub.batch [ onResize Changed ]
 
 
-view : List (Html msg) -> List (Html msg) -> List (Html msg) -> Html msg
-view top side main =
+view : List (Html msg) -> List (Html msg) -> List (Html msg) -> Screen -> Html msg
+view top side main _ =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
