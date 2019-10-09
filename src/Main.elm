@@ -113,27 +113,20 @@ view model =
 
 
 viewLayout h s m =
-    let
-        centeredContent attrs =
-            div (centeredAttributes ++ attrs)
-
-        centeredAttributes =
-            [ class "center w-100 max-w-app ph3" ]
-    in
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
-            [ div (centeredAttributes ++ [ class "h-100", class "flex items-center" ])
+            [ div ([ class "center w-100 max-w-app ph1 ph4-m" ] ++ [ class "h-100", class "flex items-center" ])
                 h
             ]
-        , centeredContent [ class "flex-grow-1" ]
+        , div [ class "center w-100 max-w-app ph0 ph3-m", class "flex-grow-1" ]
             [ aside
-                [ class "fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br b--main"
+                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  b--main"
                 ]
                 s
             , div
-                [ class "ml-main pt-main min-vh-100 flex-grow-1 flex"
+                [ class "ml0 ml-main-ns pt-main min-vh-100 flex-grow-1 flex"
                 ]
-                [ main_ [ class "flex-grow-1 bg-white br b--main" ] m ]
+                [ main_ [ class "flex-grow-1 bg-white br-ns b--main" ] m ]
             ]
         ]
 

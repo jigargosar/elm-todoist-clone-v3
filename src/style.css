@@ -49,3 +49,9 @@ body {
 .ml-main {
   margin-left: var(--sidebar-width);
 }
+
+@media screen and (min-width: 30em) {
+  .ml-main-ns {
+    margin-left: var(--sidebar-width);
+  }
+}
