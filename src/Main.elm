@@ -115,7 +115,10 @@ view model =
 viewLayout h s m =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
-            [ div ([ class "center w-100 max-w-app ph1 ph4-m" ] ++ [ class "h-100", class "flex items-center" ])
+            [ div
+                ([ class "center w-100 max-w-app ph2 ph3-ns" ]
+                    ++ [ class "h-100", class "flex items-center" ]
+                )
                 h
             ]
         , div [ class "center w-100 max-w-app ph0 ph3-m", class "flex-grow-1" ]
