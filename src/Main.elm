@@ -58,7 +58,7 @@ init flags =
                     ( todoDict_, Cmd.none )
 
                 Err e ->
-                    ( TodoDict.fromList mockTodoList, logError <| Debug.log "e" (JD.errorToString e) )
+                    ( TodoDict.fromList mockTodoList, logError <| JD.errorToString e )
     in
     ( { emptyModel | todoDict = todoDict }
     , cmds
