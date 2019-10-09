@@ -48,7 +48,7 @@ emptyModel =
 init : Flags -> ( Model, Cmd msg )
 init flags =
     let
-        ( todoDict, cmds ) =
+        ( todoDict, todoDictDecodeCmds ) =
             case TodoDict.fromEncodedList flags.todoList of
                 Ok todoDict_ ->
                     ( todoDict_, Cmd.none )
@@ -57,7 +57,7 @@ init flags =
                     ( TodoDict.empty, logError <| JD.errorToString e )
     in
     ( { emptyModel | todoDict = todoDict }
-    , cmds
+    , todoDictDecodeCmds
     )
 
 
