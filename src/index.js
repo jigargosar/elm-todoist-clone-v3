@@ -24,5 +24,5 @@ const app = Module.Elm.Main.init({
 })
 
 
-const pubs = ports(["foo","bar"], { logError: err => console.error('Elm Error', err) }, app)
-console.log(pubs)
+const pubs = ports([], { logError: err => console.error('Elm Error', err) }, app)
+console.debug(pubs)
