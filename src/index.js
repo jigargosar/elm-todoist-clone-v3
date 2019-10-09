@@ -1,11 +1,26 @@
 import ports from './ports'
-
+const nanoid = require('nanoid')
 const Module = require('./Main.elm')
 require('tachyons')
 require('./style.css')
 
+const mockTodoList = [
+  'Get Milk',
+  'Remember to call',
+  'Do Stuff!',
+  'And More',
+].map((title, idx) => ({
+  id: `TodoId_${nanoid()}`,
+  title,
+  createdAt: Date.now(),
+  modifiedAt: Date.now(),
+  isCompleted: false,
+  idx,
+}))
+
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
+  flags: { todoList: mockTodoList },
 })
 
 ports([], {}, app)
