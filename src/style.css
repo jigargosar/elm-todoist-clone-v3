@@ -17,7 +17,8 @@ body {
 
 :root {
   --header-height: 50px;
-  --sidebar-width: 150px;
+  --sidebar-width: 266px;
+  --app-width: 922px;
 }
 
 .bg--body {
