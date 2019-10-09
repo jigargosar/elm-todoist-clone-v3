@@ -5,9 +5,6 @@ import Html.Attributes exposing (..)
 import UI
 
 
-view : Html msg
+view : List (Html msg)
 view =
-    div []
-        [ UI.topBar [ UI.search, UI.filler, UI.addIconBtn ]
-        , div [ style "height" "2.5rem" ] []
-        ]
+    [ div [ class "flex items-center w-100 ph3" ] [ UI.search, UI.filler, UI.addIconBtn ] ]
