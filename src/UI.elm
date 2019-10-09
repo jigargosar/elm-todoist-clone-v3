@@ -1,18 +1,12 @@
-module UI exposing (..)
+module UI exposing (addIconBtn, filler, search)
 
 import Emoji
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 
 
 filler =
     div [ class "flex-grow-1" ] []
-
-
-topBar c =
-    div [ class "fixed w-100 ph2 pv1 bg-black white bn shadow-1" ]
-        [ div [ class "measure center flex" ] c ]
 
 
 addIconBtn =
