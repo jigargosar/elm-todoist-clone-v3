@@ -118,15 +118,16 @@ viewLayout h s m =
             div (centeredAttributes ++ attrs)
 
         centeredAttributes =
-            [ class "flex center w-100 max-w-app" ]
+            [ class "center w-100 max-w-app" ]
     in
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
-            [ h (centeredAttributes ++ [ class "h-100" ])
+            [ div (centeredAttributes ++ [ class "h-100 ph2", class "flex items-center" ])
+                h
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside
-                [ class "fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br b--main"
+                [ class "pl2 fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br b--main"
                 ]
                 s
             , main_
