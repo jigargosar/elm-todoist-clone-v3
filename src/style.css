@@ -36,9 +36,6 @@ body {
   width: var(--sidebar-width);
 }
 
-.min-h-main {
-  min-height: calc(100vh);
-}
 .max-w-app {
   max-width: var(--app-width);
 }
