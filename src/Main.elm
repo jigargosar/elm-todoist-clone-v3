@@ -73,6 +73,17 @@ todoList =
 
 
 
+-- Subscriptions
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ screenS.subscriptions model.screen
+        ]
+
+
+
 -- UPDATE
 
 
@@ -128,5 +139,5 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }

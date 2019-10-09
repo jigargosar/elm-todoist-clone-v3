@@ -63,6 +63,7 @@ update onSize message model =
             ( newModel, onSize newModel.width newModel.height )
 
 
+subscriptions : Screen -> Sub Msg
 subscriptions _ =
     Sub.batch [ onResize Changed ]
 
