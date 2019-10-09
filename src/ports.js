@@ -2,7 +2,7 @@ import { concat, isEmpty, mapObjIndexed, omit, pathOr } from 'ramda'
 
 export default function ports(pubNames = [], subs = {}, app) {
   const pubs = pubNames.reduce((pubsAcc = {}, name) => {
-    const send = pathOr(null, ['ports', name, 'send'])
+    const send = pathOr(null, ['ports', name, 'send'])(app)
     if (!send) {
       console.warn('Elm Sub Port Not Found', name)
     }
@@ -20,7 +20,7 @@ export default function ports(pubNames = [], subs = {}, app) {
   }, {})
 
   mapObjIndexed((fn, subName) => {
-    const subscribe = pathOr(null, ['ports', subName, 'subscribe'])
+    const subscribe = pathOr(null, ['ports', subName, 'subscribe'])(app)
     if (!subscribe) {
       console.warn('Elm Cmd port Not Found', subName)
     } else {
