@@ -14,7 +14,7 @@ const mockTodoList = [
   title,
   createdAt: Date.now(),
   modifiedAt: Date.now(),
-  isCompleted: false,
+  isCompleted: Math.random() > 0.3,
   idx,
 }))
 
