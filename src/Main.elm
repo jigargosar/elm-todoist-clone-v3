@@ -54,15 +54,13 @@ init flags =
     let
         ( todoDict, cmds ) =
             case TodoDict.fromEncodedList flags.todoList of
-                Ok todoList_ ->
-                    ( todoList_, Cmd.none )
+                Ok todoDict_ ->
+                    ( todoDict_, Cmd.none )
 
                 Err e ->
-                    ( TodoDict.fromList mockTodoList, logError <| JD.errorToString e )
+                    ( TodoDict.fromList mockTodoList, logError <| Debug.log "e" (JD.errorToString e) )
     in
-    ( { emptyModel
-        | todoDict = todoDict
-      }
+    ( { emptyModel | todoDict = todoDict }
     , cmds
     )
 
