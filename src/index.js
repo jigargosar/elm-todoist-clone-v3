@@ -23,4 +23,4 @@ const app = Module.Elm.Main.init({
   flags: { todoList: mockTodoList },
 })
 
-ports([], {}, app)
+ports([], { logError: err => console.error('Elm Error', err) }, app)
