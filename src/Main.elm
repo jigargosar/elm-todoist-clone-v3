@@ -25,14 +25,15 @@ type alias Model =
     }
 
 
-screenS =
+screenSystem : Screen.System Msg
+screenSystem =
     Screen.system (\_ -> NoOp) (\_ _ -> NoOp)
 
 
 emptyModel : Model
 emptyModel =
     { todoDict = TodoDict.empty
-    , screen = screenS.model
+    , screen = screenSystem.model
     }
 
 
@@ -79,7 +80,7 @@ todoList =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ screenS.subscriptions model.screen
+        [ screenSystem.subscriptions model.screen
         ]
 
 
@@ -103,7 +104,7 @@ update message model =
             ( mapTodoDict (TodoDict.toggleCompleted todoId) model, Cmd.none )
 
         Screen msg ->
-            screenS.update msg model.screen
+            screenSystem.update msg model.screen
                 |> Tuple.mapFirst (setScreenIn model)
 
 
@@ -121,7 +122,7 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
-    screenS.view Appbar.view Sidebar.view (mainView model) model.screen
+    screenSystem.view Appbar.view Sidebar.view (mainView model) model.screen
 
 
 mainView model =

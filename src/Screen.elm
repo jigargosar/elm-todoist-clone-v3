@@ -1,4 +1,4 @@
-module Screen exposing (Msg, Screen, system)
+module Screen exposing (Msg, Screen, System, system)
 
 import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
