@@ -1,8 +1,10 @@
-module Screen exposing (Msg, Screen, system)
+module Screen exposing (Msg, Screen, system, view)
 
 import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
-import Task exposing (attempt, perform, succeed)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Task exposing (perform, succeed)
 
 
 type alias Screen =
@@ -61,3 +63,25 @@ update onSize message model =
 
 subscriptions _ =
     Sub.batch [ onResize Changed ]
+
+
+view h s m =
+    div [ class "bg-body" ]
+        [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
+            [ div
+                ([ class "center w-100 max-w-app ph2" ]
+                    ++ [ class "h-100", class "flex items-center" ]
+                )
+                h
+            ]
+        , div [ class "center w-100 max-w-app ", class "flex-grow-1" ]
+            [ aside
+                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
+                ]
+                s
+            , div
+                [ class "ml0 ml-main-ns pt-main min-vh-100 flex-grow-1 flex"
+                ]
+                [ main_ [ class "flex-grow-1 bg-white br-ns b--main" ] m ]
+            ]
+        ]

@@ -109,7 +109,7 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
-    viewLayout Appbar.view
+    Screen.view Appbar.view
         [ text "sidebar" ]
         [ Todo.viewList { toggle = Toggle } (todoList model)
         ]
