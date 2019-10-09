@@ -123,7 +123,7 @@ view model =
             ]
         , centeredContent [ class "flex-grow-1" ]
             [ aside [ class "pa3 bg-black-20 w-30" ] [ text "aside sidebar" ]
-            , main_ [ class "pa3 flex-grow-1 w-70 bg-lightest-blue" ] [ text "main content" ]
+            , main_ [ class "pa3 flex-grow-1 w-70 bg-lightest-blue" ] [ div [ style "height" "100vh" ] [ text "main content" ] ]
             ]
         , footer [ class "pa3 bg-black-80 white" ] [ centeredContent [ class "pa3" ] [ text "footer" ] ]
         ]
