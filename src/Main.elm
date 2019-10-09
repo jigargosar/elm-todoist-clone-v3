@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Random exposing (Generator)
 import Random.More as Random
 import Screen exposing (Screen)
+import Sidebar
 import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
@@ -109,11 +110,12 @@ mapTodoDict func model =
 
 view : Model -> Html Msg
 view model =
-    screenS.view Appbar.view
-        [ text "sidebar" ]
-        [ Todo.viewList { toggle = Toggle } (todoList model)
-        ]
-        model.screen
+    screenS.view Appbar.view Sidebar.view (mainView model) model.screen
+
+
+mainView model =
+    [ Todo.viewList { toggle = Toggle } (todoList model)
+    ]
 
 
 viewLayout h s m =
