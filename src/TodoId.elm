@@ -26,6 +26,5 @@ decoder =
                     JD.succeed (TodoId id)
 
                 else
-                    JD.fail
-                        ("Invalid Todo Id: " ++ id)
+                    JD.fail ("Invalid Todo Id: " ++ id)
             )
