@@ -1,4 +1,4 @@
-module TodoId exposing (TodoId, decoder, generator, toDictKey)
+module TodoId exposing (TodoId, decoder, toDictKey)
 
 import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
@@ -7,12 +7,6 @@ import Random exposing (Generator)
 
 type TodoId
     = TodoId String
-
-
-generator : Generator TodoId
-generator =
-    Random.int 999 99999
-        |> Random.map (String.fromInt >> (++) "TodoId-" >> TodoId)
 
 
 toDictKey : TodoId -> String
