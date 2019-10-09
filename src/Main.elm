@@ -1,16 +1,12 @@
 port module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip)
 import Browser
 import Html exposing (..)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import Random exposing (Generator)
-import Random.More as Random
 import Screen exposing (Screen)
 import Sidebar
-import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -58,31 +54,11 @@ init flags =
                     ( todoDict_, Cmd.none )
 
                 Err e ->
-                    ( TodoDict.fromList mockTodoList, logError <| JD.errorToString e )
+                    ( TodoDict.empty, logError <| JD.errorToString e )
     in
     ( { emptyModel | todoDict = todoDict }
     , cmds
     )
-
-
-mockTodoList : List Todo
-mockTodoList =
-    let
-        ts =
-            Timestamp.zero
-
-        todoGenerator : String -> Generator Todo
-        todoGenerator title =
-            Random.map2 (\isCompleted -> Todo.mapCompleted (always isCompleted))
-                Random.mostlyFalse
-                (Todo.fromTitleAndTimestamp title ts)
-    in
-    [ "Get Milk", "Remember to call", "Do Stuff!", "And More" ]
-        |> List.map todoGenerator
-        |> Random.fromList
-        |> flip Random.step (Random.initialSeed 0)
-        |> Tuple.first
-        |> List.indexedMap (always >> Todo.mapIdx)
 
 
 todoList : Model -> List Todo
