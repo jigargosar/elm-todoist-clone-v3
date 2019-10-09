@@ -20,8 +20,7 @@ init =
 
 
 type alias System msg =
-    { model :
-        Screen
+    { model : Screen
     , init : ( Screen, Cmd Msg )
     , update : Msg -> Screen -> ( Screen, Cmd msg )
     , subscriptions : Screen -> Sub msg
