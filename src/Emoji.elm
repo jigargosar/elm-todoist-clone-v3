@@ -27,6 +27,20 @@ view emoji =
 
 
 button : msg -> String -> Html msg
-button msg emoji =
-    Html.button [ class "select-none pa2 bn bg-inherit color-inherit", onClick msg ]
+button msg =
+    buttonHelp (Just msg)
+
+
+buttonHelp : Maybe msg -> String -> Html msg
+buttonHelp maybeMsg emoji =
+    Html.button
+        [ class "select-none pa2 bn bg-inherit color-inherit"
+        , Maybe.map onClick maybeMsg
+            |> Maybe.withDefault (class "")
+        ]
         [ view emoji ]
+
+
+buttonNoMsg : String -> Html msg
+buttonNoMsg =
+    buttonHelp Nothing

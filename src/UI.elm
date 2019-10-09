@@ -10,9 +10,7 @@ filler =
 
 
 addIconBtn =
-    button [ class "pa1 lh-solid bn bg-inherit color-inherit" ]
-        [ text Emoji.heavy_plus_sign
-        ]
+    Emoji.buttonNoMsg Emoji.heavy_plus_sign
 
 
 search =
