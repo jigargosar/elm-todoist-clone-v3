@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Appbar
 import Basics.More exposing (flip)
@@ -14,6 +14,9 @@ import Timestamp
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
+
+
+port logError : String -> Cmd msg
 
 
 
@@ -49,13 +52,18 @@ emptyModel =
 init : Flags -> ( Model, Cmd msg )
 init flags =
     let
-        todoListResult =
-            JD.decodeValue TodoDict.fromEncodedList flags.todoList
+        ( todoDict, cmds ) =
+            case TodoDict.fromEncodedList flags.todoList of
+                Ok todoList_ ->
+                    ( todoList_, Cmd.none )
+
+                Err e ->
+                    ( TodoDict.fromList mockTodoList, logError <| JD.errorToString e )
     in
     ( { emptyModel
-        | todoDict = TodoDict.fromList mockTodoList
+        | todoDict = todoDict
       }
-    , Cmd.none
+    , cmds
     )
 
 
