@@ -131,8 +131,7 @@ viewIsCompleted config todo =
         toggleMsg =
             config.toggle <| id todo
     in
-    button [ class "select-none pa2 bn bg-inherit color-inherit", onClick toggleMsg ]
-        [ Emoji.view emoji ]
+    Emoji.button toggleMsg emoji
 
 
 viewTitle : Todo -> Html msg
