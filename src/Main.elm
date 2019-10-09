@@ -116,14 +116,14 @@ viewLayout h s m =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
-                ([ class "center w-100 max-w-app ph2 ph3-ns" ]
+                ([ class "center w-100 max-w-app ph1" ]
                     ++ [ class "h-100", class "flex items-center" ]
                 )
                 h
             ]
-        , div [ class "center w-100 max-w-app ph0 ph3-m", class "flex-grow-1" ]
+        , div [ class "center w-100 max-w-app ", class "flex-grow-1" ]
             [ aside
-                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  b--main"
+                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
                 ]
                 s
             , div
