@@ -24,14 +24,14 @@ type alias Model =
     }
 
 
-screen =
+screenS =
     Screen.system (\_ -> NoOp) (\_ _ -> NoOp)
 
 
 emptyModel : Model
 emptyModel =
     { todoDict = TodoDict.empty
-    , screen = screen.model
+    , screen = screenS.model
     }
 
 
@@ -78,6 +78,7 @@ todoList =
 type Msg
     = NoOp
     | Toggle TodoId
+    | Screen Screen.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -88,6 +89,14 @@ update message model =
 
         Toggle todoId ->
             ( mapTodoDict (TodoDict.toggleCompleted todoId) model, Cmd.none )
+
+        Screen msg ->
+            screenS.update msg model.screen
+                |> Tuple.mapFirst (setScreenIn model)
+
+
+setScreenIn model screen =
+    { model | screen = screen }
 
 
 mapTodoDict func model =
