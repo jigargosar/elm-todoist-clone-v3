@@ -3,14 +3,16 @@ module UI exposing (addIconBtn, filler, search)
 import Emoji
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
+import MaterialIcons
 
 
 filler =
     div [ class "flex-grow-1" ] []
 
 
+addIconBtn : Html msg
 addIconBtn =
-    Emoji.buttonNoMsg Emoji.heavy_plus_sign
+    MaterialIcons.buttonHelp Nothing [ MaterialIcons.add ]
 
 
 search =

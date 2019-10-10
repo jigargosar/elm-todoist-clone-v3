@@ -9,9 +9,5 @@ view : List (Html msg)
 view =
     [ UI.search
     , UI.filler
-    , MaterialIcons.add
-    , MaterialIcons.buttonHelp
-        Nothing
-        [ MaterialIcons.search ]
     , UI.addIconBtn
     ]
