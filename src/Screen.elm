@@ -43,7 +43,7 @@ system :
     -> System msg big
 system bigL toMsg onSize =
     { initial = initial
-    , init = \big -> init |> Tuple.mapBoth (\s -> bigL.set s big) (Cmd.map toMsg)
+    , init = \big -> init |> Tuple.mapBoth (bigL.setIn big) (Cmd.map toMsg)
     , view = \a b c big -> view a b c (bigL.get big)
     , update =
         \msg big ->
