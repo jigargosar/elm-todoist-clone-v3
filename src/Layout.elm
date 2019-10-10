@@ -103,10 +103,7 @@ view { top, side, main } =
             [ styled div
                 [ batch
                     [ fixed
-                    , top_0
-                    , bottom_0
-                    , left_0
-                    , right_0
+                    , absFill
                     , bg (Css.hsla 0 0 0 0.3)
                     ]
                 ]

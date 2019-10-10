@@ -209,6 +209,15 @@ right_0 =
     Css.right zero
 
 
+absFill =
+    batch
+        [ top_0
+        , bottom_0
+        , left_0
+        , right_0
+        ]
+
+
 left_auto =
     Css.left auto
 
