@@ -50,6 +50,7 @@ system bigL toMsg onSize =
             update (\w h -> onSize w h |> succeed |> perform identity)
                 msg
                 (bigL.get big)
+                |> Tuple.mapFirst (bigL.setIn big)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     }
 
