@@ -26,10 +26,10 @@ body {
 }
 
 .bg-body {
-  background-color: #fafafa;
+  background-color: hsl(0, 0%, 98%);
 }
 .b--main {
-  border-color: #f1f1f1;
+  border-color: hsl(0, 0%, 95%);
 }
 
 .h-header {
