@@ -61,11 +61,7 @@ init flags =
     )
 
 
-type alias HasTodoDict a =
-    { a | todoDict : TodoDict }
-
-
-todoListSortedById : HasTodoDict a -> List Todo
+todoListSortedById : { a | todoDict : TodoDict } -> List Todo
 todoListSortedById =
     .todoDict >> TodoDict.sortedByIdx
 
