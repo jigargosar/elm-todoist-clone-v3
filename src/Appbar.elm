@@ -13,7 +13,7 @@ iBtn styles =
 
 view : List (Html msg)
 view =
-    [ menu [ mr 2 ]
+    [ menu [ mr 2, ns [ dn ] ]
     , search [ mr 2 ]
     , add [ ml_auto ]
     ]
