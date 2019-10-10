@@ -128,6 +128,10 @@ ns =
     Media.withMedia [ Media.only Media.screen [ Media.minWidth <| Css.rem 30 ] ]
 
 
+topPx =
+    Css.top << Css.px
+
+
 
 -- Custom Styles
 
@@ -168,8 +172,8 @@ view { top, side, main } =
             [ center, w_100, maxWidth maxAppWidthPx ]
             []
             [ styled aside
-                [ dn, ns [ db ] ]
-                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br-ns b--main"
+                [ dn, ns [ db ], fixed, topPx headerHeightPx, Css.bottom Css.zero ]
+                [ class "hover-overflow-y br-ns b--main"
                 ]
                 side
             , styled div
