@@ -4,7 +4,7 @@ import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Lens exposing (Lens)
+import Lens
 import Task exposing (perform, succeed)
 
 
@@ -31,17 +31,17 @@ type alias System msg big =
     }
 
 
-system : Lens Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg big
-system lens toMsg onSize =
+system : Lens.System Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg big
+system bigL toMsg onSize =
     { model = initial
     , init = init
-    , view = \a b c big -> view a b c (Lens.get lens big)
+    , view = \a b c big -> view a b c (bigL.get big)
     , update =
         \msg big ->
             update (\w h -> onSize w h |> succeed |> perform identity)
                 msg
-                (Lens.get lens big)
-    , subscriptions = Lens.get lens >> subscriptions >> Sub.map toMsg
+                (bigL.get big)
+    , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     }
 
 

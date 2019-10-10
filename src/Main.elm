@@ -5,7 +5,7 @@ import Browser
 import Html exposing (..)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import Lens exposing (Lens)
+import Lens
 import Screen exposing (Screen)
 import Sidebar
 import Todo exposing (Todo)
@@ -57,7 +57,7 @@ init flags =
                 Err e ->
                     ( TodoDict.initial, logError <| JD.errorToString e )
     in
-    ( Lens.set todoDictL todoDict initial
+    ( todoDictL.set todoDict initial
     , todoDictDecodeCmds
     )
 
@@ -95,20 +95,20 @@ update message model =
             ( model, Cmd.none )
 
         Toggle todoId ->
-            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) model, Cmd.none )
+            ( todoDictL.map (TodoDict.toggleCompleted todoId) model, Cmd.none )
 
         Screen msg ->
             screenSystem.update msg model
 
 
-screenL : Lens Screen Model
+screenL : Lens.System Screen Model
 screenL =
-    Lens.init { get = .screen, set = \s b -> { b | screen = s } }
+    Lens.system { get = .screen, set = \s b -> { b | screen = s } }
 
 
-todoDictL : Lens TodoDict Model
+todoDictL : Lens.System TodoDict Model
 todoDictL =
-    Lens.init { get = .todoDict, set = \s b -> { b | todoDict = s } }
+    Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
 
 
 
