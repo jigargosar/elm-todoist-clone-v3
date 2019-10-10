@@ -101,11 +101,8 @@ view { top, side, main } =
             [ ns [ dn ], z_ 10, fixed ]
             []
             [ styled div
-                [ batch
-                    [ fixed
-                    , absFill
-                    , bg (Css.hsla 0 0 0 0.3)
-                    ]
+                [ batch [ fixed, absFill ]
+                , bg (Css.hsla 0 0 0 0.3)
                 ]
                 []
                 []
