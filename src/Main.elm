@@ -40,7 +40,7 @@ screenSystem =
 
 emptyModel : Model
 emptyModel =
-    { todoDict = TodoDict.empty
+    { todoDict = TodoDict.initial
     , screen = screenSystem.model
     }
 
@@ -54,7 +54,7 @@ init flags =
                     ( todoDict_, Cmd.none )
 
                 Err e ->
-                    ( TodoDict.empty, logError <| JD.errorToString e )
+                    ( TodoDict.initial, logError <| JD.errorToString e )
     in
     ( { emptyModel | todoDict = todoDict }
     , todoDictDecodeCmds

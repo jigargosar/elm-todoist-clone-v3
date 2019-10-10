@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, empty, fromEncodedList, fromList, toList, toggleCompleted)
+module TodoDict exposing (TodoDict, fromEncodedList, initial, toList, toggleCompleted)
 
 import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
@@ -19,8 +19,8 @@ type alias Internal =
     Dict String Todo
 
 
-empty : TodoDict
-empty =
+initial : TodoDict
+initial =
     TodoDict Dict.empty
 
 
@@ -31,7 +31,7 @@ fromEncodedList =
 
 fromList : List Todo -> TodoDict
 fromList =
-    List.foldl insert empty
+    List.foldl insert initial
 
 
 toList : TodoDict -> List Todo
