@@ -68,7 +68,7 @@ view { top, side, main } =
             []
             [ styled aside
                 [ batch [ dn, ns [ db ] ]
-                , batch [ fixed, top_0, pt_ headerHeightPx, bottom_0, w_sidebar ]
+                , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
                 ]
                 []
