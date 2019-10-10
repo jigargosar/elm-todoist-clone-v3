@@ -1,7 +1,6 @@
 module Appbar exposing (view)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import UI
 
 
