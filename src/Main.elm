@@ -45,7 +45,6 @@ screenSystem =
     Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
 
-todoDictSystem : { sortedByIdx : Model -> List Todo, init : Value -> Model -> ( Model, Cmd msg ) }
 todoDictSystem =
     { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
     , init =
@@ -60,6 +59,9 @@ todoDictSystem =
                             ( TodoDict.initial, logError <| JD.errorToString e )
             in
             res |> Tuple.mapFirst (todoDictL.setIn big)
+    , toggle =
+        \todoId big ->
+            ( todoDictL.map (TodoDict.toggleCompleted todoId) big, Cmd.none )
     }
 
 
