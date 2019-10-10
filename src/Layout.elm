@@ -17,6 +17,10 @@ bg =
     Css.backgroundColor
 
 
+fg =
+    Css.color
+
+
 grayN : Float -> Css.Color
 grayN n =
     Css.hsl 0 0 n
@@ -31,14 +35,22 @@ bgGrayN =
     bg << grayN
 
 
+bgWhite : Css.Style
+bgWhite =
+    bg white
+
+
+
+-- Custom Styles
+
+
 bgBody : Css.Style
 bgBody =
     bgGrayN 0.98
 
 
-bgWhite : Css.Style
-bgWhite =
-    bg white
+fgWhite =
+    fg white
 
 
 view : Parts msg -> Html msg
@@ -46,7 +58,9 @@ view { top, side, main } =
     styled div
         [ bgBody ]
         []
-        [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
+        [ styled header
+            [ fgWhite ]
+            [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
                 ([ class "center w-100 max-w-app ph2" ]
                     ++ [ class "h-100", class "flex items-center" ]
