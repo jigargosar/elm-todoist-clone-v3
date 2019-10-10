@@ -3,6 +3,7 @@ module Layout exposing (Parts, view)
 import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
+import ModularScale
 
 
 type alias Parts msg =
@@ -66,6 +67,37 @@ fixed =
     Css.position Css.fixed
 
 
+hpx =
+    Css.height << Css.px
+
+
+maxWPx =
+    Css.maxWidth << Css.px
+
+
+center : Css.Style
+center =
+    Css.batch [ Css.marginLeft Css.auto, Css.marginRight Css.auto ]
+
+
+paddingHorizontal v =
+    Css.batch [ Css.paddingLeft v, Css.paddingRight v ]
+
+
+modularScaleTachyonsSpacing =
+    ModularScale.config [ 0.25 ] ModularScale.Octave
+
+
+sp : Int -> Float
+sp n =
+    ModularScale.get modularScaleTachyonsSpacing n
+
+
+ph : Int -> Css.Style
+ph n =
+    paddingHorizontal (Css.rem <| sp n)
+
+
 
 -- Custom Styles
 
@@ -79,16 +111,25 @@ fgWhite =
     fg white
 
 
+headerHeightPx =
+    50
+
+
+maxAppWidthPx =
+    922
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
     styled div
         [ bgBody ]
         []
         [ styled header
-            [ fgWhite, bgLightRed, fixed, top_0, w_100 ]
-            [ class "h-header" ]
-            [ div
-                ([ class "center w-100 max-w-app ph2" ]
+            [ fgWhite, bgLightRed, fixed, top_0, w_100, hpx headerHeightPx ]
+            []
+            [ styled div
+                [ maxWPx maxAppWidthPx, w_100, center, ph 2 ]
+                ([ class "center ph2" ]
                     ++ [ class "h-100", class "flex items-center" ]
                 )
                 top
