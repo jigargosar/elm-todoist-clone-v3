@@ -1,5 +1,6 @@
 module Layout exposing (Parts, view)
 
+import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 
@@ -11,9 +12,40 @@ type alias Parts msg =
     }
 
 
+bg : Css.ColorValue compatible -> Css.Style
+bg =
+    Css.backgroundColor
+
+
+grayN : Float -> Css.Color
+grayN n =
+    Css.hsl 0 0 n
+
+
+white =
+    grayN 1
+
+
+bgGrayN : Float -> Css.Style
+bgGrayN =
+    bg << grayN
+
+
+bgBody : Css.Style
+bgBody =
+    bgGrayN 0.98
+
+
+bgWhite : Css.Style
+bgWhite =
+    bg white
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
-    div [ class "bg-body" ]
+    styled div
+        [ bgBody ]
+        []
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
                 ([ class "center w-100 max-w-app ph2" ]
@@ -26,9 +58,10 @@ view { top, side, main } =
                 [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
                 ]
                 side
-            , div
+            , styled div
+                [ bgWhite ]
                 [ class "ml0 ml-main-ns pt-main min-vh-100 flex-grow-1 flex"
                 ]
-                [ main_ [ class "flex-grow-1 bg-white br-ns b--main" ] main ]
+                [ main_ [ class "flex-grow-1 br-ns b--main" ] main ]
             ]
         ]
