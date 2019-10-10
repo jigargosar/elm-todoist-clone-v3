@@ -61,7 +61,11 @@ init flags =
     )
 
 
-todoListSortedById : Model -> List Todo
+type alias HasTodoDict a =
+    { a | todoDict : TodoDict }
+
+
+todoListSortedById : HasTodoDict a -> List Todo
 todoListSortedById =
     .todoDict
         >> TodoDict.toList
