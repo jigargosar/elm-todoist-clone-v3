@@ -63,7 +63,7 @@ h_ =
     Css.height << Css.px
 
 
-maxWidth =
+max_w =
     Css.maxWidth << Css.px
 
 

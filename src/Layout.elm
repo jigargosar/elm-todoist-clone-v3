@@ -55,14 +55,14 @@ view { top, side, main } =
             [ fgWhite, bgLightRed, fixed, top_0, w_100, h_header, flex ]
             []
             [ styled div
-                ([ center, w_100, maxWidth maxAppWidthPx ]
+                ([ center, w_100, max_w maxAppWidthPx ]
                     ++ [ ph 2, flex, itemsCenter ]
                 )
                 []
                 top
             ]
         , styled div
-            [ center, w_100, maxWidth maxAppWidthPx ]
+            [ center, w_100, max_w maxAppWidthPx ]
             []
             [ styled aside
                 [ Css.batch [ dn, ns [ db ] ]
