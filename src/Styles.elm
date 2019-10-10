@@ -119,7 +119,7 @@ ns =
     Media.withMedia [ Media.only Media.screen [ Media.minWidth <| Css.rem 30 ] ]
 
 
-topPx =
+top_ =
     Css.top << Css.px
 
 
@@ -127,7 +127,7 @@ bottom_0 =
     Css.bottom Css.zero
 
 
-widthPx =
+w_ =
     Css.width << Css.px
 
 

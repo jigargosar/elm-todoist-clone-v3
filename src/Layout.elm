@@ -46,6 +46,10 @@ h_header =
     h_ headerHeightPx
 
 
+w_sidebar =
+    w_ sidebarWidthPx
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
     styled div
@@ -66,7 +70,7 @@ view { top, side, main } =
             []
             [ styled aside
                 [ Css.batch [ dn, ns [ db ] ]
-                , Css.batch [ fixed, topPx headerHeightPx, bottom_0, widthPx sidebarWidthPx ]
+                , Css.batch [ fixed, top_ headerHeightPx, bottom_0, w_sidebar ]
                 , autoHideScrollY
                 ]
                 []
