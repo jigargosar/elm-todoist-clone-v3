@@ -1,6 +1,5 @@
 module Layout exposing (Parts, view)
 
-import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Styles exposing (..)
