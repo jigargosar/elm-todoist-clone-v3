@@ -57,7 +57,7 @@ init flags =
                 Err e ->
                     ( TodoDict.initial, logError <| JD.errorToString e )
     in
-    ( setTodoDict todoDict initial
+    ( Lens.set todoDictL todoDict initial
     , todoDictDecodeCmds
     )
 
@@ -111,16 +111,12 @@ todoDictL =
     Lens.init { get = .todoDict, set = \s b -> { b | todoDict = s } }
 
 
-setScreenIn model screen =
-    { model | screen = screen }
-
-
 mapTodoDict func model =
     { model | todoDict = func model.todoDict }
 
 
 setTodoDict =
-    mapTodoDict << always
+    Lens.set todoDictL
 
 
 
