@@ -46,6 +46,11 @@ screenSystem =
 
 
 todoDictSystem =
+    let
+        todoDictL : Lens.System TodoDict Model
+        todoDictL =
+            Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
+    in
     { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
     , init =
         \encoded big ->
@@ -106,15 +111,10 @@ update message model =
             ( model, Cmd.none )
 
         Toggle todoId ->
-            ( todoDictL.map (TodoDict.toggleCompleted todoId) model, Cmd.none )
+            todoDictSystem.toggle todoId model
 
         Screen msg ->
             screenSystem.update msg model
-
-
-todoDictL : Lens.System TodoDict Model
-todoDictL =
-    Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
 
 
 
