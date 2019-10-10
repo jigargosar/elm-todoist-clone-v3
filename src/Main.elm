@@ -101,6 +101,22 @@ update message model =
                 |> Tuple.mapFirst (setScreenIn model)
 
 
+type alias Lens s b =
+    { get : b -> s
+    , set : s -> b -> b
+    }
+
+
+screenLens : Lens Screen Model
+screenLens =
+    { get = .screen, set = \s b -> { b | screen = s } }
+
+
+todoDictLens : Lens TodoDict Model
+todoDictLens =
+    { get = .todoDict, set = \s b -> { b | todoDict = s } }
+
+
 setScreenIn model screen =
     { model | screen = screen }
 
