@@ -67,7 +67,7 @@ fixed =
     Css.position Css.fixed
 
 
-hpx =
+height =
     Css.height << Css.px
 
 
@@ -98,6 +98,14 @@ ph n =
     paddingHorizontal (Css.rem <| sp n)
 
 
+flex =
+    Css.displayFlex
+
+
+itemsCenter =
+    Css.alignItems Css.center
+
+
 
 -- Custom Styles
 
@@ -125,13 +133,11 @@ view { top, side, main } =
         [ bgBody ]
         []
         [ styled header
-            [ fgWhite, bgLightRed, fixed, top_0, w_100, hpx headerHeightPx ]
+            [ fgWhite, bgLightRed, fixed, top_0, w_100, height headerHeightPx, flex ]
             []
             [ styled div
-                [ maxWPx maxAppWidthPx, w_100, center, ph 2 ]
-                ([ class "center ph2" ]
-                    ++ [ class "h-100", class "flex items-center" ]
-                )
+                [ maxWPx maxAppWidthPx, w_100, center, ph 2, flex, itemsCenter ]
+                []
                 top
             ]
         , div [ class "center w-100 max-w-app ", class "flex-grow-1" ]
