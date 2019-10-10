@@ -7,7 +7,7 @@ import UI
 
 view : List (Html msg)
 view =
-    [ MI
+    [ UI.menuIconBtn
     , UI.search
     , UI.filler
     , UI.addIconBtn

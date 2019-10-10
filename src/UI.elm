@@ -1,4 +1,4 @@
-module UI exposing (addIconBtn, filler, search)
+module UI exposing (addIconBtn, filler, menuIconBtn, search)
 
 import Emoji
 import Html.Styled exposing (..)
