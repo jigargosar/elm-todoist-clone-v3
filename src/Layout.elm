@@ -53,10 +53,10 @@ view { top, side, main } =
     styled div
         [ bgBody ]
         []
-        [ styled header
+        [ styled div
             [ fgWhite, bgLightRed, fixed, top_0, w_100, h_header, flex ]
             []
-            [ styled div
+            [ styled header
                 [ batch [ center, w_100, max_w maxAppWidthPx ]
                 , batch [ ph 2, flex, itemsCenter ]
                 ]
