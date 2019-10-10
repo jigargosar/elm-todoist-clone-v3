@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css exposing (inherit, int, marginLeft, marginRight, none, num, paddingTop, px, zero)
+import Css exposing (inherit, int, marginLeft, marginRight, none, num, padding, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -96,21 +96,29 @@ modularScaleTachyonsSpacing =
     ModularScale.config [ 0.25 ] ModularScale.Octave
 
 
-spacingModularScaleGet : Int -> Float
-spacingModularScaleGet n =
-    ModularScale.get modularScaleTachyonsSpacing n
-
-
 sp n =
     if n <= 0 then
         Css.rem 0
 
     else
-        spacingModularScaleGet n |> Css.rem
+        ModularScale.get modularScaleTachyonsSpacing (n - 1) |> Css.rem
+
+
+b_radius n =
+    if n <= 0 then
+        Css.rem 0
+
+    else
+        ModularScale.get (ModularScale.config [ 0.125 ] ModularScale.Octave) (n - 1)
+            |> Css.rem
 
 
 pa0 =
     Css.padding zero
+
+
+pa =
+    padding << sp
 
 
 ma0 =
@@ -200,6 +208,10 @@ bn =
 br_ : Css.Style
 br_ =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
+
+
+br__ =
+    Css.borderRadius << b_radius
 
 
 bl : Css.Style
