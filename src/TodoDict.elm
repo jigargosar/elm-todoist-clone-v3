@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, fromEncodedList, initial, toList, toggleCompleted)
+module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toList, toggleCompleted)
 
 import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
@@ -37,6 +37,11 @@ fromList =
 toList : TodoDict -> List Todo
 toList =
     unwrap >> Dict.values
+
+
+sortedByIdx : TodoDict -> List Todo
+sortedByIdx =
+    toList >> List.sortBy Todo.idx
 
 
 unwrap (TodoDict dict) =

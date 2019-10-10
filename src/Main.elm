@@ -67,9 +67,7 @@ type alias HasTodoDict a =
 
 todoListSortedById : HasTodoDict a -> List Todo
 todoListSortedById =
-    .todoDict
-        >> TodoDict.toList
-        >> List.sortBy Todo.idx
+    .todoDict >> TodoDict.sortedByIdx
 
 
 
