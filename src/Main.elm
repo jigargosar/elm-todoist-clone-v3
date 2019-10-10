@@ -5,6 +5,7 @@ import Browser
 import Html exposing (..)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
+import Lens exposing (Lens)
 import Screen exposing (Screen)
 import Sidebar
 import Todo exposing (Todo)
@@ -35,7 +36,7 @@ type alias Model =
 
 screenSystem : Screen.System Msg
 screenSystem =
-    Screen.system (\_ -> NoOp) (\_ _ -> NoOp)
+    Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
 
 initial : Model
@@ -101,21 +102,14 @@ update message model =
                 |> Tuple.mapFirst (setScreenIn model)
 
 
-type Lens s b
-    = Lens
-        { get : b -> s
-        , set : s -> b -> b
-        }
+screenL : Lens Screen Model
+screenL =
+    Lens.init { get = .screen, set = \s b -> { b | screen = s } }
 
 
-screenLens : Lens Screen Model
-screenLens =
-    Lens { get = .screen, set = \s b -> { b | screen = s } }
-
-
-todoDictLens : Lens TodoDict Model
-todoDictLens =
-    Lens { get = .todoDict, set = \s b -> { b | todoDict = s } }
+todoDictL : Lens TodoDict Model
+todoDictL =
+    Lens.init { get = .todoDict, set = \s b -> { b | todoDict = s } }
 
 
 setScreenIn model screen =

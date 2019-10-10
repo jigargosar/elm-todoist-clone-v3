@@ -4,6 +4,7 @@ import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Lens exposing (Lens)
 import Task exposing (perform, succeed)
 
 
@@ -30,8 +31,8 @@ type alias System msg =
     }
 
 
-system : (Msg -> msg) -> (Int -> Int -> msg) -> System msg
-system toMsg onSize =
+system : Lens Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg
+system lens toMsg onSize =
     { model = initial
     , init = init
     , view = view
