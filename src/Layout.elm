@@ -132,6 +132,10 @@ topPx =
     Css.top << Css.px
 
 
+bottom_0 =
+    Css.bottom Css.zero
+
+
 width =
     Css.width << Css.px
 
@@ -143,6 +147,14 @@ br =
 
 bc =
     Css.borderColor
+
+
+overflowYHidden =
+    Css.overflowY Css.hidden
+
+
+overflowYAuto =
+    Css.overflowY Css.auto
 
 
 
@@ -170,6 +182,10 @@ sidebarWidthPx =
     266
 
 
+bc_main =
+    bc (grayN 0.95)
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
     styled div
@@ -189,19 +205,12 @@ view { top, side, main } =
             [ center, w_100, maxWidth maxAppWidthPx ]
             []
             [ styled aside
-                [ dn
-                , ns [ db ]
-                , fixed
-                , topPx headerHeightPx
-                , width sidebarWidthPx
-                , Css.bottom Css.zero
-                , Css.overflowY Css.hidden
-                , Css.hover [ Css.overflowY Css.auto ]
-                , ns [ br ]
-                , bc (grayN 0.95)
+                [ Css.batch [ dn, ns [ db ] ]
+                , Css.batch [ fixed, topPx headerHeightPx, bottom_0, width sidebarWidthPx ]
+                , Css.batch [ overflowYHidden, Css.hover [ overflowYAuto ] ]
+                , Css.batch [ ns [ br ], bc_main ]
                 ]
-                [ class "b--main"
-                ]
+                []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
             , styled div
