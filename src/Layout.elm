@@ -109,6 +109,11 @@ view { top, side, main } =
                 ]
                 []
                 []
-            , styled div [ batch [ fixed, top_0, bottom_0, w_sidebar, bgWhite ] ] [ class "shadow-1" ] side
+            , styled div
+                [ batch [ fixed, top_0, bottom_0, w_sidebar ]
+                , bgWhite
+                ]
+                [ class "shadow-1" ]
+                side
             ]
         ]
