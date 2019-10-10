@@ -75,6 +75,10 @@ fixed =
     Css.position Css.fixed
 
 
+absolute =
+    Css.position Css.absolute
+
+
 h_ =
     Css.height << Css.px
 
