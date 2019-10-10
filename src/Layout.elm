@@ -49,6 +49,10 @@ w_sidebar =
     w_ sidebarWidthPx
 
 
+max_w_app =
+    max_w maxAppWidthPx
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
     styled div
@@ -63,18 +67,17 @@ view { top, side, main } =
             ]
             []
             [ styled header
-                [ batch [ center, w_100, max_w maxAppWidthPx ]
+                [ batch [ center, w_100, max_w_app ]
                 , batch [ ph 2, flex, itemsCenter ]
                 ]
                 []
                 top
             ]
         , styled div
-            [ center, w_100, max_w maxAppWidthPx ]
+            [ center, w_100, max_w_app ]
             []
             [ styled aside
-                [ batch [ left_ -sidebarWidthPx, ns [ left_ 0 ] ]
-                , transition [ Transitions.left 200 ]
+                [ batch [ left_ -sidebarWidthPx, ns [ left_ 0 ], transition [ Transitions.left 200 ] ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
                 ]
