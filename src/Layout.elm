@@ -136,6 +136,15 @@ width =
     Css.width << Css.px
 
 
+br : Css.Style
+br =
+    Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
+
+
+bc =
+    Css.borderColor
+
+
 
 -- Custom Styles
 
@@ -188,8 +197,10 @@ view { top, side, main } =
                 , Css.bottom Css.zero
                 , Css.overflowY Css.hidden
                 , Css.hover [ Css.overflowY Css.auto ]
+                , ns [ br ]
+                , bc (grayN 0.95)
                 ]
-                [ class "br-ns b--main"
+                [ class "b--main"
                 ]
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
