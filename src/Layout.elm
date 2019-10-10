@@ -1,5 +1,6 @@
 module Layout exposing (Parts, view)
 
+import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Styles exposing (..)
@@ -77,7 +78,7 @@ view { top, side, main } =
             [ center, w_100, max_w_app ]
             []
             [ styled aside
-                [ batch [ left_ -sidebarWidthPx, ns [ left_ 0 ], transition [ Transitions.left 200 ] ]
+                [ batch [ left_ -sidebarWidthPx, ns [ left_auto ], transition [ Transitions.left 200 ] ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
                 ]
