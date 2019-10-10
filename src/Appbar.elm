@@ -6,10 +6,6 @@ import Styles exposing (..)
 import UI
 
 
-btnReset =
-    batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
-
-
 ib styles =
     styled button (btnReset :: styles)
 

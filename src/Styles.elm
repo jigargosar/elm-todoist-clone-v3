@@ -237,3 +237,7 @@ z_ n =
 
 noSelection =
     Css.property "user-select" "none"
+
+
+btnReset =
+    batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
