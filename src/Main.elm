@@ -34,7 +34,7 @@ type alias Model =
     }
 
 
-screenSystem : Screen.System Msg
+screenSystem : Screen.System Msg Model
 screenSystem =
     Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
@@ -74,7 +74,7 @@ todoListSortedByIdx =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ screenSystem.subscriptions model.screen
+        [ screenSystem.subscriptions model
         ]
 
 
@@ -98,8 +98,7 @@ update message model =
             ( mapTodoDict (TodoDict.toggleCompleted todoId) model, Cmd.none )
 
         Screen msg ->
-            screenSystem.update msg model.screen
-                |> Tuple.mapFirst (setScreenIn model)
+            screenSystem.update msg model
 
 
 screenL : Lens Screen Model
@@ -130,7 +129,7 @@ setTodoDict =
 
 view : Model -> Html Msg
 view model =
-    screenSystem.view Appbar.view Sidebar.view (mainView model) model.screen
+    screenSystem.view Appbar.view Sidebar.view (mainView model) model
 
 
 mainView model =

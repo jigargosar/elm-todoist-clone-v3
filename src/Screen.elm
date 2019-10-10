@@ -22,22 +22,26 @@ init =
     ( initial, getViewport |> perform GotViewPort )
 
 
-type alias System msg =
+type alias System msg big =
     { model : Screen
     , init : ( Screen, Cmd Msg )
-    , update : Msg -> Screen -> ( Screen, Cmd msg )
-    , view : List (Html msg) -> List (Html msg) -> List (Html msg) -> Screen -> Html msg
-    , subscriptions : Screen -> Sub msg
+    , update : Msg -> big -> ( big, Cmd msg )
+    , view : List (Html msg) -> List (Html msg) -> List (Html msg) -> big -> Html msg
+    , subscriptions : big -> Sub msg
     }
 
 
-system : Lens Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg
+system : Lens Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg big
 system lens toMsg onSize =
     { model = initial
     , init = init
-    , view = view
-    , update = update (\w h -> onSize w h |> succeed |> perform identity)
-    , subscriptions = subscriptions >> Sub.map toMsg
+    , view = \a b c big -> view a b c (Lens.get lens big)
+    , update =
+        \msg big ->
+            update (\w h -> onSize w h |> succeed |> perform identity)
+                msg
+                (Lens.get lens big)
+    , subscriptions = Lens.get lens >> subscriptions >> Sub.map toMsg
     }
 
 
