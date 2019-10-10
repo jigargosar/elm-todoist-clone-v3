@@ -1,16 +1,23 @@
 module Appbar exposing (view)
 
 import Html.Styled exposing (..)
-import MaterialIcons
-import Styles exposing (ph)
+import MaterialIcons as MI
+import Styles exposing (..)
 import UI
+
+
+btnReset =
+    batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
+
+
+ib styles =
+    styled button (btnReset :: styles)
 
 
 view : List (Html msg)
 view =
-    [ UI.menuIconBtn
-    , styled div [ ph 1 ] [] []
+    [ ib [ mr 4 ] [] [ MI.menu ]
     , UI.search
     , UI.filler
-    , UI.addIconBtn
+    , ib [] [] [ MI.add ]
     ]

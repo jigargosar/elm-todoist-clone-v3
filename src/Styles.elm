@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css exposing (int, marginLeft, num, paddingTop, px, zero)
+import Css exposing (inherit, int, marginLeft, marginRight, none, num, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -18,8 +18,16 @@ bg =
     Css.backgroundColor
 
 
+bgInherit =
+    bg inherit
+
+
 fg =
     Css.color
+
+
+fgInherit =
+    fg inherit
 
 
 grayN : Float -> Css.Color
@@ -101,6 +109,14 @@ sp n =
         spacingModularScaleGet n |> Css.rem
 
 
+pa0 =
+    Css.padding zero
+
+
+ma0 =
+    Css.margin zero
+
+
 ph : Int -> Css.Style
 ph =
     paddingHorizontal << sp
@@ -113,6 +129,10 @@ pt =
 
 ml =
     marginLeft << sp
+
+
+mr =
+    marginRight << sp
 
 
 ml_ : Float -> Css.Style
@@ -173,6 +193,10 @@ w_ =
     Css.width << Css.px
 
 
+bn =
+    Css.batch [ Css.borderRightStyle none, Css.borderWidth zero ]
+
+
 br_ : Css.Style
 br_ =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
@@ -209,3 +233,7 @@ vh =
 
 z_ n =
     Css.zIndex <| int n
+
+
+noSelection =
+    Css.property "user-select" "none"

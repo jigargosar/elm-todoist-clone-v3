@@ -1,13 +1,10 @@
 module MaterialIcons exposing (..)
 
-import Html.Styled as Html exposing (Html)
-import Html.Styled.Attributes exposing (class)
-import Html.Styled.Events exposing (onClick)
 import Material.Icons exposing (Coloring(..))
 import Material.Icons.Action
 import Material.Icons.Content
 import Material.Icons.Navigation
-import Svg.Styled exposing (..)
+import Svg.Styled exposing (Svg, fromUnstyled)
 
 
 search : Svg msg
@@ -23,12 +20,3 @@ add =
 menu : Svg msg
 menu =
     fromUnstyled <| Material.Icons.Navigation.menu 32 Inherit
-
-
-buttonHelp : Maybe msg -> List (Html msg) -> Html msg
-buttonHelp maybeMsg =
-    Html.button
-        [ class "select-none ma0 pa0 bn bg-inherit color-inherit flex"
-        , Maybe.map onClick maybeMsg
-            |> Maybe.withDefault (class "")
-        ]
