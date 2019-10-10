@@ -145,6 +145,11 @@ br =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
 
 
+bl : Css.Style
+bl =
+    Css.batch [ Css.borderLeftStyle Css.solid, Css.borderLeftWidth (Css.px 1) ]
+
+
 bc =
     Css.borderColor
 
@@ -208,15 +213,14 @@ view { top, side, main } =
                 [ Css.batch [ dn, ns [ db ] ]
                 , Css.batch [ fixed, topPx headerHeightPx, bottom_0, width sidebarWidthPx ]
                 , Css.batch [ overflowYHidden, Css.hover [ overflowYAuto ] ]
-                , Css.batch [ ns [ br ], bc_main ]
                 ]
                 []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
             , styled div
-                [ bgWhite ]
-                [ class "ml0 ml-main-ns pt-main min-vh-100 flex-grow-1 flex"
+                [ bgWhite, ns [ br, bl, bc_main ], flex, Css.minHeight (Css.vh 100) ]
+                [ class "ml0 ml-main-ns pt-main "
                 ]
-                [ main_ [ class "flex-grow-1 br-ns b--main" ] main ]
+                [ main_ [ class "flex-grow-1" ] main ]
             ]
         ]
