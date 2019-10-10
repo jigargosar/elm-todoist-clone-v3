@@ -5,7 +5,6 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import MaterialIcons as MI
 import Styles exposing (..)
-import UI
 
 
 iBtn styles =
