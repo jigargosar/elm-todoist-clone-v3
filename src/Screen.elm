@@ -26,12 +26,21 @@ type alias System msg big =
     { model : Screen
     , init : ( Screen, Cmd Msg )
     , update : Msg -> big -> ( big, Cmd msg )
-    , view : List (Html msg) -> List (Html msg) -> List (Html msg) -> big -> Html msg
+    , view :
+        List (Html msg)
+        -> List (Html msg)
+        -> List (Html msg)
+        -> big
+        -> Html msg
     , subscriptions : big -> Sub msg
     }
 
 
-system : Lens.System Screen big -> (Msg -> msg) -> (Int -> Int -> msg) -> System msg big
+system :
+    Lens.System Screen big
+    -> (Msg -> msg)
+    -> (Int -> Int -> msg)
+    -> System msg big
 system bigL toMsg onSize =
     { model = initial
     , init = init
