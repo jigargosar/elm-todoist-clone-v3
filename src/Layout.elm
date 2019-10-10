@@ -1,6 +1,7 @@
 module Layout exposing (Parts, view)
 
 import Css
+import Css.Media as Media
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import ModularScale
@@ -106,9 +107,25 @@ itemsCenter =
     Css.alignItems Css.center
 
 
-flexGrow1 : Css.Style
-flexGrow1 =
-    Css.flexGrow (Css.num 1)
+
+--flexGrow1 : Css.Style
+--flexGrow1 =
+--    Css.flexGrow (Css.num 1)
+
+
+dn : Css.Style
+dn =
+    Css.display Css.none
+
+
+db : Css.Style
+db =
+    Css.display Css.block
+
+
+ns : List Css.Style -> Css.Style
+ns =
+    Media.withMedia [ Media.only Media.screen [ Media.minWidth <| Css.rem 30 ] ]
 
 
 
@@ -150,8 +167,9 @@ view { top, side, main } =
         , styled div
             [ center, w_100, maxWidth maxAppWidthPx ]
             []
-            [ aside
-                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
+            [ styled aside
+                [ dn, ns [ db ] ]
+                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y br-ns b--main"
                 ]
                 side
             , styled div
