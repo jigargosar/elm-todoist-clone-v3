@@ -1,4 +1,4 @@
-module Lens exposing (Lens, get, init, set)
+module Lens exposing (Lens, get, init, map, set)
 
 
 type Lens small big
@@ -29,3 +29,8 @@ get =
 set : Lens small big -> small -> big -> big
 set =
     unwrap >> .set
+
+
+map : Lens small big -> (small -> small) -> big -> big
+map l fn big =
+    set l (fn (get l big)) big

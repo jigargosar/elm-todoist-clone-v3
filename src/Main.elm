@@ -95,7 +95,7 @@ update message model =
             ( model, Cmd.none )
 
         Toggle todoId ->
-            ( mapTodoDict (TodoDict.toggleCompleted todoId) model, Cmd.none )
+            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) model, Cmd.none )
 
         Screen msg ->
             screenSystem.update msg model
@@ -109,14 +109,6 @@ screenL =
 todoDictL : Lens TodoDict Model
 todoDictL =
     Lens.init { get = .todoDict, set = \s b -> { b | todoDict = s } }
-
-
-mapTodoDict func model =
-    { model | todoDict = func model.todoDict }
-
-
-setTodoDict =
-    Lens.set todoDictL
 
 
 
