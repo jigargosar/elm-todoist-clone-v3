@@ -38,8 +38,8 @@ screenSystem =
     Screen.system (\_ -> NoOp) (\_ _ -> NoOp)
 
 
-emptyModel : Model
-emptyModel =
+initial : Model
+initial =
     { todoDict = TodoDict.initial
     , screen = screenSystem.model
     }
@@ -56,7 +56,7 @@ init flags =
                 Err e ->
                     ( TodoDict.initial, logError <| JD.errorToString e )
     in
-    ( { emptyModel | todoDict = todoDict }
+    ( { initial | todoDict = todoDict }
     , todoDictDecodeCmds
     )
 
