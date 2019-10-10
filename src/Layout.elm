@@ -71,7 +71,7 @@ height =
     Css.height << Css.px
 
 
-maxWPx =
+maxWidth =
     Css.maxWidth << Css.px
 
 
@@ -106,6 +106,11 @@ itemsCenter =
     Css.alignItems Css.center
 
 
+flexGrow1 : Css.Style
+flexGrow1 =
+    Css.flexGrow (Css.num 1)
+
+
 
 -- Custom Styles
 
@@ -136,11 +141,15 @@ view { top, side, main } =
             [ fgWhite, bgLightRed, fixed, top_0, w_100, height headerHeightPx, flex ]
             []
             [ styled div
-                [ maxWPx maxAppWidthPx, w_100, center, ph 2, flex, itemsCenter ]
+                ([ center, w_100, maxWidth maxAppWidthPx ]
+                    ++ [ ph 2, flex, itemsCenter ]
+                )
                 []
                 top
             ]
-        , div [ class "center w-100 max-w-app ", class "flex-grow-1" ]
+        , styled div
+            [ center, w_100, maxWidth maxAppWidthPx ]
+            []
             [ aside
                 [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
                 ]
