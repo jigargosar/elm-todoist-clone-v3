@@ -129,10 +129,9 @@ itemsCenter =
     Css.alignItems Css.center
 
 
-
---flexGrow1 : Css.Style
---flexGrow1 =
---    Css.flexGrow (Css.num 1)
+flexGrow1 : Css.Style
+flexGrow1 =
+    Css.flexGrow (Css.num 1)
 
 
 dn : Css.Style

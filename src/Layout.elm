@@ -2,7 +2,6 @@ module Layout exposing (Parts, view)
 
 import Css exposing (batch)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (..)
 import Styles exposing (..)
 
 
@@ -84,8 +83,7 @@ view { top, side, main } =
                 , ns [ br_, bl, b__main ]
                 , flex
                 ]
-                [ class "pt-main "
-                ]
-                [ main_ [ class "flex-grow-1" ] main ]
+                []
+                [ styled main_ [ flexGrow1 ] [] main ]
             ]
         ]
