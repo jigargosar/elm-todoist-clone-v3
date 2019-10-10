@@ -132,6 +132,10 @@ topPx =
     Css.top << Css.px
 
 
+width =
+    Css.width << Css.px
+
+
 
 -- Custom Styles
 
@@ -151,6 +155,10 @@ headerHeightPx =
 
 maxAppWidthPx =
     922
+
+
+sidebarWidthPx =
+    266
 
 
 view : Parts msg -> Html msg
@@ -176,12 +184,14 @@ view { top, side, main } =
                 , ns [ db ]
                 , fixed
                 , topPx headerHeightPx
+                , width sidebarWidthPx
                 , Css.bottom Css.zero
-                , Css.overflow Css.hidden
-                , Css.hover [ Css.overflow Css.auto ]
+                , Css.overflowY Css.hidden
+                , Css.hover [ Css.overflowY Css.auto ]
                 ]
                 [ class "br-ns b--main"
                 ]
+                --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
             , styled div
                 [ bgWhite ]
