@@ -55,7 +55,15 @@ view { top, side, main } =
         [ bgBody ]
         []
         [ styled div
-            [ fgWhite, bgLightRed, fixed, top_0, w_100, h_header, flex ]
+            [ fgWhite
+            , bgLightRed
+            , fixed
+            , top_0
+            , w_100
+            , h_header
+            , flex
+            , z_ 10
+            ]
             []
             [ styled header
                 [ batch [ center, w_100, max_w maxAppWidthPx ]
@@ -77,7 +85,7 @@ view { top, side, main } =
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
             , styled div
-                [ batch [ ml0, ns [ ml_ sidebarWidthPx ] ]
+                [ batch [ ml0, ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 200 ] ]
                 , pt_ headerHeightPx
                 , min_vh 100
                 , bgWhite

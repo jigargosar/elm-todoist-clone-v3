@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css exposing (marginLeft, paddingTop, px, zero)
+import Css exposing (int, marginLeft, num, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -205,3 +205,7 @@ min_vh =
 
 vh =
     Css.height << Css.vh
+
+
+z_ n =
+    Css.zIndex <| int n
