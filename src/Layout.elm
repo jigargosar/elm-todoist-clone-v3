@@ -26,6 +26,10 @@ fgWhite =
     fg white
 
 
+b__main =
+    b__ (grayN 0.95)
+
+
 headerHeightPx =
     50
 
@@ -36,10 +40,6 @@ maxAppWidthPx =
 
 sidebarWidthPx =
     266
-
-
-b__main =
-    b__ (grayN 0.95)
 
 
 view : Parts msg -> Html msg
