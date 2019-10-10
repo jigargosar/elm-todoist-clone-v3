@@ -14,10 +14,18 @@ iBtn styles =
 
 view : List (Html msg)
 view =
-    [ iBtn [ mr 2 ] [] [ MI.menu ]
+    [ menu [ mr 2 ]
     , search [ mr 2 ]
-    , iBtn [ ml_auto ] [] [ MI.add ]
+    , add [ ml_auto ]
     ]
+
+
+menu styles =
+    iBtn styles [] [ MI.menu ]
+
+
+add styles =
+    iBtn styles [] [ MI.add ]
 
 
 search styles =
