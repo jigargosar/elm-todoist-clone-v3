@@ -45,33 +45,35 @@ screenSystem =
     Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
 
-initial : Model
-initial =
-    { todoDict = TodoDict.initial
-    , screen = screenSystem.initial
+todoDictSystem : { sortedByIdx : Model -> List Todo, init : Value -> Model -> ( Model, Cmd msg ) }
+todoDictSystem =
+    { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
+    , init =
+        \encoded big ->
+            let
+                res =
+                    case TodoDict.fromEncodedList encoded of
+                        Ok todoDict_ ->
+                            ( todoDict_, Cmd.none )
+
+                        Err e ->
+                            ( TodoDict.initial, logError <| JD.errorToString e )
+            in
+            res |> Tuple.mapFirst (todoDictL.setIn big)
     }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        ( todoDict, todoDictDecodeCmds ) =
-            case TodoDict.fromEncodedList flags.todoList of
-                Ok todoDict_ ->
-                    ( todoDict_, Cmd.none )
-
-                Err e ->
-                    ( TodoDict.initial, logError <| JD.errorToString e )
+        initial : Model
+        initial =
+            { todoDict = TodoDict.initial
+            , screen = screenSystem.initial
+            }
     in
-    ( todoDictL.set todoDict initial
-    , todoDictDecodeCmds
-    )
+    todoDictSystem.init flags.todoList initial
         |> Return.andThen screenSystem.init
-
-
-todoListSortedByIdx : { a | todoDict : TodoDict } -> List Todo
-todoListSortedByIdx =
-    .todoDict >> TodoDict.sortedByIdx
 
 
 
@@ -123,7 +125,7 @@ view model =
 
 
 mainView model =
-    [ Todo.viewList { toggle = Toggle } (todoListSortedByIdx model)
+    [ Todo.viewList { toggle = Toggle } (todoDictSystem.sortedByIdx model)
     ]
 
 
