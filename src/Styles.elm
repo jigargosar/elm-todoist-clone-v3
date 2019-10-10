@@ -5,6 +5,14 @@ import Css.Media as Media
 import ModularScale
 
 
+batch =
+    Css.batch
+
+
+type alias Style =
+    Css.Style
+
+
 bg : Css.ColorValue compatible -> Css.Style
 bg =
     Css.backgroundColor

@@ -1,6 +1,5 @@
 module Layout exposing (Parts, view)
 
-import Css exposing (batch)
 import Html.Styled exposing (..)
 import Styles exposing (..)
 
@@ -16,7 +15,7 @@ type alias Parts msg =
 -- Custom Styles
 
 
-bgBody : Css.Style
+bgBody : Style
 bgBody =
     bgGrayN 0.98
 
@@ -68,8 +67,8 @@ view { top, side, main } =
             [ center, w_100, max_w maxAppWidthPx ]
             []
             [ styled aside
-                [ Css.batch [ dn, ns [ db ] ]
-                , Css.batch [ fixed, top_ headerHeightPx, bottom_0, w_sidebar ]
+                [ batch [ dn, ns [ db ] ]
+                , batch [ fixed, top_ headerHeightPx, bottom_0, w_sidebar ]
                 , autoHideScrollY
                 ]
                 []
