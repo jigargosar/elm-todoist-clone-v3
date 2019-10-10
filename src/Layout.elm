@@ -1,7 +1,9 @@
 module Layout exposing (Parts, view)
 
+import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (class)
 import Styles exposing (..)
 
 
@@ -94,5 +96,23 @@ view { top, side, main } =
                 ]
                 []
                 [ styled main_ [ flexGrow1 ] [] main ]
+            ]
+        , styled div
+            [ ns [ dn ] ]
+            []
+            [ styled div
+                [ batch
+                    [ fixed
+                    , top_0
+                    , bottom_0
+                    , left_0
+                    , right_0
+                    , z_ 10
+                    , bg (Css.hsla 0 0 0 0.3)
+                    ]
+                ]
+                [ class "shadow-1" ]
+                []
+            , styled div [ batch [ fixed, top_0, bottom_0, w_sidebar, z_ 10, bgWhite ] ] [ class "shadow-1" ] side
             ]
         ]

@@ -201,6 +201,14 @@ left_ =
     Css.left << Css.px
 
 
+left_0 =
+    Css.left zero
+
+
+right_0 =
+    Css.right zero
+
+
 left_auto =
     Css.left auto
 
