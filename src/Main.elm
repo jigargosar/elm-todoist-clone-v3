@@ -111,6 +111,10 @@ mapTodoDict func model =
     { model | todoDict = func model.todoDict }
 
 
+setTodoDict =
+    mapTodoDict << always
+
+
 
 -- VIEW
 

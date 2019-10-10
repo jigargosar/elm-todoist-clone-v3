@@ -17,14 +17,15 @@ unwrap (TodoId value) =
     value
 
 
+fromStringDecoder : String -> Decoder TodoId
+fromStringDecoder str =
+    if str |> String.startsWith "TodoId-" then
+        JD.succeed (TodoId str)
+
+    else
+        JD.fail ("Invalid Todo Id: " ++ str)
+
+
 decoder : Decoder TodoId
 decoder =
-    JD.string
-        |> JD.andThen
-            (\id ->
-                if id |> String.startsWith "TodoId-" then
-                    JD.succeed (TodoId id)
-
-                else
-                    JD.fail ("Invalid Todo Id: " ++ id)
-            )
+    JD.andThen fromStringDecoder JD.string
