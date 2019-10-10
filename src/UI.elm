@@ -17,7 +17,7 @@ addIconBtn =
 
 menuIconBtn : Html msg
 menuIconBtn =
-    MI.buttonHelp Nothing [ MI.hamburger ]
+    MI.buttonHelp Nothing [ MI.menu ]
 
 
 search =

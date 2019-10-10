@@ -20,9 +20,9 @@ add =
     fromUnstyled <| Material.Icons.Content.add 32 Inherit
 
 
-hamburger : Svg msg
-hamburger =
-    fromUnstyled <| Material.Icons.Navigation.more_horiz 32 Inherit
+menu : Svg msg
+menu =
+    fromUnstyled <| Material.Icons.Navigation.menu 32 Inherit
 
 
 buttonHelp : Maybe msg -> List (Html msg) -> Html msg
