@@ -61,8 +61,8 @@ init flags =
     )
 
 
-todoList : Model -> List Todo
-todoList =
+todoListSortedById : Model -> List Todo
+todoListSortedById =
     .todoDict
         >> TodoDict.toList
         >> List.sortBy Todo.idx
@@ -125,7 +125,7 @@ view model =
 
 
 mainView model =
-    [ Todo.viewList { toggle = Toggle } (todoList model)
+    [ Todo.viewList { toggle = Toggle } (todoListSortedById model)
     ]
 
 
