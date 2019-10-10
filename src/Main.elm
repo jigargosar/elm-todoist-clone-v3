@@ -5,6 +5,7 @@ import Browser
 import Html exposing (..)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
+import Layout
 import Lens
 import Return
 import Screen exposing (Screen)
@@ -123,7 +124,7 @@ update message =
 
 view : Model -> Html Msg
 view model =
-    screenSystem.view Appbar.view Sidebar.view (mainView model) model
+    Layout.view Appbar.view Sidebar.view (mainView model)
 
 
 mainView model =

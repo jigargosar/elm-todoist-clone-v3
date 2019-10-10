@@ -26,12 +26,6 @@ type alias System msg big =
     { initial : Screen
     , init : big -> ( big, Cmd msg )
     , update : Msg -> big -> ( big, Cmd msg )
-    , view :
-        List (Html msg)
-        -> List (Html msg)
-        -> List (Html msg)
-        -> big
-        -> Html msg
     , subscriptions : big -> Sub msg
     }
 
@@ -44,7 +38,6 @@ system :
 system bigL toMsg onSize =
     { initial = initial
     , init = \big -> init |> Tuple.mapBoth (bigL.setIn big) (Cmd.map toMsg)
-    , view = \a b c big -> view a b c (bigL.get big)
     , update =
         \msg big ->
             update (\w h -> onSize w h |> succeed |> perform identity)
@@ -81,31 +74,3 @@ update onSize message model =
 subscriptions : Screen -> Sub Msg
 subscriptions _ =
     Sub.batch [ onResize Changed ]
-
-
-view :
-    List (Html msg)
-    -> List (Html msg)
-    -> List (Html msg)
-    -> Screen
-    -> Html msg
-view top side main _ =
-    div [ class "bg-body" ]
-        [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
-            [ div
-                ([ class "center w-100 max-w-app ph2" ]
-                    ++ [ class "h-100", class "flex items-center" ]
-                )
-                top
-            ]
-        , div [ class "center w-100 max-w-app ", class "flex-grow-1" ]
-            [ aside
-                [ class "dn db-ns fixed top-sidebar bottom-0 w-sidebar hover-overflow-y  br-ns b--main"
-                ]
-                side
-            , div
-                [ class "ml0 ml-main-ns pt-main min-vh-100 flex-grow-1 flex"
-                ]
-                [ main_ [ class "flex-grow-1 bg-white br-ns b--main" ] main ]
-            ]
-        ]
