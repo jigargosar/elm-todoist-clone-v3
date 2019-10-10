@@ -162,6 +162,10 @@ overflowYAuto =
     Css.overflowY Css.auto
 
 
+autoHideScrollY =
+    Css.batch [ overflowYHidden, Css.hover [ overflowYAuto ] ]
+
+
 
 -- Custom Styles
 
@@ -212,7 +216,7 @@ view { top, side, main } =
             [ styled aside
                 [ Css.batch [ dn, ns [ db ] ]
                 , Css.batch [ fixed, topPx headerHeightPx, bottom_0, width sidebarWidthPx ]
-                , Css.batch [ overflowYHidden, Css.hover [ overflowYAuto ] ]
+                , autoHideScrollY
                 ]
                 []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
