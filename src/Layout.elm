@@ -30,6 +30,10 @@ white =
     grayN 1
 
 
+lightRed =
+    Css.hex "#ff725c"
+
+
 bgGrayN : Float -> Css.Style
 bgGrayN =
     bg << grayN
@@ -38,6 +42,28 @@ bgGrayN =
 bgWhite : Css.Style
 bgWhite =
     bg white
+
+
+bgLightRed =
+    bg lightRed
+
+
+wPct : Float -> Css.Style
+wPct =
+    Css.width << Css.pct
+
+
+w_100 =
+    wPct 100
+
+
+top_0 : Css.Style
+top_0 =
+    Css.top Css.zero
+
+
+fixed =
+    Css.position Css.fixed
 
 
 
@@ -59,8 +85,8 @@ view { top, side, main } =
         [ bgBody ]
         []
         [ styled header
-            [ fgWhite ]
-            [ class "fixed top-0 bg-light-red white w-100 h-header" ]
+            [ fgWhite, bgLightRed, fixed, top_0, w_100 ]
+            [ class "h-header" ]
             [ div
                 ([ class "center w-100 max-w-app ph2" ]
                     ++ [ class "h-100", class "flex items-center" ]
