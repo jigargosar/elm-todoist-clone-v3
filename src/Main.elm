@@ -6,6 +6,7 @@ import Html exposing (..)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Lens
+import Return
 import Screen exposing (Screen)
 import Sidebar
 import Todo exposing (Todo)
@@ -51,7 +52,7 @@ initial =
     }
 
 
-init : Flags -> ( Model, Cmd msg )
+init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
         ( todoDict, todoDictDecodeCmds ) =
@@ -65,6 +66,7 @@ init flags =
     ( todoDictL.set todoDict initial
     , todoDictDecodeCmds
     )
+        |> Return.andThen screenSystem.init
 
 
 todoListSortedByIdx : { a | todoDict : TodoDict } -> List Todo

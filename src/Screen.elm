@@ -24,7 +24,7 @@ init =
 
 type alias System msg big =
     { initial : Screen
-    , init : ( Screen, Cmd Msg )
+    , init : big -> ( big, Cmd msg )
     , update : Msg -> big -> ( big, Cmd msg )
     , view :
         List (Html msg)
@@ -43,7 +43,7 @@ system :
     -> System msg big
 system bigL toMsg onSize =
     { initial = initial
-    , init = init
+    , init = \big -> init |> Tuple.mapBoth (\s -> bigL.set s big) (Cmd.map toMsg)
     , view = \a b c big -> view a b c (bigL.get big)
     , update =
         \msg big ->
