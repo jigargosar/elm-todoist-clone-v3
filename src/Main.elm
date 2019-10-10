@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Html exposing (..)
+import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
@@ -144,7 +144,7 @@ main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
-        , view = view
+        , view = view >> toUnstyled
         , update = update
         , subscriptions = subscriptions
         }

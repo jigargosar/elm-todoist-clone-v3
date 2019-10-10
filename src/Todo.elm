@@ -1,8 +1,8 @@
 module Todo exposing (Todo, decoder, id, idx, mapCompleted, mapIdx, title, toggle, viewList)
 
 import Emoji
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
 import Json.Decode as JD exposing (Decoder)
 import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)

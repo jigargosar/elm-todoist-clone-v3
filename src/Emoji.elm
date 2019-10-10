@@ -1,8 +1,8 @@
 module Emoji exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick)
 
 
 heavy_plus_sign =

@@ -1,7 +1,7 @@
 module Layout exposing (Parts, view)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (..)
 
 
 type alias Parts msg =

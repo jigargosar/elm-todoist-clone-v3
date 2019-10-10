@@ -2,8 +2,6 @@ module Screen exposing (Msg, Screen, System, system)
 
 import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
-import Html exposing (..)
-import Html.Attributes exposing (..)
 import Lens
 import Task exposing (perform, succeed)
 

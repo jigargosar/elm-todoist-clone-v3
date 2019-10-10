@@ -1,6 +1,6 @@
 module Sidebar exposing (view)
 
-import Html exposing (text)
+import Html.Styled exposing (text)
 
 
 view =

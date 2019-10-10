@@ -1,8 +1,8 @@
 module UI exposing (addIconBtn, filler, search)
 
 import Emoji
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (..)
 
 
 filler =
