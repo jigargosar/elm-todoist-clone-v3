@@ -23,7 +23,7 @@ init =
 
 
 type alias System msg big =
-    { model : Screen
+    { initial : Screen
     , init : ( Screen, Cmd Msg )
     , update : Msg -> big -> ( big, Cmd msg )
     , view :
@@ -42,7 +42,7 @@ system :
     -> (Int -> Int -> msg)
     -> System msg big
 system bigL toMsg onSize =
-    { model = initial
+    { initial = initial
     , init = init
     , view = \a b c big -> view a b c (bigL.get big)
     , update =

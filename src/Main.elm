@@ -47,7 +47,7 @@ screenSystem =
 initial : Model
 initial =
     { todoDict = TodoDict.initial
-    , screen = screenSystem.model
+    , screen = screenSystem.initial
     }
 
 
