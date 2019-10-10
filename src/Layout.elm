@@ -57,10 +57,7 @@ view { top, side, main } =
         [ styled div
             [ fgWhite
             , bgLightRed
-            , fixed
-            , top_0
-            , w_100
-            , h_header
+            , batch [ fixed, top_0, w_100, h_header ]
             , flex
             , z_ 10
             ]
