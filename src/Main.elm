@@ -56,7 +56,7 @@ init flags =
                 Err e ->
                     ( TodoDict.initial, logError <| JD.errorToString e )
     in
-    ( { initial | todoDict = todoDict }
+    ( setTodoDict todoDict initial
     , todoDictDecodeCmds
     )
 
