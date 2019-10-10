@@ -67,7 +67,7 @@ view { top, side, main } =
             [ center, w_100, max_w maxAppWidthPx ]
             []
             [ styled aside
-                [ batch [ dn, ns [ db ] ]
+                [ batch [ left_ -sidebarWidthPx, ns [ left_ 0 ] ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
                 ]
