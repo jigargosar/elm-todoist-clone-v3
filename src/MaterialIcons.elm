@@ -7,16 +7,20 @@ import Material.Icons.Navigation
 import Svg.Styled exposing (Svg, fromUnstyled)
 
 
+defaultSize =
+    24
+
+
 search : Svg msg
 search =
-    fromUnstyled <| Material.Icons.Action.search 32 Inherit
+    fromUnstyled <| Material.Icons.Action.search defaultSize Inherit
 
 
 add : Svg msg
 add =
-    fromUnstyled <| Material.Icons.Content.add 32 Inherit
+    fromUnstyled <| Material.Icons.Content.add defaultSize Inherit
 
 
 menu : Svg msg
 menu =
-    fromUnstyled <| Material.Icons.Navigation.menu 32 Inherit
+    fromUnstyled <| Material.Icons.Navigation.menu defaultSize Inherit
