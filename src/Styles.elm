@@ -59,7 +59,7 @@ fixed =
     Css.position Css.fixed
 
 
-heightPx =
+h_ =
     Css.height << Css.px
 
 

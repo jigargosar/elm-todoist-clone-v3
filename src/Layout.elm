@@ -42,13 +42,17 @@ sidebarWidthPx =
     266
 
 
+h_header =
+    h_ headerHeightPx
+
+
 view : Parts msg -> Html msg
 view { top, side, main } =
     styled div
         [ bgBody ]
         []
         [ styled header
-            [ fgWhite, bgLightRed, fixed, top_0, w_100, heightPx headerHeightPx, flex ]
+            [ fgWhite, bgLightRed, fixed, top_0, w_100, h_header, flex ]
             []
             [ styled div
                 ([ center, w_100, maxWidth maxAppWidthPx ]
