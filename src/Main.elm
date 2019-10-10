@@ -36,6 +36,11 @@ type alias Model =
 
 screenSystem : Screen.System Msg Model
 screenSystem =
+    let
+        screenL : Lens.System Screen Model
+        screenL =
+            Lens.system { get = .screen, set = \s b -> { b | screen = s } }
+    in
     Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
 
@@ -99,11 +104,6 @@ update message model =
 
         Screen msg ->
             screenSystem.update msg model
-
-
-screenL : Lens.System Screen Model
-screenL =
-    Lens.system { get = .screen, set = \s b -> { b | screen = s } }
 
 
 todoDictL : Lens.System TodoDict Model
