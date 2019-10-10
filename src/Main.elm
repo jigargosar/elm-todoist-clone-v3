@@ -105,16 +105,16 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
+update message =
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            Return.singleton
 
         Toggle todoId ->
-            todoDictSystem.toggle todoId model
+            todoDictSystem.toggle todoId
 
         Screen msg ->
-            screenSystem.update msg model
+            screenSystem.update msg
 
 
 
