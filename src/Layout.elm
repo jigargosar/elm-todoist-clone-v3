@@ -172,8 +172,15 @@ view { top, side, main } =
             [ center, w_100, maxWidth maxAppWidthPx ]
             []
             [ styled aside
-                [ dn, ns [ db ], fixed, topPx headerHeightPx, Css.bottom Css.zero ]
-                [ class "hover-overflow-y br-ns b--main"
+                [ dn
+                , ns [ db ]
+                , fixed
+                , topPx headerHeightPx
+                , Css.bottom Css.zero
+                , Css.overflow Css.hidden
+                , Css.hover [ Css.overflow Css.auto ]
+                ]
+                [ class "br-ns b--main"
                 ]
                 side
             , styled div
