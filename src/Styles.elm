@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css exposing (inherit, int, marginLeft, marginRight, none, num, padding, paddingTop, px, zero)
+import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -139,6 +139,10 @@ ml =
     marginLeft << sp
 
 
+ml_auto =
+    marginLeft auto
+
+
 mr =
     marginRight << sp
 
@@ -168,6 +172,10 @@ itemsCenter =
 flexGrow1 : Css.Style
 flexGrow1 =
     Css.flexGrow (Css.num 1)
+
+
+selfEnd =
+    Css.alignSelf end
 
 
 dn : Css.Style

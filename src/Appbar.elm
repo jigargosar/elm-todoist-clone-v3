@@ -15,15 +15,14 @@ iBtn styles =
 view : List (Html msg)
 view =
     [ iBtn [ mr 2 ] [] [ MI.menu ]
-    , search
-    , UI.filler
-    , iBtn [] [] [ MI.add ]
+    , search [ mr 2 ]
+    , iBtn [ ml_auto ] [] [ MI.add ]
     ]
 
 
-search =
+search styles =
     styled input
-        [ pa 1, br__ 2, bn ]
+        ([ pa 1, br__ 2, bn ] ++ styles)
         [ placeholder <| Emoji.magnifying_glass ++ " Search"
         ]
         []
