@@ -1,15 +1,18 @@
-module Layout exposing (..)
+module Layout exposing (Parts, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
 
-view :
-    List (Html msg)
-    -> List (Html msg)
-    -> List (Html msg)
-    -> Html msg
-view top side main =
+type alias Parts msg =
+    { top : List (Html msg)
+    , side : List (Html msg)
+    , main : List (Html msg)
+    }
+
+
+view : Parts msg -> Html msg
+view { top, side, main } =
     div [ class "bg-body" ]
         [ header [ class "fixed top-0 bg-light-red white w-100 h-header" ]
             [ div
