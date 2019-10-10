@@ -1,6 +1,6 @@
 module Layout exposing (Parts, view)
 
-import Css
+import Css exposing (batch)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Styles exposing (..)
@@ -77,8 +77,14 @@ view { top, side, main } =
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 side
             , styled div
-                [ bgWhite, ns [ br_, bl, b__main ], flex, min_vh 100 ]
-                [ class "ml0 ml-main-ns pt-main "
+                [ batch [ ml0, ns [ ml_ sidebarWidthPx ] ]
+                , pt_ headerHeightPx
+                , min_vh 100
+                , bgWhite
+                , ns [ br_, bl, b__main ]
+                , flex
+                ]
+                [ class "pt-main "
                 ]
                 [ main_ [ class "flex-grow-1" ] main ]
             ]

@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css
+import Css exposing (marginLeft, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -80,14 +80,45 @@ modularScaleTachyonsSpacing =
     ModularScale.config [ 0.25 ] ModularScale.Octave
 
 
-sp : Int -> Float
-sp n =
+spacingModularScaleGet : Int -> Float
+spacingModularScaleGet n =
     ModularScale.get modularScaleTachyonsSpacing n
 
 
+sp n =
+    if n <= 0 then
+        Css.rem 0
+
+    else
+        spacingModularScaleGet n |> Css.rem
+
+
 ph : Int -> Css.Style
-ph n =
-    paddingHorizontal (Css.rem <| sp n)
+ph =
+    paddingHorizontal << sp
+
+
+pt : Int -> Css.Style
+pt =
+    paddingTop << sp
+
+
+ml =
+    marginLeft << sp
+
+
+ml_ : Float -> Css.Style
+ml_ =
+    marginLeft << px
+
+
+pt_ : Float -> Css.Style
+pt_ =
+    paddingTop << px
+
+
+ml0 =
+    marginLeft zero
 
 
 flex =
