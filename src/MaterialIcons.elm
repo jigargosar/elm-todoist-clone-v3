@@ -6,6 +6,7 @@ import Html.Styled.Events exposing (onClick)
 import Material.Icons exposing (Coloring(..))
 import Material.Icons.Action
 import Material.Icons.Content
+import Material.Icons.Navigation
 import Svg.Styled exposing (..)
 
 
@@ -17,6 +18,11 @@ search =
 add : Svg msg
 add =
     fromUnstyled <| Material.Icons.Content.add 32 Inherit
+
+
+hamburger : Svg msg
+hamburger =
+    fromUnstyled <| Material.Icons.Navigation.more_horiz 32 Inherit
 
 
 buttonHelp : Maybe msg -> List (Html msg) -> Html msg

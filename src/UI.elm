@@ -3,7 +3,7 @@ module UI exposing (addIconBtn, filler, search)
 import Emoji
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import MaterialIcons
+import MaterialIcons as MI
 
 
 filler =
@@ -12,7 +12,12 @@ filler =
 
 addIconBtn : Html msg
 addIconBtn =
-    MaterialIcons.buttonHelp Nothing [ MaterialIcons.add ]
+    MI.buttonHelp Nothing [ MI.add ]
+
+
+menuIconBtn : Html msg
+menuIconBtn =
+    MI.buttonHelp Nothing [ MI.hamburger ]
 
 
 search =
