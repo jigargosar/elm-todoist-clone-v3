@@ -24,8 +24,14 @@ unwrap (Layout p) =
     p
 
 
+map : (Private -> Private) -> Layout -> Layout
 map func =
     unwrap >> func >> Layout
+
+
+privateL : Lens.System Private Layout
+privateL =
+    Lens.system { get = unwrap, set = \s _ -> Layout s }
 
 
 drawerModalL : Lens.System Bool Layout
