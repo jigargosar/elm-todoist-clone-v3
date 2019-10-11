@@ -126,19 +126,23 @@ view toMsg { appbar, drawer, content } layout =
             [ styledPermanentDrawer []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 drawer
-            , styled div
-                [ batch [ ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 150 ] ]
-                , pt_ headerHeightPx
-                , min_vh 100
-                , bgWhite
-                , ns [ br_, bl, b__main ]
-                , flex
-                ]
-                []
-                [ styled main_ [ flexGrow1 ] [] content ]
+            , styledMain [] content
             ]
         , viewModalDrawer toMsg layout drawer
         ]
+
+
+styledMain contentAttrs content =
+    styled div
+        [ batch [ ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 150 ] ]
+        , pt_ headerHeightPx
+        , min_vh 100
+        , bgWhite
+        , ns [ br_, bl, b__main ]
+        , flex
+        ]
+        []
+        [ styled main_ [ flexGrow1 ] contentAttrs content ]
 
 
 styledPermanentDrawer =
