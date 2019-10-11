@@ -151,28 +151,29 @@ view toMsg { appbar, drawer, content } layout =
                 [ styled main_ [ flexGrow1 ] [] content ]
             ]
         , styled div
-            [ ns [ hidden ]
-            , styleIf (not drawerModalOpen) [ hidden ]
-            , transition [ Transitions.visibility 150 ]
-            , z_ 10
-            , batch [ fixed, absFill ]
+            [ z_ 10
+            , batch [ fixed ]
             ]
-            [ onClick <| toMsg CloseModalDrawer ]
+            []
             [ styled div
                 [ batch [ fixed, absFill ]
                 , bg (Css.hsla 0 0 0 0.3)
                 , styleIf (not drawerModalOpen) [ dn ]
                 , ns [ dn ]
                 ]
-                []
+                [ onClick <| toMsg CloseModalDrawer ]
                 []
             , styled div
-                [ transition [ Transitions.transform 150 ]
-                , slideOutSidebar
-                , ns [ slideOutSidebar ]
-                , styleIf drawerModalOpen [ slideInSidebar ]
-                , batch [ fixed, top_0, bottom_0, w_sidebar ]
+                [ batch [ fixed, top_0, bottom_0, w_sidebar ]
                 , bgWhite
+                , transition [ Transitions.transform 150, Transitions.visibility 150 ]
+                , batch <|
+                    if drawerModalOpen then
+                        [ visible, slideInSidebar ]
+
+                    else
+                        [ hidden, slideOutSidebar ]
+                , ns [ hidden, slideOutSidebar ]
                 ]
                 [ class "shadow-1" ]
                 drawer
