@@ -56,6 +56,14 @@ system =
     init >> systemFromLens
 
 
+compose : System medium big -> System small medium -> System small big
+compose l1 l2 =
+    system
+        { get = l1.get >> l2.get
+        , set = \s -> l1.map (l2.set s)
+        }
+
+
 systemFromLens : Lens small big -> System small big
 systemFromLens l =
     { get = get l
