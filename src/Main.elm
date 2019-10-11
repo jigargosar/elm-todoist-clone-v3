@@ -2,6 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
+import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -9,7 +10,6 @@ import Layout exposing (Layout)
 import Lens
 import Return
 import Screen exposing (Screen)
-import Sidebar
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -138,7 +138,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Sidebar.view
+        , drawer = Drawer.view
         , content = mainView model
         }
         model.layout

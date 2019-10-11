@@ -1,4 +1,4 @@
-module Sidebar exposing (view)
+module Drawer exposing (view)
 
 import Html.Styled exposing (..)
 
