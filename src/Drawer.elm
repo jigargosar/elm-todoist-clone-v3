@@ -41,14 +41,18 @@ navItem title =
 
 
 expansionPanel collapsed toggle title content =
-    div [] <|
-        expansionPanelHeader collapsed toggle title
-            :: (if collapsed then
-                    []
+    let
+        visibleContent =
+            if collapsed then
+                []
 
-                else
-                    content
-               )
+            else
+                content
+    in
+    div []
+        (expansionPanelHeader collapsed toggle title
+            :: visibleContent
+        )
 
 
 expansionPanelHeader collapsed toggle title =
