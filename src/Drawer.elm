@@ -32,7 +32,7 @@ navGroup title =
     styled div
         [ pa 1, bo_b, boc (grayN 0.9), flex, Css.hover [ bgGrayN 0.95 ] ]
         []
-        [ iBtn [ flexGrow1 ] [] [ MI.expand_more, styled span [ bold, pa 1 ] [] [ text title ] ]
+        [ iBtn [ flexGrow1 ] [] [ styled span [ Css.color <| grayN 0.6 ] [] [ MI.expand_more ], styled span [ bold, pa 1 ] [] [ text title ] ]
         , iBtn [] [] [ MI.add ]
         ]
 
