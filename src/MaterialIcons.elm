@@ -24,3 +24,13 @@ add =
 menu : Svg msg
 menu =
     fromUnstyled <| Material.Icons.Navigation.menu defaultSize Inherit
+
+
+arrow_drop_down : Svg msg
+arrow_drop_down =
+    fromUnstyled <| Material.Icons.Navigation.arrow_drop_down defaultSize Inherit
+
+
+expand_more : Svg msg
+expand_more =
+    fromUnstyled <| Material.Icons.Navigation.expand_more defaultSize Inherit
