@@ -59,47 +59,6 @@ type alias Parts msg =
     }
 
 
-
--- Custom Styles
-
-
-bgBody : Style
-bgBody =
-    bgGrayN 0.98
-
-
-fgWhite =
-    fg white
-
-
-b__main =
-    b__ (grayN 0.95)
-
-
-headerHeightPx =
-    50
-
-
-maxAppWidthPx =
-    922
-
-
-sidebarWidthPx =
-    266
-
-
-h_header =
-    h_ headerHeightPx
-
-
-w_sidebar =
-    w_ sidebarWidthPx
-
-
-max_w_app =
-    max_w maxAppWidthPx
-
-
 view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
 view toMsg { appbar, drawer, content } layout =
     styled div
@@ -196,6 +155,47 @@ viewModalDrawer toMsg layout drawer =
             [ class "shadow-1" ]
             drawer
         ]
+
+
+
+-- Custom Styles
+
+
+bgBody : Style
+bgBody =
+    bgGrayN 0.98
+
+
+fgWhite =
+    fg white
+
+
+b__main =
+    b__ (grayN 0.95)
+
+
+headerHeightPx =
+    50
+
+
+maxAppWidthPx =
+    922
+
+
+sidebarWidthPx =
+    266
+
+
+h_header =
+    h_ headerHeightPx
+
+
+w_sidebar =
+    w_ sidebarWidthPx
+
+
+max_w_app =
+    max_w maxAppWidthPx
 
 
 slideOutDrawer =
