@@ -79,6 +79,10 @@ absolute =
     Css.position Css.absolute
 
 
+h_0 =
+    Css.height zero
+
+
 h_ =
     Css.height << Css.px
 
@@ -270,12 +274,17 @@ w_ =
 
 
 bn =
-    Css.batch [ Css.borderRightStyle none, Css.borderWidth zero ]
+    Css.batch [ Css.borderStyle none, Css.borderWidth zero ]
 
 
 bo_r : Css.Style
 bo_r =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
+
+
+bo_a : Css.Style
+bo_a =
+    Css.batch [ Css.borderStyle Css.solid, Css.borderWidth (Css.px 1) ]
 
 
 bor =

@@ -1,6 +1,6 @@
 module Drawer exposing (view)
 
-import Css
+import Css exposing (transform, transforms)
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
@@ -13,6 +13,12 @@ view { projectsCollapsed, toggleProjects } =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
+    , expansionPanel projectsCollapsed
+        toggleProjects
+        "Projects"
+        [ subItem "FooBar"
+        , subItem "Learn This"
+        ]
     , expansionPanel projectsCollapsed
         toggleProjects
         "Projects"
@@ -35,10 +41,14 @@ navItem title =
 
 
 expansionPanel collapsed toggle title content =
-    div []
-        [ expansionPanelHeader collapsed toggle title
-        , div [ css [ min_h_0, h_auto ] ] content
-        ]
+    div [] <|
+        expansionPanelHeader collapsed toggle title
+            :: (if collapsed then
+                    []
+
+                else
+                    content
+               )
 
 
 expansionPanelHeader collapsed toggle title =
