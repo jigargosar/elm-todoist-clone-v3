@@ -13,7 +13,7 @@ view =
 
 
 subItem title =
-    styled div [ pa 2, pl 3, pointer ] [] [ text title ]
+    styled div [ pa 2, pointer ] [] [ text title ]
 
 
 navItem title =
@@ -24,4 +24,4 @@ navGroup title items =
     styled div
         []
         []
-        (styled div [ ph 3, pv 2, ttu ] [] [ text title ] :: items)
+        (styled div [ pa 2, bold ] [] [ text title ] :: items)

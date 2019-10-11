@@ -347,3 +347,7 @@ pointer =
 
 ttu =
     Css.textTransform Css.uppercase
+
+
+bold =
+    Css.fontWeight Css.bold
