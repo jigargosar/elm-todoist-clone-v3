@@ -125,9 +125,9 @@ update message =
 view : Model -> Html Msg
 view model =
     Layout.view
-        { top = Appbar.view
-        , side = Sidebar.view
-        , main = mainView model
+        { appbar = Appbar.view
+        , drawer = Sidebar.view
+        , content = mainView model
         }
 
 

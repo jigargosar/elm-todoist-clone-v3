@@ -4,13 +4,45 @@ import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class)
+import Lens
 import Styles exposing (..)
 
 
+type Layout
+    = Layout Private
+
+
+type alias Private =
+    { drawerModal : Bool }
+
+
+type Msg
+    = OpenModalDrawer
+
+
+unwrap (Layout p) =
+    p
+
+
+map func =
+    unwrap >> func >> Layout
+
+
+drawerModalL : Lens.System Bool Layout
+drawerModalL =
+    Lens.system { get = unwrap >> .drawerModal, set = \s -> map (\p -> { p | drawerModal = s }) }
+
+
+update message model =
+    case message of
+        OpenModalDrawer ->
+            ()
+
+
 type alias Parts msg =
-    { top : List (Html msg)
-    , side : List (Html msg)
-    , main : List (Html msg)
+    { appbar : List (Html msg)
+    , drawer : List (Html msg)
+    , content : List (Html msg)
     }
 
 
@@ -56,7 +88,7 @@ max_w_app =
 
 
 view : Parts msg -> Html msg
-view { top, side, main } =
+view { appbar, drawer, content } =
     styled div
         [ bgBody ]
         []
@@ -73,7 +105,7 @@ view { top, side, main } =
                 , batch [ ph 2, flex, itemsCenter ]
                 ]
                 []
-                top
+                appbar
             ]
         , styled div
             [ center, w_100, max_w_app ]
@@ -85,7 +117,7 @@ view { top, side, main } =
                 ]
                 []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
-                side
+                drawer
             , styled div
                 [ batch [ ml0, ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 200 ] ]
                 , pt_ headerHeightPx
@@ -95,7 +127,7 @@ view { top, side, main } =
                 , flex
                 ]
                 []
-                [ styled main_ [ flexGrow1 ] [] main ]
+                [ styled main_ [ flexGrow1 ] [] content ]
             ]
         , styled div
             [ ns [ dn ], z_ 10, fixed ]
@@ -111,6 +143,6 @@ view { top, side, main } =
                 , bgWhite
                 ]
                 [ class "shadow-1" ]
-                side
+                drawer
             ]
         ]
