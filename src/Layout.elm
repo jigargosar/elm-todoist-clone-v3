@@ -103,11 +103,11 @@ max_w_app =
 view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
 view toMsg { appbar, drawer, content } layout =
     styled div
-        [ bgBody ]
+        [ bgBody, h_100 ]
         []
         [ styledAppbar [] appbar
         , styled div
-            [ center, w_100, max_w_app ]
+            [ center, w_100, max_w_app, h_100 ]
             []
             [ styledPermanentDrawer []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
@@ -140,7 +140,7 @@ styledMain contentAttrs content =
     styled div
         [ batch [ ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 150 ] ]
         , pt_ headerHeightPx
-        , min_vh 100
+        , h_100
         , bgWhite
         , ns [ br_, bl, b__main ]
         , flex

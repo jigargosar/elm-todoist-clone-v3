@@ -14,9 +14,10 @@
 
 /* App specific functional styles*/
 
-body {
+body, html {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
 :root {
