@@ -94,7 +94,7 @@ styledAppbar appbarAttrs appbarContent =
         []
         [ styled header
             [ batch [ center, w_100, max_w_app ]
-            , batch [ ph 2, flex, itemsCenter ]
+            , batch [ ph 2, ns [ ph 3 ], flex, itemsCenter ]
             ]
             appbarAttrs
             appbarContent
