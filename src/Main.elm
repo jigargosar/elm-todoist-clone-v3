@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Drawer
+import Drawer exposing (Drawer)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -34,6 +34,7 @@ type alias Model =
     { todoDict : TodoDict
     , screen : Screen
     , layout : Layout
+    , drawer : Drawer
     , bool : Bool
     }
 
@@ -81,6 +82,7 @@ init flags =
             { todoDict = TodoDict.initial
             , screen = screenSystem.initial
             , layout = Layout.initial
+            , drawer = Drawer.initial
             , bool = True
             }
     in

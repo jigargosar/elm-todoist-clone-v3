@@ -1,4 +1,4 @@
-module Drawer exposing (view)
+module Drawer exposing (Drawer, initial, update, view)
 
 import Css exposing (transform, transforms)
 import Css.Transitions as Transitions exposing (transition)
@@ -16,8 +16,8 @@ type Drawer
     = Drawer ExpansionPanelSet
 
 
-init : Drawer
-init =
+initial : Drawer
+initial =
     Drawer Tagged.Set.empty
 
 
@@ -83,14 +83,14 @@ map func =
     unwrap >> func >> Drawer
 
 
-update : Msg -> Drawer -> Drawer
-update message model =
+update : (Msg -> msg) -> Msg -> Drawer -> ( Drawer, Cmd msg )
+update toMsg message model =
     case message of
         TogglePanel ep ->
-            map (toggleEP ep) model
+            ( map (toggleEP ep) model, Cmd.none )
 
 
-view { projectsCollapsed, toggleProjects } =
+view toMsg { projectsCollapsed, toggleProjects } =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
