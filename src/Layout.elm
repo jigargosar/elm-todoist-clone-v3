@@ -128,7 +128,11 @@ view toMsg { appbar, drawer, content } layout =
             [ center, w_100, max_w_app ]
             []
             [ styled aside
-                [ batch [ left_ -sidebarWidthPx, ns [ left_0 ], transition [ Transitions.left 200 ] ]
+                [ batch
+                    [ Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
+                    , ns [ Css.transforms [ Css.translateX <| Css.px 0 ] ]
+                    , transition [ Transitions.transform 200 ]
+                    ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
                 ]
