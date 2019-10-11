@@ -1,6 +1,6 @@
 module Styles exposing (..)
 
-import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingTop, px, zero)
+import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, zero)
 import Css.Media as Media
 import ModularScale
 
@@ -112,6 +112,10 @@ paddingHorizontal v =
     Css.batch [ Css.paddingLeft v, Css.paddingRight v ]
 
 
+paddingVertical v =
+    Css.batch [ paddingTop v, paddingBottom v ]
+
+
 modularScaleTachyonsSpacing =
     ModularScale.config [ 0.25 ] ModularScale.Octave
 
@@ -150,9 +154,19 @@ ph =
     paddingHorizontal << sp
 
 
+pv : Int -> Css.Style
+pv =
+    paddingVertical << sp
+
+
 pt : Int -> Css.Style
 pt =
     paddingTop << sp
+
+
+pl : Int -> Css.Style
+pl =
+    paddingLeft << sp
 
 
 ml =
@@ -325,3 +339,11 @@ styleIf bool styles =
          else
             []
         )
+
+
+pointer =
+    Css.cursor Css.pointer
+
+
+ttu =
+    Css.textTransform Css.uppercase
