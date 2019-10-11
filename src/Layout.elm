@@ -105,21 +105,7 @@ view toMsg { appbar, drawer, content } layout =
     styled div
         [ bgBody ]
         []
-        [ styled div
-            [ fgWhite
-            , bgLightRed
-            , batch [ fixed, top_0, w_100, h_header ]
-            , flex
-            , z_ 10
-            ]
-            []
-            [ styled header
-                [ batch [ center, w_100, max_w_app ]
-                , batch [ ph 2, flex, itemsCenter ]
-                ]
-                []
-                appbar
-            ]
+        [ styledAppbar [] appbar
         , styled div
             [ center, w_100, max_w_app ]
             []
@@ -129,6 +115,24 @@ view toMsg { appbar, drawer, content } layout =
             , styledMain [] content
             ]
         , viewModalDrawer toMsg layout drawer
+        ]
+
+
+styledAppbar appbarAttrs appbarContent =
+    styled div
+        [ fgWhite
+        , bgLightRed
+        , batch [ fixed, top_0, w_100, h_header ]
+        , flex
+        , z_ 10
+        ]
+        []
+        [ styled header
+            [ batch [ center, w_100, max_w_app ]
+            , batch [ ph 2, flex, itemsCenter ]
+            ]
+            appbarAttrs
+            appbarContent
         ]
 
 
