@@ -123,16 +123,7 @@ view toMsg { appbar, drawer, content } layout =
         , styled div
             [ center, w_100, max_w_app ]
             []
-            [ styled aside
-                [ batch
-                    [ slideOutDrawer
-                    , ns [ slideInDrawer ]
-                    , transition [ Transitions.transform 150 ]
-                    ]
-                , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
-                , autoHideScrollY
-                ]
-                []
+            [ viewPermanentDrawer
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 drawer
             , styled div
@@ -148,6 +139,19 @@ view toMsg { appbar, drawer, content } layout =
             ]
         , viewModalDrawer toMsg layout drawer
         ]
+
+
+viewPermanentDrawer =
+    styled aside
+        [ batch
+            [ slideOutDrawer
+            , ns [ slideInDrawer ]
+            , transition [ Transitions.transform 150 ]
+            ]
+        , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
+        , autoHideScrollY
+        ]
+        []
 
 
 viewModalDrawer toMsg layout drawer =
@@ -168,7 +172,7 @@ viewModalDrawer toMsg layout drawer =
             ]
             [ onClick <| toMsg CloseModalDrawer ]
             []
-        , styled div
+        , styled aside
             [ batch [ fixed, top_0, bottom_0, w_sidebar ]
             , bgWhite
             , transition [ Transitions.transform 150, Transitions.visibility 150 ]
