@@ -131,7 +131,7 @@ view toMsg { appbar, drawer, content } layout =
                 [ batch
                     [ Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
                     , ns [ Css.transforms [ Css.translateX <| Css.px 0 ] ]
-                    , transition [ Transitions.transform 200 ]
+                    , transition [ Transitions.transform 150 ]
                     ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
                 , autoHideScrollY
@@ -140,7 +140,7 @@ view toMsg { appbar, drawer, content } layout =
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 drawer
             , styled div
-                [ batch [ ml0, ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 200 ] ]
+                [ batch [ ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 150 ] ]
                 , pt_ headerHeightPx
                 , min_vh 100
                 , bgWhite
