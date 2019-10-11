@@ -91,6 +91,14 @@ max_w =
     Css.maxWidth << Css.px
 
 
+min_w =
+    Css.minWidth << Css.px
+
+
+min_w_0 =
+    min_w 0
+
+
 center : Css.Style
 center =
     Css.batch [ Css.marginLeft Css.auto, Css.marginRight Css.auto ]
@@ -180,6 +188,11 @@ itemsCenter =
 flexGrow1 : Css.Style
 flexGrow1 =
     Css.flexGrow (Css.num 1)
+
+
+flexShrink1 : Css.Style
+flexShrink1 =
+    Css.flexShrink (Css.num 1)
 
 
 selfEnd =

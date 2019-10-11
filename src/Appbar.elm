@@ -15,7 +15,7 @@ iBtn styles =
 view : { onMenu : msg } -> List (Html msg)
 view config =
     [ menu config [ mr 2, ns [ dn ] ]
-    , search [ mr 2 ]
+    , search [ mr 2, flexShrink1, min_w_0 ]
     , add [ ml_auto ]
     ]
 
