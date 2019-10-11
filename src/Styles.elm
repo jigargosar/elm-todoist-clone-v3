@@ -30,22 +30,22 @@ fgInherit =
     fg inherit
 
 
-grayN : Float -> Css.Color
-grayN n =
+grayL : Float -> Css.Color
+grayL n =
     Css.hsl 0 0 n
 
 
 white =
-    grayN 1
+    grayL 1
 
 
 lightRed =
     Css.hex "#ff725c"
 
 
-bgGrayN : Float -> Css.Style
-bgGrayN =
-    bg << grayN
+bgGrayL : Float -> Css.Style
+bgGrayL =
+    bg << grayL
 
 
 bgWhite : Css.Style
@@ -361,3 +361,7 @@ ttu =
 
 bold =
     Css.fontWeight Css.bold
+
+
+c_grayL =
+    Css.color << grayL

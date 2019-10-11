@@ -164,7 +164,7 @@ viewModalDrawer toMsg layout drawer =
 
 bgBody : Style
 bgBody =
-    bgGrayN 0.98
+    bgGrayL 0.98
 
 
 fgWhite =
@@ -172,7 +172,7 @@ fgWhite =
 
 
 b__main =
-    boc (grayN 0.95)
+    boc (grayL 0.95)
 
 
 headerHeightPx =
