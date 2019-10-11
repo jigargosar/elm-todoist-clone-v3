@@ -123,7 +123,7 @@ view toMsg { appbar, drawer, content } layout =
         , styled div
             [ center, w_100, max_w_app ]
             []
-            [ viewPermanentDrawer
+            [ styledPermanentDrawer []
                 --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
                 drawer
             , styled div
@@ -141,7 +141,7 @@ view toMsg { appbar, drawer, content } layout =
         ]
 
 
-viewPermanentDrawer =
+styledPermanentDrawer =
     styled aside
         [ batch
             [ slideOutDrawer
@@ -151,7 +151,6 @@ viewPermanentDrawer =
         , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
         , autoHideScrollY
         ]
-        []
 
 
 viewModalDrawer toMsg layout drawer =
