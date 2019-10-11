@@ -12,6 +12,15 @@ import Tagged exposing (Tagged, tag)
 import Tagged.Set exposing (TaggedSet)
 
 
+type Drawer
+    = Drawer ExpansionPanelSet
+
+
+init : Drawer
+init =
+    Drawer Tagged.Set.empty
+
+
 type ExpansionPanel
     = Projects
     | Labels
@@ -64,11 +73,21 @@ type Msg
     = TogglePanel ExpansionPanel
 
 
-update : Msg -> ExpansionPanelSet -> ExpansionPanelSet
+unwrap : Drawer -> ExpansionPanelSet
+unwrap (Drawer epSet) =
+    epSet
+
+
+map : (ExpansionPanelSet -> ExpansionPanelSet) -> Drawer -> Drawer
+map func =
+    unwrap >> func >> Drawer
+
+
+update : Msg -> Drawer -> Drawer
 update message model =
     case message of
         TogglePanel ep ->
-            toggleEP ep model
+            map (toggleEP ep) model
 
 
 view { projectsCollapsed, toggleProjects } =
