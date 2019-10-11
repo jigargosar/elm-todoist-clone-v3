@@ -14,6 +14,7 @@
             "elm/random": "1.0.0",
             "elm/time": "1.0.0",
             "icidasset/elm-material-icons": "1.0.1",
+            "joneshf/elm-tagged": "2.1.1",
             "rl-king/elm-modular-scale": "2.0.2",
             "rtfeldman/elm-css": "16.0.1"
         },

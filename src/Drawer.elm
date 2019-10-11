@@ -6,7 +6,69 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import MaterialIcons as MI
+import Set exposing (Set)
 import Styles exposing (..)
+import Tagged exposing (Tagged, tag)
+import Tagged.Set exposing (TaggedSet)
+
+
+type ExpansionPanel
+    = Projects
+    | Labels
+    | Filters
+
+
+type alias ExpansionPanelSet =
+    TaggedSet ExpansionPanel String
+
+
+type alias TaggedExpansionPanel =
+    Tagged ExpansionPanel String
+
+
+expansionPanelToTag : ExpansionPanel -> TaggedExpansionPanel
+expansionPanelToTag ep =
+    (case ep of
+        Projects ->
+            "Projects"
+
+        Labels ->
+            "Labels"
+
+        Filters ->
+            "Filters"
+    )
+        |> tag
+
+
+toggleTagged : Tagged tag comparable -> TaggedSet tag comparable -> TaggedSet tag comparable
+toggleTagged tagged set =
+    if Tagged.Set.member tagged set then
+        Tagged.Set.remove tagged set
+
+    else
+        Tagged.Set.insert tagged set
+
+
+toggleEP : ExpansionPanel -> ExpansionPanelSet -> ExpansionPanelSet
+toggleEP item set =
+    let
+        taggedEP : Tagged ExpansionPanel String
+        taggedEP =
+            expansionPanelToTag item
+    in
+    toggleTagged taggedEP set
+
+
+type Msg
+    = TogglePanel ExpansionPanel
+
+
+update : Msg -> ExpansionPanelSet -> ExpansionPanelSet
+update message model =
+    case message of
+        TogglePanel ep ->
+            toggleEP ep model
 
 
 view { projectsCollapsed, toggleProjects } =
