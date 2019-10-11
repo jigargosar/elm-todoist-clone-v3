@@ -89,6 +89,7 @@ styledAppbar appbarAttrs appbarContent =
         , batch [ fixed, top_0, w_100, h_header ]
         , flex
         , z_ 10
+        , Css.property "box-shadow" "0 1px 4px rgba(0,0,0,0.3)"
         ]
         []
         [ styled header
