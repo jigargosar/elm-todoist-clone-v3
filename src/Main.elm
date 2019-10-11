@@ -106,7 +106,6 @@ type Msg
     | Toggle TodoId
     | Screen Screen.Msg
     | Layout Layout.Msg
-    | OpenDrawer
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -124,9 +123,6 @@ update message =
         Layout msg ->
             updateLayout msg
 
-        OpenDrawer ->
-            updateLayout Layout.openDrawer
-
 
 updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
 updateLayout msg big =
@@ -141,7 +137,7 @@ updateLayout msg big =
 view : Model -> Html Msg
 view model =
     Layout.view Layout
-        { appbar = Appbar.view { onMenu = OpenDrawer }
+        { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
         , drawer = Sidebar.view
         , content = mainView model
         }
