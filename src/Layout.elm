@@ -20,23 +20,14 @@ type Msg
     = OpenModalDrawer
 
 
-unwrap (Layout p) =
-    p
-
-
-map : (Private -> Private) -> Layout -> Layout
-map func =
-    unwrap >> func >> Layout
-
-
-privateL : Lens.System Private Layout
-privateL =
-    Lens.system { get = unwrap, set = \s _ -> Layout s }
+privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.System small Layout
+privateLens =
+    Lens.system >> Lens.compose (Lens.system { get = \(Layout p) -> p, set = \s _ -> Layout s })
 
 
 drawerModalL : Lens.System Bool Layout
 drawerModalL =
-    Lens.system { get = unwrap >> .drawerModal, set = \s -> map (\p -> { p | drawerModal = s }) }
+    privateLens { get = .drawerModal, set = \s b -> { b | drawerModal = s } }
 
 
 update message model =

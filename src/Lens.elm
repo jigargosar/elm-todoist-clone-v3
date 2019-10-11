@@ -1,4 +1,4 @@
-module Lens exposing (System, system)
+module Lens exposing (System, compose, system)
 
 import Basics.More exposing (flip)
 
