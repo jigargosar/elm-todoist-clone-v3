@@ -30,7 +30,7 @@ add styles =
 
 search styles =
     styled input
-        ([ pa 1, br__ 2, bn ] ++ styles)
+        ([ pa 1, bor 2, bn ] ++ styles)
         [ placeholder <| Emoji.magnifying_glass ++ " Search"
         ]
         []

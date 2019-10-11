@@ -30,7 +30,7 @@ navItem title =
 
 navGroup title =
     styled div
-        [ flex, Css.hover [ bgGrayN 0.95 ] ]
+        [ pa 1, bo_b, boc (grayN 0.9), flex, Css.hover [ bgGrayN 0.95 ] ]
         []
         [ iBtn [ flexGrow1 ] [] [ MI.expand_more, styled span [ bold, pa 1 ] [] [ text title ] ]
         , iBtn [] [] [ MI.add ]
@@ -38,4 +38,4 @@ navGroup title =
 
 
 iBtn styles =
-    styled button (btnReset :: pa 1 :: pointer :: styles)
+    styled button (btnReset :: pointer :: styles)

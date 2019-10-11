@@ -273,21 +273,31 @@ bn =
     Css.batch [ Css.borderRightStyle none, Css.borderWidth zero ]
 
 
-br_ : Css.Style
-br_ =
+bo_r : Css.Style
+bo_r =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
 
 
-br__ =
+bor =
     Css.borderRadius << b_radius
 
 
-bl : Css.Style
-bl =
+bo_l : Css.Style
+bo_l =
     Css.batch [ Css.borderLeftStyle Css.solid, Css.borderLeftWidth (Css.px 1) ]
 
 
-b__ =
+bo_b : Css.Style
+bo_b =
+    Css.batch [ Css.borderBottomStyle Css.solid, Css.borderBottomWidth (Css.px 1) ]
+
+
+bo_t : Css.Style
+bo_t =
+    Css.batch [ Css.borderTopStyle Css.solid, Css.borderTopWidth (Css.px 1) ]
+
+
+boc =
     Css.borderColor
 
 

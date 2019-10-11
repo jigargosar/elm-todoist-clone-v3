@@ -107,7 +107,7 @@ styledMain contentAttrs content =
         , pt_ headerHeightPx
         , h_100
         , bgWhite
-        , ns [ br_, bl, b__main ]
+        , ns [ bo_r, bo_l, b__main ]
         , flex
         ]
         []
@@ -172,7 +172,7 @@ fgWhite =
 
 
 b__main =
-    b__ (grayN 0.95)
+    boc (grayN 0.95)
 
 
 headerHeightPx =
