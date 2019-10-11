@@ -1,9 +1,10 @@
-module Layout exposing (Parts, view)
+module Layout exposing (Layout, Msg, Parts, initial, openDrawer, update, view)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class)
+import Html.Styled.Events exposing (onClick)
 import Lens
 import Styles exposing (..)
 
@@ -12,12 +13,23 @@ type Layout
     = Layout Private
 
 
+initial : Layout
+initial =
+    Layout <| Private False
+
+
 type alias Private =
     { drawerModal : Bool }
 
 
 type Msg
     = OpenModalDrawer
+    | CloseModalDrawer
+
+
+openDrawer : Msg
+openDrawer =
+    OpenModalDrawer
 
 
 privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.System small Layout
@@ -35,6 +47,9 @@ update toMsg message model =
     case message of
         OpenModalDrawer ->
             ( drawerModalL.set True model, Cmd.none )
+
+        CloseModalDrawer ->
+            ( drawerModalL.set False model, Cmd.none )
 
 
 type alias Parts msg =
@@ -85,8 +100,12 @@ max_w_app =
     max_w maxAppWidthPx
 
 
-view : Parts msg -> Html msg
-view { appbar, drawer, content } =
+view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
+view toMsg { appbar, drawer, content } layout =
+    let
+        drawerModalOpen =
+            drawerModalL.get layout
+    in
     styled div
         [ bgBody ]
         []
@@ -127,20 +146,24 @@ view { appbar, drawer, content } =
                 []
                 [ styled main_ [ flexGrow1 ] [] content ]
             ]
-        , styled div
-            [ ns [ dn ], z_ 10, fixed ]
-            []
-            [ styled div
-                [ batch [ fixed, absFill ]
-                , bg (Css.hsla 0 0 0 0.3)
+        , if drawerModalOpen then
+            styled div
+                [ ns [ dn ], z_ 10, fixed ]
+                [ onClick <| toMsg CloseModalDrawer ]
+                [ styled div
+                    [ batch [ fixed, absFill ]
+                    , bg (Css.hsla 0 0 0 0.3)
+                    ]
+                    []
+                    []
+                , styled div
+                    [ batch [ fixed, top_0, bottom_0, w_sidebar ]
+                    , bgWhite
+                    ]
+                    [ class "shadow-1" ]
+                    drawer
                 ]
-                []
-                []
-            , styled div
-                [ batch [ fixed, top_0, bottom_0, w_sidebar ]
-                , bgWhite
-                ]
-                [ class "shadow-1" ]
-                drawer
-            ]
+
+          else
+            text ""
         ]

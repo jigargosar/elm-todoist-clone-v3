@@ -5,7 +5,7 @@ import Browser
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import Layout
+import Layout exposing (Layout)
 import Lens
 import Return
 import Screen exposing (Screen)
@@ -33,6 +33,7 @@ type alias Flags =
 type alias Model =
     { todoDict : TodoDict
     , screen : Screen
+    , layout : Layout
     }
 
 
@@ -78,6 +79,7 @@ init flags =
         initial =
             { todoDict = TodoDict.initial
             , screen = screenSystem.initial
+            , layout = Layout.initial
             }
     in
     todoDictSystem.init flags.todoList initial
@@ -103,6 +105,8 @@ type Msg
     = NoOp
     | Toggle TodoId
     | Screen Screen.Msg
+    | Layout Layout.Msg
+    | OpenDrawer
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -117,6 +121,18 @@ update message =
         Screen msg ->
             screenSystem.update msg
 
+        Layout msg ->
+            updateLayout msg
+
+        OpenDrawer ->
+            updateLayout Layout.openDrawer
+
+
+updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
+updateLayout msg big =
+    Layout.update Layout msg big.layout
+        |> Tuple.mapFirst (\s -> { big | layout = s })
+
 
 
 -- VIEW
@@ -124,11 +140,12 @@ update message =
 
 view : Model -> Html Msg
 view model =
-    Layout.view
-        { appbar = Appbar.view
+    Layout.view Layout
+        { appbar = Appbar.view { onMenu = OpenDrawer }
         , drawer = Sidebar.view
         , content = mainView model
         }
+        model.layout
 
 
 mainView model =
