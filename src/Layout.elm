@@ -102,10 +102,6 @@ max_w_app =
 
 view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
 view toMsg { appbar, drawer, content } layout =
-    let
-        drawerModalOpen =
-            drawerModalL.get layout
-    in
     styled div
         [ bgBody ]
         []
@@ -150,34 +146,42 @@ view toMsg { appbar, drawer, content } layout =
                 []
                 [ styled main_ [ flexGrow1 ] [] content ]
             ]
-        , styled div
-            [ z_ 10
-            , batch [ fixed ]
-            ]
-            []
-            [ styled div
-                [ batch [ fixed, absFill ]
-                , bg (Css.hsla 0 0 0 0.3)
-                , styleIf (not drawerModalOpen) [ dn ]
-                , ns [ dn ]
-                ]
-                [ onClick <| toMsg CloseModalDrawer ]
-                []
-            , styled div
-                [ batch [ fixed, top_0, bottom_0, w_sidebar ]
-                , bgWhite
-                , transition [ Transitions.transform 150, Transitions.visibility 150 ]
-                , batch <|
-                    if drawerModalOpen then
-                        [ visible, slideInSidebar ]
+        , viewModalDrawer toMsg layout drawer
+        ]
 
-                    else
-                        [ hidden, slideOutSidebar ]
-                , ns [ hidden, slideOutSidebar ]
-                ]
-                [ class "shadow-1" ]
-                drawer
+
+viewModalDrawer toMsg layout drawer =
+    let
+        drawerModalOpen =
+            drawerModalL.get layout
+    in
+    styled div
+        [ z_ 10
+        , batch [ fixed ]
+        ]
+        []
+        [ styled div
+            [ batch [ fixed, absFill ]
+            , bg (Css.hsla 0 0 0 0.3)
+            , styleIf (not drawerModalOpen) [ dn ]
+            , ns [ dn ]
             ]
+            [ onClick <| toMsg CloseModalDrawer ]
+            []
+        , styled div
+            [ batch [ fixed, top_0, bottom_0, w_sidebar ]
+            , bgWhite
+            , transition [ Transitions.transform 150, Transitions.visibility 150 ]
+            , batch <|
+                if drawerModalOpen then
+                    [ visible, slideInSidebar ]
+
+                else
+                    [ hidden, slideOutSidebar ]
+            , ns [ hidden, slideOutSidebar ]
+            ]
+            [ class "shadow-1" ]
+            drawer
         ]
 
 
