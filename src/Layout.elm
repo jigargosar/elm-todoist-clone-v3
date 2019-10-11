@@ -143,11 +143,7 @@ view toMsg { appbar, drawer, content } layout =
 
 styledPermanentDrawer =
     styled aside
-        [ batch
-            [ slideOutDrawer
-            , ns [ slideInDrawer ]
-            , transition [ Transitions.transform 150 ]
-            ]
+        [ batch [ slideOutDrawer, ns [ slideInDrawer ], transition [ Transitions.transform 150 ] ]
         , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
         , autoHideScrollY
         ]
