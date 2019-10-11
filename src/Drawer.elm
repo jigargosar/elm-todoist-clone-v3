@@ -11,9 +11,11 @@ view =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , expansionPanel "Projects"
-    , subItem "FooBar"
-    , subItem "Learn This"
+    , expansionPanel True
+        "Projects"
+        [ subItem "FooBar"
+        , subItem "Learn This"
+        ]
     ]
 
 
@@ -29,7 +31,11 @@ navItem title =
     styled div [ pa 2, pointer ] [] [ text title ]
 
 
-expansionPanel title =
+expansionPanel isExpanded title content =
+    div [] (expansionPanelHeader title :: content)
+
+
+expansionPanelHeader title =
     div
         [ css [ pa 1, bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
