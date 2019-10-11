@@ -30,10 +30,11 @@ drawerModalL =
     privateLens { get = .drawerModal, set = \s b -> { b | drawerModal = s } }
 
 
-update message model =
+update : (Msg -> msg) -> Msg -> Layout -> ( Layout, Cmd msg )
+update toMsg message model =
     case message of
         OpenModalDrawer ->
-            ()
+            ( drawerModalL.set True model, Cmd.none )
 
 
 type alias Parts msg =
