@@ -11,7 +11,7 @@ view =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , navGroup "Projects"
+    , expansionPanel "Projects"
     , subItem "FooBar"
     , subItem "Learn This"
     ]
@@ -29,18 +29,17 @@ navItem title =
     styled div [ pa 2, pointer ] [] [ text title ]
 
 
-navGroup title =
-    styled div
-        [ pa 1, bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ]
-        []
-        [ iBtn [ flexGrow1 ]
-            []
+expansionPanel title =
+    div
+        [ css [ pa 1, bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
+        [ button
+            [ css [ iBtnStyle, flexGrow1 ] ]
             [ span [ css [ c_grayL 0.6 ] ] [ MI.expand_more ]
             , styled span [ bold, pa 1 ] [] [ text title ]
             ]
-        , iBtn [] [] [ MI.add ]
+        , button [ css [ iBtnStyle ] ] [ MI.add ]
         ]
 
 
-iBtn styles =
-    styled button (btnReset :: pointer :: styles)
+iBtnStyle =
+    batch [ btnReset, pointer ]
