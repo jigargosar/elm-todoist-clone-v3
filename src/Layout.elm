@@ -110,11 +110,17 @@ view toMsg { appbar, drawer, content } layout =
             [ center, w_100, max_w_app, h_100 ]
             []
             [ styledPermanentDrawer []
-                --                [ styled div [ Css.height (Css.vh 200) ] [] side ] -- TEST OVERFLOW SCROLL
-                drawer
+                [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
+
+            -- TEST OVERFLOW SCROLL
+            --                drawer
             , styledMain [] content
             ]
-        , viewModalDrawer toMsg layout drawer
+        , viewModalDrawer toMsg
+            layout
+            [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
+
+        -- drawer
         ]
 
 
@@ -186,6 +192,7 @@ viewModalDrawer toMsg layout drawer =
                 else
                     [ hidden, slideOutDrawer ]
             , ns [ hidden, slideOutDrawer ]
+            , autoHideScrollY
             ]
             [ class "shadow-1" ]
             drawer
