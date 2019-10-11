@@ -151,14 +151,15 @@ view toMsg { appbar, drawer, content } layout =
                 [ styled main_ [ flexGrow1 ] [] content ]
             ]
         , styled div
-            [ ns [ dn ]
+            [ ns [ Css.visibility Css.hidden ]
             , if drawerModalOpen then
-                db
+                batch []
 
               else
-                dn
+                batch [ Css.visibility Css.hidden ]
+            , transition [ Transitions.visibility 150 ]
             , z_ 10
-            , fixed
+            , batch [ fixed, absFill ]
             ]
             [ onClick <| toMsg CloseModalDrawer ]
             [ styled div
@@ -169,16 +170,15 @@ view toMsg { appbar, drawer, content } layout =
                 []
             , styled div
                 [ transition [ Transitions.transform 150 ]
+                , Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
                 , if drawerModalOpen then
                     batch
                         [ Css.transforms [ Css.translateX <| Css.px 0 ]
-                        , db
                         ]
 
                   else
                     batch
-                        [ Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
-                        ]
+                        []
                 , batch [ fixed, top_0, bottom_0, w_sidebar ]
                 , bgWhite
                 ]
