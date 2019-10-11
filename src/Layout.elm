@@ -128,8 +128,21 @@ view toMsg { appbar, drawer, content } layout =
             [ center, w_100, max_w_app ]
             []
             [ styled aside
-                [ batch [ left_ -sidebarWidthPx, ns [ left_auto ], transition [ Transitions.left 200 ] ]
-                , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
+                [ batch
+                    [ if drawerModalOpen then
+                        batch
+                            [ left_auto
+                            , z_ 20
+                            , bgWhite
+                            , Css.property "box-shadow" "2px 0 4px hsla(0, 0%, 0%, 30%)"
+                            ]
+
+                      else
+                        left_ -sidebarWidthPx
+                    , ns [ left_auto ]
+                    , transition [ Transitions.left 200 ]
+                    ]
+                , batch [ fixed, top_0, bottom_0, ns [ pt_ headerHeightPx ], w_sidebar ]
                 , autoHideScrollY
                 ]
                 []
@@ -148,22 +161,34 @@ view toMsg { appbar, drawer, content } layout =
             ]
         , if drawerModalOpen then
             styled div
-                [ ns [ dn ], z_ 10, fixed ]
-                [ onClick <| toMsg CloseModalDrawer ]
-                [ styled div
-                    [ batch [ fixed, absFill ]
-                    , bg (Css.hsla 0 0 0 0.3)
-                    ]
-                    []
-                    []
-                , styled div
-                    [ batch [ fixed, top_0, bottom_0, w_sidebar ]
-                    , bgWhite
-                    ]
-                    [ class "shadow-1" ]
-                    drawer
+                [ batch [ fixed, absFill, z_ 19 ]
+                , bg (Css.hsla 0 0 0 0.3)
                 ]
+                [ onClick (toMsg CloseModalDrawer) ]
+                []
 
           else
             text ""
+
+        {- , if drawerModalOpen then
+             styled div
+                 [ ns [ dn ], z_ 10, fixed ]
+                 [ onClick <| toMsg CloseModalDrawer ]
+                 [ styled div
+                     [ batch [ fixed, absFill ]
+                     , bg (Css.hsla 0 0 0 0.3)
+                     ]
+                     []
+                     []
+                 , styled div
+                     [ batch [ fixed, top_0, bottom_0, w_sidebar ]
+                     , bgWhite
+                     ]
+                     [ class "shadow-1" ]
+                     drawer
+                 ]
+
+           else
+             text ""
+        -}
         ]
