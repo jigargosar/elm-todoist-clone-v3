@@ -125,8 +125,8 @@ view toMsg { appbar, drawer, content } layout =
             []
             [ styled aside
                 [ batch
-                    [ Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
-                    , ns [ Css.transforms [ Css.translateX <| Css.px 0 ] ]
+                    [ slideOutDrawer
+                    , ns [ slideInDrawer ]
                     , transition [ Transitions.transform 150 ]
                     ]
                 , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
@@ -174,20 +174,20 @@ viewModalDrawer toMsg layout drawer =
             , transition [ Transitions.transform 150, Transitions.visibility 150 ]
             , batch <|
                 if drawerModalOpen then
-                    [ visible, slideInSidebar ]
+                    [ visible, slideInDrawer ]
 
                 else
-                    [ hidden, slideOutSidebar ]
-            , ns [ hidden, slideOutSidebar ]
+                    [ hidden, slideOutDrawer ]
+            , ns [ hidden, slideOutDrawer ]
             ]
             [ class "shadow-1" ]
             drawer
         ]
 
 
-slideOutSidebar =
+slideOutDrawer =
     Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
 
 
-slideInSidebar =
+slideInDrawer =
     Css.transforms [ Css.translateX <| Css.px 0 ]
