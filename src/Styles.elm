@@ -313,6 +313,14 @@ autoHideScrollY =
     Css.batch [ overflowYHidden, Css.hover [ overflowYAuto ] ]
 
 
+min_h_0 =
+    Css.minHeight zero
+
+
+h_auto =
+    Css.height auto
+
+
 min_vh =
     Css.minHeight << Css.vh
 

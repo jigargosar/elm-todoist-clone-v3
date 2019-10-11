@@ -34,6 +34,7 @@ type alias Model =
     { todoDict : TodoDict
     , screen : Screen
     , layout : Layout
+    , bool : Bool
     }
 
 
@@ -80,6 +81,7 @@ init flags =
             { todoDict = TodoDict.initial
             , screen = screenSystem.initial
             , layout = Layout.initial
+            , bool = True
             }
     in
     todoDictSystem.init flags.todoList initial
@@ -106,6 +108,7 @@ type Msg
     | Toggle TodoId
     | Screen Screen.Msg
     | Layout Layout.Msg
+    | Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -123,6 +126,9 @@ update message =
         Layout msg ->
             updateLayout msg
 
+        Bool ->
+            \m -> ( { m | bool = not m.bool }, Cmd.none )
+
 
 updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
 updateLayout msg big =
@@ -138,7 +144,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Drawer.view
+        , drawer = Drawer.view { projectsCollapsed = model.bool, toggleProjects = Bool }
         , content = mainView model
         }
         model.layout

@@ -4,15 +4,17 @@ import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
+import Html.Styled.Events exposing (onClick)
 import MaterialIcons as MI
 import Styles exposing (..)
 
 
-view =
+view { projectsCollapsed, toggleProjects } =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , expansionPanel False
+    , expansionPanel projectsCollapsed
+        toggleProjects
         "Projects"
         [ subItem "FooBar"
         , subItem "Learn This"
@@ -32,15 +34,18 @@ navItem title =
     styled div [ pa 2, pointer ] [] [ text title ]
 
 
-expansionPanel collapsed title content =
-    div [] (expansionPanelHeader collapsed title :: content)
+expansionPanel collapsed toggle title content =
+    div []
+        [ expansionPanelHeader collapsed toggle title
+        , div [ css [ min_h_0, h_auto ] ] content
+        ]
 
 
-expansionPanelHeader collapsed title =
+expansionPanelHeader collapsed toggle title =
     div
-        [ css [ pa 1, bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
+        [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
-            [ css [ iBtnStyle, flexGrow1 ] ]
+            [ css [ iBtnStyle, pa 1, flexGrow1 ], onClick toggle ]
             [ span
                 [ css
                     [ c_grayL 0.6
