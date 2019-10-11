@@ -91,6 +91,10 @@ max_w =
     Css.maxWidth << Css.px
 
 
+max_w_pct =
+    Css.maxWidth << Css.pct
+
+
 min_w =
     Css.minWidth << Css.px
 

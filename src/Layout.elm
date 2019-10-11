@@ -141,7 +141,7 @@ viewModalDrawer toMsg layout drawer =
             [ onClick <| toMsg CloseModalDrawer ]
             []
         , styled aside
-            [ batch [ fixed, top_0, bottom_0, w_sidebar ]
+            [ batch [ fixed, top_0, bottom_0, w_sidebar, max_w_pct 90 ]
             , bgWhite
             , transition [ Transitions.transform 150, Transitions.visibility 150 ]
             , batch <|
