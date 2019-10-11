@@ -12,7 +12,7 @@ view =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , expansionPanel True
+    , expansionPanel False
         "Projects"
         [ subItem "FooBar"
         , subItem "Learn This"
@@ -45,7 +45,7 @@ expansionPanelHeader collapsed title =
                 [ css
                     [ c_grayL 0.6
                     , batch
-                        [ styleIf collapsed [ Css.transforms [ Css.rotate (Css.deg 90) ] ]
+                        [ styleIf collapsed [ Css.transforms [ Css.rotate (Css.deg -90) ] ]
                         , transition [ Transitions.transform 200 ]
                         ]
                     ]
