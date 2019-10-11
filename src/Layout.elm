@@ -151,12 +151,8 @@ view toMsg { appbar, drawer, content } layout =
                 [ styled main_ [ flexGrow1 ] [] content ]
             ]
         , styled div
-            [ ns [ Css.visibility Css.hidden ]
-            , if drawerModalOpen then
-                batch []
-
-              else
-                batch [ Css.visibility Css.hidden ]
+            [ ns [ hidden ]
+            , styleIf (not drawerModalOpen) [ hidden ]
             , transition [ Transitions.visibility 150 ]
             , z_ 10
             , batch [ fixed, absFill ]
@@ -165,20 +161,16 @@ view toMsg { appbar, drawer, content } layout =
             [ styled div
                 [ batch [ fixed, absFill ]
                 , bg (Css.hsla 0 0 0 0.3)
+                , styleIf (not drawerModalOpen) [ dn ]
+                , ns [ dn ]
                 ]
                 []
                 []
             , styled div
                 [ transition [ Transitions.transform 150 ]
-                , Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
-                , if drawerModalOpen then
-                    batch
-                        [ Css.transforms [ Css.translateX <| Css.px 0 ]
-                        ]
-
-                  else
-                    batch
-                        []
+                , slideOutSidebar
+                , ns [ slideOutSidebar ]
+                , styleIf drawerModalOpen [ slideInSidebar ]
                 , batch [ fixed, top_0, bottom_0, w_sidebar ]
                 , bgWhite
                 ]
@@ -186,3 +178,11 @@ view toMsg { appbar, drawer, content } layout =
                 drawer
             ]
         ]
+
+
+slideOutSidebar =
+    Css.transforms [ Css.translateX <| Css.px -sidebarWidthPx ]
+
+
+slideInSidebar =
+    Css.transforms [ Css.translateX <| Css.px 0 ]

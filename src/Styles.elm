@@ -286,3 +286,21 @@ noSelection =
 
 btnReset =
     batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
+
+
+hidden =
+    Css.visibility Css.hidden
+
+
+visible =
+    Css.visibility Css.visible
+
+
+styleIf bool styles =
+    batch
+        (if bool then
+            styles
+
+         else
+            []
+        )
