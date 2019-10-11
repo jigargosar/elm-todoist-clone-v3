@@ -365,3 +365,7 @@ bold =
 
 c_grayL =
     Css.color << grayL
+
+
+hover =
+    Css.hover

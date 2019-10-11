@@ -31,11 +31,11 @@ navItem title =
 
 navGroup title =
     styled div
-        [ pa 1, bo_b, boc (grayL 0.9), flex, Css.hover [ bgGrayL 0.95 ] ]
+        [ pa 1, bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ]
         []
         [ iBtn [ flexGrow1 ]
             []
-            [ span [ css [ Css.color <| grayL 0.6 ] ] [ MI.expand_more ]
+            [ span [ css [ c_grayL 0.6 ] ] [ MI.expand_more ]
             , styled span [ bold, pa 1 ] [] [ text title ]
             ]
         , iBtn [] [] [ MI.add ]
