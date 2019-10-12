@@ -39,3 +39,8 @@ expand_more =
 done_all : Svg msg
 done_all =
     fromUnstyled <| Material.Icons.Action.done_all defaultSize Inherit
+
+
+inbox : Svg msg
+inbox =
+    fromUnstyled <| Material.Icons.Content.inbox defaultSize Inherit
