@@ -7,18 +7,26 @@ type PhantomDict k comparable v
     = PhantomDict (Dict comparable v)
 
 
+unwrap : PhantomDict k comparable v -> Dict comparable v
 unwrap (PhantomDict dict) =
     dict
+
+
+map : (Dict comparable v -> Dict comparable v) -> PhantomDict k comparable v -> PhantomDict k comparable v
+map func =
+    unwrap >> func >> PhantomDict
 
 
 type alias System k comparable v =
     { empty : PhantomDict k comparable v
     , get : k -> PhantomDict k comparable v -> Maybe v
+    , insert : k -> v -> PhantomDict k comparable v -> PhantomDict k comparable v
     }
 
 
 system : (a -> comparable) -> System k comparable v
-system toComparable =
+system toComp =
     { empty = PhantomDict Dict.empty
-    , get = \k d -> Dict.get (toComparable k) (unwrap d)
+    , get = \k -> unwrap >> Dict.get (toComp k)
+    , insert = \k v -> map (Dict.insert (toComp k) v)
     }
