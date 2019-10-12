@@ -135,23 +135,17 @@ view toMsg model =
 
 navItem title icon iconColor =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, iconColor ] ] [ icon ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ] ] [ icon ]
         , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]
 
 
 navIconItem title icon =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ icon ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
-        ]
+    navItem title icon Css.inherit
 
 
 navProjectItem title hue =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.folder ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
-        ]
+    navItem title MI.folder (Css.hsl hue 0.7 0.5)
 
 
 navLabelItem title hue =
