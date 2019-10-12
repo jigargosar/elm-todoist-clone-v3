@@ -31,12 +31,7 @@ initial =
 
 fromEncodedList : Value -> Result JD.Error TodoDict
 fromEncodedList =
-    JD.decodeValue (JD.list Todo.decoder |> JD.map fromList)
-
-
-fromList : List Todo -> TodoDict
-fromList =
-    List.foldl insert initial
+    JD.decodeValue (JD.list Todo.decoder |> JD.map (dict.fromList >> TodoDict))
 
 
 sortedByIdx : TodoDict -> List Todo
@@ -60,11 +55,6 @@ unwrap (TodoDict internal) =
 map : (Internal -> Internal) -> TodoDict -> TodoDict
 map func =
     unwrap >> func >> TodoDict
-
-
-insert : Todo -> TodoDict -> TodoDict
-insert todo =
-    map (dict.insert todo)
 
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
