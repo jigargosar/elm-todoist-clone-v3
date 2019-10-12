@@ -104,7 +104,7 @@ styledMain contentAttrs content =
     styled div
         [ commonTransitions
         , batch [ ns [ ml_ sidebarWidthPx ] ]
-        , pt_ headerHeightPx
+        , pt_fix_for_header
         , h_100
         , bgWhite
         , ns [ bo_r, bo_l, b__main ]
