@@ -133,6 +133,13 @@ view toMsg model =
         |> List.map (H.map toMsg)
 
 
+navItem title icon iconColor =
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, iconColor ] ] [ icon ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
+        ]
+
+
 navIconItem title icon =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ icon ]
