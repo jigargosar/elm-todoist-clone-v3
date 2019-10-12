@@ -1,4 +1,4 @@
-module TodoId exposing (TodoId, decoder, toDictKey)
+module TodoId exposing (TodoId, decoder, toString)
 
 import Json.Decode as JD exposing (Decoder)
 
@@ -7,8 +7,8 @@ type TodoId
     = TodoId String
 
 
-toDictKey : TodoId -> String
-toDictKey =
+toString : TodoId -> String
+toString =
     unwrap
 
 

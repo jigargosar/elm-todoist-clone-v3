@@ -50,7 +50,7 @@ unwrap (TodoDict dict) =
 
 key : Todo -> String
 key =
-    Todo.id >> TodoId.toDictKey
+    Todo.id >> TodoId.toString
 
 
 
@@ -69,4 +69,4 @@ insert todo =
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
-    map (Dict.update (TodoId.toDictKey todoId) (Maybe.map Todo.toggle))
+    map (Dict.update (TodoId.toString todoId) (Maybe.map Todo.toggle))
