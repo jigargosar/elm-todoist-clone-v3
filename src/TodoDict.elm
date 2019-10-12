@@ -1,4 +1,4 @@
-module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toList, toggleCompleted)
+module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toggleCompleted)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
