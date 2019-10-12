@@ -124,7 +124,7 @@ styledPermanentDrawer drawer =
             , autoHideScrollY
             ]
         ]
-        [ div [ css [ w_sidebar, pb 3 ] ] drawer ]
+        [ div [ css [ w_sidebar, pb 5 ] ] drawer ]
 
 
 viewModalDrawer toMsg layout drawer =
@@ -159,7 +159,7 @@ viewModalDrawer toMsg layout drawer =
             , autoHideScrollY
             ]
             [ class "shadow-1" ]
-            [ div [ css [ w_sidebar, max_vw 90, pb 3 ] ] drawer ]
+            [ div [ css [ w_sidebar, max_vw 90, pb 5 ] ] drawer ]
         ]
 
 
