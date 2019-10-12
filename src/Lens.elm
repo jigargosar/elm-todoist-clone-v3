@@ -1,4 +1,4 @@
-module Lens exposing (Config, System, compose, system)
+module Lens exposing (Config, System, compose, system, update)
 
 import Basics.More exposing (flip)
 
@@ -53,6 +53,12 @@ type alias System small big =
     , setIn : big -> small -> big
     , map : (small -> small) -> big -> big
     }
+
+
+update : System small big -> (small -> ( small, other )) -> big -> ( big, other )
+update s func big =
+    func (s.get big)
+        |> Tuple.mapFirst (s.setIn big)
 
 
 system : Config small big -> System small big

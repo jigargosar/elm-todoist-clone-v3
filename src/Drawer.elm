@@ -74,8 +74,7 @@ updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
 updatePanel panel message model =
     case panel of
         Projects ->
-            projectsEPS.update message (projectsEPL.get model)
-                |> Tuple.mapFirst (projectsEPL.setIn model)
+            Lens.update projectsEPL (projectsEPS.update message) model
 
         --        Projects ->
         --            updateInternal
