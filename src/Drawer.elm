@@ -3,7 +3,7 @@ module Drawer exposing (Drawer, Msg, initial, update, view)
 import Css
 import Css.Transitions as Transitions exposing (transition)
 import ExpansionPanel exposing (ExpansionPanel)
-import Html.Styled exposing (..)
+import Html.Styled as H exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import MaterialIcons as MI
@@ -39,6 +39,11 @@ type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
 
 
+projectsEPS : ExpansionPanel.System Msg
+projectsEPS =
+    ExpansionPanel.system (ExpansionPanel Projects)
+
+
 unwrap : Drawer -> Internal
 unwrap (Drawer internal) =
     internal
@@ -60,7 +65,7 @@ updatePanel panel message model =
         Projects ->
             updateInternal
                 (\i ->
-                    ExpansionPanel.update (ExpansionPanel Projects) message i.projects
+                    projectsEPS.update message i.projects
                         |> Tuple.mapFirst (\s -> { i | projects = s })
                 )
                 model
@@ -105,16 +110,13 @@ view toMsg model =
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , ExpansionPanel.view
-        (ExpansionPanel.viewHeader
-            (toMsg << ExpansionPanel Projects)
-            "Projects"
-            projectsEP
-        )
+    , projectsEPS.view
+        (projectsEPS.viewHeader "Projects" projectsEP)
         [ subItem "FooBar"
         , subItem "Learn This"
         ]
         projectsEP
+        |> H.map toMsg
     , ExpansionPanel.view
         (ExpansionPanel.viewHeader
             (toMsg << ExpansionPanel Labels)

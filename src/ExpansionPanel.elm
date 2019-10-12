@@ -1,6 +1,7 @@
 module ExpansionPanel exposing
     ( ExpansionPanel
     , Msg
+    , System
     , initial
     , system
     , update
