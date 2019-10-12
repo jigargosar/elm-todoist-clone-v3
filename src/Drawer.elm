@@ -75,39 +75,17 @@ unwrap (Drawer internal) =
     internal
 
 
-updateInternal : (Internal -> ( Internal, Cmd msg )) -> Drawer -> ( Drawer, Cmd msg )
-updateInternal func =
-    unwrap >> func >> Tuple.mapFirst Drawer
-
-
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
-updatePanel panel message model =
+updatePanel panel =
     case panel of
         Projects ->
-            projectsEPS.update message model
+            projectsEPS.update
 
-        --        Projects ->
-        --            updateInternal
-        --                (\i ->
-        --                    projectsEPS.update message i.projects
-        --                        |> Tuple.mapFirst (\s -> { i | projects = s })
-        --                )
-        --                model
         Labels ->
-            updateInternal
-                (\i ->
-                    ExpansionPanel.update (ExpansionPanel Labels) message i.labels
-                        |> Tuple.mapFirst (\s -> { i | labels = s })
-                )
-                model
+            labelsEPS.update
 
         Filters ->
-            updateInternal
-                (\i ->
-                    ExpansionPanel.update (ExpansionPanel Filters) message i.filters
-                        |> Tuple.mapFirst (\s -> { i | filters = s })
-                )
-                model
+            filtersEPS.update
 
 
 update : (Msg -> msg) -> Msg -> Drawer -> ( Drawer, Cmd msg )
@@ -138,18 +116,14 @@ view toMsg model =
         [ subItem "FooBar"
         , subItem "Learn This"
         ]
-        projectsEP
-    , ExpansionPanel.view
-        (ExpansionPanel.viewHeader
-            (ExpansionPanel Labels)
-            "Labels"
-            labelsEP
-        )
+        model
+    , labelsEPS.view
+        "Labels"
         [ subItem "to read"
         , subItem "medical"
         , subItem "quick-ref"
         ]
-        labelsEP
+        model
     ]
         |> List.map (H.map toMsg)
 
