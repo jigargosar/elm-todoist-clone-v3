@@ -19,9 +19,9 @@ type alias Internal =
 
 initial : Drawer
 initial =
-    Internal ExpansionPanel.initial
-        ExpansionPanel.initial
-        ExpansionPanel.initial
+    Internal projectsEPS.initial
+        labelsEPS.initial
+        filtersEPS.initial
         |> Drawer
 
 

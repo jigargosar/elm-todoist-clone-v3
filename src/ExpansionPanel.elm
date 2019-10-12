@@ -2,7 +2,6 @@ module ExpansionPanel exposing
     ( ExpansionPanel
     , Msg
     , System
-    , initial
     , system
     , update
     , view
@@ -42,6 +41,7 @@ type alias Internal =
     { collapsed : Bool }
 
 
+initial : ExpansionPanel
 initial =
     Internal False |> ExpansionPanel
 
