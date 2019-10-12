@@ -1,7 +1,6 @@
 module Appbar exposing (view)
 
 import Css
-import Emoji
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick)
@@ -41,7 +40,8 @@ search styles =
             , relative
             , c_white
             , hover [ bg (Css.rgba 255 255 255 0.2) ]
-            , focusWithin [ bgWhite, c_grayL 0.3, flexGrow1 ]
+            , flexGrow1
+            , focusWithin [ bgWhite, c_grayL 0.3 ]
             , batch styles
             , bor 2
             ]
