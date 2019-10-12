@@ -101,7 +101,7 @@ update toMsg message model =
 view : (Msg -> msg) -> Drawer -> List (Html msg)
 view toMsg model =
     [ navIconItem "Inbox" MI.inbox
-    , navIconItem "Today" MI.schedule
+    , navIconItem "Today" MI.calendar_today
     , navItem "Next 7 Days"
     , projectsEPS.view
         "Projects"

@@ -49,3 +49,8 @@ inbox =
 schedule : Svg msg
 schedule =
     fromUnstyled <| Material.Icons.Action.schedule defaultSize Inherit
+
+
+calendar_today : Svg msg
+calendar_today =
+    fromUnstyled <| Material.Icons.Action.calendar_today defaultSize Inherit
