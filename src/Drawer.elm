@@ -98,16 +98,6 @@ update toMsg message model =
 
 view : (Msg -> msg) -> Drawer -> List (Html msg)
 view toMsg model =
-    let
-        projectsEP =
-            model |> unwrap >> .projects
-
-        labelsEP =
-            model |> unwrap >> .labels
-
-        filtersEP =
-            model |> unwrap >> .filters
-    in
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
