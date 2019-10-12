@@ -1,4 +1,4 @@
-module Lens exposing (System, compose, system)
+module Lens exposing (Config, System, compose, system)
 
 import Basics.More exposing (flip)
 
@@ -13,7 +13,11 @@ type alias Internal small big =
     }
 
 
-init : { get : big -> small, set : small -> big -> big } -> Lens small big
+type alias Config small big =
+    { get : big -> small, set : small -> big -> big }
+
+
+init : Config small big -> Lens small big
 init =
     Lens
 
@@ -51,7 +55,7 @@ type alias System small big =
     }
 
 
-system : { get : big -> small, set : small -> big -> big } -> System small big
+system : Config small big -> System small big
 system =
     init >> systemFromLens
 

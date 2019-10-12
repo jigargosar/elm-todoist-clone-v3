@@ -1,13 +1,8 @@
 module Drawer exposing (Drawer, Msg, initial, update, view)
 
-import Css
-import Css.Transitions as Transitions exposing (transition)
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
-import Html.Styled.Attributes exposing (css)
-import Html.Styled.Events exposing (onClick)
 import Lens
-import MaterialIcons as MI
 import Styles exposing (..)
 
 
@@ -40,19 +35,22 @@ type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
 
 
-lens : { get : Internal -> small, set : small -> Internal -> Internal } -> Lens.System small Drawer
+lens : Lens.Config small Internal -> Lens.System small Drawer
 lens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
+projectsEPL : Lens.System ExpansionPanel Drawer
 projectsEPL =
     lens { get = .projects, set = \s b -> { b | projects = s } }
 
 
+filtersEPL : Lens.System ExpansionPanel Drawer
 filtersEPL =
     lens { get = .filters, set = \s b -> { b | filters = s } }
 
 
+labelsEPL : Lens.System ExpansionPanel Drawer
 labelsEPL =
     lens { get = .labels, set = \s b -> { b | labels = s } }
 
@@ -65,11 +63,6 @@ projectsEPS =
 unwrap : Drawer -> Internal
 unwrap (Drawer internal) =
     internal
-
-
-map : (Internal -> Internal) -> Drawer -> Drawer
-map func =
-    unwrap >> func >> Drawer
 
 
 updateInternal : (Internal -> ( Internal, Cmd msg )) -> Drawer -> ( Drawer, Cmd msg )
@@ -162,43 +155,3 @@ subItem title =
 
 navItem title =
     styled div [ pa 2, pointer ] [] [ text title ]
-
-
-expansionPanel collapsed toggle title content =
-    let
-        visibleContent =
-            if collapsed then
-                []
-
-            else
-                content
-    in
-    div []
-        (expansionPanelHeader collapsed toggle title
-            :: visibleContent
-        )
-
-
-expansionPanelHeader collapsed toggle title =
-    div
-        [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
-        [ button
-            [ css [ iBtnStyle, pa 1, flexGrow1 ], onClick toggle ]
-            [ span
-                [ css
-                    [ c_grayL 0.6
-                    , batch
-                        [ styleIf collapsed [ Css.transforms [ Css.rotate (Css.deg -90) ] ]
-                        , transition [ Transitions.transform 200 ]
-                        ]
-                    ]
-                ]
-                [ MI.expand_more ]
-            , styled span [ bold, pa 1 ] [] [ text title ]
-            ]
-        , button [ css [ iBtnStyle ] ] [ MI.add ]
-        ]
-
-
-iBtnStyle =
-    batch [ btnReset, pointer ]
