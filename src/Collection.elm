@@ -23,6 +23,7 @@ type alias System id v =
     , insert : v -> Collection id v -> Collection id v
     , values : Collection id v -> List v
     , update : id -> (Maybe v -> Maybe v) -> Collection id v -> Collection id v
+    , fromList : List v -> Collection id v
     }
 
 
@@ -37,4 +38,5 @@ system idToString getId =
     , insert = \v -> map (Dict.insert (valueToIdString v) v)
     , values = unwrap >> Dict.values
     , update = \id func -> map (Dict.update (idToString id) func)
+    , fromList = List.map (\v -> ( valueToIdString v, v )) >> Dict.fromList >> Collection
     }
