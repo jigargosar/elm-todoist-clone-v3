@@ -95,7 +95,7 @@ viewHeader toMsg title model =
                 [ MI.expand_more ]
             , styled span [ bold, pa 1 ] [] [ text title ]
             ]
-        , button [ css [ iBtnStyle ] ] [ MI.add ]
+        , button [ css [ iBtnStyle, mr 3 ] ] [ MI.add ]
         ]
 
 

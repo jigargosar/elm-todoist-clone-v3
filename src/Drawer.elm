@@ -133,41 +133,29 @@ view toMsg model =
         |> List.map (H.map toMsg)
 
 
-subItem title =
-    styled div
-        [ pa 2, pointer ]
-        []
-        [ text title
-        ]
-
-
-navItem title =
-    styled div [ pa 2, pointer ] [] [ text title ]
-
-
 navIconItem title icon =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ icon ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]
 
 
 navProjectItem title color =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ color ] ] [ MI.folder ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]
 
 
 navLabelItem title hue =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.label ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]
 
 
 navFilterItem title hue =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.filter_list ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]

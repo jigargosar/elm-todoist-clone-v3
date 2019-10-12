@@ -159,7 +159,7 @@ viewModalDrawer toMsg layout drawer =
             , autoHideScrollY
             ]
             [ class "shadow-1" ]
-            drawer
+            [ div [ css [ w_sidebar, max_w_pct 100 ] ] drawer ]
         ]
 
 
