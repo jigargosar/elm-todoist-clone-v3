@@ -90,4 +90,4 @@ view headerHtml contentHtml model =
             else
                 contentHtml
     in
-    div [] (headerHtml :: contentHtml)
+    div [] (headerHtml :: finalContent)
