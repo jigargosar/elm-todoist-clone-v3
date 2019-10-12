@@ -3,8 +3,6 @@ module ExpansionPanel exposing
     , Msg
     , System
     , system
-    , view
-    , viewHeader
     )
 
 import Css
