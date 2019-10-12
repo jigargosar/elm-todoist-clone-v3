@@ -1,4 +1,4 @@
-module Drawer exposing (Drawer, initial, update, view)
+module Drawer exposing (Drawer, Msg, initial, update, view)
 
 import Css exposing (transform, transforms)
 import Css.Transitions as Transitions exposing (transition)

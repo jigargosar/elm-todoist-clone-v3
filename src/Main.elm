@@ -110,6 +110,7 @@ type Msg
     | Toggle TodoId
     | Screen Screen.Msg
     | Layout Layout.Msg
+    | Drawer Drawer.Msg
     | Bool
 
 
@@ -131,6 +132,15 @@ update message =
         Bool ->
             \m -> ( { m | bool = not m.bool }, Cmd.none )
 
+        Drawer msg ->
+            updateDrawer msg
+
+
+updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
+updateDrawer msg model =
+    Drawer.update Drawer msg model.drawer
+        |> Tuple.mapFirst (\s -> { model | drawer = s })
+
 
 updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
 updateLayout msg big =
@@ -146,7 +156,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Drawer.view { projectsCollapsed = model.bool, toggleProjects = Bool }
+        , drawer = Drawer.view Drawer { projectsCollapsed = model.bool, toggleProjects = Bool }
         , content = mainView model
         }
         model.layout
