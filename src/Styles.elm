@@ -67,8 +67,8 @@ c_inherit =
     c_ inherit
 
 
-pseudoPlaceholder : List Css.Style -> Css.Style
-pseudoPlaceholder =
+pePlaceholder : List Css.Style -> Css.Style
+pePlaceholder =
     Css.pseudoElement "placeholder"
 
 
@@ -432,3 +432,7 @@ commonTransitions =
         , CT.visibility 150
         , CT.transform 150
         ]
+
+
+focusWithin =
+    Css.pseudoClass "focus-within"
