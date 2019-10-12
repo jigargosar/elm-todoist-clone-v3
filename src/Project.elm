@@ -1,4 +1,4 @@
-module PhantomDict exposing (..)
+module PhantomDict exposing (PhantomDict, System, system)
 
 import Dict exposing (Dict)
 
