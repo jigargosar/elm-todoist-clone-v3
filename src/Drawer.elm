@@ -114,6 +114,17 @@ view toMsg model =
         , subItem "quick-ref"
         ]
         model
+    , filtersEPS.view
+        "Filters"
+        [ subItem "Assigned to me"
+        , subItem "Assigned to others"
+        , subItem "Priority 1"
+        , subItem "Priority 2"
+        , subItem "Priority 3"
+        , subItem "View all"
+        , subItem "No due date"
+        ]
+        model
     ]
         |> List.map (H.map toMsg)
 
