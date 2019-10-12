@@ -44,3 +44,8 @@ done_all =
 inbox : Svg msg
 inbox =
     fromUnstyled <| Material.Icons.Content.inbox defaultSize Inherit
+
+
+schedule : Svg msg
+schedule =
+    fromUnstyled <| Material.Icons.Action.schedule defaultSize Inherit
