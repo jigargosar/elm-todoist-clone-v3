@@ -2,7 +2,7 @@ module Layout exposing (Layout, Msg, Parts, initial, openDrawer, update, view)
 
 import Css
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (class)
+import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events exposing (onClick)
 import Lens
 import Styles exposing (..)
@@ -67,7 +67,7 @@ view toMsg { appbar, drawer, content } layout =
         , styled div
             [ center, w_100, max_w_app, h_100 ]
             []
-            [ styledPermanentDrawer []
+            [ styledPermanentDrawer
                 -- TEST OVERFLOW SCROLL
                 -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
                 drawer
@@ -115,13 +115,16 @@ styledMain contentAttrs content =
         [ styled main_ [ flexGrow1 ] contentAttrs content ]
 
 
-styledPermanentDrawer =
-    styled aside
-        [ commonTransitions
-        , batch [ slideOutDrawer, ns [ slideInDrawer ] ]
-        , batch [ fixed, top_0, bottom_0, pt_fix_for_header, w_sidebar ]
-        , autoHideScrollY
+styledPermanentDrawer drawer =
+    aside
+        [ css
+            [ commonTransitions
+            , batch [ slideOutDrawer, ns [ slideInDrawer ] ]
+            , batch [ fixed, top_0, pt_fix_for_header, w_sidebar, Css.property "height" "calc(100vh)" ]
+            , autoHideScrollY
+            ]
         ]
+        [ div [ css [ w_sidebar ] ] drawer ]
 
 
 viewModalDrawer toMsg layout drawer =
