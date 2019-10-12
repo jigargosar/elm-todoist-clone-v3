@@ -1,7 +1,24 @@
 module Styles exposing (..)
 
-import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, zero)
+import Css
+    exposing
+        ( auto
+        , end
+        , inherit
+        , int
+        , marginLeft
+        , marginRight
+        , none
+        , num
+        , padding
+        , paddingBottom
+        , paddingLeft
+        , paddingTop
+        , px
+        , zero
+        )
 import Css.Media as Media
+import Css.Transitions as CT
 import ModularScale
 
 
@@ -386,3 +403,13 @@ c_grayL =
 
 hover =
     Css.hover
+
+
+commonTransitions =
+    CT.transition
+        [ CT.padding 150
+        , CT.margin 150
+        , CT.height 150
+        , CT.visibility 150
+        , CT.transform 150
+        ]

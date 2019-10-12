@@ -1,7 +1,6 @@
 module Layout exposing (Layout, Msg, Parts, initial, openDrawer, update, view)
 
 import Css
-import Css.Transitions as Transitions
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
@@ -215,13 +214,3 @@ slideOutDrawer =
 
 slideInDrawer =
     Css.transforms [ Css.translateX <| Css.px 0 ]
-
-
-commonTransitions =
-    Transitions.transition
-        [ Transitions.padding 150
-        , Transitions.margin 150
-        , Transitions.height 150
-        , Transitions.visibility 150
-        , Transitions.transform 150
-        ]
