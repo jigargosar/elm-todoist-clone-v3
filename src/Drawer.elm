@@ -116,10 +116,9 @@ view toMsg model =
         , subItem "Learn This"
         ]
         projectsEP
-        |> H.map toMsg
     , ExpansionPanel.view
         (ExpansionPanel.viewHeader
-            (toMsg << ExpansionPanel Labels)
+            (ExpansionPanel Labels)
             "Labels"
             labelsEP
         )
@@ -129,6 +128,7 @@ view toMsg model =
         ]
         labelsEP
     ]
+        |> List.map (H.map toMsg)
 
 
 subItem title =
