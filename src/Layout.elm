@@ -62,7 +62,7 @@ view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
 view toMsg { appbar, drawer, content } layout =
     styled div
         [ bgBody, h_100 ]
-        []
+        [ class "sans-serif" ]
         [ styledAppbar [] appbar
         , styled div
             [ center, w_100, max_w_app, h_100 ]

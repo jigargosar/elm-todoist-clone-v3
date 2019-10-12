@@ -57,7 +57,7 @@ search styles =
             , min_w_0
             , bgTransparent
             , c_inherit
-            , pePlaceholder [ c_inherit ]
+            , pePlaceholder [ c_inherit, Css.fontWeight <| Css.int 100 ]
             , flexGrow1
             , Css.width (Css.em 12)
             ]
