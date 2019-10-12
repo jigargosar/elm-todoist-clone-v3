@@ -19,14 +19,14 @@ type alias Internal =
     PhantomDict TodoId String Todo
 
 
-phantomDictS : PhantomDict.System TodoId String Todo
-phantomDictS =
+dict : PhantomDict.System TodoId String Todo
+dict =
     PhantomDict.system TodoId.toString
 
 
 initial : TodoDict
 initial =
-    TodoDict phantomDictS.empty
+    TodoDict dict.empty
 
 
 fromEncodedList : Value -> Result JD.Error TodoDict
@@ -41,7 +41,7 @@ fromList =
 
 toList : TodoDict -> List Todo
 toList =
-    unwrap >> phantomDictS.values
+    unwrap >> dict.values
 
 
 sortedByIdx : TodoDict -> List Todo
@@ -64,9 +64,9 @@ map func =
 
 insert : Todo -> TodoDict -> TodoDict
 insert todo =
-    map (phantomDictS.insert (Todo.id todo) todo)
+    map (dict.insert (Todo.id todo) todo)
 
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
-    map (phantomDictS.update todoId (Maybe.map Todo.toggle))
+    map (dict.update todoId (Maybe.map Todo.toggle))
