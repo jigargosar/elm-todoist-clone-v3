@@ -43,6 +43,7 @@ search styles =
             , hover [ bg (Css.rgba 255 255 255 0.2) ]
             , focusWithin [ bgWhite, c_grayL 0.3, flexGrow1 ]
             , batch styles
+            , bor 2
             ]
         ]
         [ div
@@ -51,10 +52,10 @@ search styles =
         , styled input
             [ pa 1
             , Css.paddingLeft (Css.px 24)
-            , bor 2
             , bn
+            , bor 2
             , min_w_0
-            , bgInherit
+            , bgTransparent
             , c_inherit
             , pePlaceholder [ c_inherit ]
             , flexGrow1
