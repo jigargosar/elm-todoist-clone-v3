@@ -106,9 +106,9 @@ view toMsg model =
     , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
-        [ navProjectItem "Clone This" (Css.hsl 10 0.7 0.5)
-        , navProjectItem "Learn This" (Css.hsl 50 0.7 0.5)
-        , navProjectItem "Finish That" (Css.hsl 170 0.7 0.5)
+        [ navProjectItem "Clone This" 10
+        , navProjectItem "Learn This" 50
+        , navProjectItem "Finish That" 170
         ]
         model
     , labelsEPS.view
@@ -140,9 +140,9 @@ navIconItem title icon =
         ]
 
 
-navProjectItem title color =
+navProjectItem title hue =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ color ] ] [ MI.folder ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.folder ]
         , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
         ]
 
