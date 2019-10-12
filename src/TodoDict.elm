@@ -1,8 +1,8 @@
 module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toList, toggleCompleted)
 
+import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
-import PhantomDict exposing (PhantomDict)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 
@@ -16,12 +16,12 @@ type TodoDict
 
 
 type alias Internal =
-    PhantomDict TodoId String Todo
+    Collection TodoId Todo
 
 
-dict : PhantomDict.System TodoId String Todo
+dict : Collection.System TodoId Todo
 dict =
-    PhantomDict.system TodoId.toString
+    Collection.system TodoId.toString Todo.id
 
 
 initial : TodoDict
@@ -64,7 +64,7 @@ map func =
 
 insert : Todo -> TodoDict -> TodoDict
 insert todo =
-    map (dict.insert (Todo.id todo) todo)
+    map (dict.insert todo)
 
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
