@@ -35,29 +35,29 @@ type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
 
 
-lens : Lens.Config small Internal -> Lens.System small Drawer
-lens =
+internalLens : Lens.Config small Internal -> Lens.System small Drawer
+internalLens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
-
-
-projectsEPL : Lens.System ExpansionPanel Drawer
-projectsEPL =
-    lens { get = .projects, set = \s b -> { b | projects = s } }
 
 
 filtersEPL : Lens.System ExpansionPanel Drawer
 filtersEPL =
-    lens { get = .filters, set = \s b -> { b | filters = s } }
+    internalLens { get = .filters, set = \s b -> { b | filters = s } }
 
 
 labelsEPL : Lens.System ExpansionPanel Drawer
 labelsEPL =
-    lens { get = .labels, set = \s b -> { b | labels = s } }
+    internalLens { get = .labels, set = \s b -> { b | labels = s } }
 
 
-projectsEPS : ExpansionPanel.System Msg
+projectsEPS : ExpansionPanel.SystemL Msg Drawer
 projectsEPS =
-    ExpansionPanel.system (ExpansionPanel Projects)
+    let
+        projectsLens : Lens.System ExpansionPanel Drawer
+        projectsLens =
+            internalLens { get = .projects, set = \s b -> { b | projects = s } }
+    in
+    ExpansionPanel.systemL (ExpansionPanel Projects) projectsLens
 
 
 unwrap : Drawer -> Internal
@@ -74,7 +74,7 @@ updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
 updatePanel panel message model =
     case panel of
         Projects ->
-            Lens.update projectsEPL (projectsEPS.update message) model
+            projectsEPS.update message model
 
         --        Projects ->
         --            updateInternal
