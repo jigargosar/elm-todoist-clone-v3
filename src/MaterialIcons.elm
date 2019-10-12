@@ -34,3 +34,8 @@ arrow_drop_down =
 expand_more : Svg msg
 expand_more =
     fromUnstyled <| Material.Icons.Navigation.expand_more defaultSize Inherit
+
+
+done_all : Svg msg
+done_all =
+    fromUnstyled <| Material.Icons.Action.done_all defaultSize Inherit

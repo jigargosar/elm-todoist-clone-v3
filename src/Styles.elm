@@ -43,6 +43,10 @@ fg =
     Css.color
 
 
+c_ =
+    Css.color
+
+
 fgInherit =
     fg inherit
 
@@ -236,6 +240,10 @@ flexShrink1 =
 
 selfEnd =
     Css.alignSelf end
+
+
+selfCenter =
+    Css.alignSelf Css.center
 
 
 dn : Css.Style
