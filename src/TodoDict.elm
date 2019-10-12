@@ -3,6 +3,7 @@ module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toLis
 import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
+import PhantomDict exposing (PhantomDict)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 
@@ -16,12 +17,17 @@ type TodoDict
 
 
 type alias Internal =
-    Dict String Todo
+    PhantomDict TodoId String Todo
+
+
+phantomDictS : PhantomDict.System TodoId String Todo
+phantomDictS =
+    PhantomDict.system TodoId.toString
 
 
 initial : TodoDict
 initial =
-    TodoDict Dict.empty
+    TodoDict phantomDictS.empty
 
 
 fromEncodedList : Value -> Result JD.Error TodoDict
@@ -36,7 +42,7 @@ fromList =
 
 toList : TodoDict -> List Todo
 toList =
-    unwrap >> Dict.values
+    unwrap >> phantomDictS.values
 
 
 sortedByIdx : TodoDict -> List Todo
@@ -44,13 +50,8 @@ sortedByIdx =
     toList >> List.sortBy Todo.idx
 
 
-unwrap (TodoDict dict) =
-    dict
-
-
-key : Todo -> String
-key =
-    Todo.id >> TodoId.toString
+unwrap (TodoDict internal) =
+    internal
 
 
 
@@ -64,9 +65,9 @@ map func =
 
 insert : Todo -> TodoDict -> TodoDict
 insert todo =
-    map (Dict.insert (key todo) todo)
+    map (phantomDictS.insert (Todo.id todo) todo)
 
 
 toggleCompleted : TodoId -> TodoDict -> TodoDict
 toggleCompleted todoId =
-    map (Dict.update (TodoId.toString todoId) (Maybe.map Todo.toggle))
+    map (phantomDictS.update todoId (Maybe.map Todo.toggle))
