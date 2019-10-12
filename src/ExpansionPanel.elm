@@ -2,8 +2,10 @@ module ExpansionPanel exposing
     ( ExpansionPanel
     , Msg
     , System
+    , SystemL
     , initial
     , system
+    , systemL
     , update
     , view
     , viewHeader
@@ -14,6 +16,7 @@ import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
+import Lens
 import MaterialIcons as MI
 import Styles exposing (..)
 
@@ -34,6 +37,21 @@ system toMsg =
     , viewHeader = viewHeader toMsg
     , viewContainer = view
     , view = \title content model -> view (viewHeader toMsg title model) content model
+    }
+
+
+type alias SystemL msg big =
+    { initial : ExpansionPanel
+    , update : Msg -> big -> ( big, Cmd msg )
+    , view : String -> List (Html msg) -> big -> Html msg
+    }
+
+
+systemL : (Msg -> msg) -> Lens.System ExpansionPanel big -> SystemL msg big
+systemL toMsg lens =
+    { initial = initial
+    , update = \msg -> Lens.update lens (update toMsg msg)
+    , view = \title content big -> view (viewHeader toMsg title (lens.get big)) content (lens.get big)
     }
 
 
