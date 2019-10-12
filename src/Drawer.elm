@@ -106,8 +106,8 @@ view toMsg model =
     , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
-        [ navProjectItem "FooBar" (Css.hsl 10 0.6 0.6)
-        , navProjectItem "Learn This" (Css.hsl 80 0.6 0.6)
+        [ navProjectItem "FooBar" (Css.hsl 10 0.7 0.5)
+        , navProjectItem "Learn This" (Css.hsl 50 0.7 0.5)
         ]
         model
     , labelsEPS.view
