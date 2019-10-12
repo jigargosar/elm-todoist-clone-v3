@@ -45,34 +45,34 @@ internalLens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
-projectsEPS : ExpansionPanel.SystemL Msg Drawer
+projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
     let
         projectsLens : Lens.System ExpansionPanel Drawer
         projectsLens =
             internalLens { get = .projects, set = \s b -> { b | projects = s } }
     in
-    ExpansionPanel.systemL (ExpansionPanel Projects) projectsLens
+    ExpansionPanel.system (ExpansionPanel Projects) projectsLens
 
 
-labelsEPS : ExpansionPanel.SystemL Msg Drawer
+labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
     let
         labelsLens : Lens.System ExpansionPanel Drawer
         labelsLens =
             internalLens { get = .labels, set = \s b -> { b | labels = s } }
     in
-    ExpansionPanel.systemL (ExpansionPanel Labels) labelsLens
+    ExpansionPanel.system (ExpansionPanel Labels) labelsLens
 
 
-filtersEPS : ExpansionPanel.SystemL Msg Drawer
+filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
     let
         filtersLens : Lens.System ExpansionPanel Drawer
         filtersLens =
             internalLens { get = .filters, set = \s b -> { b | filters = s } }
     in
-    ExpansionPanel.systemL (ExpansionPanel Filters) filtersLens
+    ExpansionPanel.system (ExpansionPanel Filters) filtersLens
 
 
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )

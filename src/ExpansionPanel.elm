@@ -2,10 +2,8 @@ module ExpansionPanel exposing
     ( ExpansionPanel
     , Msg
     , System
-    , SystemL
     , initial
     , system
-    , systemL
     , update
     , view
     , viewHeader
@@ -21,34 +19,15 @@ import MaterialIcons as MI
 import Styles exposing (..)
 
 
-type alias System msg =
-    { initial : ExpansionPanel
-    , update : Msg -> ExpansionPanel -> ( ExpansionPanel, Cmd msg )
-    , viewHeader : String -> ExpansionPanel -> Html msg
-    , viewContainer : Html msg -> List (Html msg) -> ExpansionPanel -> Html msg
-    , view : String -> List (Html msg) -> ExpansionPanel -> Html msg
-    }
-
-
-system : (Msg -> msg) -> System msg
-system toMsg =
-    { initial = initial
-    , update = update toMsg
-    , viewHeader = viewHeader toMsg
-    , viewContainer = view
-    , view = \title content model -> view (viewHeader toMsg title model) content model
-    }
-
-
-type alias SystemL msg big =
+type alias System msg big =
     { initial : ExpansionPanel
     , update : Msg -> big -> ( big, Cmd msg )
     , view : String -> List (Html msg) -> big -> Html msg
     }
 
 
-systemL : (Msg -> msg) -> Lens.System ExpansionPanel big -> SystemL msg big
-systemL toMsg lens =
+system : (Msg -> msg) -> Lens.System ExpansionPanel big -> System msg big
+system toMsg lens =
     { initial = initial
     , update = \msg -> Lens.update lens (update toMsg msg)
     , view = \title content big -> view (viewHeader toMsg title (lens.get big)) content (lens.get big)
