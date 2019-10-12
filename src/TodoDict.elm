@@ -1,6 +1,5 @@
 module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toList, toggleCompleted)
 
-import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import PhantomDict exposing (PhantomDict)
