@@ -120,13 +120,13 @@ view toMsg model =
         model
     , filtersEPS.view
         "Filters"
-        [ subItem "Assigned to me"
-        , subItem "Assigned to others"
-        , subItem "Priority 1"
-        , subItem "Priority 2"
-        , subItem "Priority 3"
-        , subItem "View all"
-        , subItem "No due date"
+        [ navFilterItem "Assigned to me" 933
+        , navFilterItem "Assigned to others" 9354
+        , navFilterItem "Priority 1" 93344
+        , navFilterItem "Priority 2" 932323
+        , navFilterItem "Priority 3" 932323
+        , navFilterItem "View all" 932325
+        , navFilterItem "No due date" 9355
         ]
         model
     ]
@@ -162,5 +162,12 @@ navProjectItem title color =
 navLabelItem title hue =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.label ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        ]
+
+
+navFilterItem title hue =
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.filter_list ]
         , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
         ]

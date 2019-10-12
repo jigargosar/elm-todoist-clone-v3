@@ -86,3 +86,8 @@ folder =
 label : Svg msg
 label =
     fromUnstyled <| Material.Icons.Action.label defaultSize Inherit
+
+
+filter_list : Svg msg
+filter_list =
+    fromUnstyled <| Material.Icons.Content.filter_list defaultSize Inherit
