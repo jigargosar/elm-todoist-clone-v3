@@ -35,7 +35,7 @@ add styles =
 
 
 search styles =
-    div [ css [ flex, relative, batch styles, flexGrow1, c_white, Css.pseudoClass "focus-within" [ c_grayL 0.3 ] ] ]
+    div [ css [ flex, relative, batch styles, flexGrow1, c_white, Css.pseudoClass "focus-within" [ bgWhite, c_grayL 0.3 ] ] ]
         [ div
             [ css [ absolute, left_ 0, top_ 1, z_ 1 ] ]
             [ MI.search ]
@@ -48,7 +48,7 @@ search styles =
             , bgInherit
             , c_inherit
             , pseudoPlaceholder [ c_inherit ]
-            , focus [ flexGrow1, bgWhite ]
+            , focus [ flexGrow1 ]
             , Css.width (Css.em 12)
             ]
             [ placeholder <| " Search"
