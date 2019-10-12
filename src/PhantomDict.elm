@@ -26,7 +26,7 @@ type alias System k comparable v =
     }
 
 
-system : (a -> comparable) -> System k comparable v
+system : (k -> comparable) -> System k comparable v
 system toComp =
     { empty = PhantomDict Dict.empty
     , get = \k -> unwrap >> Dict.get (toComp k)
