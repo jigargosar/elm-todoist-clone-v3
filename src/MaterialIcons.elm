@@ -81,3 +81,8 @@ fiber_smart_record =
 folder : Svg msg
 folder =
     fromUnstyled <| Material.Icons.File.folder defaultSize Inherit
+
+
+label : Svg msg
+label =
+    fromUnstyled <| Material.Icons.Action.label defaultSize Inherit

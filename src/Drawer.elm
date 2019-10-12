@@ -106,15 +106,16 @@ view toMsg model =
     , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
-        [ navProjectItem "FooBar" (Css.hsl 10 0.7 0.5)
+        [ navProjectItem "Clone This" (Css.hsl 10 0.7 0.5)
         , navProjectItem "Learn This" (Css.hsl 50 0.7 0.5)
+        , navProjectItem "Finish That" (Css.hsl 170 0.7 0.5)
         ]
         model
     , labelsEPS.view
         "Labels"
-        [ subItem "to read"
-        , subItem "medical"
-        , subItem "quick-ref"
+        [ navLabelItem "to read" 333
+        , navLabelItem "medical" 93990
+        , navLabelItem "quick-ref" 444
         ]
         model
     , filtersEPS.view
@@ -154,5 +155,12 @@ navIconItem title icon =
 navProjectItem title color =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ color ] ] [ MI.folder ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        ]
+
+
+navLabelItem title hue =
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.label ]
         , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
         ]
