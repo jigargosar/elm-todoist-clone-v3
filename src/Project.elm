@@ -22,6 +22,7 @@ type alias System k comparable v =
     , get : k -> PhantomDict k comparable v -> Maybe v
     , insert : k -> v -> PhantomDict k comparable v -> PhantomDict k comparable v
     , values : PhantomDict k comparable v -> List v
+    , update : k -> (Maybe v -> Maybe v) -> PhantomDict k comparable v -> PhantomDict k comparable v
     }
 
 
@@ -31,4 +32,5 @@ system toComp =
     , get = \k -> unwrap >> Dict.get (toComp k)
     , insert = \k v -> map (Dict.insert (toComp k) v)
     , values = unwrap >> Dict.values
+    , update = \k func -> map (Dict.update (toComp k) func)
     }
