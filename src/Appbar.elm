@@ -44,7 +44,6 @@ search styles =
             , Css.paddingLeft (Css.px 24)
             , bor 2
             , bn
-            , relative
             , min_w_0
             , bgInherit
             , c_inherit
