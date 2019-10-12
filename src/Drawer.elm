@@ -149,14 +149,8 @@ navProjectItem title hue =
 
 
 navLabelItem title hue =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.label ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
-        ]
+    navItem title MI.label (Css.hsl hue 0.7 0.5)
 
 
 navFilterItem title hue =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ (Css.hsl hue 0.7 0.5) ] ] [ MI.filter_list ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
-        ]
+    navItem title MI.filter_list (Css.hsl hue 0.7 0.5)
