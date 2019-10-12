@@ -200,6 +200,11 @@ pt =
     paddingTop << sp
 
 
+pb : Int -> Css.Style
+pb =
+    paddingBottom << sp
+
+
 pl : Int -> Css.Style
 pl =
     paddingLeft << sp

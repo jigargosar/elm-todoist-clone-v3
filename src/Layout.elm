@@ -120,11 +120,11 @@ styledPermanentDrawer drawer =
         [ css
             [ commonTransitions
             , batch [ slideOutDrawer, ns [ slideInDrawer ] ]
-            , batch [ fixed, top_0, pt_fix_for_header, w_sidebar, Css.property "height" "calc(100vh)" ]
+            , batch [ fixed, top_0, pt_fix_for_header, w_sidebar, vh 100 ]
             , autoHideScrollY
             ]
         ]
-        [ div [ css [ w_sidebar ] ] drawer ]
+        [ div [ css [ w_sidebar, pb 3 ] ] drawer ]
 
 
 viewModalDrawer toMsg layout drawer =
@@ -159,7 +159,7 @@ viewModalDrawer toMsg layout drawer =
             , autoHideScrollY
             ]
             [ class "shadow-1" ]
-            [ div [ css [ w_sidebar, max_vw 90 ] ] drawer ]
+            [ div [ css [ w_sidebar, max_vw 90, pb 3 ] ] drawer ]
         ]
 
 
