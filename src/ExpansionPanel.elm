@@ -3,7 +3,6 @@ module ExpansionPanel exposing
     , Msg
     , System
     , system
-    , update
     , view
     , viewHeader
     )
