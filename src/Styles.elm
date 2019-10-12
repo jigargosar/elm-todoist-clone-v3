@@ -1,22 +1,6 @@
 module Styles exposing (..)
 
-import Css
-    exposing
-        ( auto
-        , end
-        , inherit
-        , int
-        , marginLeft
-        , marginRight
-        , none
-        , num
-        , padding
-        , paddingBottom
-        , paddingLeft
-        , paddingTop
-        , px
-        , zero
-        )
+import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, transparent, zero)
 import Css.Media as Media
 import Css.Transitions as CT
 import ModularScale
@@ -35,8 +19,9 @@ bg =
     Css.backgroundColor
 
 
-bgInherit =
-    bg inherit
+bgTransparent : Css.Style
+bgTransparent =
+    bg transparent
 
 
 fg =
@@ -74,6 +59,24 @@ bgWhite =
     bg white
 
 
+c_white =
+    c_ white
+
+
+c_inherit =
+    c_ inherit
+
+
+pseudoPlaceholder : List Css.Style -> Css.Style
+pseudoPlaceholder =
+    Css.pseudoElement "placeholder"
+
+
+bgInherit : Css.Style
+bgInherit =
+    bg Css.inherit
+
+
 bgLightRed =
     bg lightRed
 
@@ -94,6 +97,10 @@ top_0 =
 
 fixed =
     Css.position Css.fixed
+
+
+relative =
+    Css.position Css.relative
 
 
 absolute =
@@ -411,6 +418,10 @@ c_grayL =
 
 hover =
     Css.hover
+
+
+focus =
+    Css.focus
 
 
 commonTransitions =

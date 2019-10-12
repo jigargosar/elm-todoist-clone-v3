@@ -1,5 +1,6 @@
 module Appbar exposing (view)
 
+import Css
 import Emoji
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -34,8 +35,24 @@ add styles =
 
 
 search styles =
-    styled input
-        ([ pa 1, bor 2, bn ] ++ styles)
-        [ placeholder <| Emoji.magnifying_glass ++ " Search"
+    div [ css [ flex, relative, batch styles, flexGrow1, c_white, Css.pseudoClass "focus-within" [ c_grayL 0.3 ] ] ]
+        [ div
+            [ css [ absolute, left_ 0, top_ 1, z_ 1 ] ]
+            [ MI.search ]
+        , styled input
+            [ pa 1
+            , Css.paddingLeft (Css.px 24)
+            , bor 2
+            , bn
+            , relative
+            , min_w_0
+            , bgInherit
+            , c_inherit
+            , pseudoPlaceholder [ c_inherit ]
+            , focus [ flexGrow1, bgWhite ]
+            , Css.width (Css.em 12)
+            ]
+            [ placeholder <| " Search"
+            ]
+            []
         ]
-        []
