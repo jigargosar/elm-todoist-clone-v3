@@ -156,7 +156,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Drawer.view Drawer { projectsCollapsed = model.bool, toggleProjects = Bool }
+        , drawer = Drawer.view Drawer model.drawer
         , content = mainView model
         }
         model.layout

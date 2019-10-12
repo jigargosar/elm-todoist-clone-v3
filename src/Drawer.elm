@@ -1,111 +1,126 @@
 module Drawer exposing (Drawer, Msg, initial, update, view)
 
-import Css exposing (transform, transforms)
+import Css
 import Css.Transitions as Transitions exposing (transition)
+import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import MaterialIcons as MI
-import Set exposing (Set)
 import Styles exposing (..)
-import Tagged exposing (Tagged, tag)
-import Tagged.Set exposing (TaggedSet)
 
 
 type Drawer
-    = Drawer ExpansionPanelSet
+    = Drawer Internal
+
+
+type alias Internal =
+    { projects : ExpansionPanel
+    , labels : ExpansionPanel
+    , filters : ExpansionPanel
+    }
 
 
 initial : Drawer
 initial =
-    Drawer Tagged.Set.empty
+    Internal ExpansionPanel.initial
+        ExpansionPanel.initial
+        ExpansionPanel.initial
+        |> Drawer
 
 
-type ExpansionPanel
+type Panel
     = Projects
     | Labels
     | Filters
 
 
-type alias ExpansionPanelSet =
-    TaggedSet ExpansionPanel String
-
-
-type alias TaggedExpansionPanel =
-    Tagged ExpansionPanel String
-
-
-expansionPanelToTag : ExpansionPanel -> TaggedExpansionPanel
-expansionPanelToTag ep =
-    (case ep of
-        Projects ->
-            "Projects"
-
-        Labels ->
-            "Labels"
-
-        Filters ->
-            "Filters"
-    )
-        |> tag
-
-
-toggleTagged : Tagged tag comparable -> TaggedSet tag comparable -> TaggedSet tag comparable
-toggleTagged tagged set =
-    if Tagged.Set.member tagged set then
-        Tagged.Set.remove tagged set
-
-    else
-        Tagged.Set.insert tagged set
-
-
-toggleEP : ExpansionPanel -> ExpansionPanelSet -> ExpansionPanelSet
-toggleEP item set =
-    let
-        taggedEP : Tagged ExpansionPanel String
-        taggedEP =
-            expansionPanelToTag item
-    in
-    toggleTagged taggedEP set
-
-
 type Msg
-    = TogglePanel ExpansionPanel
+    = ExpansionPanel Panel ExpansionPanel.Msg
 
 
-unwrap : Drawer -> ExpansionPanelSet
-unwrap (Drawer epSet) =
-    epSet
+unwrap : Drawer -> Internal
+unwrap (Drawer internal) =
+    internal
 
 
-map : (ExpansionPanelSet -> ExpansionPanelSet) -> Drawer -> Drawer
+map : (Internal -> Internal) -> Drawer -> Drawer
 map func =
     unwrap >> func >> Drawer
+
+
+updateInternal : (Internal -> ( Internal, Cmd msg )) -> Drawer -> ( Drawer, Cmd msg )
+updateInternal func =
+    unwrap >> func >> Tuple.mapFirst Drawer
+
+
+updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
+updatePanel panel message model =
+    case panel of
+        Projects ->
+            updateInternal
+                (\i ->
+                    ExpansionPanel.update (ExpansionPanel Projects) message i.projects
+                        |> Tuple.mapFirst (\s -> { i | projects = s })
+                )
+                model
+
+        Labels ->
+            updateInternal
+                (\i ->
+                    ExpansionPanel.update (ExpansionPanel Labels) message i.labels
+                        |> Tuple.mapFirst (\s -> { i | labels = s })
+                )
+                model
+
+        Filters ->
+            updateInternal
+                (\i ->
+                    ExpansionPanel.update (ExpansionPanel Filters) message i.filters
+                        |> Tuple.mapFirst (\s -> { i | filters = s })
+                )
+                model
+
+
+togglePanel panel i =
+    case panel of
+        Projects ->
+            { i | projects = not i.projects }
+
+        Labels ->
+            { i | labels = not i.labels }
+
+        Filters ->
+            { i | filters = not i.filters }
 
 
 update : (Msg -> msg) -> Msg -> Drawer -> ( Drawer, Cmd msg )
 update toMsg message model =
     case message of
-        TogglePanel ep ->
-            ( map (toggleEP ep) model, Cmd.none )
+        ExpansionPanel panel msg ->
+            updatePanel panel msg model
+                |> Tuple.mapSecond (Cmd.map toMsg)
 
 
-view toMsg { projectsCollapsed, toggleProjects } =
+view : (Msg -> msg) -> Drawer -> List (Html msg)
+view toMsg model =
+    let
+        projectsEP =
+            model |> unwrap >> .projects
+    in
     [ navItem "Inbox"
     , navItem "Today"
     , navItem "Next 7 Days"
-    , expansionPanel projectsCollapsed
-        toggleProjects
-        "Projects"
+    , ExpansionPanel.view
+        (ExpansionPanel.viewHeader
+            (toMsg << ExpansionPanel Projects)
+            "Projects"
+            projectsEP
+        )
         [ subItem "FooBar"
         , subItem "Learn This"
         ]
-    , expansionPanel projectsCollapsed
-        toggleProjects
-        "Projects"
-        [ subItem "FooBar"
-        , subItem "Learn This"
-        ]
+        projectsEP
     ]
 
 

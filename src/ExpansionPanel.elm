@@ -1,4 +1,4 @@
-module ExpansionPanel exposing (ExpansionPanel, initial, update, view, viewHeader)
+module ExpansionPanel exposing (ExpansionPanel, Msg, initial, update, view, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
