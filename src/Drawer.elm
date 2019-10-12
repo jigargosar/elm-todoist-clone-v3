@@ -107,6 +107,12 @@ view toMsg model =
     let
         projectsEP =
             model |> unwrap >> .projects
+
+        labelsEP =
+            model |> unwrap >> .labels
+
+        filtersEP =
+            model |> unwrap >> .filters
     in
     [ navItem "Inbox"
     , navItem "Today"
@@ -121,6 +127,17 @@ view toMsg model =
         , subItem "Learn This"
         ]
         projectsEP
+    , ExpansionPanel.view
+        (ExpansionPanel.viewHeader
+            (toMsg << ExpansionPanel Labels)
+            "Labels"
+            labelsEP
+        )
+        [ subItem "to read"
+        , subItem "medical"
+        , subItem "quick-ref"
+        ]
+        labelsEP
     ]
 
 
