@@ -82,18 +82,6 @@ updatePanel panel message model =
                 model
 
 
-togglePanel panel i =
-    case panel of
-        Projects ->
-            { i | projects = not i.projects }
-
-        Labels ->
-            { i | labels = not i.labels }
-
-        Filters ->
-            { i | filters = not i.filters }
-
-
 update : (Msg -> msg) -> Msg -> Drawer -> ( Drawer, Cmd msg )
 update toMsg message model =
     case message of

@@ -1,4 +1,12 @@
-module ExpansionPanel exposing (ExpansionPanel, Msg, initial, update, view, viewHeader)
+module ExpansionPanel exposing
+    ( ExpansionPanel
+    , Msg
+    , initial
+    , system
+    , update
+    , view
+    , viewHeader
+    )
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
@@ -7,6 +15,23 @@ import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import MaterialIcons as MI
 import Styles exposing (..)
+
+
+type alias System msg =
+    { initial : ExpansionPanel
+    , update : Msg -> ExpansionPanel -> ( ExpansionPanel, Cmd msg )
+    , viewHeader : String -> ExpansionPanel -> Html msg
+    , view : Html msg -> List (Html msg) -> ExpansionPanel -> Html msg
+    }
+
+
+system : (Msg -> msg) -> System msg
+system toMsg =
+    { initial = initial
+    , update = update toMsg
+    , viewHeader = viewHeader toMsg
+    , view = view
+    }
 
 
 type ExpansionPanel
