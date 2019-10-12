@@ -144,4 +144,5 @@ navItem title =
 
 
 navIconItem title icon =
-    div [ css [ pa 2, pointer, flex, itemsCenter ] ] [ span [ css [ mr 2, c_grayL 0.3 ] ] [ icon ], text title ]
+    div [ css [ pa 2, pointer, flex, itemsCenter ] ]
+        [ span [ css [ mr 2, c_grayL 0.3 ] ] [ icon ], text title ]
