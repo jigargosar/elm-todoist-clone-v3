@@ -122,6 +122,7 @@ styledPermanentDrawer drawer =
             , batch [ slideOutDrawer, ns [ slideInDrawer ] ]
             , batch [ fixed, top_0, pt_fix_for_header, w_sidebar, vh 100 ]
             , autoHideScrollY
+            , Css.overflowX Css.hidden
             ]
         ]
         [ div [ css [ w_sidebar, pb 5 ] ] drawer ]
@@ -157,6 +158,7 @@ viewModalDrawer toMsg layout drawer =
                     [ hidden, slideOutDrawer ]
             , ns [ hidden, slideOutDrawer ]
             , autoHideScrollY
+            , Css.overflowX Css.hidden
             ]
             [ class "shadow-1" ]
             [ div [ css [ w_sidebar, max_vw 90, pb 5 ] ] drawer ]
