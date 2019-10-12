@@ -37,11 +37,11 @@ add styles =
 search styles =
     div
         [ css
-            [ flexGrow1
-            , flex
+            [ flex
             , relative
             , c_white
-            , focusWithin [ bgWhite, c_grayL 0.3 ]
+            , hover [ bg (Css.rgba 255 255 255 0.2) ]
+            , focusWithin [ bgWhite, c_grayL 0.3, flexGrow1 ]
             , batch styles
             ]
         ]
@@ -57,7 +57,7 @@ search styles =
             , bgInherit
             , c_inherit
             , pePlaceholder [ c_inherit ]
-            , focus [ flexGrow1 ]
+            , flexGrow1
             , Css.width (Css.em 12)
             ]
             [ placeholder <| " Search"
