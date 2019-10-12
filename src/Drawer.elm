@@ -2,7 +2,9 @@ module Drawer exposing (Drawer, Msg, initial, update, view)
 
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
+import Html.Styled.Attributes exposing (css)
 import Lens
+import MaterialIcons as MI
 import Styles exposing (..)
 
 
@@ -98,7 +100,7 @@ update toMsg message model =
 
 view : (Msg -> msg) -> Drawer -> List (Html msg)
 view toMsg model =
-    [ navItem "Inbox"
+    [ navIconItem "Inbox" MI.inbox
     , navItem "Today"
     , navItem "Next 7 Days"
     , projectsEPS.view
@@ -139,3 +141,7 @@ subItem title =
 
 navItem title =
     styled div [ pa 2, pointer ] [] [ text title ]
+
+
+navIconItem title icon =
+    div [ css [ pa 2, pointer, flex, itemsCenter ] ] [ span [ css [ mr 2, c_grayL 0.3 ] ] [ icon ], text title ]
