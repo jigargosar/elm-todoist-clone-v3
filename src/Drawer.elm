@@ -37,6 +37,11 @@ type Msg
 
 internalLens : Lens.Config small Internal -> Lens.System small Drawer
 internalLens =
+    let
+        unwrap : Drawer -> Internal
+        unwrap (Drawer internal) =
+            internal
+    in
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
@@ -68,11 +73,6 @@ filtersEPS =
             internalLens { get = .filters, set = \s b -> { b | filters = s } }
     in
     ExpansionPanel.systemL (ExpansionPanel Filters) filtersLens
-
-
-unwrap : Drawer -> Internal
-unwrap (Drawer internal) =
-    internal
 
 
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
