@@ -2,7 +2,9 @@ module MaterialIcons exposing (..)
 
 import Material.Icons exposing (Coloring(..))
 import Material.Icons.Action
+import Material.Icons.Av
 import Material.Icons.Content
+import Material.Icons.File
 import Material.Icons.Navigation
 import Svg.Styled exposing (Svg, fromUnstyled)
 
@@ -59,3 +61,23 @@ calendar_today =
 view_week : Svg msg
 view_week =
     fromUnstyled <| Material.Icons.Action.view_week defaultSize Inherit
+
+
+stop : Svg msg
+stop =
+    fromUnstyled <| Material.Icons.Av.stop defaultSize Inherit
+
+
+fiber_manual_record : Svg msg
+fiber_manual_record =
+    fromUnstyled <| Material.Icons.Av.fiber_manual_record defaultSize Inherit
+
+
+fiber_smart_record : Svg msg
+fiber_smart_record =
+    fromUnstyled <| Material.Icons.Av.fiber_smart_record defaultSize Inherit
+
+
+folder : Svg msg
+folder =
+    fromUnstyled <| Material.Icons.File.folder defaultSize Inherit

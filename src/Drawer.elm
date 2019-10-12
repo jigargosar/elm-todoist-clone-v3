@@ -1,5 +1,6 @@
 module Drawer exposing (Drawer, Msg, initial, update, view)
 
+import Css
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes exposing (css)
@@ -105,8 +106,8 @@ view toMsg model =
     , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
-        [ subItem "FooBar"
-        , subItem "Learn This"
+        [ navProjectItem "FooBar" (Css.hsl 10 0.6 0.6)
+        , navProjectItem "Learn This" (Css.hsl 80 0.6 0.6)
         ]
         model
     , labelsEPS.view
@@ -146,5 +147,12 @@ navItem title =
 navIconItem title icon =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ icon ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        ]
+
+
+navProjectItem title color =
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ color ] ] [ MI.folder ]
         , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
         ]
