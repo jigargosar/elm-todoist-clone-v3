@@ -1,7 +1,7 @@
 module Layout exposing (Layout, Msg, Parts, initial, openDrawer, update, view)
 
 import Css
-import Css.Transitions as Transitions exposing (transition)
+import Css.Transitions as Transitions
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
@@ -103,7 +103,8 @@ styledAppbar appbarAttrs appbarContent =
 
 styledMain contentAttrs content =
     styled div
-        [ batch [ ns [ ml_ sidebarWidthPx ], transition [ Transitions.marginLeft 150 ] ]
+        [ commonTransitions
+        , batch [ ns [ ml_ sidebarWidthPx ] ]
         , pt_ headerHeightPx
         , h_100
         , bgWhite
@@ -116,8 +117,9 @@ styledMain contentAttrs content =
 
 styledPermanentDrawer =
     styled aside
-        [ batch [ slideOutDrawer, ns [ slideInDrawer ], transition [ Transitions.transform 150 ] ]
-        , batch [ fixed, top_0, bottom_0, pt_ headerHeightPx, w_sidebar ]
+        [ commonTransitions
+        , batch [ slideOutDrawer, ns [ slideInDrawer ] ]
+        , batch [ fixed, top_0, bottom_0, pt_fix_for_header, w_sidebar ]
         , autoHideScrollY
         ]
 
@@ -143,7 +145,7 @@ viewModalDrawer toMsg layout drawer =
         , styled aside
             [ batch [ fixed, top_0, bottom_0, w_sidebar, max_w_pct 90 ]
             , bgWhite
-            , transition [ Transitions.transform 150, Transitions.visibility 150 ]
+            , commonTransitions
             , batch <|
                 if drawerModalOpen then
                     [ visible, slideInDrawer ]
@@ -176,7 +178,19 @@ b__main =
 
 
 headerHeightPx =
-    50
+    36
+
+
+ns_headerHeightPx =
+    48
+
+
+pt_fix_for_header =
+    batch [ pt_ headerHeightPx, ns [ pt_ ns_headerHeightPx ] ]
+
+
+h_header =
+    batch [ h_ headerHeightPx, ns [ h_ ns_headerHeightPx ] ]
 
 
 maxAppWidthPx =
@@ -185,10 +199,6 @@ maxAppWidthPx =
 
 sidebarWidthPx =
     266
-
-
-h_header =
-    h_ headerHeightPx
 
 
 w_sidebar =
@@ -205,3 +215,13 @@ slideOutDrawer =
 
 slideInDrawer =
     Css.transforms [ Css.translateX <| Css.px 0 ]
+
+
+commonTransitions =
+    Transitions.transition
+        [ Transitions.padding 150
+        , Transitions.margin 150
+        , Transitions.height 150
+        , Transitions.visibility 150
+        , Transitions.transform 150
+        ]
