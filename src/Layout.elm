@@ -146,7 +146,7 @@ viewModalDrawer toMsg layout drawer =
             [ onClick <| toMsg CloseModalDrawer ]
             []
         , styled aside
-            [ batch [ fixed, top_0, bottom_0, w_sidebar, max_w_pct 90 ]
+            [ batch [ fixed, top_0, bottom_0, w_sidebar, max_vw 90 ]
             , bgWhite
             , commonTransitions
             , batch <|
@@ -159,7 +159,7 @@ viewModalDrawer toMsg layout drawer =
             , autoHideScrollY
             ]
             [ class "shadow-1" ]
-            [ div [ css [ w_sidebar, max_w_pct 100 ] ] drawer ]
+            [ div [ css [ w_sidebar, max_vw 90 ] ] drawer ]
         ]
 
 
