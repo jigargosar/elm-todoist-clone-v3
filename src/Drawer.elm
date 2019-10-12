@@ -102,7 +102,7 @@ view : (Msg -> msg) -> Drawer -> List (Html msg)
 view toMsg model =
     [ navIconItem "Inbox" MI.inbox
     , navIconItem "Today" MI.calendar_today
-    , navItem "Next 7 Days"
+    , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
         [ subItem "FooBar"
@@ -144,5 +144,7 @@ navItem title =
 
 
 navIconItem title icon =
-    div [ css [ pa 2, pointer, flex, itemsCenter ] ]
-        [ span [ css [ mr 2, c_grayL 0.3 ] ] [ icon ], text title ]
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ icon ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
+        ]

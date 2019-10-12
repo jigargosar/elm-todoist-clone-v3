@@ -54,3 +54,8 @@ schedule =
 calendar_today : Svg msg
 calendar_today =
     fromUnstyled <| Material.Icons.Action.calendar_today defaultSize Inherit
+
+
+view_week : Svg msg
+view_week =
+    fromUnstyled <| Material.Icons.Action.view_week defaultSize Inherit
