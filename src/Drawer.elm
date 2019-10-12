@@ -6,6 +6,7 @@ import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
+import Lens
 import MaterialIcons as MI
 import Styles exposing (..)
 
@@ -39,6 +40,23 @@ type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
 
 
+lens : { get : Internal -> small, set : small -> Internal -> Internal } -> Lens.System small Drawer
+lens =
+    Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
+
+
+projectsEPL =
+    lens { get = .projects, set = \s b -> { b | projects = s } }
+
+
+filtersEPL =
+    lens { get = .filters, set = \s b -> { b | filters = s } }
+
+
+labelsEPL =
+    lens { get = .labels, set = \s b -> { b | labels = s } }
+
+
 projectsEPS : ExpansionPanel.System Msg
 projectsEPS =
     ExpansionPanel.system (ExpansionPanel Projects)
@@ -63,13 +81,16 @@ updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
 updatePanel panel message model =
     case panel of
         Projects ->
-            updateInternal
-                (\i ->
-                    projectsEPS.update message i.projects
-                        |> Tuple.mapFirst (\s -> { i | projects = s })
-                )
-                model
+            projectsEPS.update message (projectsEPL.get model)
+                |> Tuple.mapFirst (projectsEPL.setIn model)
 
+        --        Projects ->
+        --            updateInternal
+        --                (\i ->
+        --                    projectsEPS.update message i.projects
+        --                        |> Tuple.mapFirst (\s -> { i | projects = s })
+        --                )
+        --                model
         Labels ->
             updateInternal
                 (\i ->
