@@ -111,7 +111,7 @@ view toMsg model =
     , navItem "Today"
     , navItem "Next 7 Days"
     , projectsEPS.view
-        (projectsEPS.viewHeader "Projects" projectsEP)
+        "Projects"
         [ subItem "FooBar"
         , subItem "Learn This"
         ]

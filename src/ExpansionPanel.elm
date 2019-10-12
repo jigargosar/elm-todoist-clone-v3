@@ -22,7 +22,8 @@ type alias System msg =
     { initial : ExpansionPanel
     , update : Msg -> ExpansionPanel -> ( ExpansionPanel, Cmd msg )
     , viewHeader : String -> ExpansionPanel -> Html msg
-    , view : Html msg -> List (Html msg) -> ExpansionPanel -> Html msg
+    , viewContainer : Html msg -> List (Html msg) -> ExpansionPanel -> Html msg
+    , view : String -> List (Html msg) -> ExpansionPanel -> Html msg
     }
 
 
@@ -31,7 +32,8 @@ system toMsg =
     { initial = initial
     , update = update toMsg
     , viewHeader = viewHeader toMsg
-    , view = view
+    , viewContainer = view
+    , view = \title content model -> view (viewHeader toMsg title model) content model
     }
 
 
