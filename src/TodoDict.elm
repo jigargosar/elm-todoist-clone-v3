@@ -39,14 +39,14 @@ fromList =
     List.foldl insert initial
 
 
-toList : TodoDict -> List Todo
-toList =
-    unwrap >> dict.values
-
-
 sortedByIdx : TodoDict -> List Todo
 sortedByIdx =
     toList >> List.sortBy Todo.idx
+
+
+toList : TodoDict -> List Todo
+toList =
+    unwrap >> dict.values
 
 
 unwrap (TodoDict internal) =
