@@ -212,7 +212,7 @@ viewProjectsExpansionPanel projectList model =
         ((rotateDragged dnd projectList
             |> List.indexedMap (navProjectItem dnd)
          )
-            ++ []
+            ++ [ viewGhostItem projectList model ]
         )
         model
 
