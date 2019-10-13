@@ -12,7 +12,7 @@ import Styles exposing (..)
 import Task
 
 
-config : DnDList.Config Project
+config : DnDList.Config a
 config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
@@ -21,6 +21,7 @@ config =
     }
 
 
+system : DnDList.System a Msg
 system =
     DnDList.create config DndProject
 
