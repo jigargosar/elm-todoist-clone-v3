@@ -8,6 +8,7 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout exposing (Layout)
 import Lens
+import ProjectCollection exposing (ProjectCollection)
 import Return
 import Screen exposing (Screen)
 import Todo exposing (Todo)
@@ -32,6 +33,7 @@ type alias Flags =
 
 type alias Model =
     { todoDict : TodoDict
+    , projects : ProjectCollection
     , screen : Screen
     , layout : Layout
     , drawer : Drawer
@@ -80,6 +82,7 @@ init flags =
         initial : Model
         initial =
             { todoDict = TodoDict.initial
+            , projects = ProjectCollection.initial
             , screen = screenSystem.initial
             , layout = Layout.initial
             , drawer = Drawer.initial
