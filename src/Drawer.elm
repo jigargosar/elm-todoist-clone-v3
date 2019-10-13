@@ -265,16 +265,18 @@ navProjectItem dnd sortIdx project =
                                 dragEvents
                        )
                 )
-                (case info of
-                    Just i ->
-                        if sortIdx == i.dropIndex then
-                            batch [ Css.opacity <| Css.num 0 ]
+                (info
+                    |> Maybe.andThen
+                        (\i ->
+                            if sortIdx == i.dropIndex then
+                                Just i
 
-                        else
-                            batch []
-
-                    Nothing ->
-                        batch []
+                            else
+                                Nothing
+                        )
+                    |> Maybe.map (\_ -> [ Css.opacity <| Css.num 0 ])
+                    |> Maybe.withDefault []
+                    |> batch
                 )
                 title
                 iconColor
