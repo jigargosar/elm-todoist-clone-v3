@@ -136,9 +136,6 @@ update toMsg updateProjectListOrder projectList message model =
 
                 ( dnd, newDraggingProjectList ) =
                     system.update msg oldDnd projectList
-
-                _ =
-                    Debug.log "info" (system.info dnd)
             in
             ( dndL.set dnd model
             , Cmd.batch
