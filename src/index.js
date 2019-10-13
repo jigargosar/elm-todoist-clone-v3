@@ -19,6 +19,19 @@ const mockTodoList = [
   idx,
 }))
 
+const mockProjectList = [
+  'Clone This',
+  'Finish That',
+  'Read GGG',
+  'Complete All Foo',
+].map((title, idx) => ({
+  id: `ProjectId-${nanoid()}`,
+  title,
+  createdAt: Date.now(),
+  modifiedAt: Date.now(),
+  idx,
+}))
+
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
   flags: { todoList: mockTodoList, projectList: [] },
