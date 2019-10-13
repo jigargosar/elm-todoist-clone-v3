@@ -194,9 +194,23 @@ navIconItem title icon =
 
 
 viewProjectsExpansionPanel projectList model =
+    let
+        dnd =
+            dndL.get model
+
+        rotateDragged list =
+            case system.info dnd of
+                Just { dragIndex, dropIndex } ->
+                    list
+
+                Nothing ->
+                    list
+    in
     projectsEPS.view
         "Projects"
-        (List.indexedMap (navProjectItem (dndL.get model)) projectList)
+        (List.indexedMap (navProjectItem (dndL.get model)) projectList
+            |> rotateDragged
+        )
         model
 
 
