@@ -16,8 +16,8 @@ config : DnDList.Config Project
 config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
-    , listen = DnDList.OnDrag
-    , operation = DnDList.Unaltered
+    , listen = DnDList.OnDrop
+    , operation = DnDList.Rotate
     }
 
 
