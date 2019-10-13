@@ -12,7 +12,7 @@ import Styles exposing (..)
 import Task
 
 
-config : DnDList.Config ( Int, Project )
+config : DnDList.Config Project
 config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
@@ -21,7 +21,7 @@ config =
     }
 
 
-system : DnDList.System ( Int, Project ) Msg
+system : DnDList.System Project Msg
 system =
     DnDList.create config DndProject
 
@@ -35,6 +35,7 @@ type alias Internal =
     , labels : ExpansionPanel
     , filters : ExpansionPanel
     , dnd : DnDList.Model
+    , draggingProjectList : Maybe (List Project)
     }
 
 
@@ -44,6 +45,7 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         system.model
+        Nothing
         |> Drawer
 
 
@@ -68,8 +70,13 @@ lens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
+dndL : Lens.System DnDList.Model Drawer
 dndL =
     lens { get = .dnd, set = \s b -> { b | dnd = s } }
+
+
+draggingProjectListL =
+    lens { get = .draggingProjectList, set = \s b -> { b | draggingProjectList = s } }
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -132,16 +139,35 @@ update toMsg updateProjectListOrder projectList message model =
                 oldDnd =
                     dndL.get model
 
-                ( dnd, items ) =
-                    system.update msg oldDnd (List.indexedMap Tuple.pair projectList)
+                maybeCachedProjectList =
+                    draggingProjectListL.get model
+                        |> Maybe.withDefault projectList
 
-                _ =
+                ( dnd, items ) =
+                    system.update msg oldDnd maybeCachedProjectList
+
+                maybeInfo =
                     system.info oldDnd
             in
             ( dndL.set dnd model
+                |> (case ( draggingProjectListL.get model, maybeInfo ) of
+                        ( Just _, Nothing ) ->
+                            draggingProjectListL.set Nothing
+
+                        ( _, Just _ ) ->
+                            draggingProjectListL.set (Just items)
+
+                        _ ->
+                            identity
+                   )
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
-                , updateProjectListOrder (List.map Tuple.second items) |> Task.succeed |> Task.perform identity
+                , case ( draggingProjectListL.get model, maybeInfo ) of
+                    ( Just _, Nothing ) ->
+                        updateProjectListOrder items |> Task.succeed |> Task.perform identity
+
+                    _ ->
+                        Cmd.none
                 ]
             )
 
@@ -193,9 +219,14 @@ navIconItem title icon =
 
 
 viewProjectsExpansionPanel projectList model =
+    let
+        finalProjectList =
+            draggingProjectListL.get model
+                |> Maybe.withDefault projectList
+    in
     projectsEPS.view
         "Projects"
-        (List.map (navProjectItem (dndL.get model)) projectList)
+        (List.map (navProjectItem (dndL.get model)) finalProjectList)
         model
 
 
@@ -238,7 +269,7 @@ navProjectItem dnd project =
                                 batch []
                         ]
                     :: (case info of
-                            Just i ->
+                            Just _ ->
                                 dropEvents
 
                             Nothing ->
