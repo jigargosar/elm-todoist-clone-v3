@@ -23,7 +23,7 @@ config =
 
 system : DnDList.System a Msg
 system =
-    DnDList.create config DndProject
+    DnDList.create config (Dnd Projects)
 
 
 type Drawer
@@ -55,7 +55,7 @@ type Panel
 
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
-    | DndProject DnDList.Msg
+    | Dnd Panel DnDList.Msg
 
 
 lens : Lens.Config small Internal -> Lens.System small Drawer
@@ -116,6 +116,22 @@ updatePanel panel =
             filtersEPS.update
 
 
+updateDnd toMsg onListOrderChanged list msg model =
+    let
+        oldDnd =
+            dndL.get model
+
+        ( dnd, newList ) =
+            system.update msg oldDnd list
+    in
+    ( dndL.set dnd model
+    , Cmd.batch
+        [ system.commands oldDnd |> Cmd.map toMsg
+        , onListOrderChanged newList |> Task.succeed |> Task.perform identity
+        ]
+    )
+
+
 subscriptions : Drawer -> Sub Msg
 subscriptions model =
     Sub.batch [ system.subscriptions (dndL.get model) ]
@@ -128,20 +144,13 @@ update toMsg updateProjectListOrder projectList message model =
             updatePanel panel msg model
                 |> Tuple.mapSecond (Cmd.map toMsg)
 
-        DndProject msg ->
-            let
-                oldDnd =
-                    dndL.get model
+        Dnd panel msg ->
+            case panel of
+                Projects ->
+                    updateDnd toMsg updateProjectListOrder projectList msg model
 
-                ( dnd, newProjectList ) =
-                    system.update msg oldDnd projectList
-            in
-            ( dndL.set dnd model
-            , Cmd.batch
-                [ system.commands oldDnd |> Cmd.map toMsg
-                , updateProjectListOrder newProjectList |> Task.succeed |> Task.perform identity
-                ]
-            )
+                _ ->
+                    ( model, Cmd.none )
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
