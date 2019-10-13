@@ -4,9 +4,10 @@ import Css
 import DnDList
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
-import Html.Styled.Attributes exposing (class, css)
+import Html.Styled.Attributes as A exposing (class, css)
 import Lens
 import Project exposing (Project)
+import ProjectId
 import Styles exposing (..)
 
 
@@ -192,8 +193,18 @@ viewProjectsExpansionPanel projectList model =
 
 navProjectItem dnd project =
     let
+        sortIdx =
+            Project.idx project
+
+        domId =
+            Project.id project |> ProjectId.toString
+
+        dragEvents =
+            system.dragEvents sortIdx domId
+                |> List.map A.fromUnstyled
+
         viewItem iconColor iconName =
-            div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+            div (css [ ph 1, pointer, flex, c_grayL 0.3 ] :: dragEvents)
                 [ i
                     [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
                     , class "material-icons"
