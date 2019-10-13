@@ -144,7 +144,7 @@ view toMsg projectList model =
     , navIconItem "Next 7 Days" "view_week"
     , projectsEPS.view
         "Projects"
-        (List.map navProjectItem projectList)
+        (List.map (navProjectItem (dndL.get model)) projectList)
         model
     , labelsEPS.view
         "Labels"
@@ -186,7 +186,7 @@ navIconItem title icon =
     navItem title Css.inherit icon
 
 
-navProjectItem project =
+navProjectItem dnd project =
     let
         title =
             Project.title project
