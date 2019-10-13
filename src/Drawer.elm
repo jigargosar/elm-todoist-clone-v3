@@ -134,13 +134,13 @@ update toMsg updateProjectListOrder projectList message model =
                 oldDnd =
                     dndL.get model
 
-                ( dnd, newDraggingProjectList ) =
+                ( dnd, newProjectList ) =
                     system.update msg oldDnd projectList
             in
             ( dndL.set dnd model
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
-                , updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
+                , updateProjectListOrder newProjectList |> Task.succeed |> Task.perform identity
                 ]
             )
 
