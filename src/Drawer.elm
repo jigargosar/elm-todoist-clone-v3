@@ -135,7 +135,7 @@ update toMsg updateProjectListOrder projectList message model =
                     system.update msg oldDnd projectList
 
                 _ =
-                    Debug.log "dndInfo" (system.info oldDnd)
+                    system.info oldDnd
             in
             ( dndL.set dnd model
             , Cmd.batch
@@ -216,7 +216,6 @@ navProjectItem dnd project =
 
         info =
             system.info dnd
-                |> Debug.log "info"
 
         viewItem iconColor iconName =
             div
