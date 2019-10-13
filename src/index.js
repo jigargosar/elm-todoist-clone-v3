@@ -21,7 +21,7 @@ const mockTodoList = [
 
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
-  flags: { todoList: mockTodoList },
+  flags: { todoList: mockTodoList, projectList: [] },
 })
 
 

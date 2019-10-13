@@ -35,11 +35,10 @@ type alias Flags =
 
 type alias Model =
     { todoDict : TodoDict
-    , projects : ProjectCollection
+    , projectCollection : ProjectCollection
     , screen : Screen
     , layout : Layout
     , drawer : Drawer
-    , bool : Bool
     }
 
 
@@ -78,11 +77,12 @@ todoDictSystem =
     }
 
 
+projectsSystem : { init : Value -> Model -> ( Model, Cmd msg ) }
 projectsSystem =
     let
         lens : Lens.System ProjectCollection Model
         lens =
-            Lens.system { get = .projects, set = \s b -> { b | projects = s } }
+            Lens.system { get = .projectCollection, set = \s b -> { b | projectCollection = s } }
     in
     { init =
         \encoded ->
@@ -105,15 +105,20 @@ init flags =
         initial : Model
         initial =
             { todoDict = TodoDict.initial
-            , projects = ProjectCollection.initial
+            , projectCollection = ProjectCollection.initial
             , screen = screenSystem.initial
             , layout = Layout.initial
             , drawer = Drawer.initial
-            , bool = True
             }
     in
-    todoDictSystem.init flags.todoList initial
-        |> Return.andThen screenSystem.init
+    Return.singleton initial
+        |> Return.andThen
+            (Return.pipelK
+                [ todoDictSystem.init flags.todoList
+                , projectsSystem.init flags.projectList
+                , screenSystem.init
+                ]
+            )
 
 
 
@@ -137,7 +142,6 @@ type Msg
     | Screen Screen.Msg
     | Layout Layout.Msg
     | Drawer Drawer.Msg
-    | Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -154,9 +158,6 @@ update message =
 
         Layout msg ->
             updateLayout msg
-
-        Bool ->
-            \m -> ( { m | bool = not m.bool }, Cmd.none )
 
         Drawer msg ->
             updateDrawer msg
