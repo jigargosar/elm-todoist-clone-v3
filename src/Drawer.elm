@@ -228,7 +228,7 @@ maybeDragItem dnd items =
             )
 
 
-viewGhostItem : List Project -> Drawer -> Html msg
+viewGhostItem : List Project -> Drawer -> Html Msg
 viewGhostItem projectList model =
     let
         dnd =
@@ -242,8 +242,11 @@ viewGhostItem projectList model =
 
                 title =
                     Project.title project
+
+                ghostStyles =
+                    system.ghostStyles dnd |> List.map A.fromUnstyled
             in
-            viewItem2 (system.ghostStyles dnd) [] title iconColor "folder"
+            viewItem2 ghostStyles [] title iconColor "folder"
 
         Nothing ->
             text ""
