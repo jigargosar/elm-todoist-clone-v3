@@ -190,26 +190,27 @@ navIconItem title icon =
     navItem title Css.inherit icon
 
 
+rotateDragged dnd list =
+    case system.info dnd of
+        Just { dragIndex, dropIndex } ->
+            SelectList.fromList list
+                |> Maybe.andThen (SelectList.selectBy dragIndex)
+                |> Maybe.map (SelectList.moveBy (dropIndex - dragIndex) >> SelectList.toList)
+                |> Maybe.withDefault list
+
+        Nothing ->
+            list
+
+
 viewProjectsExpansionPanel projectList model =
     let
         dnd =
             dndL.get model
-
-        rotateDragged list =
-            case system.info dnd of
-                Just { dragIndex, dropIndex } ->
-                    SelectList.fromList list
-                        |> Maybe.andThen (SelectList.selectBy dragIndex)
-                        |> Maybe.map (SelectList.moveBy (dropIndex - dragIndex) >> SelectList.toList)
-                        |> Maybe.withDefault list
-
-                Nothing ->
-                    list
     in
     projectsEPS.view
         "Projects"
-        (rotateDragged projectList
-            |> List.indexedMap (navProjectItem (dndL.get model))
+        (rotateDragged dnd projectList
+            |> List.indexedMap (navProjectItem dnd)
         )
         model
 
