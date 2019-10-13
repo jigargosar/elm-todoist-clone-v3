@@ -217,6 +217,17 @@ viewProjectsExpansionPanel projectList model =
         model
 
 
+maybeDragItem : DnDList.Model -> List a -> Maybe a
+maybeDragItem dnd items =
+    system.info dnd
+        |> Maybe.andThen
+            (\{ dragIndex } ->
+                items
+                    |> List.drop dragIndex
+                    |> List.head
+            )
+
+
 viewGhostItem projectList model =
     let
         dnd =
@@ -224,14 +235,20 @@ viewGhostItem projectList model =
 
         info =
             system.info dnd
-
-        iconColor =
-            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
-
-        title =
-            Project.title project
     in
-    viewItem2 (system.ghostStyles dnd) [] title iconColor "folder"
+    case maybeDragItem dnd projectList of
+        Just project ->
+            let
+                iconColor =
+                    Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+
+                title =
+                    Project.title project
+            in
+            viewItem2 (system.ghostStyles dnd) [] title iconColor "folder"
+
+        Nothing ->
+            text ""
 
 
 viewItem2 attributes styles title iconColor iconName =
