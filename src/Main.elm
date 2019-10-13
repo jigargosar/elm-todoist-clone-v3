@@ -78,7 +78,6 @@ todoDictSystem =
     }
 
 
-projectsSystem : { init : Value -> Model -> ( Model, Cmd msg ), sorted : Model -> List Project }
 projectsSystem =
     let
         lens : Lens.System ProjectCollection Model
@@ -98,6 +97,9 @@ projectsSystem =
             in
             Lens.update lens func
     , sorted = lens.get >> ProjectCollection.sorted
+    , updateSortOrder =
+        \pl big ->
+            ( lens.map (ProjectCollection.updateSortOrder pl) big, Cmd.none )
     }
 
 
@@ -145,6 +147,7 @@ type Msg
     | Screen Screen.Msg
     | Layout Layout.Msg
     | Drawer Drawer.Msg
+    | UpdateProjectSortOrder (List Project)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -165,10 +168,13 @@ update message =
         Drawer msg ->
             updateDrawer msg
 
+        UpdateProjectSortOrder projectList ->
+            projectsSystem.updateSortOrder projectList
+
 
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
 updateDrawer msg model =
-    Drawer.update Drawer (projectsSystem.sorted model) msg model.drawer
+    Drawer.update Drawer UpdateProjectSortOrder (projectsSystem.sorted model) msg model.drawer
         |> Tuple.mapFirst (\s -> { model | drawer = s })
 
 

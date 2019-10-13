@@ -9,6 +9,7 @@ import Lens
 import Project exposing (Project)
 import ProjectId
 import Styles exposing (..)
+import Task
 
 
 config : DnDList.Config Project
@@ -118,8 +119,8 @@ subscriptions model =
     Sub.batch [ system.subscriptions (dndL.get model) ]
 
 
-update : (Msg -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg projectList message model =
+update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
+update toMsg updateProjectListOrder projectList message model =
     case message of
         ExpansionPanel panel msg ->
             updatePanel panel msg model
@@ -139,6 +140,7 @@ update toMsg projectList message model =
             ( dndL.set dnd model
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
+                , updateProjectListOrder items |> Task.succeed |> Task.perform identity
                 ]
             )
 

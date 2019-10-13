@@ -1,4 +1,4 @@
-module ProjectCollection exposing (ProjectCollection, fromEncodedList, initial, sorted)
+module ProjectCollection exposing (ProjectCollection, fromEncodedList, initial, sorted, updateSortOrder)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
@@ -55,3 +55,8 @@ unwrap (ProjectCollection internal) =
 map : (Internal -> Internal) -> ProjectCollection -> ProjectCollection
 map func =
     unwrap >> func >> ProjectCollection
+
+
+updateSortOrder : List Project -> ProjectCollection -> ProjectCollection
+updateSortOrder pl =
+    map (\c -> List.indexedMap Project.setIdx pl |> List.foldl dict.insert c)

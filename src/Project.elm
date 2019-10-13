@@ -1,4 +1,4 @@
-module Project exposing (Project, decoder, hue, id, idx, title)
+module Project exposing (Project, decoder, hue, id, idx, setIdx, title)
 
 import Json.Decode as JD exposing (Decoder)
 import ProjectId exposing (ProjectId)
@@ -71,6 +71,11 @@ idx =
 map : (Internal -> Internal) -> Project -> Project
 map func =
     unwrap >> func >> Project
+
+
+setIdx : Int -> Project -> Project
+setIdx idx_ =
+    map (\p -> { p | idx = idx_ })
 
 
 
