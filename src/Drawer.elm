@@ -7,13 +7,12 @@ import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Lens
 import Project exposing (Project)
-import ProjectId
 import SelectList
 import Styles exposing (..)
 import Task
 
 
-config : DnDList.Config Project
+config : DnDList.Config a
 config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
@@ -22,7 +21,7 @@ config =
     }
 
 
-system : DnDList.System Project Msg
+system : DnDList.System a Msg
 system =
     DnDList.create config DndProject
 
