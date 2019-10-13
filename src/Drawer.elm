@@ -141,9 +141,15 @@ navItem title icon iconColor =
 
 navItem2 title iconColor iconName =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ i [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ], class "material-icons" ]
+        [ i
+            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
+            , class "material-icons"
+            ]
             [ text iconName ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
+        , div
+            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
+            ]
+            [ text title ]
         ]
 
 
