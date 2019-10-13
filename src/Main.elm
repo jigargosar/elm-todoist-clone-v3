@@ -167,7 +167,7 @@ update message =
 
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
 updateDrawer msg model =
-    Drawer.update Drawer msg model.drawer
+    Drawer.update Drawer (projectsSystem.sorted model) msg model.drawer
         |> Tuple.mapFirst (\s -> { model | drawer = s })
 
 

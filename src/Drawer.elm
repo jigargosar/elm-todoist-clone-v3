@@ -1,12 +1,26 @@
 module Drawer exposing (Drawer, Msg, initial, update, view)
 
 import Css
+import DnDList
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Lens
 import Project exposing (Project)
 import Styles exposing (..)
+
+
+config : DnDList.Config Project
+config =
+    { beforeUpdate = \_ _ list -> list
+    , movement = DnDList.Vertical
+    , listen = DnDList.OnDrag
+    , operation = DnDList.Rotate
+    }
+
+
+system =
+    DnDList.create config DndProject
 
 
 type Drawer
@@ -17,6 +31,7 @@ type alias Internal =
     { projects : ExpansionPanel
     , labels : ExpansionPanel
     , filters : ExpansionPanel
+    , dnd : DnDList.Model
     }
 
 
@@ -25,6 +40,7 @@ initial =
     Internal projectsEPS.initial
         labelsEPS.initial
         filtersEPS.initial
+        system.model
         |> Drawer
 
 
@@ -36,10 +52,11 @@ type Panel
 
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
+    | DndProject DnDList.Msg
 
 
-internalLens : Lens.Config small Internal -> Lens.System small Drawer
-internalLens =
+lens : Lens.Config small Internal -> Lens.System small Drawer
+lens =
     let
         unwrap : Drawer -> Internal
         unwrap (Drawer internal) =
@@ -48,12 +65,16 @@ internalLens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
+dndL =
+    lens { get = .dnd, set = \s b -> { b | dnd = s } }
+
+
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
     let
         projectsLens : Lens.System ExpansionPanel Drawer
         projectsLens =
-            internalLens { get = .projects, set = \s b -> { b | projects = s } }
+            lens { get = .projects, set = \s b -> { b | projects = s } }
     in
     ExpansionPanel.system (ExpansionPanel Projects) projectsLens
 
@@ -63,7 +84,7 @@ labelsEPS =
     let
         labelsLens : Lens.System ExpansionPanel Drawer
         labelsLens =
-            internalLens { get = .labels, set = \s b -> { b | labels = s } }
+            lens { get = .labels, set = \s b -> { b | labels = s } }
     in
     ExpansionPanel.system (ExpansionPanel Labels) labelsLens
 
@@ -73,7 +94,7 @@ filtersEPS =
     let
         filtersLens : Lens.System ExpansionPanel Drawer
         filtersLens =
-            internalLens { get = .filters, set = \s b -> { b | filters = s } }
+            lens { get = .filters, set = \s b -> { b | filters = s } }
     in
     ExpansionPanel.system (ExpansionPanel Filters) filtersLens
 
@@ -91,12 +112,29 @@ updatePanel panel =
             filtersEPS.update
 
 
-update : (Msg -> msg) -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg message model =
+update : (Msg -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
+update toMsg projectList message model =
     case message of
         ExpansionPanel panel msg ->
             updatePanel panel msg model
                 |> Tuple.mapSecond (Cmd.map toMsg)
+
+        DndProject msg ->
+            let
+                oldDnd =
+                    dndL.get model
+
+                ( dnd, items ) =
+                    system.update msg oldDnd projectList
+
+                _ =
+                    Debug.log "dndInfo" (system.info oldDnd)
+            in
+            ( dndL.set dnd model
+            , Cmd.batch
+                [ system.commands oldDnd |> Cmd.map toMsg
+                ]
+            )
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
