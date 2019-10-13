@@ -8,10 +8,9 @@ module ExpansionPanel exposing
 import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events exposing (onClick)
 import Lens
-import MaterialIcons as MI
 import Styles exposing (..)
 
 
@@ -63,7 +62,7 @@ map func =
 
 
 update : (Msg -> msg) -> Msg -> ExpansionPanel -> ( ExpansionPanel, Cmd msg )
-update toMsg message model =
+update _ message model =
     case message of
         Toggle ->
             ( map (\i -> { i | collapsed = not i.collapsed }) model, Cmd.none )
@@ -92,10 +91,10 @@ viewHeader toMsg title model =
                         ]
                     ]
                 ]
-                [ MI.expand_more ]
+                [ i [ class "material-icons" ] [ text "expand_more" ] ]
             , styled span [ bold, pa 1 ] [] [ text title ]
             ]
-        , button [ css [ iBtnStyle, mr 3 ] ] [ MI.add ]
+        , button [ css [ iBtnStyle, mr 3 ] ] [ i [ class "material-icons" ] [ text "add" ] ]
         ]
 
 

@@ -4,7 +4,6 @@ import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick)
-import MaterialIcons as MI
 import Styles exposing (..)
 
 
@@ -18,7 +17,10 @@ view config =
         gap =
             batch [ mr 2, ns [ mr 3 ] ]
     in
-    [ iBtn [ selfCenter, dn, ns [ flex ], bgWhite, c_ lightRed, gap, bor 1 ] [] [ MI.done_all ]
+    [ iBtn [ selfCenter, dn, ns [ flex ], bgWhite, c_ lightRed, gap, bor 1 ]
+        []
+        [ i [ class "material-icons" ] [ text "done_all" ]
+        ]
     , menu config [ gap, ns [ dn ] ]
     , search [ gap, flexShrink1, min_w_0 ]
     , add [ ml_auto ]
@@ -26,11 +28,11 @@ view config =
 
 
 menu config styles =
-    iBtn styles [ onClick config.onMenu ] [ MI.menu ]
+    iBtn styles [ onClick config.onMenu ] [ i [ class "material-icons" ] [ text "menu" ] ]
 
 
 add styles =
-    iBtn styles [] [ MI.add ]
+    iBtn styles [] [ i [ class "material-icons" ] [ text "add" ] ]
 
 
 search styles =
@@ -48,7 +50,7 @@ search styles =
         ]
         [ div
             [ css [ absolute, left_ 0, top_ 1, z_ 1 ] ]
-            [ MI.search ]
+            [ i [ class "material-icons" ] [ text "search" ] ]
         , styled input
             [ pa 1
             , Css.paddingLeft (Css.px 24)
