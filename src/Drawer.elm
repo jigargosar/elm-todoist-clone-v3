@@ -212,8 +212,8 @@ viewProjectsExpansionPanel projectList model =
     in
     projectsEPS.view
         "Projects"
-        (List.indexedMap (navProjectItem (dndL.get model)) projectList
-         -- |> rotateDragged
+        (rotateDragged projectList
+            |> List.indexedMap (navProjectItem (dndL.get model))
         )
         model
 
