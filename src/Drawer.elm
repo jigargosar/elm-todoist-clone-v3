@@ -8,6 +8,7 @@ import Html.Styled.Attributes as A exposing (class, css)
 import Lens
 import Project exposing (Project)
 import ProjectId
+import SelectList
 import Styles exposing (..)
 import Task
 
@@ -201,7 +202,10 @@ viewProjectsExpansionPanel projectList model =
         rotateDragged list =
             case system.info dnd of
                 Just { dragIndex, dropIndex } ->
-                    list
+                    SelectList.fromList list
+                        |> Maybe.andThen (SelectList.selectBy dragIndex)
+                        |> Maybe.map (SelectList.moveBy (dropIndex - dragIndex) >> SelectList.toList)
+                        |> Maybe.withDefault list
 
                 Nothing ->
                     list
