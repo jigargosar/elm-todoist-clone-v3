@@ -219,7 +219,22 @@ navProjectItem dnd project =
         viewItem iconColor iconName =
             div
                 (A.id domId
-                    :: css [ ph 1, pointer, flex, c_grayL 0.3 ]
+                    :: css
+                        [ ph 1
+                        , pointer
+                        , flex
+                        , c_grayL 0.3
+                        , case info of
+                            Just i ->
+                                if i.dragElementId == domId then
+                                    batch [ hidden ]
+
+                                else
+                                    batch []
+
+                            Nothing ->
+                                batch []
+                        ]
                     :: (case info of
                             Just i ->
                                 dropEvents
