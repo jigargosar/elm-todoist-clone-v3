@@ -9,6 +9,7 @@ import Lens
 import Project exposing (Project)
 import ProjectId
 import Styles exposing (..)
+import Task
 
 
 config : DnDList.Config Project
@@ -16,7 +17,7 @@ config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
     , listen = DnDList.OnDrag
-    , operation = DnDList.Unaltered
+    , operation = DnDList.Rotate
     }
 
 
@@ -136,17 +137,12 @@ update toMsg updateProjectListOrder projectList message model =
                     system.update msg oldDnd projectList
 
                 _ =
-                    if newDraggingProjectList /= projectList then
-                        Debug.log "altered" 1
-
-                    else
-                        1
+                    Debug.log "info" (system.info dnd)
             in
             ( dndL.set dnd model
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
-
-                --                , updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
+                , updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
                 ]
             )
 
