@@ -1,9 +1,10 @@
 module Drawer exposing (Drawer, Msg, initial, update, view)
 
+import Color as C
 import Css
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (class, css)
 import Lens
 import MaterialIcons as MI
 import Project exposing (Project)
@@ -138,6 +139,13 @@ navItem title icon iconColor =
         ]
 
 
+navItem2 title iconColor iconName =
+    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ] ] [ i [ class "material-icons" ] [ text iconName ] ]
+        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
+        ]
+
+
 navIconItem title icon =
     navItem title icon Css.inherit
 
@@ -150,7 +158,7 @@ navProjectItem project =
         hue =
             10
     in
-    navItem title MI.folder (Css.hsl hue 0.7 0.5)
+    navItem2 title (Css.hsl hue 0.7 0.5) "folder"
 
 
 navLabelItem title hue =

@@ -16,7 +16,8 @@
             "icidasset/elm-material-icons": "1.0.1",
             "joneshf/elm-tagged": "2.1.1",
             "rl-king/elm-modular-scale": "2.0.2",
-            "rtfeldman/elm-css": "16.0.1"
+            "rtfeldman/elm-css": "16.0.1",
+            "tesk9/palette": "2.0.0"
         },
         "indirect": {
             "Skinney/murmur3": "2.0.8",
