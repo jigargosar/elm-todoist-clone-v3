@@ -228,13 +228,11 @@ maybeDragItem dnd items =
             )
 
 
+viewGhostItem : List Project -> Drawer -> Html msg
 viewGhostItem projectList model =
     let
         dnd =
             dndL.get model
-
-        info =
-            system.info dnd
     in
     case maybeDragItem dnd projectList of
         Just project ->
