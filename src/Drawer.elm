@@ -135,7 +135,7 @@ update toMsg updateProjectListOrder projectList message model =
                     dndL.get model
 
                 ( dnd, newDraggingProjectList ) =
-                    system.update msg oldDnd []
+                    system.update msg oldDnd projectList
 
                 _ =
                     Debug.log "info" (system.info dnd)
