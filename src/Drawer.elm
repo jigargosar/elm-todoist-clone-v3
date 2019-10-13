@@ -192,13 +192,26 @@ viewProjectsExpansionPanel projectList model =
 
 navProjectItem dnd project =
     let
+        viewItem iconColor iconName =
+            div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
+                [ i
+                    [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
+                    , class "material-icons"
+                    ]
+                    [ text iconName ]
+                , div
+                    [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
+                    ]
+                    [ text title ]
+                ]
+
         title =
             Project.title project
 
         hue =
             Project.hue project |> toFloat
     in
-    navItem title (Css.hsl hue 0.7 0.5) "folder"
+    viewItem (Css.hsl hue 0.7 0.5) "folder"
 
 
 navLabelItem title hue =
