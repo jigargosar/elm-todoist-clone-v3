@@ -24,7 +24,9 @@ port logError : String -> Cmd msg
 
 
 type alias Flags =
-    { todoList : Value }
+    { todoList : Value
+    , projectList : Value
+    }
 
 
 
@@ -73,6 +75,27 @@ todoDictSystem =
     , toggle =
         \todoId big ->
             ( todoDictL.map (TodoDict.toggleCompleted todoId) big, Cmd.none )
+    }
+
+
+projectsSystem =
+    let
+        lens : Lens.System ProjectCollection Model
+        lens =
+            Lens.system { get = .projects, set = \s b -> { b | projects = s } }
+    in
+    { init =
+        \encoded ->
+            let
+                func old =
+                    case ProjectCollection.fromEncodedList encoded of
+                        Ok new ->
+                            ( new, Cmd.none )
+
+                        Err e ->
+                            ( old, logError <| JD.errorToString e )
+            in
+            Lens.update lens func
     }
 
 
