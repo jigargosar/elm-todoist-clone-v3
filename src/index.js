@@ -29,7 +29,7 @@ const mockProjectList = [
   title,
   createdAt: Date.now(),
   modifiedAt: Date.now(),
-  color:"hsla(3,70%,40%,1)",
+  hue: Math.round(Math.random() * 360),
   idx,
 }))
 
@@ -38,6 +38,9 @@ const app = Module.Elm.Main.init({
   flags: { todoList: mockTodoList, projectList: mockProjectList },
 })
 
-
-const pubs = ports([], { logError: err => console.error('Elm Error', err) }, app)
+const pubs = ports(
+  [],
+  { logError: err => console.error('Elm Error', err) },
+  app,
+)
 console.debug(pubs)
