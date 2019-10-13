@@ -208,8 +208,12 @@ navProjectItem dnd project =
             system.dragEvents sortIdx domId
                 |> List.map A.fromUnstyled
 
+        dropEvents =
+            system.dropEvents sortIdx domId
+                |> List.map A.fromUnstyled
+
         viewItem iconColor iconName =
-            div (css [ ph 1, pointer, flex, c_grayL 0.3 ] :: dragEvents)
+            div (css [ ph 1, pointer, flex, c_grayL 0.3 ] :: dragEvents ++ dropEvents)
                 [ i
                     [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
                     , class "material-icons"
