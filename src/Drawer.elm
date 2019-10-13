@@ -142,10 +142,7 @@ view toMsg projectList model =
     [ navIconItem "Inbox" "inbox"
     , navIconItem "Today" "calendar_today"
     , navIconItem "Next 7 Days" "view_week"
-    , projectsEPS.view
-        "Projects"
-        (List.map (navProjectItem (dndL.get model)) projectList)
-        model
+    , viewProjectsExpansionPanel projectList model
     , labelsEPS.view
         "Labels"
         [ navLabelItem "to read" 333
@@ -184,6 +181,13 @@ navItem title iconColor iconName =
 
 navIconItem title icon =
     navItem title Css.inherit icon
+
+
+viewProjectsExpansionPanel projectList model =
+    projectsEPS.view
+        "Projects"
+        (List.map (navProjectItem (dndL.get model)) projectList)
+        model
 
 
 navProjectItem dnd project =
