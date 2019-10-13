@@ -35,7 +35,6 @@ type alias Internal =
     , labels : ExpansionPanel
     , filters : ExpansionPanel
     , dnd : DnDList.Model
-    , draggingProjectList : Maybe (List Project)
     }
 
 
@@ -45,7 +44,6 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         system.model
-        Nothing
         |> Drawer
 
 
@@ -73,10 +71,6 @@ lens =
 dndL : Lens.System DnDList.Model Drawer
 dndL =
     lens { get = .dnd, set = \s b -> { b | dnd = s } }
-
-
-draggingProjectListL =
-    lens { get = .draggingProjectList, set = \s b -> { b | draggingProjectList = s } }
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -139,35 +133,13 @@ update toMsg updateProjectListOrder projectList message model =
                 oldDnd =
                     dndL.get model
 
-                draggingProjectList =
-                    draggingProjectListL.get model
-                        |> Maybe.withDefault projectList
-
                 ( dnd, newDraggingProjectList ) =
-                    system.update msg oldDnd draggingProjectList
-
-                maybeInfo =
-                    system.info oldDnd
+                    system.update msg oldDnd projectList
             in
             ( dndL.set dnd model
-                |> (case ( draggingProjectListL.get model, maybeInfo ) of
-                        ( Just _, Nothing ) ->
-                            draggingProjectListL.set Nothing
-
-                        ( _, Just _ ) ->
-                            draggingProjectListL.set (Just newDraggingProjectList)
-
-                        _ ->
-                            identity
-                   )
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
-                , case ( draggingProjectListL.get model, maybeInfo ) of
-                    ( Just _, Nothing ) ->
-                        updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
-
-                    _ ->
-                        Cmd.none
+                , updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
                 ]
             )
 
@@ -219,14 +191,9 @@ navIconItem title icon =
 
 
 viewProjectsExpansionPanel projectList model =
-    let
-        finalProjectList =
-            draggingProjectListL.get model
-                |> Maybe.withDefault projectList
-    in
     projectsEPS.view
         "Projects"
-        (List.indexedMap (navProjectItem (dndL.get model)) finalProjectList)
+        (List.indexedMap (navProjectItem (dndL.get model)) projectList)
         model
 
 
