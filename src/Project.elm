@@ -1,4 +1,4 @@
-module Project exposing (Project, decoder, id, idx, title)
+module Project exposing (Project, decoder, hue, id, idx, title)
 
 import Json.Decode as JD exposing (Decoder)
 import ProjectId exposing (ProjectId)
@@ -19,6 +19,7 @@ type alias Internal =
     , modifiedAt : Timestamp
     , title : String
     , idx : Int
+    , hue : Int
     }
 
 
@@ -35,12 +36,18 @@ decoder =
         |> andMap (JD.field "modifiedAt" Timestamp.decoder)
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "idx" JD.int)
+        |> andMap (JD.field "hue" JD.int)
         |> JD.map Project
 
 
 title : Project -> String
 title =
     unwrap >> .title
+
+
+hue : Project -> Int
+hue =
+    unwrap >> .hue
 
 
 unwrap (Project t) =

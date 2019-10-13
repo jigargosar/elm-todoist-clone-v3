@@ -161,7 +161,7 @@ navProjectItem project =
             Project.title project
 
         hue =
-            10
+            Project.hue project |> toFloat
     in
     navItem2 title (Css.hsl hue 0.7 0.5) "folder"
 
