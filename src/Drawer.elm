@@ -215,6 +215,29 @@ viewProjectsExpansionPanel projectList model =
         model
 
 
+viewItem2 attributes styles title iconColor iconName =
+    div
+        (css
+            [ ph 1
+            , pointer
+            , flex
+            , c_grayL 0.3
+            , batch [ styles ]
+            ]
+            :: attributes
+        )
+        [ i
+            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
+            , class "material-icons"
+            ]
+            [ text iconName ]
+        , div
+            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
+            ]
+            [ text title ]
+        ]
+
+
 navProjectItem dnd sortIdx project =
     let
         domId =
@@ -232,24 +255,8 @@ navProjectItem dnd sortIdx project =
             system.info dnd
 
         viewItem iconColor iconName =
-            div
+            viewItem2
                 (A.id domId
-                    :: css
-                        [ ph 1
-                        , pointer
-                        , flex
-                        , c_grayL 0.3
-                        , case info of
-                            Just i ->
-                                if sortIdx == i.dropIndex then
-                                    batch [ Css.opacity <| Css.num 0 ]
-
-                                else
-                                    batch []
-
-                            Nothing ->
-                                batch []
-                        ]
                     :: (case info of
                             Just _ ->
                                 dropEvents
@@ -258,16 +265,20 @@ navProjectItem dnd sortIdx project =
                                 dragEvents
                        )
                 )
-                [ i
-                    [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
-                    , class "material-icons"
-                    ]
-                    [ text iconName ]
-                , div
-                    [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
-                    ]
-                    [ text title ]
-                ]
+                (case info of
+                    Just i ->
+                        if sortIdx == i.dropIndex then
+                            batch [ Css.opacity <| Css.num 0 ]
+
+                        else
+                            batch []
+
+                    Nothing ->
+                        batch []
+                )
+                title
+                iconColor
+                iconName
 
         title =
             Project.title project
