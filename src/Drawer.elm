@@ -254,41 +254,36 @@ navProjectItem dnd sortIdx project =
         info =
             system.info dnd
 
-        viewItem iconColor iconName =
-            viewItem2
-                (A.id domId
-                    :: (case info of
-                            Just _ ->
-                                dropEvents
+        styles =
+            info
+                |> Maybe.andThen
+                    (\i ->
+                        if sortIdx == i.dropIndex then
+                            Just [ Css.opacity <| Css.num 0 ]
 
-                            Nothing ->
-                                dragEvents
-                       )
-                )
-                (info
-                    |> Maybe.andThen
-                        (\i ->
-                            if sortIdx == i.dropIndex then
-                                Just i
+                        else
+                            Nothing
+                    )
+                |> Maybe.withDefault []
+                |> batch
 
-                            else
-                                Nothing
-                        )
-                    |> Maybe.map (\_ -> [ Css.opacity <| Css.num 0 ])
-                    |> Maybe.withDefault []
-                    |> batch
-                )
-                title
-                iconColor
-                iconName
+        attributes =
+            A.id domId
+                :: (case info of
+                        Just _ ->
+                            dropEvents
+
+                        Nothing ->
+                            dragEvents
+                   )
 
         title =
             Project.title project
 
-        hue =
-            Project.hue project |> toFloat
+        iconColor =
+            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
     in
-    viewItem (Css.hsl hue 0.7 0.5) "folder"
+    viewItem2 attributes styles title iconColor "folder"
 
 
 navLabelItem title hue =
