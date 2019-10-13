@@ -8,6 +8,7 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout exposing (Layout)
 import Lens
+import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Screen exposing (Screen)
@@ -77,7 +78,7 @@ todoDictSystem =
     }
 
 
-projectsSystem : { init : Value -> Model -> ( Model, Cmd msg ) }
+projectsSystem : { init : Value -> Model -> ( Model, Cmd msg ), sorted : Model -> List Project }
 projectsSystem =
     let
         lens : Lens.System ProjectCollection Model
@@ -96,6 +97,7 @@ projectsSystem =
                             ( old, logError <| JD.errorToString e )
             in
             Lens.update lens func
+    , sorted = lens.get >> ProjectCollection.sorted
     }
 
 

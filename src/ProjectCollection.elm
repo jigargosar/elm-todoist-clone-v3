@@ -1,4 +1,4 @@
-module ProjectCollection exposing (ProjectCollection, fromEncodedList, initial, sortedByIdx)
+module ProjectCollection exposing (ProjectCollection, fromEncodedList, initial, sorted)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
@@ -34,8 +34,8 @@ fromEncodedList =
     JD.decodeValue (JD.list Project.decoder |> JD.map (dict.fromList >> ProjectCollection))
 
 
-sortedByIdx : ProjectCollection -> List Project
-sortedByIdx =
+sorted : ProjectCollection -> List Project
+sorted =
     toList >> List.sortBy Project.idx
 
 
