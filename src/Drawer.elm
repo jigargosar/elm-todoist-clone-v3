@@ -12,7 +12,7 @@ import Styles exposing (..)
 import Task
 
 
-config : DnDList.Config a
+config : DnDList.Config ( Int, Project )
 config =
     { beforeUpdate = \_ _ list -> list
     , movement = DnDList.Vertical
@@ -21,7 +21,7 @@ config =
     }
 
 
-system : DnDList.System a Msg
+system : DnDList.System ( Int, Project ) Msg
 system =
     DnDList.create config DndProject
 
@@ -133,7 +133,7 @@ update toMsg updateProjectListOrder projectList message model =
                     dndL.get model
 
                 ( dnd, items ) =
-                    system.update msg oldDnd projectList
+                    system.update msg oldDnd (List.indexedMap Tuple.pair projectList)
 
                 _ =
                     system.info oldDnd
@@ -141,7 +141,7 @@ update toMsg updateProjectListOrder projectList message model =
             ( dndL.set dnd model
             , Cmd.batch
                 [ system.commands oldDnd |> Cmd.map toMsg
-                , updateProjectListOrder items |> Task.succeed |> Task.perform identity
+                , updateProjectListOrder (List.map Tuple.second items) |> Task.succeed |> Task.perform identity
                 ]
             )
 
