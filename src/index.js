@@ -29,6 +29,7 @@ const mockProjectList = [
   title,
   createdAt: Date.now(),
   modifiedAt: Date.now(),
+  color:"hsla(3,70%,40%,1)",
   idx,
 }))
 
