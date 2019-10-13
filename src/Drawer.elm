@@ -213,7 +213,7 @@ viewProjectsExpansionPanel projectList model =
     projectsEPS.view
         "Projects"
         (List.indexedMap (navProjectItem (dndL.get model)) projectList
-            |> rotateDragged
+         -- |> rotateDragged
         )
         model
 
@@ -221,7 +221,7 @@ viewProjectsExpansionPanel projectList model =
 navProjectItem dnd sortIdx project =
     let
         domId =
-            Project.id project |> ProjectId.toString
+            String.fromInt sortIdx
 
         dragEvents =
             system.dragEvents sortIdx domId
@@ -244,8 +244,8 @@ navProjectItem dnd sortIdx project =
                         , c_grayL 0.3
                         , case info of
                             Just i ->
-                                if i.dragElementId == domId then
-                                    batch [ hidden ]
+                                if sortIdx == i.dropIndex then
+                                    batch [ Css.opacity <| Css.num 0 ]
 
                                 else
                                     batch []
