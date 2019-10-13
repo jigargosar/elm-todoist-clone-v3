@@ -185,7 +185,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Drawer.view Drawer model.drawer
+        , drawer = Drawer.view Drawer (projectsSystem.sorted model) model.drawer
         , content = mainView model
         }
         model.layout

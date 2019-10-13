@@ -6,6 +6,7 @@ import Html.Styled as H exposing (..)
 import Html.Styled.Attributes exposing (css)
 import Lens
 import MaterialIcons as MI
+import Project exposing (Project)
 import Styles exposing (..)
 
 
@@ -99,17 +100,14 @@ update toMsg message model =
                 |> Tuple.mapSecond (Cmd.map toMsg)
 
 
-view : (Msg -> msg) -> Drawer -> List (Html msg)
-view toMsg model =
+view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
+view toMsg projectList model =
     [ navIconItem "Inbox" MI.inbox
     , navIconItem "Today" MI.calendar_today
     , navIconItem "Next 7 Days" MI.view_week
     , projectsEPS.view
         "Projects"
-        [ navProjectItem "Clone This" 10
-        , navProjectItem "Learn This" 50
-        , navProjectItem "Finish That" 170
-        ]
+        (List.map navProjectItem projectList)
         model
     , labelsEPS.view
         "Labels"
@@ -144,7 +142,14 @@ navIconItem title icon =
     navItem title icon Css.inherit
 
 
-navProjectItem title hue =
+navProjectItem project =
+    let
+        title =
+            Project.title project
+
+        hue =
+            10
+    in
     navItem title MI.folder (Css.hsl hue 0.7 0.5)
 
 
