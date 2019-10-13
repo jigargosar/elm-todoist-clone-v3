@@ -131,6 +131,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ screenSystem.subscriptions model
+        , Drawer.subscriptions model.drawer |> Sub.map Drawer
         ]
 
 

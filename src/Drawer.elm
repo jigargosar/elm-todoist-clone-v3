@@ -1,4 +1,4 @@
-module Drawer exposing (Drawer, Msg, initial, update, view)
+module Drawer exposing (Drawer, Msg, initial, subscriptions, update, view)
 
 import Css
 import DnDList
@@ -111,6 +111,11 @@ updatePanel panel =
 
         Filters ->
             filtersEPS.update
+
+
+subscriptions : Drawer -> Sub Msg
+subscriptions model =
+    Sub.batch [ system.subscriptions (dndL.get model) ]
 
 
 update : (Msg -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
