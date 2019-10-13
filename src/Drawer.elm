@@ -168,14 +168,7 @@ view toMsg projectList model =
         |> List.map (H.map toMsg)
 
 
-navItem title icon iconColor =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ div [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ] ] [ icon ]
-        , div [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ] ] [ text title ]
-        ]
-
-
-navItem2 title iconColor iconName =
+navItem title iconColor iconName =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ i
             [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
@@ -190,7 +183,7 @@ navItem2 title iconColor iconName =
 
 
 navIconItem title icon =
-    navItem2 title Css.inherit icon
+    navItem title Css.inherit icon
 
 
 navProjectItem project =
@@ -201,12 +194,12 @@ navProjectItem project =
         hue =
             Project.hue project |> toFloat
     in
-    navItem2 title (Css.hsl hue 0.7 0.5) "folder"
+    navItem title (Css.hsl hue 0.7 0.5) "folder"
 
 
 navLabelItem title hue =
-    navItem2 title (Css.hsl hue 0.7 0.5) "label"
+    navItem title (Css.hsl hue 0.7 0.5) "label"
 
 
 navFilterItem title hue =
-    navItem2 title (Css.hsl hue 0.7 0.5) "filter_list"
+    navItem title (Css.hsl hue 0.7 0.5) "filter_list"
