@@ -226,15 +226,12 @@ viewProjectsExpansionPanel projectList model =
     in
     projectsEPS.view
         "Projects"
-        (List.map (navProjectItem (dndL.get model)) finalProjectList)
+        (List.indexedMap (navProjectItem (dndL.get model)) finalProjectList)
         model
 
 
-navProjectItem dnd project =
+navProjectItem dnd sortIdx project =
     let
-        sortIdx =
-            Project.idx project
-
         domId =
             Project.id project |> ProjectId.toString
 
