@@ -217,6 +217,23 @@ viewProjectsExpansionPanel projectList model =
         model
 
 
+viewGhostItem projectList model =
+    let
+        dnd =
+            dndL.get model
+
+        info =
+            system.info dnd
+
+        iconColor =
+            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+
+        title =
+            Project.title project
+    in
+    viewItem2 (system.ghostStyles dnd) [] title iconColor "folder"
+
+
 viewItem2 attributes styles title iconColor iconName =
     div
         (css
@@ -224,7 +241,7 @@ viewItem2 attributes styles title iconColor iconName =
             , pointer
             , flex
             , c_grayL 0.3
-            , batch [ styles ]
+            , batch styles
             ]
             :: attributes
         )
@@ -267,7 +284,6 @@ navProjectItem dnd sortIdx project =
                             Nothing
                     )
                 |> Maybe.withDefault []
-                |> batch
 
         attributes =
             A.id domId
