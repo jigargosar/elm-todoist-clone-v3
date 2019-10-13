@@ -139,12 +139,12 @@ update toMsg updateProjectListOrder projectList message model =
                 oldDnd =
                     dndL.get model
 
-                maybeCachedProjectList =
+                draggingProjectList =
                     draggingProjectListL.get model
                         |> Maybe.withDefault projectList
 
-                ( dnd, items ) =
-                    system.update msg oldDnd maybeCachedProjectList
+                ( dnd, newDraggingProjectList ) =
+                    system.update msg oldDnd draggingProjectList
 
                 maybeInfo =
                     system.info oldDnd
@@ -155,7 +155,7 @@ update toMsg updateProjectListOrder projectList message model =
                             draggingProjectListL.set Nothing
 
                         ( _, Just _ ) ->
-                            draggingProjectListL.set (Just items)
+                            draggingProjectListL.set (Just newDraggingProjectList)
 
                         _ ->
                             identity
@@ -164,7 +164,7 @@ update toMsg updateProjectListOrder projectList message model =
                 [ system.commands oldDnd |> Cmd.map toMsg
                 , case ( draggingProjectListL.get model, maybeInfo ) of
                     ( Just _, Nothing ) ->
-                        updateProjectListOrder items |> Task.succeed |> Task.perform identity
+                        updateProjectListOrder newDraggingProjectList |> Task.succeed |> Task.perform identity
 
                     _ ->
                         Cmd.none
