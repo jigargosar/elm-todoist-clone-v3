@@ -124,19 +124,6 @@ filtersEPS =
     expansionPanelSystem Filters
 
 
-updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
-updatePanel panel =
-    case panel of
-        Projects ->
-            projectsEPS.update
-
-        Labels ->
-            labelsEPS.update
-
-        Filters ->
-            filtersEPS.update
-
-
 updateDnd toMsg onListOrderChanged list msg model =
     let
         oldDnd =
@@ -162,7 +149,7 @@ update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer 
 update toMsg updateProjectListOrder projectList message =
     case message of
         ExpansionPanel panel msg ->
-            updatePanel panel msg
+            (expansionPanelSystem panel).update msg
                 >> Return.mapCmd toMsg
 
         Dnd panel msg ->
