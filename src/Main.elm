@@ -43,9 +43,12 @@ type alias Model =
     }
 
 
-drawerSystem : Drawer.System Msg
+drawerSystem : Drawer.System2 Msg Model
 drawerSystem =
-    Drawer.system Drawer { onProjectListSorted = UpdateProjectSortOrder }
+    Drawer.system2 Drawer
+        { onProjectListSorted = UpdateProjectSortOrder }
+        projectsSystem.sorted
+        (Lens.system { get = .drawer, set = \s b -> { b | drawer = s } })
 
 
 screenSystem : Screen.System Msg Model
@@ -138,7 +141,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ screenSystem.subscriptions model
-        , drawerSystem.subscriptions model.drawer
+        , drawerSystem.subscriptions model
         ]
 
 
@@ -179,8 +182,7 @@ update message =
 
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
 updateDrawer msg model =
-    drawerSystem.update (projectsSystem.sorted model) msg model.drawer
-        |> Tuple.mapFirst (\s -> { model | drawer = s })
+    drawerSystem.update msg model
 
 
 updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
@@ -197,7 +199,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = drawerSystem.view (projectsSystem.sorted model) model.drawer
+        , drawer = drawerSystem.view model
         , content = mainView model
         }
         model.layout
