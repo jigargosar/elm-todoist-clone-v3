@@ -116,12 +116,7 @@ labelsEPS =
 
 filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
-    let
-        filtersLens : Lens ExpansionPanel Drawer
-        filtersLens =
-            Lens.compose internalInDrawer { get = .filters, set = \s b -> { b | filters = s } }
-    in
-    ExpansionPanel.system (ExpansionPanel Filters) filtersLens
+    ExpansionPanel.system (ExpansionPanel Labels) filtersEPInDrawer
 
 
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
