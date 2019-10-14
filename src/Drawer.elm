@@ -1,4 +1,4 @@
-module Drawer exposing (Drawer, Msg, initial, subscriptions, system, update, view)
+module Drawer exposing (Drawer, Msg, System, initial, subscriptions, system, update, view)
 
 import Css
 import DnDList
@@ -13,8 +13,7 @@ import Task
 
 
 type alias System msg =
-    { initial :
-        Drawer
+    { initial : Drawer
     , update : List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
     , view : List Project -> Drawer -> List (Html msg)
     }
