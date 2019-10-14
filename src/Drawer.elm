@@ -26,13 +26,13 @@ system :
     -> (big -> List Project)
     -> Lens.System Drawer big
     -> System msg big
-system toMsg { onProjectListSorted } getProjectList l =
+system toMsg { onProjectListSorted } getProjectList bigL =
     { initial = initial
     , update =
         \msg big ->
-            Lens.update l (update toMsg onProjectListSorted (getProjectList big) msg) big
-    , view = \big -> view toMsg (getProjectList big) (l.get big)
-    , subscriptions = l.get >> subscriptions >> Sub.map toMsg
+            Lens.update bigL (update toMsg onProjectListSorted (getProjectList big) msg) big
+    , view = \big -> view toMsg (getProjectList big) (bigL.get big)
+    , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     }
 
 
