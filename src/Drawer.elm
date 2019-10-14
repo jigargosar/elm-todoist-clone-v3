@@ -87,8 +87,16 @@ internalInDrawer =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
+projectsEPInDrawer =
+    Lens.compose internalInDrawer (Lens .projects (\s b -> { b | projects = s }))
+
+
 labelsEPInDrawer =
     Lens.compose internalInDrawer (Lens .labels (\s b -> { b | labels = s }))
+
+
+filtersEPInDrawer =
+    Lens.compose internalInDrawer (Lens .projects (\s b -> { b | projects = s }))
 
 
 dndL : Lens DnDList.Model Drawer
@@ -98,12 +106,7 @@ dndL =
 
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
-    let
-        projectsLens : Lens ExpansionPanel Drawer
-        projectsLens =
-            Lens.compose internalInDrawer { get = .projects, set = \s b -> { b | projects = s } }
-    in
-    ExpansionPanel.system (ExpansionPanel Projects) projectsLens
+    ExpansionPanel.system (ExpansionPanel Projects) projectsEPInDrawer
 
 
 labelsEPS : ExpansionPanel.System Msg Drawer
