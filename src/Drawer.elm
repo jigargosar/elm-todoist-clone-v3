@@ -83,13 +83,16 @@ type Msg
     | Dnd Panel DnDList.Msg
 
 
-unwrap : Drawer -> Internal
-unwrap (Drawer internal) =
-    internal
-
-
 internalInDrawer =
-    Lens unwrap (\s _ -> Drawer s)
+    Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
+
+
+labelsEPInInternal =
+    Lens .labels (\s b -> { b | labels = s })
+
+
+labelsEPInDrawer =
+    Lens.compose internalInDrawer labelsEPInInternal
 
 
 dndL : Lens DnDList.Model Drawer
@@ -109,12 +112,7 @@ projectsEPS =
 
 labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
-    let
-        labelsLens : Lens ExpansionPanel Drawer
-        labelsLens =
-            Lens.compose internalInDrawer { get = .labels, set = \s b -> { b | labels = s } }
-    in
-    ExpansionPanel.system (ExpansionPanel Labels) labelsLens
+    ExpansionPanel.system (ExpansionPanel Labels) labelsEPInDrawer
 
 
 filtersEPS : ExpansionPanel.System Msg Drawer
