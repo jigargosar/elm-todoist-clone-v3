@@ -84,7 +84,9 @@ update message model =
             ( model, Cmd.none )
 
         GotDragElement (Ok dragElement) ->
-            ( mapState (\s -> { s | dragElement = Just dragElement, dropElement = Just dragElement }) model, Cmd.none )
+            ( mapState (\s -> { s | dragElement = Just dragElement, dropElement = Just dragElement }) model
+            , Cmd.none
+            )
 
         GotDropElement (Err _) ->
             ( model, Cmd.none )
