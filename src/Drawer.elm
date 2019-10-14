@@ -100,8 +100,8 @@ filtersEPLens =
     Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
 
 
-dndInDrawer : Lens DnDList.Model Drawer
-dndInDrawer =
+dndLens : Lens DnDList.Model Drawer
+dndLens =
     Lens.compose internalLens { get = .dnd, set = \s b -> { b | dnd = s } }
 
 
@@ -136,12 +136,12 @@ updatePanel panel =
 updateDnd toMsg onListOrderChanged list msg model =
     let
         oldDnd =
-            dndInDrawer.get model
+            dndLens.get model
 
         ( dnd, newList ) =
             dndSystem.update msg oldDnd list
     in
-    ( dndInDrawer.set dnd model
+    ( dndLens.set dnd model
     , Cmd.batch
         [ dndSystem.commands oldDnd |> Cmd.map toMsg
         , onListOrderChanged newList |> Task.succeed |> Task.perform identity
@@ -151,7 +151,7 @@ updateDnd toMsg onListOrderChanged list msg model =
 
 subscriptions : Drawer -> Sub Msg
 subscriptions model =
-    Sub.batch [ dndSystem.subscriptions (dndInDrawer.get model) ]
+    Sub.batch [ dndSystem.subscriptions (dndLens.get model) ]
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
@@ -231,7 +231,7 @@ rotateDragged dnd list =
 viewProjectsExpansionPanel projectList model =
     let
         dnd =
-            dndInDrawer.get model
+            dndLens.get model
     in
     projectsEPS.view
         "Projects"
@@ -258,7 +258,7 @@ viewGhostItem : List Project -> Drawer -> Html Msg
 viewGhostItem projectList model =
     let
         dnd =
-            dndInDrawer.get model
+            dndLens.get model
     in
     case maybeDragItem dnd projectList of
         Just project ->
