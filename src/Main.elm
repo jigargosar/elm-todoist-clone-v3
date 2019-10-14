@@ -82,7 +82,7 @@ todoDictSystem =
             res |> Tuple.mapFirst (\s -> todoDictL.set s big)
     , toggle =
         \todoId big ->
-            ( todoDictL.map (TodoDict.toggleCompleted todoId) big, Cmd.none )
+            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) big, Cmd.none )
     }
 
 
@@ -107,7 +107,7 @@ projectsSystem =
     , sorted = lens.get >> ProjectCollection.sorted
     , updateSortOrder =
         \pl big ->
-            ( lens.map (ProjectCollection.updateSortOrder pl) big, Cmd.none )
+            ( Lens.map lens (ProjectCollection.updateSortOrder pl) big, Cmd.none )
     }
 
 
