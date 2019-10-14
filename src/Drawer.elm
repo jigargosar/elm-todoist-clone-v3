@@ -5,7 +5,7 @@ import DnDList
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
-import Lens
+import Lens exposing (Lens)
 import Project exposing (Project)
 import SelectList
 import Styles exposing (..)
@@ -24,7 +24,7 @@ system :
     (Msg -> msg)
     -> { onProjectListSorted : List Project -> msg }
     -> (big -> List Project)
-    -> Lens.Lens Drawer big
+    -> Lens Drawer big
     -> System msg big
 system toMsg { onProjectListSorted } getProjectList bigL =
     { initial = initial
@@ -83,17 +83,17 @@ type Msg
     | Dnd Panel DnDList.Msg
 
 
-lens : Lens.Lens small Internal -> Lens.Lens small Drawer
+lens : Lens small Internal -> Lens small Drawer
 lens =
     let
         unwrap : Drawer -> Internal
         unwrap (Drawer internal) =
             internal
     in
-    Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
+    Lens.compose (Lens unwrap (\s _ -> Drawer s))
 
 
-dndL : Lens.Lens DnDList.Model Drawer
+dndL : Lens DnDList.Model Drawer
 dndL =
     lens { get = .dnd, set = \s b -> { b | dnd = s } }
 
@@ -101,7 +101,7 @@ dndL =
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
     let
-        projectsLens : Lens.Lens ExpansionPanel Drawer
+        projectsLens : Lens ExpansionPanel Drawer
         projectsLens =
             lens { get = .projects, set = \s b -> { b | projects = s } }
     in
@@ -111,7 +111,7 @@ projectsEPS =
 labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
     let
-        labelsLens : Lens.Lens ExpansionPanel Drawer
+        labelsLens : Lens ExpansionPanel Drawer
         labelsLens =
             lens { get = .labels, set = \s b -> { b | labels = s } }
     in
@@ -121,7 +121,7 @@ labelsEPS =
 filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
     let
-        filtersLens : Lens.Lens ExpansionPanel Drawer
+        filtersLens : Lens ExpansionPanel Drawer
         filtersLens =
             lens { get = .filters, set = \s b -> { b | filters = s } }
     in
