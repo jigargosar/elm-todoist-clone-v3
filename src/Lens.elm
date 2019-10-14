@@ -2,10 +2,6 @@ module Lens exposing (Config, System, compose, map, system, update)
 
 
 type alias Lens small big =
-    Internal small big
-
-
-type alias Internal small big =
     { get : big -> small
     , set : small -> big -> big
     }
@@ -13,11 +9,6 @@ type alias Internal small big =
 
 type alias Config small big =
     { get : big -> small, set : small -> big -> big }
-
-
-init : Config small big -> Lens small big
-init =
-    identity
 
 
 get : Lens small big -> big -> small
@@ -49,7 +40,7 @@ update bigL func big =
 
 system : Config small big -> System small big
 system =
-    init >> systemFromLens
+    systemFromLens
 
 
 compose : System medium big -> System small medium -> System small big
