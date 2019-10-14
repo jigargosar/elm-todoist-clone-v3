@@ -6,6 +6,13 @@ import Json.Decode as JD
 import Task
 
 
+create toMsg =
+    { initial = initial
+    , update = update toMsg
+    , subscriptions = subscriptions >> Sub.map toMsg
+    }
+
+
 type DnD
     = DnD Internal
 
@@ -84,8 +91,8 @@ subscriptions (DnD internal) =
         |> Maybe.withDefault Sub.none
 
 
-update : Msg -> DnD -> ( DnD, Cmd Msg )
-update message model =
+update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
+update toMsg message model =
     case message of
         DragStart dragElementId xy ->
             ( { startPosition = xy
@@ -97,7 +104,7 @@ update message model =
               }
                 |> Just
                 |> DnD
-            , Dom.getElement dragElementId |> Task.attempt GotDragElement
+            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement)
             )
 
         Drag xy ->
@@ -105,7 +112,7 @@ update message model =
 
         DragOver dropElementId ->
             ( mapState (\s -> { s | dropElementId = dropElementId }) model
-            , Dom.getElement dropElementId |> Task.attempt GotDragElement
+            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDragElement)
             )
 
         GotDragElement (Err _) ->
