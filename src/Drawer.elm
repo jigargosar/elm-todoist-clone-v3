@@ -7,6 +7,7 @@ import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Lens exposing (Lens)
 import Project exposing (Project)
+import Return
 import SelectList
 import Styles exposing (..)
 import Task
@@ -154,19 +155,19 @@ subscriptions model =
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg updateProjectListOrder projectList message model =
+update toMsg updateProjectListOrder projectList message =
     case message of
         ExpansionPanel panel msg ->
-            updatePanel panel msg model
-                |> Tuple.mapSecond (Cmd.map toMsg)
+            updatePanel panel msg
+                >> Tuple.mapSecond (Cmd.map toMsg)
 
         Dnd panel msg ->
             case panel of
                 Projects ->
-                    updateDnd toMsg updateProjectListOrder projectList msg model
+                    updateDnd toMsg updateProjectListOrder projectList msg
 
                 _ ->
-                    ( model, Cmd.none )
+                    Return.singleton
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
