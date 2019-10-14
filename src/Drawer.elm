@@ -84,40 +84,40 @@ type Msg
     | Dnd Panel DnDList.Msg
 
 
-internalInDrawer =
+internalLens =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
-projectsEPInDrawer =
-    Lens.compose internalInDrawer (Lens .projects (\s b -> { b | projects = s }))
+projectsEPLens =
+    Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
 
 
-labelsEPInDrawer =
-    Lens.compose internalInDrawer (Lens .labels (\s b -> { b | labels = s }))
+labelsEPLens =
+    Lens.compose internalLens (Lens .labels (\s b -> { b | labels = s }))
 
 
-filtersEPInDrawer =
-    Lens.compose internalInDrawer (Lens .projects (\s b -> { b | projects = s }))
+filtersEPLens =
+    Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
 
 
 dndInDrawer : Lens DnDList.Model Drawer
 dndInDrawer =
-    Lens.compose internalInDrawer { get = .dnd, set = \s b -> { b | dnd = s } }
+    Lens.compose internalLens { get = .dnd, set = \s b -> { b | dnd = s } }
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
-    ExpansionPanel.system (ExpansionPanel Projects) projectsEPInDrawer
+    ExpansionPanel.system (ExpansionPanel Projects) projectsEPLens
 
 
 labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
-    ExpansionPanel.system (ExpansionPanel Labels) labelsEPInDrawer
+    ExpansionPanel.system (ExpansionPanel Labels) labelsEPLens
 
 
 filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
-    ExpansionPanel.system (ExpansionPanel Labels) filtersEPInDrawer
+    ExpansionPanel.system (ExpansionPanel Labels) filtersEPLens
 
 
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
