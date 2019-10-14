@@ -31,12 +31,12 @@ openDrawer =
     OpenModalDrawer
 
 
-privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.System small Layout
+privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.Lens small Layout
 privateLens =
     Lens.system >> Lens.compose (Lens.system { get = \(Layout p) -> p, set = \s _ -> Layout s })
 
 
-drawerModalL : Lens.System Bool Layout
+drawerModalL : Lens.Lens Bool Layout
 drawerModalL =
     privateLens { get = .drawerModal, set = \s b -> { b | drawerModal = s } }
 

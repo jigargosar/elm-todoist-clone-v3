@@ -24,7 +24,7 @@ system :
     (Msg -> msg)
     -> { onProjectListSorted : List Project -> msg }
     -> (big -> List Project)
-    -> Lens.System Drawer big
+    -> Lens.Lens Drawer big
     -> System msg big
 system toMsg { onProjectListSorted } getProjectList bigL =
     { initial = initial
@@ -83,7 +83,7 @@ type Msg
     | Dnd Panel DnDList.Msg
 
 
-lens : Lens.Config small Internal -> Lens.System small Drawer
+lens : Lens.Lens small Internal -> Lens.Lens small Drawer
 lens =
     let
         unwrap : Drawer -> Internal
@@ -93,7 +93,7 @@ lens =
     Lens.compose (Lens.system { get = unwrap, set = \s _ -> Drawer s }) << Lens.system
 
 
-dndL : Lens.System DnDList.Model Drawer
+dndL : Lens.Lens DnDList.Model Drawer
 dndL =
     lens { get = .dnd, set = \s b -> { b | dnd = s } }
 
@@ -101,7 +101,7 @@ dndL =
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
     let
-        projectsLens : Lens.System ExpansionPanel Drawer
+        projectsLens : Lens.Lens ExpansionPanel Drawer
         projectsLens =
             lens { get = .projects, set = \s b -> { b | projects = s } }
     in
@@ -111,7 +111,7 @@ projectsEPS =
 labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
     let
-        labelsLens : Lens.System ExpansionPanel Drawer
+        labelsLens : Lens.Lens ExpansionPanel Drawer
         labelsLens =
             lens { get = .labels, set = \s b -> { b | labels = s } }
     in
@@ -121,7 +121,7 @@ labelsEPS =
 filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
     let
-        filtersLens : Lens.System ExpansionPanel Drawer
+        filtersLens : Lens.Lens ExpansionPanel Drawer
         filtersLens =
             lens { get = .filters, set = \s b -> { b | filters = s } }
     in

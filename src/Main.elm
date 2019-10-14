@@ -54,7 +54,7 @@ drawerSystem =
 screenSystem : Screen.System Msg Model
 screenSystem =
     let
-        screenL : Lens.System Screen Model
+        screenL : Lens.Lens Screen Model
         screenL =
             Lens.system { get = .screen, set = \s b -> { b | screen = s } }
     in
@@ -63,7 +63,7 @@ screenSystem =
 
 todoDictSystem =
     let
-        todoDictL : Lens.System TodoDict Model
+        todoDictL : Lens.Lens TodoDict Model
         todoDictL =
             Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
     in
@@ -88,7 +88,7 @@ todoDictSystem =
 
 projectsSystem =
     let
-        lens : Lens.System ProjectCollection Model
+        lens : Lens.Lens ProjectCollection Model
         lens =
             Lens.system { get = .projectCollection, set = \s b -> { b | projectCollection = s } }
     in

@@ -1,5 +1,6 @@
 module Screen exposing (Msg, Screen, System, system)
 
+import Basics.More exposing (flip)
 import Browser.Dom exposing (Element, Viewport, getViewport)
 import Browser.Events exposing (onResize)
 import Lens
@@ -29,13 +30,13 @@ type alias System msg big =
 
 
 system :
-    Lens.System Screen big
+    Lens.Lens Screen big
     -> (Msg -> msg)
     -> (Int -> Int -> msg)
     -> System msg big
 system bigL toMsg onSize =
     { initial = initial
-    , init = \big -> init |> Tuple.mapBoth (bigL.setIn big) (Cmd.map toMsg)
+    , init = \big -> init |> Tuple.mapBoth (flip bigL.set big) (Cmd.map toMsg)
     , update =
         \msg ->
             Lens.update bigL

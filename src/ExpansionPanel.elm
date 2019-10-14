@@ -21,7 +21,7 @@ type alias System msg big =
     }
 
 
-system : (Msg -> msg) -> Lens.System ExpansionPanel big -> System msg big
+system : (Msg -> msg) -> Lens.Lens ExpansionPanel big -> System msg big
 system toMsg lens =
     { initial = initial
     , update = \msg -> Lens.update lens (update toMsg msg)
