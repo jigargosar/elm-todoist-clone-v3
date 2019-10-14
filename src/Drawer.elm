@@ -88,16 +88,20 @@ internalLens =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
-projectsEPLens =
-    Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
+expansionPanelLens panel =
+    case panel of
+        Projects ->
+            Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
+
+        Labels ->
+            Lens.compose internalLens (Lens .labels (\s b -> { b | labels = s }))
+
+        Filters ->
+            Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
 
 
-labelsEPLens =
-    Lens.compose internalLens (Lens .labels (\s b -> { b | labels = s }))
-
-
-filtersEPLens =
-    Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
+expansionPanelSystem panel =
+    ExpansionPanel.system (ExpansionPanel panel) (expansionPanelLens panel)
 
 
 dndLens : Lens DnDList.Model Drawer
@@ -107,17 +111,17 @@ dndLens =
 
 projectsEPS : ExpansionPanel.System Msg Drawer
 projectsEPS =
-    ExpansionPanel.system (ExpansionPanel Projects) projectsEPLens
+    expansionPanelSystem Projects
 
 
 labelsEPS : ExpansionPanel.System Msg Drawer
 labelsEPS =
-    ExpansionPanel.system (ExpansionPanel Labels) labelsEPLens
+    expansionPanelSystem Labels
 
 
 filtersEPS : ExpansionPanel.System Msg Drawer
 filtersEPS =
-    ExpansionPanel.system (ExpansionPanel Labels) filtersEPLens
+    expansionPanelSystem Filters
 
 
 updatePanel : Panel -> ExpansionPanel.Msg -> Drawer -> ( Drawer, Cmd Msg )
