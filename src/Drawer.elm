@@ -12,6 +12,14 @@ import Styles exposing (..)
 import Task
 
 
+type alias SubSystem msgBig msgSmall small updateDeps viewDeps =
+    { initial : small
+    , update : updateDeps -> msgSmall -> small -> ( small, Cmd msgBig )
+    , view : viewDeps -> small -> List (Html msgBig)
+    , subscriptions : small -> Sub msgBig
+    }
+
+
 type alias System msg =
     { initial : Drawer
     , update : List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
