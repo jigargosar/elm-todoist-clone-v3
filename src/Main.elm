@@ -43,6 +43,11 @@ type alias Model =
     }
 
 
+drawerSystem : Drawer.System Msg
+drawerSystem =
+    Drawer.system Drawer { onProjectListSorted = UpdateProjectSortOrder }
+
+
 screenSystem : Screen.System Msg Model
 screenSystem =
     let
@@ -112,7 +117,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , screen = screenSystem.initial
             , layout = Layout.initial
-            , drawer = Drawer.initial
+            , drawer = drawerSystem.initial
             }
     in
     Return.singleton initial
@@ -133,7 +138,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ screenSystem.subscriptions model
-        , Drawer.subscriptions model.drawer |> Sub.map Drawer
+        , drawerSystem.subscriptions model.drawer
         ]
 
 
@@ -174,7 +179,7 @@ update message =
 
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
 updateDrawer msg model =
-    Drawer.update Drawer UpdateProjectSortOrder (projectsSystem.sorted model) msg model.drawer
+    drawerSystem.update (projectsSystem.sorted model) msg model.drawer
         |> Tuple.mapFirst (\s -> { model | drawer = s })
 
 
@@ -192,7 +197,7 @@ view : Model -> Html Msg
 view model =
     Layout.view Layout
         { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
-        , drawer = Drawer.view Drawer (projectsSystem.sorted model) model.drawer
+        , drawer = drawerSystem.view (projectsSystem.sorted model) model.drawer
         , content = mainView model
         }
         model.layout

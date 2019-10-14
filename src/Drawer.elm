@@ -1,4 +1,4 @@
-module Drawer exposing (Drawer, Msg, System, initial, subscriptions, system, update, view)
+module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
 import DnDList
@@ -16,6 +16,7 @@ type alias System msg =
     { initial : Drawer
     , update : List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
     , view : List Project -> Drawer -> List (Html msg)
+    , subscriptions : Drawer -> Sub msg
     }
 
 
@@ -27,6 +28,7 @@ system toMsg { onProjectListSorted } =
     { initial = initial
     , update = update toMsg onProjectListSorted
     , view = view toMsg
+    , subscriptions = subscriptions >> Sub.map toMsg
     }
 
 
