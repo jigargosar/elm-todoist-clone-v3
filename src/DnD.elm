@@ -54,6 +54,7 @@ type Msg
     = DragStart String Position
     | Drag Position
     | DragOver String
+    | DragEnd
     | GotDragElement ElementResult
     | GotDropElement ElementResult
 
@@ -61,30 +62,35 @@ type Msg
 update message model =
     case message of
         DragStart dragElementId xy ->
-            { startPosition = xy
-            , currentPosition = xy
-            , dragElementId = dragElementId
-            , dropElementId = dragElementId
-            , dragElement = Nothing
-            , dropElement = Nothing
-            }
+            ( { startPosition = xy
+              , currentPosition = xy
+              , dragElementId = dragElementId
+              , dropElementId = dragElementId
+              , dragElement = Nothing
+              , dropElement = Nothing
+              }
                 |> Just
                 |> DnD
+            , Cmd.none
+            )
 
         Drag xy ->
-            mapState (\s -> { s | currentPosition = xy }) model
+            ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
         DragOver dropElementId ->
-            mapState (\s -> { s | dropElementId = dropElementId }) model
+            ( mapState (\s -> { s | dropElementId = dropElementId }) model, Cmd.none )
 
         GotDragElement (Err _) ->
-            model
+            ( model, Cmd.none )
 
         GotDragElement (Ok dragElement) ->
-            mapState (\s -> { s | dragElement = Just dragElement, dropElement = Just dragElement }) model
+            ( mapState (\s -> { s | dragElement = Just dragElement, dropElement = Just dragElement }) model, Cmd.none )
 
         GotDropElement (Err _) ->
-            model
+            ( model, Cmd.none )
 
         GotDropElement (Ok dropElement) ->
-            mapState (\s -> { s | dropElement = Just dropElement }) model
+            ( mapState (\s -> { s | dropElement = Just dropElement }) model, Cmd.none )
+
+        DragEnd ->
+            ( model, Cmd.none )
