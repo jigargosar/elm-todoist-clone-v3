@@ -40,6 +40,30 @@ system toMsg { onProjectListSorted } =
     }
 
 
+type alias System2 msg big =
+    { initial : Drawer
+    , update : Msg -> big -> ( big, Cmd msg )
+    , view : big -> List (Html msg)
+    , subscriptions : big -> Sub msg
+    }
+
+
+system2 :
+    (Msg -> msg)
+    -> { onProjectListSorted : List Project -> msg }
+    -> (big -> List Project)
+    -> Lens.System Drawer big
+    -> System2 msg big
+system2 toMsg { onProjectListSorted } getProjectList l =
+    { initial = initial
+    , update =
+        \msg big ->
+            Lens.update l (update toMsg onProjectListSorted (getProjectList big) msg) big
+    , view = \big -> view toMsg (getProjectList big) (l.get big)
+    , subscriptions = l.get >> subscriptions >> Sub.map toMsg
+    }
+
+
 
 --
 
