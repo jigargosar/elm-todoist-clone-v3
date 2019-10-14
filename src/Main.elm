@@ -79,7 +79,7 @@ todoDictSystem =
                         Err e ->
                             ( TodoDict.initial, logError <| JD.errorToString e )
             in
-            res |> Tuple.mapFirst (todoDictL.setIn big)
+            res |> Tuple.mapFirst (\s -> todoDictL.set s big)
     , toggle =
         \todoId big ->
             ( todoDictL.map (TodoDict.toggleCompleted todoId) big, Cmd.none )

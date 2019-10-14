@@ -50,15 +50,14 @@ map l fn big =
 type alias System small big =
     { get : big -> small
     , set : small -> big -> big
-    , setIn : big -> small -> big
     , map : (small -> small) -> big -> big
     }
 
 
 update : System small big -> (small -> ( small, other )) -> big -> ( big, other )
-update s func big =
-    func (s.get big)
-        |> Tuple.mapFirst (s.setIn big)
+update bigL func big =
+    func (bigL.get big)
+        |> Tuple.mapFirst (\s -> bigL.set s big)
 
 
 system : Config small big -> System small big
@@ -78,6 +77,5 @@ systemFromLens : Lens small big -> System small big
 systemFromLens l =
     { get = get l
     , set = set l
-    , setIn = setIn l
     , map = map l
     }

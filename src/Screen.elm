@@ -37,11 +37,9 @@ system bigL toMsg onSize =
     { initial = initial
     , init = \big -> init |> Tuple.mapBoth (bigL.setIn big) (Cmd.map toMsg)
     , update =
-        \msg big ->
-            update (\w h -> onSize w h |> succeed |> perform identity)
-                msg
-                (bigL.get big)
-                |> Tuple.mapFirst (bigL.setIn big)
+        \msg ->
+            Lens.update bigL
+                (update (\w h -> onSize w h |> succeed |> perform identity) msg)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     }
 
