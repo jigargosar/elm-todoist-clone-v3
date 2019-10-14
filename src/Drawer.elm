@@ -102,7 +102,7 @@ filtersEPLens =
 
 dndLens : Lens DnDList.Model Drawer
 dndLens =
-    Lens.compose internalLens { get = .dnd, set = \s b -> { b | dnd = s } }
+    Lens.compose internalLens (Lens .dnd (\s b -> { b | dnd = s }))
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
