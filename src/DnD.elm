@@ -1,7 +1,7 @@
 module DnD exposing (DnD)
 
 import Browser.Dom as Dom
-import Lens
+import Task
 
 
 type DnD
@@ -71,7 +71,7 @@ update message model =
               }
                 |> Just
                 |> DnD
-            , Cmd.none
+            , Dom.getElement dragElementId |> Task.attempt GotDragElement
             )
 
         Drag xy ->
