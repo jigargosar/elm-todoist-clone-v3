@@ -43,9 +43,9 @@ type alias Model =
     }
 
 
-drawerSystem : Drawer.System2 Msg Model
+drawerSystem : Drawer.System Msg Model
 drawerSystem =
-    Drawer.system2 Drawer
+    Drawer.system Drawer
         { onProjectListSorted = UpdateProjectSortOrder }
         projectsSystem.sorted
         (Lens.system { get = .drawer, set = \s b -> { b | drawer = s } })

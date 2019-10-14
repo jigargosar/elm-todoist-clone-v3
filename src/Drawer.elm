@@ -1,4 +1,4 @@
-module Drawer exposing (Drawer, Msg, System, System2, system, system2)
+module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
 import DnDList
@@ -12,35 +12,7 @@ import Styles exposing (..)
 import Task
 
 
-type alias SubSystem msgBig msgSmall small updateDeps viewDeps =
-    { initial : small
-    , update : updateDeps -> msgSmall -> small -> ( small, Cmd msgBig )
-    , view : viewDeps -> small -> List (Html msgBig)
-    , subscriptions : small -> Sub msgBig
-    }
-
-
-type alias System msg =
-    { initial : Drawer
-    , update : List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-    , view : List Project -> Drawer -> List (Html msg)
-    , subscriptions : Drawer -> Sub msg
-    }
-
-
-system :
-    (Msg -> msg)
-    -> { onProjectListSorted : List Project -> msg }
-    -> System msg
-system toMsg { onProjectListSorted } =
-    { initial = initial
-    , update = update toMsg onProjectListSorted
-    , view = view toMsg
-    , subscriptions = subscriptions >> Sub.map toMsg
-    }
-
-
-type alias System2 msg big =
+type alias System msg big =
     { initial : Drawer
     , update : Msg -> big -> ( big, Cmd msg )
     , view : big -> List (Html msg)
@@ -48,13 +20,13 @@ type alias System2 msg big =
     }
 
 
-system2 :
+system :
     (Msg -> msg)
     -> { onProjectListSorted : List Project -> msg }
     -> (big -> List Project)
     -> Lens.System Drawer big
-    -> System2 msg big
-system2 toMsg { onProjectListSorted } getProjectList l =
+    -> System msg big
+system toMsg { onProjectListSorted } getProjectList l =
     { initial = initial
     , update =
         \msg big ->
