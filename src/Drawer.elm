@@ -339,6 +339,7 @@ navProjectItem dnd sortIdx project =
 
         attributes =
             A.id domId
+                :: A.draggable "true"
                 :: (case info of
                         Just _ ->
                             dropEvents
