@@ -71,6 +71,7 @@ pageYDecoder =
     JD.field "pageY" JD.float
 
 
+subscriptions : DnD -> Sub Msg
 subscriptions (DnD internal) =
     internal
         |> Maybe.map
