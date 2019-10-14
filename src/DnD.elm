@@ -3,13 +3,22 @@ module DnD exposing (DnD)
 import Browser.Dom as Dom
 import Browser.Events
 import Json.Decode as JD
+import Lens
 import Task
 
 
-create toMsg =
+create :
+    (Msg -> msg)
+    -> Lens.Lens DnD big
+    ->
+        { initial : DnD
+        , update : Msg -> big -> ( big, Cmd msg )
+        , subscriptions : big -> Sub msg
+        }
+create toMsg bigL =
     { initial = initial
-    , update = update toMsg
-    , subscriptions = subscriptions >> Sub.map toMsg
+    , update = \msg -> Lens.update bigL (update toMsg msg)
+    , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     }
 
 
