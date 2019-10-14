@@ -83,19 +83,18 @@ type Msg
     | Dnd Panel DnDList.Msg
 
 
-lens : Lens small Internal -> Lens small Drawer
-lens =
-    let
-        unwrap : Drawer -> Internal
-        unwrap (Drawer internal) =
-            internal
-    in
-    Lens.compose (Lens unwrap (\s _ -> Drawer s))
+unwrap : Drawer -> Internal
+unwrap (Drawer internal) =
+    internal
+
+
+internalInDrawer =
+    Lens unwrap (\s _ -> Drawer s)
 
 
 dndL : Lens DnDList.Model Drawer
 dndL =
-    lens { get = .dnd, set = \s b -> { b | dnd = s } }
+    Lens.compose internalInDrawer { get = .dnd, set = \s b -> { b | dnd = s } }
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -103,7 +102,7 @@ projectsEPS =
     let
         projectsLens : Lens ExpansionPanel Drawer
         projectsLens =
-            lens { get = .projects, set = \s b -> { b | projects = s } }
+            Lens.compose internalInDrawer { get = .projects, set = \s b -> { b | projects = s } }
     in
     ExpansionPanel.system (ExpansionPanel Projects) projectsLens
 
@@ -113,7 +112,7 @@ labelsEPS =
     let
         labelsLens : Lens ExpansionPanel Drawer
         labelsLens =
-            lens { get = .labels, set = \s b -> { b | labels = s } }
+            Lens.compose internalInDrawer { get = .labels, set = \s b -> { b | labels = s } }
     in
     ExpansionPanel.system (ExpansionPanel Labels) labelsLens
 
@@ -123,7 +122,7 @@ filtersEPS =
     let
         filtersLens : Lens ExpansionPanel Drawer
         filtersLens =
-            lens { get = .filters, set = \s b -> { b | filters = s } }
+            Lens.compose internalInDrawer { get = .filters, set = \s b -> { b | filters = s } }
     in
     ExpansionPanel.system (ExpansionPanel Filters) filtersLens
 
