@@ -87,12 +87,8 @@ internalInDrawer =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
-labelsEPInInternal =
-    Lens .labels (\s b -> { b | labels = s })
-
-
 labelsEPInDrawer =
-    Lens.compose internalInDrawer labelsEPInInternal
+    Lens.compose internalInDrawer (Lens .labels (\s b -> { b | labels = s }))
 
 
 dndL : Lens DnDList.Model Drawer
