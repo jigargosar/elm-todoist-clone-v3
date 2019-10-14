@@ -78,13 +78,22 @@ update message model =
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
         DragOver dropElementId ->
-            ( mapState (\s -> { s | dropElementId = dropElementId }) model, Cmd.none )
+            ( mapState (\s -> { s | dropElementId = dropElementId }) model
+            , Dom.getElement dropElementId |> Task.attempt GotDragElement
+            )
 
         GotDragElement (Err _) ->
             ( model, Cmd.none )
 
         GotDragElement (Ok dragElement) ->
-            ( mapState (\s -> { s | dragElement = Just dragElement, dropElement = Just dragElement }) model
+            ( mapState
+                (\s ->
+                    { s
+                        | dragElement = Just dragElement
+                        , dropElement = Just dragElement
+                    }
+                )
+                model
             , Cmd.none
             )
 
