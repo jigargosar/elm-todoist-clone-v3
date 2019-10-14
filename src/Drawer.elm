@@ -159,7 +159,7 @@ update toMsg updateProjectListOrder projectList message =
     case message of
         ExpansionPanel panel msg ->
             updatePanel panel msg
-                >> Tuple.mapSecond (Cmd.map toMsg)
+                >> Return.mapCmd toMsg
 
         Dnd panel msg ->
             case panel of
