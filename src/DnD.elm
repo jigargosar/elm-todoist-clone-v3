@@ -1,4 +1,4 @@
-module DnD exposing (DnD)
+module DnD exposing (DnD, Msg, create)
 
 import Browser.Dom as Dom
 import Browser.Events
