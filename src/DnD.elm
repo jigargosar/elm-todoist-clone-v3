@@ -104,4 +104,4 @@ update message model =
             ( mapState (\s -> { s | dropElement = Just dropElement }) model, Cmd.none )
 
         DragEnd ->
-            ( model, Cmd.none )
+            ( DnD Nothing, Cmd.none )
