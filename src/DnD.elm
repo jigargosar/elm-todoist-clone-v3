@@ -1,6 +1,8 @@
 module DnD exposing (DnD)
 
 import Browser.Dom as Dom
+import Browser.Events
+import Json.Decode as JD
 import Task
 
 
@@ -59,6 +61,29 @@ type Msg
     | GotDropElement ElementResult
 
 
+pageXDecoder : JD.Decoder Float
+pageXDecoder =
+    JD.field "pageX" JD.float
+
+
+pageYDecoder : JD.Decoder Float
+pageYDecoder =
+    JD.field "pageY" JD.float
+
+
+subscriptions (DnD internal) =
+    internal
+        |> Maybe.map
+            (\_ ->
+                Sub.batch
+                    [ Browser.Events.onMouseMove
+                        (JD.map2 Position pageXDecoder pageYDecoder |> JD.map Drag)
+                    ]
+            )
+        |> Maybe.withDefault Sub.none
+
+
+update : Msg -> DnD -> ( DnD, Cmd Msg )
 update message model =
     case message of
         DragStart dragElementId xy ->
