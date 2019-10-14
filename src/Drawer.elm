@@ -12,18 +12,15 @@ import Styles exposing (..)
 import Task
 
 
-config : DnDList.Config a
-config =
-    { beforeUpdate = \_ _ list -> list
-    , movement = DnDList.Vertical
-    , listen = DnDList.OnDrop
-    , operation = DnDList.Rotate
-    }
-
-
-system : DnDList.System a Msg
-system =
-    DnDList.create config (Dnd Projects)
+dndSystem : DnDList.System a Msg
+dndSystem =
+    DnDList.create
+        { beforeUpdate = \_ _ list -> list
+        , movement = DnDList.Vertical
+        , listen = DnDList.OnDrop
+        , operation = DnDList.Rotate
+        }
+        (Dnd Projects)
 
 
 type Drawer
@@ -43,7 +40,7 @@ initial =
     Internal projectsEPS.initial
         labelsEPS.initial
         filtersEPS.initial
-        system.model
+        dndSystem.model
         |> Drawer
 
 
@@ -122,11 +119,11 @@ updateDnd toMsg onListOrderChanged list msg model =
             dndL.get model
 
         ( dnd, newList ) =
-            system.update msg oldDnd list
+            dndSystem.update msg oldDnd list
     in
     ( dndL.set dnd model
     , Cmd.batch
-        [ system.commands oldDnd |> Cmd.map toMsg
+        [ dndSystem.commands oldDnd |> Cmd.map toMsg
         , onListOrderChanged newList |> Task.succeed |> Task.perform identity
         ]
     )
@@ -134,7 +131,7 @@ updateDnd toMsg onListOrderChanged list msg model =
 
 subscriptions : Drawer -> Sub Msg
 subscriptions model =
-    Sub.batch [ system.subscriptions (dndL.get model) ]
+    Sub.batch [ dndSystem.subscriptions (dndL.get model) ]
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
@@ -200,7 +197,7 @@ navIconItem title icon =
 
 
 rotateDragged dnd list =
-    case system.info dnd of
+    case dndSystem.info dnd of
         Just { dragIndex, dropIndex } ->
             SelectList.fromList list
                 |> Maybe.andThen (SelectList.selectBy dragIndex)
@@ -228,7 +225,7 @@ viewProjectsExpansionPanel projectList model =
 
 maybeDragItem : DnDList.Model -> List a -> Maybe a
 maybeDragItem dnd items =
-    system.info dnd
+    dndSystem.info dnd
         |> Maybe.andThen
             (\{ dragIndex } ->
                 items
@@ -253,7 +250,7 @@ viewGhostItem projectList model =
                     Project.title project
 
                 ghostStyles =
-                    system.ghostStyles dnd |> List.map A.fromUnstyled
+                    dndSystem.ghostStyles dnd |> List.map A.fromUnstyled
             in
             viewItem2 ghostStyles [] title iconColor "folder"
 
@@ -290,15 +287,15 @@ navProjectItem dnd sortIdx project =
             String.fromInt sortIdx
 
         dragEvents =
-            system.dragEvents sortIdx domId
+            dndSystem.dragEvents sortIdx domId
                 |> List.map A.fromUnstyled
 
         dropEvents =
-            system.dropEvents sortIdx domId
+            dndSystem.dropEvents sortIdx domId
                 |> List.map A.fromUnstyled
 
         info =
-            system.info dnd
+            dndSystem.info dnd
 
         styles =
             info
