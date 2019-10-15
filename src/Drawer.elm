@@ -2,7 +2,6 @@ module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
 import DnD exposing (DnD)
-import DnDList
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
