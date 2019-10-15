@@ -203,7 +203,7 @@ view toMsg projectList model =
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
             "Labels"
-            (List.indexedMap navLabelItem labelList)
+            (List.indexedMap (navLabelItem model) labelList)
             model
         , filtersEPS.view
             "Filters"
@@ -373,8 +373,8 @@ navProjectItem dnd sortIdx project =
     viewItem2 attributes styles title iconColor "folder"
 
 
-navLabelItem : Int -> LabelView -> Html Msg
-navLabelItem idx { title, hue } =
+navLabelItem : Drawer -> Int -> LabelView -> Html Msg
+navLabelItem model idx { title, hue } =
     let
         domId =
             "label-dnd-element__" ++ String.fromInt idx
