@@ -187,6 +187,13 @@ type alias LabelView =
     { title : String, hue : Float }
 
 
+labelList =
+    [ LabelView "to read" 333
+    , LabelView "medical" 93990
+    , LabelView "quick-ref" 444
+    ]
+
+
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
 view toMsg projectList model =
     [ navIconItem "Inbox" "inbox"
@@ -195,11 +202,8 @@ view toMsg projectList model =
     , viewProjectsExpansionPanel projectList model
     , labelsEPS.view
         "Labels"
-        ([ LabelView "to read" 333
-         , LabelView "medical" 93990
-         , LabelView "quick-ref" 444
-         ]
-            |> List.indexedMap navLabelItem
+        (List.indexedMap navLabelItem labelList
+            ++ navLabelGhostItem labelList model
         )
         model
     , filtersEPS.view
@@ -371,7 +375,7 @@ navLabelItem : Int -> LabelView -> Html Msg
 navLabelItem idx { title, hue } =
     let
         domId =
-            "label-dnd-element-" ++ String.fromInt idx
+            "label-dnd-element__" ++ String.fromInt idx
 
         attrs =
             A.id domId
@@ -379,6 +383,27 @@ navLabelItem idx { title, hue } =
                 ++ dnd2System.dropEvents domId
     in
     viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+
+
+maybeDrag2Item drawer items =
+    dnd2System.info drawer
+        |> Maybe.andThen
+            (\{ dragElementId } ->
+                String.replace "label-dnd-element__" "" dragElementId
+                    |> String.toInt
+                    |> Maybe.andThen
+                        (\dragIndex ->
+                            items
+                                |> List.drop dragIndex
+                                |> List.head
+                        )
+            )
+
+
+navLabelGhostItem labels model =
+    maybeDrag2Item model labels
+        |> Maybe.map (\_ -> text "")
+        |> Maybe.withDefault (text "")
 
 
 navFilterItem title hue =
