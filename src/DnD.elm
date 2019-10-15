@@ -45,7 +45,7 @@ create toMsg bigL =
 
 dragEvents : String -> List (H.Attribute Msg)
 dragEvents domId =
-    [ E.preventDefaultOn "mousedown" (positionDecoder |> JD.map (DragStart domId) |> preventDefault)
+    [ E.preventDefaultOn "mousedown" (JD.map2 (DragStart domId) positionDecoder elementOffsetDecoder |> preventDefault)
     ]
 
 
@@ -122,6 +122,10 @@ type alias Position =
     { x : Float, y : Float }
 
 
+type alias ElementOffset =
+    { offsetLeft : Float, offsetTop : Float }
+
+
 type alias State =
     { startPosition : Position
     , currentPosition : Position
@@ -171,7 +175,7 @@ type alias ViewPortResult =
 
 
 type Msg
-    = DragStart String Position
+    = DragStart String Position ElementOffset
     | Drag Position
     | DragOver String
     | DragEnd
@@ -194,6 +198,13 @@ positionDecoder =
     JD.map2 Position pageXDecoder pageYDecoder
 
 
+elementOffsetDecoder : JD.Decoder ElementOffset
+elementOffsetDecoder =
+    JD.map2 ElementOffset
+        (JD.at [ "target", "offsetLeft" ] JD.float)
+        (JD.at [ "target", "offsetTop" ] JD.float)
+
+
 subscriptions : DnD -> Sub Msg
 subscriptions (DnD internal) =
     internal
@@ -210,7 +221,7 @@ subscriptions (DnD internal) =
 update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
 update toMsg message model =
     case message of
-        DragStart dragElementId xy ->
+        DragStart dragElementId xy offset ->
             ( { startPosition = xy
               , currentPosition = xy
               , dragElementId = dragElementId
