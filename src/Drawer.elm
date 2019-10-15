@@ -75,8 +75,8 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         dndSystem.model
-        dndProjectsSystem.initial
-        dndLabelsSystem.initial
+        projectsDnDSystem.initial
+        labelsDnDSystem.initial
         dndFiltersSystem.initial
         |> Drawer
 
@@ -136,13 +136,13 @@ dnd2System panel =
     DnD.create (DndMsg panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
 
 
-dndLabelsSystem : DnD.System LabelView Msg Drawer
-dndLabelsSystem =
+labelsDnDSystem : DnD.System LabelView Msg Drawer
+labelsDnDSystem =
     dnd2System Labels
 
 
-dndProjectsSystem : DnD.System Project Msg Drawer
-dndProjectsSystem =
+projectsDnDSystem : DnD.System Project Msg Drawer
+projectsDnDSystem =
     dnd2System Projects
 
 
@@ -186,8 +186,8 @@ subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
         [ dndSystem.subscriptions (dndLens.get model)
-        , dndProjectsSystem.subscriptions model
-        , dndLabelsSystem.subscriptions model
+        , projectsDnDSystem.subscriptions model
+        , labelsDnDSystem.subscriptions model
         , dndFiltersSystem.subscriptions model
         ]
         |> Sub.map toMsg
@@ -248,14 +248,14 @@ view toMsg projectList model =
         , projectsEPS.view
             "Projects"
             (projectList
-                |> dndProjectsSystem.rotate model
+                |> projectsDnDSystem.rotate model
                 |> List.indexedMap (navProject2Item model)
             )
             model
         , labelsEPS.view
             "Labels"
             (labelList
-                |> dndLabelsSystem.rotate model
+                |> labelsDnDSystem.rotate model
                 |> List.indexedMap (navLabelItem model)
             )
             model
@@ -431,7 +431,7 @@ navLabelItem : Drawer -> Int -> LabelView -> Html Msg
 navLabelItem model idx { title, hue } =
     let
         info =
-            dndLabelsSystem.info model
+            labelsDnDSystem.info model
 
         domId =
             "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
@@ -439,10 +439,10 @@ navLabelItem model idx { title, hue } =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dndLabelsSystem.dragEvents idx domId, [] )
+                    ( labelsDnDSystem.dragEvents idx domId, [] )
 
                 Just { drop } ->
-                    ( dndLabelsSystem.dropEvents idx domId
+                    ( labelsDnDSystem.dropEvents idx domId
                     , if drop.index == idx then
                         [ Css.opacity <| Css.num 0 ]
 
@@ -457,7 +457,7 @@ navProject2Item : Drawer -> Int -> Project -> Html Msg
 navProject2Item model idx project =
     let
         info =
-            dndProjectsSystem.info model
+            projectsDnDSystem.info model
 
         domId =
             "project-dnd-element__" ++ (Project.id project |> ProjectId.toString)
@@ -465,10 +465,10 @@ navProject2Item model idx project =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dndProjectsSystem.dragEvents idx domId, [] )
+                    ( projectsDnDSystem.dragEvents idx domId, [] )
 
                 Just { drop } ->
-                    ( dndProjectsSystem.dropEvents idx domId
+                    ( projectsDnDSystem.dropEvents idx domId
                     , if drop.index == idx then
                         [ Css.opacity <| Css.num 0 ]
 
@@ -486,7 +486,7 @@ navProject2Item model idx project =
 
 
 maybeDrag2Item drawer items =
-    dndLabelsSystem.info drawer
+    labelsDnDSystem.info drawer
         |> Maybe.andThen
             (\{ drag } ->
                 items
@@ -501,7 +501,7 @@ navLabelGhostItem labels model =
             (\{ title, hue } ->
                 [ let
                     attrs =
-                        [ css [ dndLabelsSystem.ghostStyles model ] ]
+                        [ css [ labelsDnDSystem.ghostStyles model ] ]
                   in
                   viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
                 ]
