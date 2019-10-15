@@ -180,8 +180,8 @@ subscriptions (DnD internal) =
         |> Maybe.map
             (\_ ->
                 Sub.batch
-                    [ Browser.Events.onMouseMove
-                        (positionDecoder |> JD.map Drag)
+                    [ Browser.Events.onMouseMove (positionDecoder |> JD.map Drag)
+                    , Browser.Events.onMouseUp (JD.succeed DragEnd)
                     ]
             )
         |> Maybe.withDefault Sub.none
