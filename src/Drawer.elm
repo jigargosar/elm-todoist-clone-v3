@@ -390,15 +390,10 @@ navLabelItem idx { title, hue } =
 maybeDrag2Item drawer items =
     dnd2System.info drawer
         |> Maybe.andThen
-            (\{ dragElementId } ->
-                String.replace "label-dnd-element__" "" dragElementId
-                    |> String.toInt
-                    |> Maybe.andThen
-                        (\dragIndex ->
-                            items
-                                |> List.drop dragIndex
-                                |> List.head
-                        )
+            (\{ drag } ->
+                items
+                    |> List.drop drag.index
+                    |> List.head
             )
 
 
