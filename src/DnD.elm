@@ -200,13 +200,6 @@ positionDecoder =
     JD.map2 Position pageXDecoder pageYDecoder
 
 
-elementOffsetDecoder : JD.Decoder ElementOffset
-elementOffsetDecoder =
-    JD.map2 ElementOffset
-        (JD.at [ "target", "offsetLeft" ] JD.float)
-        (JD.at [ "target", "offsetTop" ] JD.float)
-
-
 subscriptions : DnD -> Sub Msg
 subscriptions (DnD internal) =
     internal
