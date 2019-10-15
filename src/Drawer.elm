@@ -103,7 +103,7 @@ expansionPanelLens panel =
             Lens.compose internalLens (Lens .labels (\s b -> { b | labels = s }))
 
         Filters ->
-            Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
+            Lens.compose internalLens (Lens .filters (\s b -> { b | filters = s }))
 
 
 expansionPanelSystem panel =
