@@ -41,17 +41,22 @@ rotate list =
            )
 
 
+type alias Callbacks msg =
+    { onCommit : Info -> msg }
+
+
 create :
     (Msg -> msg)
+    -> Callbacks msg
     -> Lens.Lens DnD big
     -> System msg big
-create toMsg bigL =
+create toMsg callbacks bigL =
     let
         mapAttrs =
             List.map (A.map toMsg)
     in
     { initial = initial
-    , update = \msg -> Lens.update bigL (update toMsg msg)
+    , update = \msg -> Lens.update bigL (update toMsg callbacks msg)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     , dragEvents = \a -> dragEvents a >> mapAttrs
     , dropEvents = \a -> dropEvents a >> mapAttrs
@@ -221,8 +226,8 @@ subscriptions (DnD internal) =
         |> Maybe.withDefault Sub.none
 
 
-update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
-update toMsg message model =
+update : (Msg -> msg) -> Callbacks msg -> Msg -> DnD -> ( DnD, Cmd msg )
+update toMsg callbacks message model =
     case message of
         DragStart index dragElementId xy ->
             ( DnD Nothing
@@ -268,4 +273,12 @@ update toMsg message model =
             ( model, Cmd.none )
 
         DragEnd ->
-            ( DnD Nothing, Cmd.none )
+            ( DnD Nothing
+            , info model
+                |> Maybe.map (callbacks.onCommit >> perform)
+                |> Maybe.withDefault Cmd.none
+            )
+
+
+perform =
+    Task.succeed >> Task.perform identity
