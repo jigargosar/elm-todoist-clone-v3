@@ -390,7 +390,7 @@ navLabelItem model idx { title, hue } =
                 Just { drop } ->
                     ( dnd2System.dropEvents idx domId
                     , if drop.index == idx then
-                        []
+                        [ Css.opacity <| Css.num 0 ]
 
                       else
                         []
