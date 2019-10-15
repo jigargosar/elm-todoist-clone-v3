@@ -156,7 +156,10 @@ updateDnd toMsg onListOrderChanged list msg model =
 
 subscriptions : Drawer -> Sub Msg
 subscriptions model =
-    Sub.batch [ dndSystem.subscriptions (dndLens.get model) ]
+    Sub.batch
+        [ dndSystem.subscriptions (dndLens.get model)
+        , dnd2System.subscriptions model
+        ]
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
