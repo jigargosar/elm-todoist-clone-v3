@@ -381,8 +381,8 @@ navLabelItem idx { title, hue } =
 
         attrs =
             A.id domId
-                :: dnd2System.dragEvents domId
-                ++ dnd2System.dropEvents domId
+                :: dnd2System.dragEvents idx domId
+                ++ dnd2System.dropEvents idx domId
     in
     viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
 

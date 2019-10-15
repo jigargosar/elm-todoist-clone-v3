@@ -17,8 +17,8 @@ type alias System msg big =
     { initial : DnD
     , update : Msg -> big -> ( big, Cmd msg )
     , subscriptions : big -> Sub msg
-    , dragEvents : String -> List (H.Attribute msg)
-    , dropEvents : String -> List (H.Attribute msg)
+    , dragEvents : Int -> String -> List (H.Attribute msg)
+    , dropEvents : Int -> String -> List (H.Attribute msg)
     , ghostStyles : big -> Css.Style
     , info : big -> Maybe Info
     }
@@ -36,31 +36,31 @@ create toMsg bigL =
     { initial = initial
     , update = \msg -> Lens.update bigL (update toMsg msg)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
-    , dragEvents = dragEvents >> mapAttrs
-    , dropEvents = dropEvents >> mapAttrs
+    , dragEvents = \a -> dragEvents a >> mapAttrs
+    , dropEvents = \a -> dropEvents a >> mapAttrs
     , ghostStyles = bigL.get >> ghostStyles
     , info = bigL.get >> info
     }
 
 
-dragEvents : String -> List (H.Attribute Msg)
-dragEvents domId =
+dragEvents : Int -> String -> List (H.Attribute Msg)
+dragEvents index domId =
     [ E.preventDefaultOn "mousedown"
-        (JD.map (DragStart 0 domId)
+        (JD.map (DragStart index domId)
             positionDecoder
             |> preventDefault
         )
     ]
 
 
+dropEvents : Int -> String -> List (H.Attribute Msg)
+dropEvents index domId =
+    [ E.onMouseOver (DragOver index domId)
+    ]
+
+
 preventDefault =
     JD.map (flip Tuple.pair True)
-
-
-dropEvents : String -> List (H.Attribute Msg)
-dropEvents domId =
-    [ E.onMouseOver (DragOver 0 domId)
-    ]
 
 
 positionSubtract : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> Position
