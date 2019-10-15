@@ -59,7 +59,7 @@ preventDefault =
 
 dropEvents : String -> List (H.Attribute Msg)
 dropEvents domId =
-    [ E.onMouseOver (DragOver domId)
+    [ E.onMouseOver (DragOver 0 domId)
     ]
 
 
@@ -182,10 +182,10 @@ type alias ElementResult =
 type Msg
     = DragStart Int String Position
     | Drag Position
-    | DragOver String
+    | DragOver Int String
     | DragEnd
     | GotDragElement Int String Position ElementResult
-    | GotDropElement String ElementResult
+    | GotDropElement Int String ElementResult
 
 
 pageXDecoder : JD.Decoder Float
@@ -227,9 +227,9 @@ update toMsg message model =
         Drag xy ->
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
-        DragOver dropElementId ->
+        DragOver index dropElementId ->
             ( model
-            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement dropElementId)
+            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement index dropElementId)
             )
 
         GotDragElement index dragElementId xy (Ok domElement) ->
@@ -250,20 +250,17 @@ update toMsg message model =
         GotDragElement _ _ _ _ ->
             ( DnD Nothing, Cmd.none )
 
-        GotDropElement _ (Err _) ->
-            ( model, Cmd.none )
-
-        GotDropElement dropElementId (Ok domElement) ->
-            ( model
-                |> mapDropElement
-                    (\s ->
-                        { s
-                            | domElement = Just domElement
-                            , domId = dropElementId
-                        }
-                    )
+        GotDropElement index dropElementId (Ok domElement) ->
+            let
+                element =
+                    Element index dropElementId (Just domElement)
+            in
+            ( model |> mapDropElement (always element)
             , Cmd.none
             )
+
+        GotDropElement _ _ _ ->
+            ( model, Cmd.none )
 
         DragEnd ->
             ( DnD Nothing, Cmd.none )
