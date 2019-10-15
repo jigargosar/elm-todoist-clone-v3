@@ -218,15 +218,15 @@ update toMsg message model =
         Drag xy ->
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
-        DragOver index dropElementId ->
+        DragOver index domId ->
             ( model
-            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement index dropElementId)
+            , Dom.getElement domId |> Task.attempt (toMsg << GotDropElement index domId)
             )
 
-        GotDragElement index dragElementId xy (Ok domElement) ->
+        GotDragElement index domId xy (Ok domElement) ->
             let
                 element =
-                    Element index dragElementId domElement
+                    Element index domId domElement
             in
             ( State xy xy element element
                 |> Just
