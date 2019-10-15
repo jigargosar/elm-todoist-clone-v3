@@ -204,8 +204,8 @@ view toMsg projectList model =
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
             "Labels"
-            (List.indexedMap (navLabelItem model) labelList
-                |> flip DnD.rotate (dnd2Lens.get model)
+            (DnD.rotate labelList (dnd2Lens.get model)
+                |> List.indexedMap (navLabelItem model)
             )
             model
         , filtersEPS.view
