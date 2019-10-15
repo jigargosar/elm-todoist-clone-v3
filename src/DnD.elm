@@ -17,6 +17,7 @@ type alias System msg big =
     , subscriptions : big -> Sub msg
     , dragEvents : String -> List (H.Attribute msg)
     , dropEvents : String -> List (H.Attribute msg)
+    , ghostStyles : big -> List (H.Attribute msg)
     }
 
 
@@ -34,6 +35,7 @@ create toMsg bigL =
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
     , dragEvents = dragEvents >> mapEvents
     , dropEvents = dropEvents >> mapEvents
+    , ghostStyles = bigL.get >> ghostStyles
     }
 
 
@@ -51,6 +53,13 @@ dropEvents : String -> List (H.Attribute Msg)
 dropEvents domId =
     [ E.onMouseOver (DragOver domId)
     ]
+
+
+ghostStyles : DnD -> List (H.Attribute msg)
+ghostStyles (DnD internal) =
+    internal
+        |> Maybe.map (\_ -> [])
+        |> Maybe.withDefault []
 
 
 type DnD
