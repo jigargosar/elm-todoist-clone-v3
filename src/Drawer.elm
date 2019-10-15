@@ -273,6 +273,7 @@ view toMsg projectList model =
     , portal =
         navProjectGhostItem projectList model
             ++ navLabelGhostItem (labelsLens.get model) model
+            ++ navFilterGhostItem (filtersLens.get model) model
             |> List.map (H.map toMsg)
     }
 
@@ -318,32 +319,6 @@ viewItem2 attributes styles title iconColor iconName =
         ]
 
 
-navLabelItem : Drawer -> Int -> LabelView -> Html Msg
-navLabelItem model idx { title, hue } =
-    let
-        info =
-            labelsDnDSystem.info model
-
-        domId =
-            "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
-
-        ( attrs, styles ) =
-            case info of
-                Nothing ->
-                    ( labelsDnDSystem.dragEvents idx domId, [] )
-
-                Just { drop } ->
-                    ( labelsDnDSystem.dropEvents idx domId
-                    , if drop.index == idx then
-                        [ Css.opacity <| Css.num 0 ]
-
-                      else
-                        []
-                    )
-    in
-    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
-
-
 navProjectItem : Drawer -> Int -> Project -> Html Msg
 navProjectItem model idx project =
     let
@@ -376,6 +351,58 @@ navProjectItem model idx project =
     viewItem2 (A.id domId :: attrs) styles title iconColor "folder"
 
 
+navLabelItem : Drawer -> Int -> LabelView -> Html Msg
+navLabelItem model idx { title, hue } =
+    let
+        info =
+            labelsDnDSystem.info model
+
+        domId =
+            "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
+
+        ( attrs, styles ) =
+            case info of
+                Nothing ->
+                    ( labelsDnDSystem.dragEvents idx domId, [] )
+
+                Just { drop } ->
+                    ( labelsDnDSystem.dropEvents idx domId
+                    , if drop.index == idx then
+                        [ Css.opacity <| Css.num 0 ]
+
+                      else
+                        []
+                    )
+    in
+    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
+
+
+navFilterItem : Drawer -> Int -> FilterView -> Html Msg
+navFilterItem model idx { title, hue } =
+    let
+        info =
+            filtersDnDSystem.info model
+
+        domId =
+            "filter-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
+
+        ( attrs, styles ) =
+            case info of
+                Nothing ->
+                    ( filtersDnDSystem.dragEvents idx domId, [] )
+
+                Just { drop } ->
+                    ( filtersDnDSystem.dropEvents idx domId
+                    , if drop.index == idx then
+                        [ Css.opacity <| Css.num 0 ]
+
+                      else
+                        []
+                    )
+    in
+    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "filter_list"
+
+
 maybeDrag2Item dnd2Sys model items =
     dnd2Sys.info model
         |> Maybe.andThen
@@ -384,20 +411,6 @@ maybeDrag2Item dnd2Sys model items =
                     |> List.drop drag.index
                     |> List.head
             )
-
-
-navLabelGhostItem labels model =
-    maybeDrag2Item labelsDnDSystem model labels
-        |> Maybe.map
-            (\{ title, hue } ->
-                [ let
-                    attrs =
-                        [ css [ labelsDnDSystem.ghostStyles model ] ]
-                  in
-                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
-                ]
-            )
-        |> Maybe.withDefault []
 
 
 navProjectGhostItem projectList model =
@@ -420,5 +433,29 @@ navProjectGhostItem projectList model =
         |> Maybe.withDefault []
 
 
-navFilterItem _ _ { title, hue } =
-    navItem title (Css.hsl hue 0.7 0.5) "filter_list"
+navLabelGhostItem labels model =
+    maybeDrag2Item labelsDnDSystem model labels
+        |> Maybe.map
+            (\{ title, hue } ->
+                [ let
+                    attrs =
+                        [ css [ labelsDnDSystem.ghostStyles model ] ]
+                  in
+                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+                ]
+            )
+        |> Maybe.withDefault []
+
+
+navFilterGhostItem filters model =
+    maybeDrag2Item filtersDnDSystem model filters
+        |> Maybe.map
+            (\{ title, hue } ->
+                [ let
+                    attrs =
+                        [ css [ filtersDnDSystem.ghostStyles model ] ]
+                  in
+                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
+                ]
+            )
+        |> Maybe.withDefault []
