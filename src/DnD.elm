@@ -64,9 +64,9 @@ ghostStyles =
     unwrap
         >> Maybe.map
             (\s ->
-                [ Css.transforms
-                    [ Styles.absolute
-                    , Css.translate2
+                [ Styles.absolute
+                , Css.transforms
+                    [ Css.translate2
                         (Css.px <| s.currentPosition.x - s.startPosition.x)
                         (Css.px <| s.currentPosition.y - s.startPosition.y)
                     ]
