@@ -76,8 +76,8 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         dndSystem.model
-        dndLabelsSystem.initial
         dndProjectsSystem.initial
+        dndLabelsSystem.initial
         dndFiltersSystem.initial
         |> Drawer
 
@@ -187,7 +187,9 @@ subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
         [ dndSystem.subscriptions (dndLens.get model)
+        , dndProjectsSystem.subscriptions model
         , dndLabelsSystem.subscriptions model
+        , dndFiltersSystem.subscriptions model
         ]
         |> Sub.map toMsg
 
