@@ -1,5 +1,6 @@
 module Drawer exposing (Drawer, Msg, System, system)
 
+import Basics.More exposing (flip)
 import Css
 import DnD exposing (DnD)
 import DnDList
@@ -203,7 +204,9 @@ view toMsg projectList model =
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
             "Labels"
-            (List.indexedMap (navLabelItem model) labelList)
+            (List.indexedMap (navLabelItem model) labelList
+                |> flip DnD.rotate (dnd2Lens.get model)
+            )
             model
         , filtersEPS.view
             "Filters"

@@ -1,4 +1,4 @@
-module DnD exposing (DnD, Msg, System, create)
+module DnD exposing (DnD, Msg, System, create, rotate)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom
@@ -9,6 +9,7 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Lens
+import SelectList
 import Styles
 import Task
 
@@ -22,6 +23,22 @@ type alias System msg big =
     , ghostStyles : big -> Css.Style
     , info : big -> Maybe Info
     }
+
+
+rotate : List a -> DnD -> List a
+rotate list =
+    info
+        >> (\i ->
+                case i of
+                    Just { drag, drop } ->
+                        SelectList.fromList list
+                            |> Maybe.andThen (SelectList.selectBy drag.index)
+                            |> Maybe.map (SelectList.moveBy (drop.index - drag.index) >> SelectList.toList)
+                            |> Maybe.withDefault list
+
+                    Nothing ->
+                        list
+           )
 
 
 create :
