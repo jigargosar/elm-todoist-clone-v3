@@ -402,8 +402,8 @@ maybeDrag2Item drawer items =
 
 navLabelGhostItem labels model =
     maybeDrag2Item model labels
-        |> Maybe.map (\_ -> text "")
-        |> Maybe.withDefault (text "")
+        |> Maybe.map (\_ -> [])
+        |> Maybe.withDefault []
 
 
 navFilterItem title hue =
