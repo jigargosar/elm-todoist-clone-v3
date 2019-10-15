@@ -1,6 +1,5 @@
 module Drawer exposing (Drawer, Msg, System, system)
 
-import Basics.More exposing (flip)
 import Css
 import DnD exposing (DnD)
 import DnDList
@@ -137,17 +136,17 @@ dnd2System panel =
     DnD.create (DndMsg panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
 
 
-dndLabelsSystem : DnD.System Msg Drawer
+dndLabelsSystem : DnD.System LabelView Msg Drawer
 dndLabelsSystem =
     dnd2System Labels
 
 
-dndProjectsSystem : DnD.System Msg Drawer
+dndProjectsSystem : DnD.System Project Msg Drawer
 dndProjectsSystem =
     dnd2System Projects
 
 
-dndFiltersSystem : DnD.System Msg Drawer
+dndFiltersSystem : DnD.System () Msg Drawer
 dndFiltersSystem =
     dnd2System Filters
 

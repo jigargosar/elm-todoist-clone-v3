@@ -14,7 +14,7 @@ import Styles
 import Task
 
 
-type alias System msg big =
+type alias System a msg big =
     { initial : DnD
     , update : Msg -> big -> ( big, Cmd msg )
     , subscriptions : big -> Sub msg
@@ -22,6 +22,7 @@ type alias System msg big =
     , dropEvents : Int -> String -> List (H.Attribute msg)
     , ghostStyles : big -> Css.Style
     , info : big -> Maybe Info
+    , rotate : big -> List a -> List a
     }
 
 
@@ -48,7 +49,7 @@ create :
     (Msg -> msg)
     -> Callbacks msg
     -> Lens.Lens DnD big
-    -> System msg big
+    -> System a msg big
 create toMsg callbacks bigL =
     let
         mapAttrs =
@@ -61,6 +62,7 @@ create toMsg callbacks bigL =
     , dropEvents = \a -> dropEvents a >> mapAttrs
     , ghostStyles = bigL.get >> ghostStyles
     , info = bigL.get >> info
+    , rotate = bigL.get >> rotateFromModel
     }
 
 
