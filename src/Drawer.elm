@@ -46,9 +46,11 @@ type Drawer
 
 
 type alias Internal =
-    { projects : ExpansionPanel
-    , labels : ExpansionPanel
-    , filters : ExpansionPanel
+    { expansionPanels :
+        { projects : ExpansionPanel
+        , labels : ExpansionPanel
+        , filters : ExpansionPanel
+        }
     , dndProjects : DnD
     , dndLabels : DnD
     , dndFilters : DnD
@@ -57,9 +59,11 @@ type alias Internal =
 
 initial : Drawer
 initial =
-    Internal projectsEPS.initial
-        labelsEPS.initial
-        filtersEPS.initial
+    Internal
+        { projects = projectsEPS.initial
+        , labels = labelsEPS.initial
+        , filters = filtersEPS.initial
+        }
         projectsDnDSystem.initial
         labelsDnDSystem.initial
         filtersDnDSystem.initial
@@ -82,16 +86,20 @@ internalLens =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
+expansionPanelsLens =
+    Lens.compose internalLens (Lens .expansionPanels (\s b -> { b | expansionPanels = s }))
+
+
 expansionPanelLens panel =
     case panel of
         Projects ->
-            Lens.compose internalLens (Lens .projects (\s b -> { b | projects = s }))
+            Lens.compose expansionPanelsLens (Lens .projects (\s b -> { b | projects = s }))
 
         Labels ->
-            Lens.compose internalLens (Lens .labels (\s b -> { b | labels = s }))
+            Lens.compose expansionPanelsLens (Lens .labels (\s b -> { b | labels = s }))
 
         Filters ->
-            Lens.compose internalLens (Lens .filters (\s b -> { b | filters = s }))
+            Lens.compose expansionPanelsLens (Lens .filters (\s b -> { b | filters = s }))
 
 
 expansionPanelSystem panel =
