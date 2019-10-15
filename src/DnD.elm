@@ -46,7 +46,7 @@ create toMsg bigL =
 dragEvents : String -> List (H.Attribute Msg)
 dragEvents domId =
     [ E.preventDefaultOn "mousedown"
-        (JD.map (DragStart domId)
+        (JD.map (DragStart 0 domId)
             positionDecoder
             |> preventDefault
         )
@@ -185,11 +185,11 @@ type alias ElementResult =
 
 
 type Msg
-    = DragStart String Position
+    = DragStart Int String Position
     | Drag Position
     | DragOver String
     | DragEnd
-    | GotDragElement String Position ElementResult
+    | GotDragElement Int String Position ElementResult
     | GotDropElement String ElementResult
 
 
@@ -224,9 +224,9 @@ subscriptions (DnD internal) =
 update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
 update toMsg message model =
     case message of
-        DragStart dragElementId xy ->
+        DragStart index dragElementId xy ->
             ( DnD Nothing
-            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement dragElementId xy)
+            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement index dragElementId xy)
             )
 
         Drag xy ->
@@ -237,10 +237,10 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement dropElementId)
             )
 
-        GotDragElement dragElementId xy (Ok domElement) ->
+        GotDragElement index dragElementId xy (Ok domElement) ->
             let
                 element =
-                    Element 0 dragElementId (Just domElement)
+                    Element index dragElementId (Just domElement)
             in
             ( { startPosition = xy
               , currentPosition = xy
@@ -252,7 +252,7 @@ update toMsg message model =
             , Cmd.none
             )
 
-        GotDragElement _ _ _ ->
+        GotDragElement _ _ _ _ ->
             ( DnD Nothing, Cmd.none )
 
         GotDropElement _ (Err _) ->
