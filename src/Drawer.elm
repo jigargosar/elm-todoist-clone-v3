@@ -228,7 +228,8 @@ update toMsg updateProjectListOrder projectList message =
                         >> Return.singleton
 
                 Filters ->
-                    Return.singleton
+                    (\m -> filtersLens.set (DnD.rotateFromInfo info (filtersLens.get m)) m)
+                        >> Return.singleton
 
 
 perform =
