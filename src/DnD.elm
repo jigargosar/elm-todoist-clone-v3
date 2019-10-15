@@ -166,12 +166,16 @@ type alias ElementResult =
     Result Dom.Error Dom.Element
 
 
+type alias ViewPortResult =
+    Result Dom.Error Dom.Viewport
+
+
 type Msg
     = DragStart String Position
     | Drag Position
     | DragOver String
     | DragEnd
-    | GotDragElement ElementResult
+    | GotDragElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
     | GotDropElement ElementResult
 
 
@@ -216,7 +220,11 @@ update toMsg message model =
               }
                 |> Just
                 |> DnD
-            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement)
+            , -- Dom.getElement dragElementId |>  Task.attempt (toMsg << GotDragElement)
+              Task.map2 Tuple.pair
+                (Dom.getElement dragElementId)
+                (Dom.getViewportOf dragElementId)
+                |> Task.attempt (toMsg << GotDragElement)
             )
 
         Drag xy ->
@@ -224,13 +232,14 @@ update toMsg message model =
 
         DragOver dropElementId ->
             ( mapState (\s -> { s | dropElementId = dropElementId }) model
-            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDragElement)
+            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement (Err _) ->
-            ( model, Cmd.none )
-
-        GotDragElement (Ok dragElement) ->
+        GotDragElement (Ok ( dragElement, dragViewport )) ->
+            let
+                _ =
+                    Debug.log "( dragElement, dragViewport )" ( dragElement, dragViewport )
+            in
             ( mapState
                 (\s ->
                     { s
@@ -241,6 +250,9 @@ update toMsg message model =
                 model
             , Cmd.none
             )
+
+        GotDragElement _ ->
+            ( model, Cmd.none )
 
         GotDropElement (Err _) ->
             ( model, Cmd.none )
