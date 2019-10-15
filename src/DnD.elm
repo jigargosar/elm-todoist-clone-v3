@@ -172,10 +172,6 @@ type alias ElementResult =
     Result Dom.Error Dom.Element
 
 
-type alias ViewPortResult =
-    Result Dom.Error Dom.Viewport
-
-
 type Msg
     = DragStart String Position
     | Drag Position
