@@ -87,6 +87,7 @@ type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
     | Dnd Panel DnDList.Msg
     | DndMsg DnD.Msg
+    | DnDCommit Panel DnD.Info
 
 
 internalLens =
@@ -121,7 +122,12 @@ dnd2Lens =
 
 dnd2System : DnD.System Msg Drawer
 dnd2System =
-    DnD.create DndMsg dnd2Lens
+    DnD.create DndMsg { onCommit = DnDCommit Labels } dnd2Lens
+
+
+dnd2ProjectsSystem : DnD.System Msg Drawer
+dnd2ProjectsSystem =
+    DnD.create DndMsg { onCommit = DnDCommit Projects } dnd2Lens
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -183,6 +189,19 @@ update toMsg updateProjectListOrder projectList message =
             dnd2System.update msg
                 >> Return.mapCmd toMsg
 
+        DnDCommit panel info ->
+            case panel of
+                Projects ->
+                    Return.singleton
+                        >> Return.command
+                            (updateProjectListOrder (DnD.rotate info projectList)
+                                |> Task.succeed
+                                |> Task.perform identity
+                            )
+
+                _ ->
+                    Return.singleton
+
 
 type alias LabelView =
     { title : String, hue : Float }
@@ -205,7 +224,7 @@ view toMsg projectList model =
         , labelsEPS.view
             "Labels"
             (labelList
-                |> flip DnD.rotate (dnd2Lens.get model)
+                |> (dnd2System.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
                 |> List.indexedMap (navLabelItem model)
             )
             model

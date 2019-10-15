@@ -1,4 +1,4 @@
-module DnD exposing (DnD, Msg, System, create, rotate)
+module DnD exposing (DnD, Info, Msg, System, create, rotate)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom
@@ -25,20 +25,12 @@ type alias System msg big =
     }
 
 
-rotate : List a -> DnD -> List a
-rotate list =
-    info
-        >> (\i ->
-                case i of
-                    Just { drag, drop } ->
-                        SelectList.fromList list
-                            |> Maybe.andThen (SelectList.selectBy drag.index)
-                            |> Maybe.map (SelectList.moveBy (drop.index - drag.index) >> SelectList.toList)
-                            |> Maybe.withDefault list
-
-                    Nothing ->
-                        list
-           )
+rotate : Info -> List a -> List a
+rotate { drag, drop } list =
+    SelectList.fromList list
+        |> Maybe.andThen (SelectList.selectBy drag.index)
+        |> Maybe.map (SelectList.moveBy (drop.index - drag.index) >> SelectList.toList)
+        |> Maybe.withDefault list
 
 
 type alias Callbacks msg =
