@@ -95,20 +95,15 @@ ghostStyles =
 info : DnD -> Maybe Info
 info =
     unwrap
-        >> Maybe.andThen
+        >> Maybe.map
             (\state ->
-                Maybe.map2
-                    (\dragElement dropElement ->
-                        Info
-                            state.startPosition
-                            state.currentPosition
-                            dragElement
-                            dropElement
-                            state.dragElement.domId
-                            state.dropElement.domId
-                    )
+                Info
+                    state.startPosition
+                    state.currentPosition
                     state.dragElement.domElement
                     state.dropElement.domElement
+                    state.dragElement.domId
+                    state.dropElement.domId
             )
 
 
@@ -125,7 +120,7 @@ type alias Position =
 
 
 type alias Element =
-    { index : Int, domId : String, domElement : Maybe Dom.Element }
+    { index : Int, domId : String, domElement : Dom.Element }
 
 
 type alias State =
@@ -231,7 +226,7 @@ update toMsg message model =
         GotDragElement index dragElementId xy (Ok domElement) ->
             let
                 element =
-                    Element index dragElementId (Just domElement)
+                    Element index dragElementId domElement
             in
             ( { startPosition = xy
               , currentPosition = xy
@@ -249,7 +244,7 @@ update toMsg message model =
         GotDropElement index dropElementId (Ok domElement) ->
             let
                 element =
-                    Element index dropElementId (Just domElement)
+                    Element index dropElementId domElement
             in
             ( model |> mapDropElement (always element)
             , Cmd.none
