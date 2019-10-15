@@ -63,6 +63,7 @@ type alias Internal =
     { expansionPanels : ExpansionPanels
     , dndPanels : DndPanels
     , labelList : List LabelView
+    , filterList : List FilterView
     }
 
 
@@ -80,6 +81,14 @@ initial =
         [ LabelView "to read" 333
         , LabelView "medical" 93990
         , LabelView "quick-ref" 444
+        ]
+        [ FilterView "Assigned to me" 933
+        , FilterView "Assigned to others" 9354
+        , FilterView "Priority 1" 93344
+        , FilterView "Priority 2" 932323
+        , FilterView "Priority 3" 932323
+        , FilterView "View all" 932325
+        , FilterView "No due date" 9355
         ]
         |> Drawer
 
@@ -105,6 +114,11 @@ labelsLens : Lens (List LabelView) Drawer
 labelsLens =
     Lens.compose internalLens
         (Lens .labelList (\s b -> { b | labelList = s }))
+
+
+filtersLens =
+    Lens.compose internalLens
+        (Lens .filterList (\s b -> { b | filterList = s }))
 
 
 expansionPanelsLens : Lens ExpansionPanels Drawer
@@ -163,7 +177,7 @@ projectsDnDSystem =
     dndPanelSystem Projects
 
 
-filtersDnDSystem : DnD.System () Msg Drawer
+filtersDnDSystem : DnD.System FilterView Msg Drawer
 filtersDnDSystem =
     dndPanelSystem Filters
 
@@ -223,6 +237,10 @@ type alias LabelView =
     { title : String, hue : Float }
 
 
+type alias FilterView =
+    { title : String, hue : Float }
+
+
 view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), portal : List (Html msg) }
 view toMsg projectList model =
     { content =
@@ -245,14 +263,10 @@ view toMsg projectList model =
             model
         , filtersEPS.view
             "Filters"
-            [ navFilterItem "Assigned to me" 933
-            , navFilterItem "Assigned to others" 9354
-            , navFilterItem "Priority 1" 93344
-            , navFilterItem "Priority 2" 932323
-            , navFilterItem "Priority 3" 932323
-            , navFilterItem "View all" 932325
-            , navFilterItem "No due date" 9355
-            ]
+            (filtersLens.get model
+                |> filtersDnDSystem.rotate model
+                |> List.indexedMap (navFilterItem model)
+            )
             model
         ]
             |> List.map (H.map toMsg)
@@ -406,5 +420,5 @@ navProjectGhostItem projectList model =
         |> Maybe.withDefault []
 
 
-navFilterItem title hue =
+navFilterItem _ _ { title, hue } =
     navItem title (Css.hsl hue 0.7 0.5) "filter_list"
