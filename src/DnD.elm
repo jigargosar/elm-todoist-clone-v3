@@ -239,10 +239,6 @@ update toMsg callbacks message model =
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
         DragOver index domId ->
-            let
-                _ =
-                    Debug.log "Mouse Over Fired" ( index, domId )
-            in
             ( model
             , Dom.getElement domId |> Task.attempt (toMsg << GotDropElement index domId)
             )
