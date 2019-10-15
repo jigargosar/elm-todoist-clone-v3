@@ -52,6 +52,13 @@ type alias ExpansionPanels =
     }
 
 
+type alias DndPanels =
+    { projects : DnD
+    , labels : DnD
+    , filters : DnD
+    }
+
+
 type alias Internal =
     { expansionPanels : ExpansionPanels
     , dndProjects : DnD
