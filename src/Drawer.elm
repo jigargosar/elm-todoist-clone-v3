@@ -73,7 +73,7 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         dndSystem.model
-        dnd2System.initial
+        dnd2LabelsSystem.initial
         |> Drawer
 
 
@@ -120,8 +120,8 @@ dnd2Lens =
     Lens.compose internalLens (Lens .dnd2 (\s b -> { b | dnd2 = s }))
 
 
-dnd2System : DnD.System Msg Drawer
-dnd2System =
+dnd2LabelsSystem : DnD.System Msg Drawer
+dnd2LabelsSystem =
     DnD.create DndMsg { onCommit = DnDCommit Labels } dnd2Lens
 
 
@@ -165,7 +165,7 @@ subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
         [ dndSystem.subscriptions (dndLens.get model)
-        , dnd2System.subscriptions model
+        , dnd2LabelsSystem.subscriptions model
         ]
         |> Sub.map toMsg
 
@@ -186,7 +186,7 @@ update toMsg updateProjectListOrder projectList message =
                     Return.singleton
 
         DndMsg msg ->
-            dnd2System.update msg
+            dnd2LabelsSystem.update msg
                 >> Return.mapCmd toMsg
 
         DnDCommit panel info ->
@@ -226,7 +226,7 @@ view toMsg projectList model =
         , labelsEPS.view
             "Labels"
             (labelList
-                |> (dnd2System.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
+                |> (dnd2LabelsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
                 |> List.indexedMap (navLabelItem model)
             )
             model
@@ -402,7 +402,7 @@ navLabelItem : Drawer -> Int -> LabelView -> Html Msg
 navLabelItem model idx { title, hue } =
     let
         info =
-            dnd2System.info model
+            dnd2LabelsSystem.info model
 
         domId =
             "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
@@ -410,10 +410,10 @@ navLabelItem model idx { title, hue } =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dnd2System.dragEvents idx domId, [] )
+                    ( dnd2LabelsSystem.dragEvents idx domId, [] )
 
                 Just { drop } ->
-                    ( dnd2System.dropEvents idx domId
+                    ( dnd2LabelsSystem.dropEvents idx domId
                     , if drop.index == idx then
                         [ Css.opacity <| Css.num 0 ]
 
@@ -425,7 +425,7 @@ navLabelItem model idx { title, hue } =
 
 
 maybeDrag2Item drawer items =
-    dnd2System.info drawer
+    dnd2LabelsSystem.info drawer
         |> Maybe.andThen
             (\{ drag } ->
                 items
@@ -440,7 +440,7 @@ navLabelGhostItem labels model =
             (\{ title, hue } ->
                 [ let
                     attrs =
-                        [ css [ dnd2System.ghostStyles model ] ]
+                        [ css [ dnd2LabelsSystem.ghostStyles model ] ]
                   in
                   viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
                 ]
