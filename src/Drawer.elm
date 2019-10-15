@@ -218,7 +218,10 @@ view toMsg projectList model =
             model
         ]
             |> List.map (H.map toMsg)
-    , modal = navLabelGhostItem labelList model
+    , modal =
+        navLabelGhostItem labelList model
+            ++ [ viewProjectGhostItem projectList model ]
+            |> List.map (H.map toMsg)
     }
 
 
@@ -259,10 +262,8 @@ viewProjectsExpansionPanel projectList model =
     in
     projectsEPS.view
         "Projects"
-        ((rotateDragged dnd projectList
+        (rotateDragged dnd projectList
             |> List.indexedMap (navProjectItem dnd)
-         )
-            ++ [ viewProjectGhostItem projectList model ]
         )
         model
 
