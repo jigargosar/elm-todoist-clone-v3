@@ -369,7 +369,7 @@ navProjectItem dnd sortIdx project =
 
 navLabelItem : Int -> LabelView -> Html msg
 navLabelItem idx { title, hue } =
-    navItem title (Css.hsl hue 0.7 0.5) "label"
+    viewItem2 [] [] title (Css.hsl hue 0.7 0.5) "label"
 
 
 navFilterItem title hue =
