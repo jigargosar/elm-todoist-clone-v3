@@ -204,7 +204,8 @@ view toMsg projectList model =
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
             "Labels"
-            (DnD.rotate labelList (dnd2Lens.get model)
+            (labelList
+                |> flip DnD.rotate (dnd2Lens.get model)
                 |> List.indexedMap (navLabelItem model)
             )
             model
@@ -388,7 +389,7 @@ navLabelItem model idx { title, hue } =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dnd2System.dragEvents idx domId, [] )
+                    ( dnd2System.dragEvents idx domId ++ dnd2System.dropEvents idx domId, [] )
 
                 Just { drop } ->
                     ( dnd2System.dropEvents idx domId
