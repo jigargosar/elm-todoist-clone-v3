@@ -224,7 +224,8 @@ update toMsg updateProjectListOrder projectList message =
                         >> Return.command (updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform)
 
                 Labels ->
-                    Return.singleton
+                    (\m -> labelsLens.set (DnD.rotateFromInfo info (labelsLens.get m)) m)
+                        >> Return.singleton
 
                 Filters ->
                     Return.singleton
