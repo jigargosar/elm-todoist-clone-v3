@@ -68,10 +68,12 @@ ghostStyles =
                     |> Maybe.map
                         (\de ->
                             [ Styles.absolute
+                            , Styles.top_0
+                            , Styles.left_0
                             , Css.transforms
                                 [ Css.translate2
-                                    (Css.px <| s.currentPosition.x - s.startPosition.x + de.element.x)
-                                    (Css.px <| s.currentPosition.y - s.startPosition.y + de.element.y)
+                                    (Css.px <| s.currentPosition.x - s.startPosition.x + (-de.viewport.x + de.element.x))
+                                    (Css.px <| s.currentPosition.y - s.startPosition.y + (-de.viewport.y + de.element.y))
                                 ]
                             ]
                         )
