@@ -128,6 +128,10 @@ type alias Element =
     { index : Int, domId : String, domElement : Maybe Dom.Element }
 
 
+type alias ElementInfo =
+    { index : Int, domId : String, domElement : Dom.Element }
+
+
 type alias State =
     { startPosition : Position
     , currentPosition : Position
