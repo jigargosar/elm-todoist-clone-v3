@@ -369,6 +369,15 @@ navProjectItem dnd sortIdx project =
 
 navLabelItem : Int -> LabelView -> Html msg
 navLabelItem idx { title, hue } =
+    let
+        domId =
+            "label-dnd-element-" ++ String.fromInt idx
+
+        attrs =
+            A.id domId
+                :: dnd2System.dragEvents domId
+                ++ dnd2System.dropEvents domId
+    in
     viewItem2 [] [] title (Css.hsl hue 0.7 0.5) "label"
 
 

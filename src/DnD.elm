@@ -1,7 +1,11 @@
 module DnD exposing (DnD, Msg, System, create)
 
+import Basics.More exposing (flip)
 import Browser.Dom as Dom
 import Browser.Events
+import Html.Styled as H
+import Html.Styled.Attributes as A
+import Html.Styled.Events as E
 import Json.Decode as JD
 import Lens
 import Task
@@ -11,6 +15,8 @@ type alias System msg big =
     { initial : DnD
     , update : Msg -> big -> ( big, Cmd msg )
     , subscriptions : big -> Sub msg
+    , dragEvents : String -> List (H.Attribute msg)
+    , dropEvents : String -> List (H.Attribute msg)
     }
 
 
@@ -19,10 +25,32 @@ create :
     -> Lens.Lens DnD big
     -> System msg big
 create toMsg bigL =
+    let
+        mapEvents =
+            List.map (A.map toMsg)
+    in
     { initial = initial
     , update = \msg -> Lens.update bigL (update toMsg msg)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
+    , dragEvents = dragEvents >> mapEvents
+    , dropEvents = dropEvents >> mapEvents
     }
+
+
+dragEvents : String -> List (H.Attribute Msg)
+dragEvents domId =
+    [ E.preventDefaultOn "mousedown" (positionDecoder |> JD.map (DragStart domId) |> preventDefault)
+    ]
+
+
+preventDefault =
+    JD.map (flip Tuple.pair True)
+
+
+dropEvents : String -> List (H.Attribute Msg)
+dropEvents domId =
+    [ E.onMouseOver (DragOver domId)
+    ]
 
 
 type DnD
@@ -90,6 +118,11 @@ pageYDecoder =
     JD.field "pageY" JD.float
 
 
+positionDecoder : JD.Decoder Position
+positionDecoder =
+    JD.map2 Position pageXDecoder pageYDecoder
+
+
 subscriptions : DnD -> Sub Msg
 subscriptions (DnD internal) =
     internal
@@ -97,7 +130,7 @@ subscriptions (DnD internal) =
             (\_ ->
                 Sub.batch
                     [ Browser.Events.onMouseMove
-                        (JD.map2 Position pageXDecoder pageYDecoder |> JD.map Drag)
+                        (positionDecoder |> JD.map Drag)
                     ]
             )
         |> Maybe.withDefault Sub.none
