@@ -107,8 +107,8 @@ info =
                             state.dragElement.domId
                             state.dropElement.domId
                     )
-                    state.dragElement.bounds
-                    state.dropElement.bounds
+                    state.dragElement.domElement
+                    state.dropElement.domElement
             )
 
 
@@ -125,7 +125,7 @@ type alias Position =
 
 
 type alias Element =
-    { idx : Int, domId : String, bounds : Maybe Dom.Element }
+    { idx : Int, domId : String, domElement : Maybe Dom.Element }
 
 
 type alias State =
@@ -245,8 +245,8 @@ update toMsg message model =
 
         GotDragElement (Ok dragElement) ->
             ( model
-                |> mapDragElement (\s -> { s | bounds = Just dragElement })
-                |> mapDropElement (\s -> { s | bounds = Just dragElement })
+                |> mapDragElement (\s -> { s | domElement = Just dragElement })
+                |> mapDropElement (\s -> { s | domElement = Just dragElement })
             , Cmd.none
             )
 
@@ -258,7 +258,7 @@ update toMsg message model =
 
         GotDropElement (Ok dropElement) ->
             ( model
-                |> mapDropElement (\s -> { s | bounds = Just dropElement })
+                |> mapDropElement (\s -> { s | domElement = Just dropElement })
             , Cmd.none
             )
 
