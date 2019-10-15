@@ -233,7 +233,7 @@ update toMsg message model =
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
         DragOver dropElementId ->
-            ( mapDropElement (\s -> { s | domId = dropElementId }) model
+            ( model
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement dropElementId)
             )
 
