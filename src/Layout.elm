@@ -53,7 +53,7 @@ update toMsg message model =
 
 type alias Parts msg =
     { appbar : List (Html msg)
-    , drawer : { content : List (Html msg) }
+    , drawer : { content : List (Html msg), modal : List (Html msg) }
     , content : List (Html msg)
     }
 

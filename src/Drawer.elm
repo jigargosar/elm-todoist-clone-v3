@@ -17,7 +17,7 @@ import Task
 type alias System msg big =
     { initial : Drawer
     , update : Msg -> big -> ( big, Cmd msg )
-    , view : big -> { content : List (Html msg) }
+    , view : big -> { content : List (Html msg), modal : List (Html msg) }
     , subscriptions : big -> Sub msg
     }
 
@@ -194,7 +194,7 @@ labelList =
     ]
 
 
-view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg) }
+view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), modal : List (Html msg) }
 view toMsg projectList model =
     { content =
         [ navIconItem "Inbox" "inbox"
@@ -203,9 +203,7 @@ view toMsg projectList model =
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
             "Labels"
-            (List.indexedMap navLabelItem labelList
-                ++ navLabelGhostItem labelList model
-            )
+            (List.indexedMap navLabelItem labelList)
             model
         , filtersEPS.view
             "Filters"
@@ -220,6 +218,7 @@ view toMsg projectList model =
             model
         ]
             |> List.map (H.map toMsg)
+    , modal = navLabelGhostItem labelList model
     }
 
 
