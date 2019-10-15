@@ -18,6 +18,7 @@ type alias System msg big =
     , dragEvents : String -> List (H.Attribute msg)
     , dropEvents : String -> List (H.Attribute msg)
     , ghostStyles : big -> List (H.Attribute msg)
+    , info : big -> Maybe Info
     }
 
 
@@ -36,6 +37,7 @@ create toMsg bigL =
     , dragEvents = dragEvents >> mapEvents
     , dropEvents = dropEvents >> mapEvents
     , ghostStyles = bigL.get >> ghostStyles
+    , info = bigL.get >> info
     }
 
 
@@ -56,10 +58,27 @@ dropEvents domId =
 
 
 ghostStyles : DnD -> List (H.Attribute msg)
-ghostStyles (DnD internal) =
-    internal
-        |> Maybe.map (\_ -> [])
-        |> Maybe.withDefault []
+ghostStyles =
+    unwrap >> Maybe.map (\_ -> []) >> Maybe.withDefault []
+
+
+info =
+    unwrap
+        >> Maybe.andThen
+            (\state ->
+                Maybe.map2
+                    (\dragElement dropElement ->
+                        Info
+                            state.startPosition
+                            state.currentPosition
+                            dragElement
+                            dropElement
+                            state.dragElementId
+                            state.dropElementId
+                    )
+                    state.dragElement
+                    state.dropElement
+            )
 
 
 type DnD
@@ -79,6 +98,16 @@ type alias State =
     , currentPosition : Position
     , dragElement : Maybe Dom.Element
     , dropElement : Maybe Dom.Element
+    , dragElementId : String
+    , dropElementId : String
+    }
+
+
+type alias Info =
+    { startPosition : Position
+    , currentPosition : Position
+    , dragElement : Dom.Element
+    , dropElement : Dom.Element
     , dragElementId : String
     , dropElementId : String
     }
