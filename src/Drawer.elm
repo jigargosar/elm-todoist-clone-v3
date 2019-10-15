@@ -42,17 +42,6 @@ system toMsg { onProjectListSorted } getProjectList bigL =
 --
 
 
-dndSystem : DnDList.System a Msg
-dndSystem =
-    DnDList.create
-        { beforeUpdate = \_ _ list -> list
-        , movement = DnDList.Vertical
-        , listen = DnDList.OnDrop
-        , operation = DnDList.Rotate
-        }
-        (DndList Projects)
-
-
 type Drawer
     = Drawer Internal
 
@@ -61,7 +50,6 @@ type alias Internal =
     { projects : ExpansionPanel
     , labels : ExpansionPanel
     , filters : ExpansionPanel
-    , dnd : DnDList.Model
     , dndProjects : DnD
     , dndLabels : DnD
     , dndFilters : DnD
@@ -73,7 +61,6 @@ initial =
     Internal projectsEPS.initial
         labelsEPS.initial
         filtersEPS.initial
-        dndSystem.model
         projectsDnDSystem.initial
         labelsDnDSystem.initial
         dndFiltersSystem.initial
@@ -88,7 +75,6 @@ type Panel
 
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
-    | DndList Panel DnDList.Msg
     | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
 
@@ -111,11 +97,6 @@ expansionPanelLens panel =
 
 expansionPanelSystem panel =
     ExpansionPanel.system (ExpansionPanel panel) (expansionPanelLens panel)
-
-
-dndLens : Lens DnDList.Model Drawer
-dndLens =
-    Lens.compose internalLens (Lens .dnd (\s b -> { b | dnd = s }))
 
 
 dnd2Lens : Panel -> Lens DnD Drawer
@@ -165,27 +146,10 @@ filtersEPS =
     expansionPanelSystem Filters
 
 
-updateDnd toMsg onListOrderChanged list msg model =
-    let
-        oldDnd =
-            dndLens.get model
-
-        ( dnd, newList ) =
-            dndSystem.update msg oldDnd list
-    in
-    ( dndLens.set dnd model
-    , Cmd.batch
-        [ dndSystem.commands oldDnd |> Cmd.map toMsg
-        , onListOrderChanged newList |> Task.succeed |> Task.perform identity
-        ]
-    )
-
-
 subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
-        [ dndSystem.subscriptions (dndLens.get model)
-        , projectsDnDSystem.subscriptions model
+        [ projectsDnDSystem.subscriptions model
         , labelsDnDSystem.subscriptions model
         , dndFiltersSystem.subscriptions model
         ]
@@ -198,14 +162,6 @@ update toMsg updateProjectListOrder projectList message =
         ExpansionPanel panel msg ->
             (expansionPanelSystem panel).update msg
                 >> Return.mapCmd toMsg
-
-        DndList panel msg ->
-            case panel of
-                Projects ->
-                    updateDnd toMsg updateProjectListOrder projectList msg
-
-                _ ->
-                    Return.singleton
 
         DndPanel panel msg ->
             (dnd2System panel).update msg >> Return.mapCmd toMsg
@@ -293,17 +249,6 @@ navItem title iconColor iconName =
 
 navIconItem title icon =
     navItem title Css.inherit icon
-
-
-maybeDragItem : DnDList.Model -> List a -> Maybe a
-maybeDragItem dnd items =
-    dndSystem.info dnd
-        |> Maybe.andThen
-            (\{ dragIndex } ->
-                items
-                    |> List.drop dragIndex
-                    |> List.head
-            )
 
 
 viewItem2 attributes styles title iconColor iconName =
