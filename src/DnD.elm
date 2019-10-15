@@ -104,11 +104,11 @@ info =
                             state.currentPosition
                             dragElement
                             dropElement
-                            state.dragElementId
-                            state.dropElementId
+                            state.dragElement.domId
+                            state.dropElement.domId
                     )
-                    state.dragElement
-                    state.dropElement
+                    state.dragElement.bounds
+                    state.dropElement.bounds
             )
 
 
@@ -124,17 +124,15 @@ type alias Position =
     { x : Float, y : Float }
 
 
-type alias ElementOffset =
-    { offsetLeft : Float, offsetTop : Float }
+type alias Element =
+    { idx : Int, domId : String, bounds : Maybe Dom.Element }
 
 
 type alias State =
     { startPosition : Position
     , currentPosition : Position
-    , dragElement : Maybe Dom.Element
-    , dropElement : Maybe Dom.Element
-    , dragElementId : String
-    , dropElementId : String
+    , dragElement : Element
+    , dropElement : Element
     }
 
 
@@ -161,6 +159,16 @@ map func =
 mapState : (State -> State) -> DnD -> DnD
 mapState func =
     map (Maybe.map func)
+
+
+mapDropElement : (Element -> Element) -> DnD -> DnD
+mapDropElement func =
+    mapState (\s -> { s | dropElement = func s.dropElement })
+
+
+mapDragElement : (Element -> Element) -> DnD -> DnD
+mapDragElement func =
+    mapState (\s -> { s | dragElement = func s.dragElement })
 
 
 initial : DnD
@@ -213,12 +221,14 @@ update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
 update toMsg message model =
     case message of
         DragStart dragElementId xy ->
+            let
+                element =
+                    Element 0 dragElementId Nothing
+            in
             ( { startPosition = xy
               , currentPosition = xy
-              , dragElementId = dragElementId
-              , dropElementId = dragElementId
-              , dragElement = Nothing
-              , dropElement = Nothing
+              , dragElement = element
+              , dropElement = element
               }
                 |> Just
                 |> DnD
@@ -229,19 +239,14 @@ update toMsg message model =
             ( mapState (\s -> { s | currentPosition = xy }) model, Cmd.none )
 
         DragOver dropElementId ->
-            ( mapState (\s -> { s | dropElementId = dropElementId }) model
+            ( mapDropElement (\s -> { s | domId = dropElementId }) model
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
         GotDragElement (Ok dragElement) ->
-            ( mapState
-                (\s ->
-                    { s
-                        | dragElement = Just dragElement
-                        , dropElement = Just dragElement
-                    }
-                )
-                model
+            ( model
+                |> mapDragElement (\s -> { s | bounds = Just dragElement })
+                |> mapDropElement (\s -> { s | bounds = Just dragElement })
             , Cmd.none
             )
 
@@ -252,7 +257,10 @@ update toMsg message model =
             ( model, Cmd.none )
 
         GotDropElement (Ok dropElement) ->
-            ( mapState (\s -> { s | dropElement = Just dropElement }) model, Cmd.none )
+            ( model
+                |> mapDropElement (\s -> { s | bounds = Just dropElement })
+            , Cmd.none
+            )
 
         DragEnd ->
             ( DnD Nothing, Cmd.none )
