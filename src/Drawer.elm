@@ -194,13 +194,14 @@ update toMsg updateProjectListOrder projectList message =
                 Projects ->
                     Return.singleton
                         >> Return.command
-                            (updateProjectListOrder (DnD.rotate info projectList)
-                                |> Task.succeed
-                                |> Task.perform identity
-                            )
+                            (updateProjectListOrder (DnD.rotate info projectList) |> perform)
 
                 _ ->
                     Return.singleton
+
+
+perform =
+    Task.succeed >> Task.perform identity
 
 
 type alias LabelView =
