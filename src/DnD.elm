@@ -62,6 +62,7 @@ ghostStyles =
     unwrap >> Maybe.map (\_ -> []) >> Maybe.withDefault []
 
 
+info : DnD -> Maybe Info
 info =
     unwrap
         >> Maybe.andThen
