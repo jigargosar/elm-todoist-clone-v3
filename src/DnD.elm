@@ -1,4 +1,4 @@
-module DnD exposing (DnD, Info, Msg, System, create, rotateFromInfo, rotateFromModel)
+module DnD exposing (DnD, Info, Msg, System, create, rotateFromInfo)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom
