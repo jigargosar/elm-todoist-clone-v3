@@ -9,6 +9,7 @@ import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Lens
+import Styles
 import Task
 
 
@@ -64,7 +65,8 @@ ghostStyles =
         >> Maybe.map
             (\s ->
                 [ Css.transforms
-                    [ Css.translate2
+                    [ Styles.absolute
+                    , Css.translate2
                         (Css.px <| s.currentPosition.x - s.startPosition.x)
                         (Css.px <| s.currentPosition.y - s.startPosition.y)
                     ]
