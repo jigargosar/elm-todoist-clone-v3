@@ -248,14 +248,14 @@ view toMsg projectList model =
         , projectsEPS.view
             "Projects"
             (projectList
-                |> DnD.rotateFromModel ((dnd2Lens Projects).get model)
+                |> dndProjectsSystem.rotate model
                 |> List.indexedMap (navProject2Item model)
             )
             model
         , labelsEPS.view
             "Labels"
             (labelList
-                |> (dndLabelsSystem.info model |> Maybe.map DnD.rotateFromInfo |> Maybe.withDefault identity)
+                |> dndLabelsSystem.rotate model
                 |> List.indexedMap (navLabelItem model)
             )
             model
