@@ -176,6 +176,7 @@ update toMsg updateProjectListOrder projectList message =
 
         DndMsg msg ->
             dnd2System.update msg
+                >> Return.mapCmd toMsg
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
