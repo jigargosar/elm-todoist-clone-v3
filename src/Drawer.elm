@@ -98,8 +98,8 @@ expansionPanelSystem panel =
     ExpansionPanel.system (ExpansionPanel panel) (expansionPanelLens panel)
 
 
-dnd2Lens : Panel -> Lens DnD Drawer
-dnd2Lens panel =
+dndPanelLens : Panel -> Lens DnD Drawer
+dndPanelLens panel =
     case panel of
         Projects ->
             Lens.compose internalLens (Lens .dndProjects (\s b -> { b | dndProjects = s }))
@@ -111,23 +111,24 @@ dnd2Lens panel =
             Lens.compose internalLens (Lens .dndFilters (\s b -> { b | dndFilters = s }))
 
 
-dnd2System panel =
-    DnD.create (DndPanel panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
+dndPanelSystem : Panel -> DnD.System a Msg Drawer
+dndPanelSystem panel =
+    DnD.create (DndPanel panel) { onCommit = DnDCommit panel } (dndPanelLens panel)
 
 
 labelsDnDSystem : DnD.System LabelView Msg Drawer
 labelsDnDSystem =
-    dnd2System Labels
+    dndPanelSystem Labels
 
 
 projectsDnDSystem : DnD.System Project Msg Drawer
 projectsDnDSystem =
-    dnd2System Projects
+    dndPanelSystem Projects
 
 
 dndFiltersSystem : DnD.System () Msg Drawer
 dndFiltersSystem =
-    dnd2System Filters
+    dndPanelSystem Filters
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -163,7 +164,7 @@ update toMsg updateProjectListOrder projectList message =
                 >> Return.mapCmd toMsg
 
         DndPanel panel msg ->
-            (dnd2System panel).update msg >> Return.mapCmd toMsg
+            (dndPanelSystem panel).update msg >> Return.mapCmd toMsg
 
         DnDCommit panel info ->
             Return.singleton
