@@ -218,6 +218,10 @@ update toMsg updateProjectListOrder projectList message model =
             (dndPanelSystem panel).update msg model |> Return.mapCmd toMsg
 
         DnDCommit panel info ->
+            let
+                _ =
+                    Debug.log "dndModel" (dndPanelsLens.get model)
+            in
             case panel of
                 Projects ->
                     Return.singleton model
