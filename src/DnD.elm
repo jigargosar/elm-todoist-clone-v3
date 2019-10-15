@@ -64,32 +64,33 @@ dropEvents domId =
     ]
 
 
+positionSubtract : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> Position
+positionSubtract a b =
+    Position (a.x - b.x) (a.y - b.y)
+
+
+positionAdd a b =
+    Position (a.x + b.x) (a.y + b.y)
+
+
 ghostStyles : DnD -> Css.Style
 ghostStyles =
-    unwrap
-        >> Maybe.andThen
+    info
+        >> Maybe.map
             (\s ->
-                s.dragElement
-                    |> Maybe.map
-                        (\de ->
-                            [ Styles.absolute
-                            , Styles.top_0
-                            , Styles.left_0
-                            , Css.transforms
-                                [ Css.translate2
-                                    (Css.px <|
-                                        s.currentPosition.x
-                                            - s.startPosition.x
-                                            + (de.element.x - de.viewport.x)
-                                    )
-                                    (Css.px <|
-                                        s.currentPosition.y
-                                            - s.startPosition.y
-                                            + (de.element.y - de.viewport.y)
-                                    )
-                                ]
-                            ]
-                        )
+                let
+                    dragElement =
+                        s.dragElement
+
+                    { x, y } =
+                        positionAdd (positionSubtract s.currentPosition s.startPosition)
+                            (positionSubtract dragElement.element dragElement.viewport)
+                in
+                [ Styles.absolute
+                , Styles.top_0
+                , Styles.left_0
+                , Css.transform (Css.translate2 (Css.px x) (Css.px y))
+                ]
             )
         >> Maybe.withDefault []
         >> Css.batch
