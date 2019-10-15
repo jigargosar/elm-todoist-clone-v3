@@ -383,7 +383,7 @@ navLabelItem model idx { title, hue } =
             dnd2System.info model
 
         domId =
-            "label-dnd-element__" ++ String.fromInt idx
+            "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
 
         ( attrs, styles ) =
             case info of
