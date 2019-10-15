@@ -191,14 +191,14 @@ update toMsg updateProjectListOrder projectList message =
 
         DnDCommit panel info ->
             Return.singleton
-                >> (case panel of
+                >> Return.command
+                    (case panel of
                         Projects ->
-                            Return.command
-                                (updateProjectListOrder (DnD.rotate info projectList) |> perform)
+                            updateProjectListOrder (DnD.rotate info projectList) |> perform
 
                         _ ->
-                            identity
-                   )
+                            Cmd.none
+                    )
 
 
 perform =
