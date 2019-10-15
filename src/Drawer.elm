@@ -17,7 +17,7 @@ import Task
 type alias System msg big =
     { initial : Drawer
     , update : Msg -> big -> ( big, Cmd msg )
-    , view : big -> List (Html msg)
+    , view : big -> { content : List (Html msg) }
     , subscriptions : big -> Sub msg
     }
 
@@ -194,31 +194,33 @@ labelList =
     ]
 
 
-view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
+view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg) }
 view toMsg projectList model =
-    [ navIconItem "Inbox" "inbox"
-    , navIconItem "Today" "calendar_today"
-    , navIconItem "Next 7 Days" "view_week"
-    , viewProjectsExpansionPanel projectList model
-    , labelsEPS.view
-        "Labels"
-        (List.indexedMap navLabelItem labelList
-            ++ navLabelGhostItem labelList model
-        )
-        model
-    , filtersEPS.view
-        "Filters"
-        [ navFilterItem "Assigned to me" 933
-        , navFilterItem "Assigned to others" 9354
-        , navFilterItem "Priority 1" 93344
-        , navFilterItem "Priority 2" 932323
-        , navFilterItem "Priority 3" 932323
-        , navFilterItem "View all" 932325
-        , navFilterItem "No due date" 9355
+    { content =
+        [ navIconItem "Inbox" "inbox"
+        , navIconItem "Today" "calendar_today"
+        , navIconItem "Next 7 Days" "view_week"
+        , viewProjectsExpansionPanel projectList model
+        , labelsEPS.view
+            "Labels"
+            (List.indexedMap navLabelItem labelList
+                ++ navLabelGhostItem labelList model
+            )
+            model
+        , filtersEPS.view
+            "Filters"
+            [ navFilterItem "Assigned to me" 933
+            , navFilterItem "Assigned to others" 9354
+            , navFilterItem "Priority 1" 93344
+            , navFilterItem "Priority 2" 932323
+            , navFilterItem "Priority 3" 932323
+            , navFilterItem "View all" 932325
+            , navFilterItem "No due date" 9355
+            ]
+            model
         ]
-        model
-    ]
-        |> List.map (H.map toMsg)
+            |> List.map (H.map toMsg)
+    }
 
 
 navItem title iconColor iconName =

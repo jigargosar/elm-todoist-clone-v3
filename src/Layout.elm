@@ -53,7 +53,7 @@ update toMsg message model =
 
 type alias Parts msg =
     { appbar : List (Html msg)
-    , drawer : List (Html msg)
+    , drawer : { content : List (Html msg) }
     , content : List (Html msg)
     }
 
@@ -70,14 +70,14 @@ view toMsg { appbar, drawer, content } layout =
             [ styledPermanentDrawer
                 -- TEST OVERFLOW SCROLL
                 -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
-                drawer
+                drawer.content
             , styledMain [] content
             ]
         , viewModalDrawer toMsg
             layout
             -- TEST OVERFLOW SCROLL
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
-            drawer
+            drawer.content
         ]
 
 
