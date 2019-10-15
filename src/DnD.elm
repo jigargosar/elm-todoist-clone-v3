@@ -103,6 +103,7 @@ ghostStyles =
                 , Styles.top_0
                 , Styles.left_0
                 , Css.transform (Css.translate2 (Css.px x) (Css.px y))
+                , Css.pointerEvents Css.none
                 ]
             )
         >> Maybe.withDefault []

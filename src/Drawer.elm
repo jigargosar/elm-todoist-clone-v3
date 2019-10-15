@@ -389,7 +389,7 @@ navLabelItem model idx { title, hue } =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dnd2System.dragEvents idx domId ++ dnd2System.dropEvents idx domId, [] )
+                    ( dnd2System.dragEvents idx domId, [] )
 
                 Just { drop } ->
                     ( dnd2System.dropEvents idx domId
