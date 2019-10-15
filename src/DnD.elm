@@ -190,7 +190,7 @@ type Msg
     | DragOver String
     | DragEnd
     | GotDragElement String Position ElementResult
-    | GotDropElement ElementResult
+    | GotDropElement String ElementResult
 
 
 pageXDecoder : JD.Decoder Float
@@ -234,7 +234,7 @@ update toMsg message model =
 
         DragOver dropElementId ->
             ( mapDropElement (\s -> { s | domId = dropElementId }) model
-            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
+            , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement dropElementId)
             )
 
         GotDragElement dragElementId xy (Ok domElement) ->
@@ -255,12 +255,18 @@ update toMsg message model =
         GotDragElement _ _ _ ->
             ( DnD Nothing, Cmd.none )
 
-        GotDropElement (Err _) ->
+        GotDropElement _ (Err _) ->
             ( model, Cmd.none )
 
-        GotDropElement (Ok domElement) ->
+        GotDropElement dropElementId (Ok domElement) ->
             ( model
-                |> mapDropElement (\s -> { s | domElement = Just domElement })
+                |> mapDropElement
+                    (\s ->
+                        { s
+                            | domElement = Just domElement
+                            , domId = dropElementId
+                        }
+                    )
             , Cmd.none
             )
 
