@@ -10,7 +10,6 @@ import Lens exposing (Lens)
 import Project exposing (Project)
 import ProjectId
 import Return
-import SelectList
 import Styles exposing (..)
 import Task
 
@@ -244,7 +243,6 @@ view toMsg projectList model =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
-        , viewProjectsExpansionPanel projectList model
         , projectsEPS.view
             "Projects"
             (projectList
@@ -275,7 +273,6 @@ view toMsg projectList model =
     , portal =
         navProjectGhostItem projectList model
             ++ navLabelGhostItem labelList model
-            ++ [ viewProjectGhostItem projectList model ]
             |> List.map (H.map toMsg)
     }
 
@@ -298,31 +295,6 @@ navIconItem title icon =
     navItem title Css.inherit icon
 
 
-rotateDragged dnd list =
-    case dndSystem.info dnd of
-        Just { dragIndex, dropIndex } ->
-            SelectList.fromList list
-                |> Maybe.andThen (SelectList.selectBy dragIndex)
-                |> Maybe.map (SelectList.moveBy (dropIndex - dragIndex) >> SelectList.toList)
-                |> Maybe.withDefault list
-
-        Nothing ->
-            list
-
-
-viewProjectsExpansionPanel projectList model =
-    let
-        dnd =
-            dndLens.get model
-    in
-    projectsEPS.view
-        "Projects"
-        (rotateDragged dnd projectList
-            |> List.indexedMap (navProjectItem dnd)
-        )
-        model
-
-
 maybeDragItem : DnDList.Model -> List a -> Maybe a
 maybeDragItem dnd items =
     dndSystem.info dnd
@@ -332,30 +304,6 @@ maybeDragItem dnd items =
                     |> List.drop dragIndex
                     |> List.head
             )
-
-
-viewProjectGhostItem : List Project -> Drawer -> Html Msg
-viewProjectGhostItem projectList model =
-    let
-        dnd =
-            dndLens.get model
-    in
-    case maybeDragItem dnd projectList of
-        Just project ->
-            let
-                iconColor =
-                    Css.hsl (Project.hue project |> toFloat) 0.7 0.5
-
-                title =
-                    Project.title project
-
-                ghostStyles =
-                    dndSystem.ghostStyles dnd |> List.map A.fromUnstyled
-            in
-            viewItem2 ghostStyles [] title iconColor "folder"
-
-        Nothing ->
-            text ""
 
 
 viewItem2 attributes styles title iconColor iconName =
@@ -379,53 +327,6 @@ viewItem2 attributes styles title iconColor iconName =
             ]
             [ text title ]
         ]
-
-
-navProjectItem dnd sortIdx project =
-    let
-        domId =
-            String.fromInt sortIdx
-
-        dragEvents =
-            dndSystem.dragEvents sortIdx domId
-                |> List.map A.fromUnstyled
-
-        dropEvents =
-            dndSystem.dropEvents sortIdx domId
-                |> List.map A.fromUnstyled
-
-        info =
-            dndSystem.info dnd
-
-        styles =
-            info
-                |> Maybe.andThen
-                    (\i ->
-                        if sortIdx == i.dropIndex then
-                            Just [ Css.opacity <| Css.num 0 ]
-
-                        else
-                            Nothing
-                    )
-                |> Maybe.withDefault []
-
-        attributes =
-            A.id domId
-                :: (case info of
-                        Just _ ->
-                            dropEvents
-
-                        Nothing ->
-                            dragEvents
-                   )
-
-        title =
-            Project.title project
-
-        iconColor =
-            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
-    in
-    viewItem2 attributes styles title iconColor "folder"
 
 
 navLabelItem : Drawer -> Int -> LabelView -> Html Msg
