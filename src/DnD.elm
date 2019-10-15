@@ -247,10 +247,10 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement (Ok dragElement) ->
+        GotDragElement (Ok domElement) ->
             ( model
-                |> mapDragElement (\s -> { s | domElement = Just dragElement })
-                |> mapDropElement (\s -> { s | domElement = Just dragElement })
+                |> mapDragElement (\s -> { s | domElement = Just domElement })
+                |> mapDropElement (\s -> { s | domElement = Just domElement })
             , Cmd.none
             )
 
@@ -260,9 +260,9 @@ update toMsg message model =
         GotDropElement (Err _) ->
             ( model, Cmd.none )
 
-        GotDropElement (Ok dropElement) ->
+        GotDropElement (Ok domElement) ->
             ( model
-                |> mapDropElement (\s -> { s | domElement = Just dropElement })
+                |> mapDropElement (\s -> { s | domElement = Just domElement })
             , Cmd.none
             )
 
