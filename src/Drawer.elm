@@ -376,15 +376,27 @@ navProjectItem dnd sortIdx project =
 navLabelItem : Drawer -> Int -> LabelView -> Html Msg
 navLabelItem model idx { title, hue } =
     let
+        info =
+            dnd2System.info model
+
         domId =
             "label-dnd-element__" ++ String.fromInt idx
 
-        attrs =
-            A.id domId
-                :: dnd2System.dragEvents idx domId
-                ++ dnd2System.dropEvents idx domId
+        ( attrs, styles ) =
+            case info of
+                Nothing ->
+                    ( dnd2System.dragEvents idx domId, [] )
+
+                Just { drop } ->
+                    ( dnd2System.dropEvents idx domId
+                    , if drop.index == idx then
+                        []
+
+                      else
+                        []
+                    )
     in
-    viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
 
 
 maybeDrag2Item drawer items =
