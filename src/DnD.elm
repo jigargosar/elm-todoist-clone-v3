@@ -60,7 +60,18 @@ dropEvents domId =
 
 ghostStyles : DnD -> Css.Style
 ghostStyles =
-    unwrap >> Maybe.map (\s -> []) >> Maybe.withDefault [] >> Css.batch
+    unwrap
+        >> Maybe.map
+            (\s ->
+                [ Css.transforms
+                    [ Css.translate2
+                        (Css.px <| s.currentPosition.x - s.startPosition.x)
+                        (Css.px <| s.currentPosition.y - s.startPosition.y)
+                    ]
+                ]
+            )
+        >> Maybe.withDefault []
+        >> Css.batch
 
 
 info : DnD -> Maybe Info
