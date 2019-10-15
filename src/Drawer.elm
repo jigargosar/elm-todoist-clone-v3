@@ -208,28 +208,28 @@ subscriptions toMsg model =
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg updateProjectListOrder projectList message =
+update toMsg updateProjectListOrder projectList message model =
     case message of
         ExpansionPanel panel msg ->
-            (expansionPanelSystem panel).update msg
-                >> Return.mapCmd toMsg
+            (expansionPanelSystem panel).update msg model
+                |> Return.mapCmd toMsg
 
         DndPanel panel msg ->
-            (dndPanelSystem panel).update msg >> Return.mapCmd toMsg
+            (dndPanelSystem panel).update msg model |> Return.mapCmd toMsg
 
         DnDCommit panel info ->
             case panel of
                 Projects ->
-                    Return.singleton
-                        >> Return.command (updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform)
+                    Return.singleton model
+                        |> Return.command (updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform)
 
                 Labels ->
-                    (\m -> labelsLens.set (DnD.rotateFromInfo info (labelsLens.get m)) m)
-                        >> Return.singleton
+                    labelsLens.set (DnD.rotateFromInfo info (labelsLens.get model)) model
+                        |> Return.singleton
 
                 Filters ->
-                    (\m -> filtersLens.set (DnD.rotateFromInfo info (filtersLens.get m)) m)
-                        >> Return.singleton
+                    filtersLens.set (DnD.rotateFromInfo info (filtersLens.get model)) model
+                        |> Return.singleton
 
 
 perform =
