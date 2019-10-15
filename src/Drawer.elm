@@ -257,7 +257,7 @@ viewProjectsExpansionPanel projectList model =
         ((rotateDragged dnd projectList
             |> List.indexedMap (navProjectItem dnd)
          )
-            ++ [ viewGhostItem projectList model ]
+            ++ [ viewProjectGhostItem projectList model ]
         )
         model
 
@@ -273,8 +273,8 @@ maybeDragItem dnd items =
             )
 
 
-viewGhostItem : List Project -> Drawer -> Html Msg
-viewGhostItem projectList model =
+viewProjectGhostItem : List Project -> Drawer -> Html Msg
+viewProjectGhostItem projectList model =
     let
         dnd =
             dndLens.get model
