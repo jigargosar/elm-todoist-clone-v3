@@ -46,9 +46,8 @@ create toMsg bigL =
 dragEvents : String -> List (H.Attribute Msg)
 dragEvents domId =
     [ E.preventDefaultOn "mousedown"
-        (JD.map2 (DragStart domId)
+        (JD.map (DragStart domId)
             positionDecoder
-            elementOffsetDecoder
             |> preventDefault
         )
     ]
@@ -178,11 +177,11 @@ type alias ViewPortResult =
 
 
 type Msg
-    = DragStart String Position ElementOffset
+    = DragStart String Position
     | Drag Position
     | DragOver String
     | DragEnd
-    | GotDragElement ElementOffset (Result Dom.Error ( Dom.Element, Dom.Viewport ))
+    | GotDragElement ElementResult
     | GotDropElement ElementResult
 
 
@@ -224,7 +223,7 @@ subscriptions (DnD internal) =
 update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
 update toMsg message model =
     case message of
-        DragStart dragElementId xy offset ->
+        DragStart dragElementId xy ->
             ( { startPosition = xy
               , currentPosition = xy
               , dragElementId = dragElementId
@@ -234,11 +233,7 @@ update toMsg message model =
               }
                 |> Just
                 |> DnD
-            , -- Dom.getElement dragElementId |>  Task.attempt (toMsg << GotDragElement)
-              Task.map2 Tuple.pair
-                (Dom.getElement dragElementId)
-                (Dom.getViewportOf dragElementId)
-                |> Task.attempt (toMsg << GotDragElement offset)
+            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement)
             )
 
         Drag xy ->
@@ -249,11 +244,7 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement offset (Ok ( dragElement, _ )) ->
-            let
-                _ =
-                    Debug.log "(dragElement, offset)" ( dragElement, offset )
-            in
+        GotDragElement (Ok dragElement) ->
             ( mapState
                 (\s ->
                     { s
@@ -265,7 +256,7 @@ update toMsg message model =
             , Cmd.none
             )
 
-        GotDragElement _ _ ->
+        GotDragElement _ ->
             ( model, Cmd.none )
 
         GotDropElement (Err _) ->
