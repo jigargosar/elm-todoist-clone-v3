@@ -217,7 +217,7 @@ update toMsg updateProjectListOrder projectList message =
                 >> Return.command
                     (case panel of
                         Projects ->
-                            updateProjectListOrder (DnD.rotate info projectList) |> perform
+                            updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform
 
                         _ ->
                             Cmd.none
@@ -246,17 +246,17 @@ view toMsg projectList model =
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
         , viewProjectsExpansionPanel projectList model
-        , labelsEPS.view
+        , projectsEPS.view
             "Projects"
             (projectList
-                |> (dndProjectsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
+                |> DnD.rotateFromModel ((dnd2Lens Projects).get model)
                 |> List.indexedMap (navProject2Item model)
             )
             model
         , labelsEPS.view
             "Labels"
             (labelList
-                |> (dndLabelsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
+                |> (dndLabelsSystem.info model |> Maybe.map DnD.rotateFromInfo |> Maybe.withDefault identity)
                 |> List.indexedMap (navLabelItem model)
             )
             model
