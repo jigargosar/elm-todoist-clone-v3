@@ -3,8 +3,9 @@ module DnD exposing (DnD, Msg, System, create)
 import Basics.More exposing (flip)
 import Browser.Dom as Dom
 import Browser.Events
+import Css
 import Html.Styled as H
-import Html.Styled.Attributes as A
+import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Lens
@@ -17,7 +18,7 @@ type alias System msg big =
     , subscriptions : big -> Sub msg
     , dragEvents : String -> List (H.Attribute msg)
     , dropEvents : String -> List (H.Attribute msg)
-    , ghostStyles : big -> List (H.Attribute msg)
+    , ghostStyles : big -> Css.Style
     , info : big -> Maybe Info
     }
 
@@ -57,9 +58,9 @@ dropEvents domId =
     ]
 
 
-ghostStyles : DnD -> List (H.Attribute msg)
+ghostStyles : DnD -> Css.Style
 ghostStyles =
-    unwrap >> Maybe.map (\_ -> []) >> Maybe.withDefault []
+    unwrap >> Maybe.map (\s -> []) >> Maybe.withDefault [] >> Css.batch
 
 
 info : DnD -> Maybe Info
