@@ -45,7 +45,12 @@ create toMsg bigL =
 
 dragEvents : String -> List (H.Attribute Msg)
 dragEvents domId =
-    [ E.preventDefaultOn "mousedown" (JD.map2 (DragStart domId) positionDecoder elementOffsetDecoder |> preventDefault)
+    [ E.preventDefaultOn "mousedown"
+        (JD.map2 (DragStart domId)
+            positionDecoder
+            elementOffsetDecoder
+            |> preventDefault
+        )
     ]
 
 
@@ -179,7 +184,7 @@ type Msg
     | Drag Position
     | DragOver String
     | DragEnd
-    | GotDragElement (Result Dom.Error ( Dom.Element, Dom.Viewport ))
+    | GotDragElement ElementOffset (Result Dom.Error ( Dom.Element, Dom.Viewport ))
     | GotDropElement ElementResult
 
 
@@ -235,7 +240,7 @@ update toMsg message model =
               Task.map2 Tuple.pair
                 (Dom.getElement dragElementId)
                 (Dom.getViewportOf dragElementId)
-                |> Task.attempt (toMsg << GotDragElement)
+                |> Task.attempt (toMsg << GotDragElement offset)
             )
 
         Drag xy ->
@@ -246,10 +251,10 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement (Ok ( dragElement, _ )) ->
+        GotDragElement offset (Ok ( dragElement, _ )) ->
             let
                 _ =
-                    Debug.log "dragElement" dragElement
+                    Debug.log "(dragElement, offset)" ( dragElement, offset )
             in
             ( mapState
                 (\s ->
@@ -262,7 +267,7 @@ update toMsg message model =
             , Cmd.none
             )
 
-        GotDragElement _ ->
+        GotDragElement _ _ ->
             ( model, Cmd.none )
 
         GotDropElement (Err _) ->
