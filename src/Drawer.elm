@@ -218,15 +218,16 @@ update toMsg updateProjectListOrder projectList message =
             (dndPanelSystem panel).update msg >> Return.mapCmd toMsg
 
         DnDCommit panel info ->
-            Return.singleton
-                >> Return.command
-                    (case panel of
-                        Projects ->
-                            updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform
+            case panel of
+                Projects ->
+                    Return.singleton
+                        >> Return.command (updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform)
 
-                        _ ->
-                            Cmd.none
-                    )
+                Labels ->
+                    Return.singleton
+
+                Filters ->
+                    Return.singleton
 
 
 perform =
