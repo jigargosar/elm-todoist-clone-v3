@@ -235,10 +235,10 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement (Ok ( dragElement, dragViewport )) ->
+        GotDragElement (Ok ( dragElement, _ )) ->
             let
                 _ =
-                    Debug.log "( dragElement, dragViewport )" ( dragElement, dragViewport )
+                    Debug.log "dragElement" dragElement
             in
             ( mapState
                 (\s ->
