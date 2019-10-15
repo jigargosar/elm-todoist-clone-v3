@@ -189,7 +189,7 @@ type Msg
     | Drag Position
     | DragOver String
     | DragEnd
-    | GotDragElement ElementResult
+    | GotDragElement String Position ElementResult
     | GotDropElement ElementResult
 
 
@@ -225,18 +225,8 @@ update : (Msg -> msg) -> Msg -> DnD -> ( DnD, Cmd msg )
 update toMsg message model =
     case message of
         DragStart dragElementId xy ->
-            let
-                element =
-                    Element 0 dragElementId Nothing
-            in
-            ( { startPosition = xy
-              , currentPosition = xy
-              , dragElement = element
-              , dropElement = element
-              }
-                |> Just
-                |> DnD
-            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement)
+            ( DnD Nothing
+            , Dom.getElement dragElementId |> Task.attempt (toMsg << GotDragElement dragElementId xy)
             )
 
         Drag xy ->
@@ -247,15 +237,23 @@ update toMsg message model =
             , Dom.getElement dropElementId |> Task.attempt (toMsg << GotDropElement)
             )
 
-        GotDragElement (Ok domElement) ->
-            ( model
-                |> mapDragElement (\s -> { s | domElement = Just domElement })
-                |> mapDropElement (\s -> { s | domElement = Just domElement })
+        GotDragElement dragElementId xy (Ok domElement) ->
+            let
+                element =
+                    Element 0 dragElementId (Just domElement)
+            in
+            ( { startPosition = xy
+              , currentPosition = xy
+              , dragElement = element
+              , dropElement = element
+              }
+                |> Just
+                |> DnD
             , Cmd.none
             )
 
-        GotDragElement _ ->
-            ( model, Cmd.none )
+        GotDragElement _ _ _ ->
+            ( DnD Nothing, Cmd.none )
 
         GotDropElement (Err _) ->
             ( model, Cmd.none )
