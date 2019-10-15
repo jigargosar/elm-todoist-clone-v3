@@ -34,7 +34,7 @@ system toMsg { onProjectListSorted } getProjectList bigL =
         \msg big ->
             Lens.update bigL (update toMsg onProjectListSorted (getProjectList big) msg) big
     , view = \big -> view toMsg (getProjectList big) (bigL.get big)
-    , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
+    , subscriptions = bigL.get >> subscriptions toMsg
     }
 
 
@@ -154,12 +154,13 @@ updateDnd toMsg onListOrderChanged list msg model =
     )
 
 
-subscriptions : Drawer -> Sub Msg
-subscriptions model =
+subscriptions : (Msg -> msg) -> Drawer -> Sub msg
+subscriptions toMsg model =
     Sub.batch
         [ dndSystem.subscriptions (dndLens.get model)
         , dnd2System.subscriptions model
         ]
+        |> Sub.map toMsg
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
