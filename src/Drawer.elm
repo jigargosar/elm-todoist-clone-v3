@@ -1,6 +1,7 @@
 module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
+import DnD exposing (DnD)
 import DnDList
 import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled as H exposing (..)
@@ -61,6 +62,7 @@ type alias Internal =
     , labels : ExpansionPanel
     , filters : ExpansionPanel
     , dnd : DnDList.Model
+    , dnd2 : DnD
     }
 
 
@@ -70,6 +72,7 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         dndSystem.model
+        dnd2System.initial
         |> Drawer
 
 
@@ -82,6 +85,7 @@ type Panel
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
     | Dnd Panel DnDList.Msg
+    | DndMsg DnD.Msg
 
 
 internalLens =
@@ -107,6 +111,16 @@ expansionPanelSystem panel =
 dndLens : Lens DnDList.Model Drawer
 dndLens =
     Lens.compose internalLens (Lens .dnd (\s b -> { b | dnd = s }))
+
+
+dnd2Lens : Lens DnD Drawer
+dnd2Lens =
+    Lens.compose internalLens (Lens .dnd2 (\s b -> { b | dnd2 = s }))
+
+
+dnd2System : DnD.System Msg Drawer
+dnd2System =
+    DnD.create DndMsg dnd2Lens
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -159,6 +173,9 @@ update toMsg updateProjectListOrder projectList message =
 
                 _ ->
                     Return.singleton
+
+        DndMsg msg ->
+            dnd2System.update msg
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)

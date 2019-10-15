@@ -1,4 +1,4 @@
-module DnD exposing (DnD, Msg, create)
+module DnD exposing (DnD, Msg, System, create)
 
 import Browser.Dom as Dom
 import Browser.Events
@@ -7,14 +7,17 @@ import Lens
 import Task
 
 
+type alias System msg big =
+    { initial : DnD
+    , update : Msg -> big -> ( big, Cmd msg )
+    , subscriptions : big -> Sub msg
+    }
+
+
 create :
     (Msg -> msg)
     -> Lens.Lens DnD big
-    ->
-        { initial : DnD
-        , update : Msg -> big -> ( big, Cmd msg )
-        , subscriptions : big -> Sub msg
-        }
+    -> System msg big
 create toMsg bigL =
     { initial = initial
     , update = \msg -> Lens.update bigL (update toMsg msg)
