@@ -80,12 +80,12 @@ ghostStyles =
                                     (Css.px <|
                                         s.currentPosition.x
                                             - s.startPosition.x
-                                            + (-de.viewport.x + de.element.x)
+                                            + (de.element.x - de.viewport.x)
                                     )
                                     (Css.px <|
                                         s.currentPosition.y
                                             - s.startPosition.y
-                                            + (-de.viewport.y + de.element.y)
+                                            + (de.element.y - de.viewport.y)
                                     )
                                 ]
                             ]
