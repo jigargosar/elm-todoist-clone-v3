@@ -125,7 +125,7 @@ type alias Position =
 
 
 type alias Element =
-    { idx : Int, domId : String, domElement : Maybe Dom.Element }
+    { index : Int, domId : String, domElement : Maybe Dom.Element }
 
 
 type alias State =
