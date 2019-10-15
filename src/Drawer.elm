@@ -273,7 +273,8 @@ view toMsg projectList model =
         ]
             |> List.map (H.map toMsg)
     , portal =
-        navLabelGhostItem labelList model
+        navProjectGhostItem projectList model
+            ++ navLabelGhostItem labelList model
             ++ [ viewProjectGhostItem projectList model ]
             |> List.map (H.map toMsg)
     }
@@ -485,8 +486,8 @@ navProject2Item model idx project =
     viewItem2 (A.id domId :: attrs) styles title iconColor "folder"
 
 
-maybeDrag2Item drawer items =
-    labelsDnDSystem.info drawer
+maybeDrag2Item dnd2Sys model items =
+    dnd2Sys.info model
         |> Maybe.andThen
             (\{ drag } ->
                 items
@@ -496,7 +497,7 @@ maybeDrag2Item drawer items =
 
 
 navLabelGhostItem labels model =
-    maybeDrag2Item model labels
+    maybeDrag2Item labelsDnDSystem model labels
         |> Maybe.map
             (\{ title, hue } ->
                 [ let
@@ -504,6 +505,26 @@ navLabelGhostItem labels model =
                         [ css [ labelsDnDSystem.ghostStyles model ] ]
                   in
                   viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+                ]
+            )
+        |> Maybe.withDefault []
+
+
+navProjectGhostItem projectList model =
+    maybeDrag2Item projectsDnDSystem model projectList
+        |> Maybe.map
+            (\project ->
+                [ let
+                    attrs =
+                        [ css [ projectsDnDSystem.ghostStyles model ] ]
+
+                    title =
+                        Project.title project
+
+                    iconColor =
+                        Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+                  in
+                  viewItem2 attrs [] title iconColor "label"
                 ]
             )
         |> Maybe.withDefault []
