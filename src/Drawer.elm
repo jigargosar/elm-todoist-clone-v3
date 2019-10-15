@@ -51,7 +51,7 @@ dndSystem =
         , listen = DnDList.OnDrop
         , operation = DnDList.Rotate
         }
-        (Dnd Projects)
+        (DndList Projects)
 
 
 type Drawer
@@ -89,8 +89,8 @@ type Panel
 
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
-    | Dnd Panel DnDList.Msg
-    | DndMsg Panel DnD.Msg
+    | DndList Panel DnDList.Msg
+    | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
 
 
@@ -133,7 +133,7 @@ dnd2Lens panel =
 
 
 dnd2System panel =
-    DnD.create (DndMsg panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
+    DnD.create (DndPanel panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
 
 
 labelsDnDSystem : DnD.System LabelView Msg Drawer
@@ -200,7 +200,7 @@ update toMsg updateProjectListOrder projectList message =
             (expansionPanelSystem panel).update msg
                 >> Return.mapCmd toMsg
 
-        Dnd panel msg ->
+        DndList panel msg ->
             case panel of
                 Projects ->
                     updateDnd toMsg updateProjectListOrder projectList msg
@@ -208,7 +208,7 @@ update toMsg updateProjectListOrder projectList message =
                 _ ->
                     Return.singleton
 
-        DndMsg panel msg ->
+        DndPanel panel msg ->
             (dnd2System panel).update msg >> Return.mapCmd toMsg
 
         DnDCommit panel info ->
