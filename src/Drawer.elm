@@ -62,7 +62,7 @@ initial =
         filtersEPS.initial
         projectsDnDSystem.initial
         labelsDnDSystem.initial
-        dndFiltersSystem.initial
+        filtersDnDSystem.initial
         |> Drawer
 
 
@@ -126,8 +126,8 @@ projectsDnDSystem =
     dndPanelSystem Projects
 
 
-dndFiltersSystem : DnD.System () Msg Drawer
-dndFiltersSystem =
+filtersDnDSystem : DnD.System () Msg Drawer
+filtersDnDSystem =
     dndPanelSystem Filters
 
 
@@ -151,7 +151,7 @@ subscriptions toMsg model =
     Sub.batch
         [ projectsDnDSystem.subscriptions model
         , labelsDnDSystem.subscriptions model
-        , dndFiltersSystem.subscriptions model
+        , filtersDnDSystem.subscriptions model
         ]
         |> Sub.map toMsg
 
