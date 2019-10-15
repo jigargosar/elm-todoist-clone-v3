@@ -73,7 +73,6 @@ dragEvents index domId =
 dropEvents : Int -> String -> List (H.Attribute Msg)
 dropEvents index domId =
     [ E.onMouseOver (DragOver index domId)
-    , E.onMouseEnter (DragOver index domId)
     ]
 
 
