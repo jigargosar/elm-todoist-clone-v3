@@ -228,11 +228,7 @@ update toMsg message model =
                 element =
                     Element index dragElementId domElement
             in
-            ( { startPosition = xy
-              , currentPosition = xy
-              , dragElement = element
-              , dropElement = element
-              }
+            ( State xy xy element element
                 |> Just
                 |> DnD
             , Cmd.none
