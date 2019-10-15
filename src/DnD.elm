@@ -170,11 +170,6 @@ mapDropElement func =
     mapState (\s -> { s | dropElement = func s.dropElement })
 
 
-mapDragElement : (Element -> Element) -> DnD -> DnD
-mapDragElement func =
-    mapState (\s -> { s | dragElement = func s.dragElement })
-
-
 initial : DnD
 initial =
     DnD Nothing
