@@ -61,9 +61,7 @@ type alias DndPanels =
 
 type alias Internal =
     { expansionPanels : ExpansionPanels
-    , dndProjects : DnD
-    , dndLabels : DnD
-    , dndFilters : DnD
+    , dndPanels : DndPanels
     }
 
 
@@ -74,9 +72,10 @@ initial =
         , labels = labelsEPS.initial
         , filters = filtersEPS.initial
         }
-        projectsDnDSystem.initial
-        labelsDnDSystem.initial
-        filtersDnDSystem.initial
+        { projects = projectsDnDSystem.initial
+        , labels = labelsDnDSystem.initial
+        , filters = filtersDnDSystem.initial
+        }
         |> Drawer
 
 
@@ -92,10 +91,12 @@ type Msg
     | DnDCommit Panel DnD.Info
 
 
+internalLens : Lens Internal Drawer
 internalLens =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
 
 
+expansionPanelsLens : Lens ExpansionPanels Drawer
 expansionPanelsLens =
     Lens.compose internalLens (Lens .expansionPanels (\s b -> { b | expansionPanels = s }))
 
@@ -113,21 +114,27 @@ expansionPanelLens panel =
             Lens.compose expansionPanelsLens (Lens .filters (\s b -> { b | filters = s }))
 
 
+expansionPanelSystem : Panel -> ExpansionPanel.System Msg Drawer
 expansionPanelSystem panel =
     ExpansionPanel.system (ExpansionPanel panel) (expansionPanelLens panel)
+
+
+dndPanelsLens : Lens DndPanels Drawer
+dndPanelsLens =
+    Lens.compose internalLens (Lens .dndPanels (\s b -> { b | dndPanels = s }))
 
 
 dndPanelLens : Panel -> Lens DnD Drawer
 dndPanelLens panel =
     case panel of
         Projects ->
-            Lens.compose internalLens (Lens .dndProjects (\s b -> { b | dndProjects = s }))
+            Lens.compose dndPanelsLens (Lens .projects (\s b -> { b | projects = s }))
 
         Labels ->
-            Lens.compose internalLens (Lens .dndLabels (\s b -> { b | dndLabels = s }))
+            Lens.compose dndPanelsLens (Lens .labels (\s b -> { b | labels = s }))
 
         Filters ->
-            Lens.compose internalLens (Lens .dndFilters (\s b -> { b | dndFilters = s }))
+            Lens.compose dndPanelsLens (Lens .filters (\s b -> { b | filters = s }))
 
 
 dndPanelSystem : Panel -> DnD.System a Msg Drawer
