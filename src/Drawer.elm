@@ -367,7 +367,7 @@ navProjectItem dnd sortIdx project =
     viewItem2 attributes styles title iconColor "folder"
 
 
-navLabelItem : Int -> LabelView -> Html msg
+navLabelItem : Int -> LabelView -> Html Msg
 navLabelItem idx { title, hue } =
     let
         domId =
@@ -378,7 +378,7 @@ navLabelItem idx { title, hue } =
                 :: dnd2System.dragEvents domId
                 ++ dnd2System.dropEvents domId
     in
-    viewItem2 [] [] title (Css.hsl hue 0.7 0.5) "label"
+    viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
 
 
 navFilterItem title hue =

@@ -29,14 +29,14 @@ create :
     -> System msg big
 create toMsg bigL =
     let
-        mapEvents =
+        mapAttrs =
             List.map (A.map toMsg)
     in
     { initial = initial
     , update = \msg -> Lens.update bigL (update toMsg msg)
     , subscriptions = bigL.get >> subscriptions >> Sub.map toMsg
-    , dragEvents = dragEvents >> mapEvents
-    , dropEvents = dropEvents >> mapEvents
+    , dragEvents = dragEvents >> mapAttrs
+    , dropEvents = dropEvents >> mapAttrs
     , ghostStyles = bigL.get >> ghostStyles
     , info = bigL.get >> info
     }
