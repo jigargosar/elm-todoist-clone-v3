@@ -128,7 +128,7 @@ type alias Element =
     { index : Int, domId : String, domElement : Maybe Dom.Element }
 
 
-type alias ElementInfo =
+type alias InfoElement =
     { index : Int, domId : String, domElement : Dom.Element }
 
 
