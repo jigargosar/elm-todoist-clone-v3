@@ -215,7 +215,8 @@ update toMsg updateProjectListOrder projectList message model =
                 |> Return.mapCmd toMsg
 
         DndPanel panel msg ->
-            (dndPanelSystem panel).update msg model |> Return.mapCmd toMsg
+            (dndPanelSystem panel).update msg model
+                |> Return.mapCmd toMsg
 
         DnDCommit panel info ->
             let
