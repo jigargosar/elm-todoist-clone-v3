@@ -77,13 +77,10 @@ ghostStyles : DnD -> Css.Style
 ghostStyles =
     info
         >> Maybe.map
-            (\s ->
+            (\{ dragElement, currentPosition, startPosition } ->
                 let
-                    dragElement =
-                        s.dragElement
-
                     { x, y } =
-                        positionAdd (positionSubtract s.currentPosition s.startPosition)
+                        positionAdd (positionSubtract currentPosition startPosition)
                             (positionSubtract dragElement.element dragElement.viewport)
                 in
                 [ Styles.absolute
