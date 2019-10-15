@@ -5,7 +5,7 @@ import Browser.Dom as Dom
 import Browser.Events
 import Css
 import Html.Styled as H
-import Html.Styled.Attributes as A exposing (css)
+import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Lens
