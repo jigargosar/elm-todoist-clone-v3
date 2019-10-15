@@ -251,7 +251,7 @@ view toMsg projectList model =
             "Projects"
             (projectList
                 |> projectsDnDSystem.rotate model
-                |> List.indexedMap (navProject2Item model)
+                |> List.indexedMap (navProjectItem model)
             )
             model
         , labelsEPS.view
@@ -344,8 +344,8 @@ navLabelItem model idx { title, hue } =
     viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
 
 
-navProject2Item : Drawer -> Int -> Project -> Html Msg
-navProject2Item model idx project =
+navProjectItem : Drawer -> Int -> Project -> Html Msg
+navProjectItem model idx project =
     let
         info =
             projectsDnDSystem.info model
