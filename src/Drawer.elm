@@ -45,12 +45,15 @@ type Drawer
     = Drawer Internal
 
 
+type alias ExpansionPanels =
+    { projects : ExpansionPanel
+    , labels : ExpansionPanel
+    , filters : ExpansionPanel
+    }
+
+
 type alias Internal =
-    { expansionPanels :
-        { projects : ExpansionPanel
-        , labels : ExpansionPanel
-        , filters : ExpansionPanel
-        }
+    { expansionPanels : ExpansionPanels
     , dndProjects : DnD
     , dndLabels : DnD
     , dndFilters : DnD
@@ -90,6 +93,7 @@ expansionPanelsLens =
     Lens.compose internalLens (Lens .expansionPanels (\s b -> { b | expansionPanels = s }))
 
 
+expansionPanelLens : Panel -> Lens ExpansionPanel Drawer
 expansionPanelLens panel =
     case panel of
         Projects ->
