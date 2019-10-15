@@ -62,6 +62,7 @@ type alias DndPanels =
 type alias Internal =
     { expansionPanels : ExpansionPanels
     , dndPanels : DndPanels
+    , labelList : List LabelView
     }
 
 
@@ -76,6 +77,10 @@ initial =
         , labels = labelsDnDSystem.initial
         , filters = filtersDnDSystem.initial
         }
+        [ LabelView "to read" 333
+        , LabelView "medical" 93990
+        , LabelView "quick-ref" 444
+        ]
         |> Drawer
 
 
@@ -94,6 +99,12 @@ type Msg
 internalLens : Lens Internal Drawer
 internalLens =
     Lens (\(Drawer internal) -> internal) (\s _ -> Drawer s)
+
+
+labelsLens : Lens (List LabelView) Drawer
+labelsLens =
+    Lens.compose internalLens
+        (Lens .labelList (\s b -> { b | labelList = s }))
 
 
 expansionPanelsLens : Lens ExpansionPanels Drawer
@@ -212,13 +223,6 @@ type alias LabelView =
     { title : String, hue : Float }
 
 
-labelList =
-    [ LabelView "to read" 333
-    , LabelView "medical" 93990
-    , LabelView "quick-ref" 444
-    ]
-
-
 view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), portal : List (Html msg) }
 view toMsg projectList model =
     { content =
@@ -234,7 +238,7 @@ view toMsg projectList model =
             model
         , labelsEPS.view
             "Labels"
-            (labelList
+            (labelsLens.get model
                 |> labelsDnDSystem.rotate model
                 |> List.indexedMap (navLabelItem model)
             )
@@ -254,7 +258,7 @@ view toMsg projectList model =
             |> List.map (H.map toMsg)
     , portal =
         navProjectGhostItem projectList model
-            ++ navLabelGhostItem labelList model
+            ++ navLabelGhostItem (labelsLens.get model) model
             |> List.map (H.map toMsg)
     }
 
