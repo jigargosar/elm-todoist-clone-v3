@@ -76,11 +76,11 @@ ghostStyles : DnD -> Css.Style
 ghostStyles =
     info
         >> Maybe.map
-            (\{ dragElement, currentPosition, startPosition } ->
+            (\{ drag, currentPosition, startPosition } ->
                 let
                     { x, y } =
                         positionAdd (positionSubtract currentPosition startPosition)
-                            (positionSubtract dragElement.element dragElement.viewport)
+                            (positionSubtract drag.domElement.element drag.domElement.viewport)
                 in
                 [ Styles.absolute
                 , Styles.top_0
@@ -100,10 +100,8 @@ info =
                 Info
                     state.startPosition
                     state.currentPosition
-                    state.dragElement.domElement
-                    state.dropElement.domElement
-                    state.dragElement.domId
-                    state.dropElement.domId
+                    state.dragElement
+                    state.dropElement
             )
 
 
@@ -134,10 +132,8 @@ type alias State =
 type alias Info =
     { startPosition : Position
     , currentPosition : Position
-    , dragElement : Dom.Element
-    , dropElement : Dom.Element
-    , dragElementId : String
-    , dropElementId : String
+    , drag : Element
+    , drop : Element
     }
 
 
