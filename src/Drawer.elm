@@ -9,6 +9,7 @@ import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Lens exposing (Lens)
 import Project exposing (Project)
+import ProjectId
 import Return
 import SelectList
 import Styles exposing (..)
@@ -63,7 +64,9 @@ type alias Internal =
     , labels : ExpansionPanel
     , filters : ExpansionPanel
     , dnd : DnDList.Model
-    , dnd2 : DnD
+    , dndProjects : DnD
+    , dndLabels : DnD
+    , dndFilters : DnD
     }
 
 
@@ -73,7 +76,9 @@ initial =
         labelsEPS.initial
         filtersEPS.initial
         dndSystem.model
-        dnd2LabelsSystem.initial
+        dndLabelsSystem.initial
+        dndProjectsSystem.initial
+        dndFiltersSystem.initial
         |> Drawer
 
 
@@ -86,7 +91,7 @@ type Panel
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
     | Dnd Panel DnDList.Msg
-    | DndMsg DnD.Msg
+    | DndMsg Panel DnD.Msg
     | DnDCommit Panel DnD.Info
 
 
@@ -115,19 +120,36 @@ dndLens =
     Lens.compose internalLens (Lens .dnd (\s b -> { b | dnd = s }))
 
 
-dnd2Lens : Lens DnD Drawer
-dnd2Lens =
-    Lens.compose internalLens (Lens .dnd2 (\s b -> { b | dnd2 = s }))
+dnd2Lens : Panel -> Lens DnD Drawer
+dnd2Lens panel =
+    case panel of
+        Projects ->
+            Lens.compose internalLens (Lens .dndProjects (\s b -> { b | dndProjects = s }))
+
+        Labels ->
+            Lens.compose internalLens (Lens .dndLabels (\s b -> { b | dndLabels = s }))
+
+        Filters ->
+            Lens.compose internalLens (Lens .dndFilters (\s b -> { b | dndFilters = s }))
 
 
-dnd2LabelsSystem : DnD.System Msg Drawer
-dnd2LabelsSystem =
-    DnD.create DndMsg { onCommit = DnDCommit Labels } dnd2Lens
+dnd2System panel =
+    DnD.create (DndMsg panel) { onCommit = DnDCommit panel } (dnd2Lens panel)
 
 
-dnd2ProjectsSystem : DnD.System Msg Drawer
-dnd2ProjectsSystem =
-    DnD.create DndMsg { onCommit = DnDCommit Projects } dnd2Lens
+dndLabelsSystem : DnD.System Msg Drawer
+dndLabelsSystem =
+    dnd2System Labels
+
+
+dndProjectsSystem : DnD.System Msg Drawer
+dndProjectsSystem =
+    dnd2System Projects
+
+
+dndFiltersSystem : DnD.System Msg Drawer
+dndFiltersSystem =
+    dnd2System Filters
 
 
 projectsEPS : ExpansionPanel.System Msg Drawer
@@ -165,7 +187,7 @@ subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
         [ dndSystem.subscriptions (dndLens.get model)
-        , dnd2LabelsSystem.subscriptions model
+        , dndLabelsSystem.subscriptions model
         ]
         |> Sub.map toMsg
 
@@ -185,9 +207,8 @@ update toMsg updateProjectListOrder projectList message =
                 _ ->
                     Return.singleton
 
-        DndMsg msg ->
-            dnd2LabelsSystem.update msg
-                >> Return.mapCmd toMsg
+        DndMsg panel msg ->
+            (dnd2System panel).update msg >> Return.mapCmd toMsg
 
         DnDCommit panel info ->
             Return.singleton
@@ -224,9 +245,16 @@ view toMsg projectList model =
         , navIconItem "Next 7 Days" "view_week"
         , viewProjectsExpansionPanel projectList model
         , labelsEPS.view
+            "Projects"
+            (projectList
+                |> (dndProjectsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
+                |> List.indexedMap (navProject2Item model)
+            )
+            model
+        , labelsEPS.view
             "Labels"
             (labelList
-                |> (dnd2LabelsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
+                |> (dndLabelsSystem.info model |> Maybe.map DnD.rotate |> Maybe.withDefault identity)
                 |> List.indexedMap (navLabelItem model)
             )
             model
@@ -402,7 +430,7 @@ navLabelItem : Drawer -> Int -> LabelView -> Html Msg
 navLabelItem model idx { title, hue } =
     let
         info =
-            dnd2LabelsSystem.info model
+            dndLabelsSystem.info model
 
         domId =
             "label-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
@@ -410,10 +438,10 @@ navLabelItem model idx { title, hue } =
         ( attrs, styles ) =
             case info of
                 Nothing ->
-                    ( dnd2LabelsSystem.dragEvents idx domId, [] )
+                    ( dndLabelsSystem.dragEvents idx domId, [] )
 
                 Just { drop } ->
-                    ( dnd2LabelsSystem.dropEvents idx domId
+                    ( dndLabelsSystem.dropEvents idx domId
                     , if drop.index == idx then
                         [ Css.opacity <| Css.num 0 ]
 
@@ -424,8 +452,40 @@ navLabelItem model idx { title, hue } =
     viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
 
 
+navProject2Item : Drawer -> Int -> Project -> Html Msg
+navProject2Item model idx project =
+    let
+        info =
+            dndProjectsSystem.info model
+
+        domId =
+            "project-dnd-element__" ++ (Project.id project |> ProjectId.toString)
+
+        ( attrs, styles ) =
+            case info of
+                Nothing ->
+                    ( dndProjectsSystem.dragEvents idx domId, [] )
+
+                Just { drop } ->
+                    ( dndProjectsSystem.dropEvents idx domId
+                    , if drop.index == idx then
+                        [ Css.opacity <| Css.num 0 ]
+
+                      else
+                        []
+                    )
+
+        title =
+            Project.title project
+
+        iconColor =
+            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+    in
+    viewItem2 (A.id domId :: attrs) styles title iconColor "folder"
+
+
 maybeDrag2Item drawer items =
-    dnd2LabelsSystem.info drawer
+    dndLabelsSystem.info drawer
         |> Maybe.andThen
             (\{ drag } ->
                 items
@@ -440,7 +500,7 @@ navLabelGhostItem labels model =
             (\{ title, hue } ->
                 [ let
                     attrs =
-                        [ css [ dnd2LabelsSystem.ghostStyles model ] ]
+                        [ css [ dndLabelsSystem.ghostStyles model ] ]
                   in
                   viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
                 ]
