@@ -63,8 +63,8 @@ view toMsg { appbar, drawer, content } layout =
     styled div
         [ bgBody, h_100 ]
         [ class "sans-serif" ]
-        [ styledAppbar [] appbar
-        , styled div
+        ([ styledAppbar [] appbar
+         , styled div
             [ center, w_100, max_w_app, h_100 ]
             []
             [ styledPermanentDrawer
@@ -73,12 +73,14 @@ view toMsg { appbar, drawer, content } layout =
                 drawer.content
             , styledMain [] content
             ]
-        , viewModalDrawer toMsg
+         , viewModalDrawer toMsg
             layout
             -- TEST OVERFLOW SCROLL
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
             drawer.content
-        ]
+         ]
+            ++ drawer.modal
+        )
 
 
 styledAppbar appbarAttrs appbarContent =
