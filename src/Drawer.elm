@@ -402,7 +402,15 @@ maybeDrag2Item drawer items =
 
 navLabelGhostItem labels model =
     maybeDrag2Item model labels
-        |> Maybe.map (\_ -> [])
+        |> Maybe.map
+            (\{ title, hue } ->
+                [ let
+                    attrs =
+                        [ css [ dnd2System.ghostStyles model ] ]
+                  in
+                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+                ]
+            )
         |> Maybe.withDefault []
 
 
