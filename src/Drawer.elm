@@ -183,6 +183,10 @@ update toMsg updateProjectListOrder projectList message =
                 >> Return.mapCmd toMsg
 
 
+type alias LabelView =
+    { title : String, hue : Float }
+
+
 view : (Msg -> msg) -> List Project -> Drawer -> List (Html msg)
 view toMsg projectList model =
     [ navIconItem "Inbox" "inbox"
@@ -191,10 +195,12 @@ view toMsg projectList model =
     , viewProjectsExpansionPanel projectList model
     , labelsEPS.view
         "Labels"
-        [ navLabelItem "to read" 333
-        , navLabelItem "medical" 93990
-        , navLabelItem "quick-ref" 444
-        ]
+        ([ LabelView "to read" 333
+         , LabelView "medical" 93990
+         , LabelView "quick-ref" 444
+         ]
+            |> List.indexedMap navLabelItem
+        )
         model
     , filtersEPS.view
         "Filters"
@@ -361,7 +367,8 @@ navProjectItem dnd sortIdx project =
     viewItem2 attributes styles title iconColor "folder"
 
 
-navLabelItem title hue =
+navLabelItem : Int -> LabelView -> Html msg
+navLabelItem idx { title, hue } =
     navItem title (Css.hsl hue 0.7 0.5) "label"
 
 
