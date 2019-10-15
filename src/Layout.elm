@@ -53,7 +53,7 @@ update toMsg message model =
 
 type alias Parts msg =
     { appbar : List (Html msg)
-    , drawer : { content : List (Html msg), modal : List (Html msg) }
+    , drawer : { content : List (Html msg), portal : List (Html msg) }
     , content : List (Html msg)
     }
 
@@ -79,7 +79,7 @@ view toMsg { appbar, drawer, content } layout =
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
             drawer.content
          ]
-            ++ drawer.modal
+            ++ drawer.portal
         )
 
 
