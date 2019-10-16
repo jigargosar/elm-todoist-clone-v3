@@ -264,22 +264,47 @@ unwrap (Drawer internal) =
     internal
 
 
+getterFromPanel panel =
+    case panel of
+        Projects ->
+            .projects
+
+        Labels ->
+            .labels
+
+        Filters ->
+            .filters
+
+
+getExpansionPanelState : Panel -> Drawer -> Bool
+getExpansionPanelState panel =
+    unwrap >> .expansionPanelsState >> getterFromPanel panel
+
+
+viewExpansionPanel panel title lazyContent expansionPanelState =
+    div []
+        (ExpansionPanelUI.view (ToggleExpansionPanel panel)
+            title
+            lazyContent
+            (getterFromPanel panel expansionPanelState)
+        )
+
+
 view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), portal : List (Html msg) }
-view toMsg projectList model =
+view toMsg projectList ((Drawer internal) as model) =
     { content =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
-        , div []
-            (ExpansionPanelUI.view (ToggleExpansionPanel Projects)
-                "Projects"
-                (\_ ->
-                    projectList
-                        |> projectsDnDSystem.rotate model
-                        |> List.indexedMap (navProjectItem model)
-                )
-                (model |> unwrap |> .expansionPanelsState |> .projects)
+        , viewExpansionPanel
+            Projects
+            "Projects"
+            (\_ ->
+                projectList
+                    |> projectsDnDSystem.rotate model
+                    |> List.indexedMap (navProjectItem model)
             )
+            internal.expansionPanelsState
         , labelsEPS.view
             "Labels"
             (labelsLens.get model
