@@ -65,7 +65,7 @@ type alias Internal =
     , dndPanels : DndPanels
     , labelList : List LabelView
     , filterList : List FilterView
-    , drag : Drag
+    , drag : Maybe ( Panel, Drag )
     }
 
 
@@ -89,7 +89,7 @@ initial =
         , FilterView "View all" 932325
         , FilterView "No due date" 9355
         ]
-        Drag.initial
+        Nothing
         |> Drawer
 
 
@@ -170,7 +170,7 @@ subscriptions toMsg model =
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg updateProjectListOrder projectList message ((Drawer internal) as model) =
+update toMsg updateProjectListOrder projectList message model =
     case message of
         DndPanel panel msg ->
             (dndPanelSystem panel).update msg model
