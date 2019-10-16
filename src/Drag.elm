@@ -74,7 +74,7 @@ commands drag =
 type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDragZone XY String
+    | MouseDownOnDragZone String XY
     | MouseOverDropZone String
     | GotDragElement Element
     | GotDropElement Element
@@ -142,6 +142,12 @@ update message model =
     case message of
         GlobalMouseMove xy ->
             setCurrentXY xy model
+
+        GlobalMouseUp ->
+            NotDragging
+
+        MouseDownOnDragZone dragId xy ->
+            DragStartPending { dragId = dragId, startXY = xy, currentXY = xy }
 
         _ ->
             model
