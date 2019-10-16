@@ -230,18 +230,16 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                 |> Return.mapCmd toMsg
 
         DnDCommit panel info ->
-            let
-                _ =
-                    Debug.log "dndModel" (dndPanelsLens.get model)
-            in
             case panel of
                 Projects ->
-                    Return.singleton model
-                        |> Return.command (updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform)
+                    ( model
+                    , updateProjectListOrder (DnD.rotateFromInfo info projectList) |> perform
+                    )
 
                 Labels ->
-                    labelsLens.set (DnD.rotateFromInfo info (labelsLens.get model)) model
-                        |> Return.singleton
+                    ( labelsLens.set (DnD.rotateFromInfo info (labelsLens.get model)) model
+                    , Cmd.none
+                    )
 
                 Filters ->
                     ( filtersLens.set (DnD.rotateFromInfo info (filtersLens.get model)) model
