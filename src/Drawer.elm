@@ -461,9 +461,6 @@ filterDomId { title } =
 navFilterItem2 : Drawer -> Int -> FilterView -> Html Msg
 navFilterItem2 model idx ({ title, hue } as filter) =
     let
-        ps =
-            panelSystem Filters
-
         domId =
             filterDomId filter
     in
