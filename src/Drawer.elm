@@ -312,7 +312,7 @@ view toMsg projectList ((Drawer internal) as model) =
                 (\_ ->
                     filtersLens.get model
                         |> (if Tuple.first internal.drag == Filters then
-                                Drag.sort (Tuple.second internal.drag)
+                                sort filterDomId (Tuple.second internal.drag)
 
                             else
                                 identity
@@ -327,6 +327,21 @@ view toMsg projectList ((Drawer internal) as model) =
             ++ navFilterGhostItem (filtersLens.get model) model
             |> List.map (H.map toMsg)
     }
+
+
+sort toDomId drag list =
+    case Drag.dragDomIdInfo drag of
+        Nothing ->
+            list
+
+        Just { dragId, dropId } ->
+            let
+                dragIdx =
+                    list
+                        |> List.indexedMap Tuple.pair
+                        |> List.filter (Tuple.second >> toDomId >> (==) dragId)
+            in
+            list
 
 
 navItem title iconColor iconName =

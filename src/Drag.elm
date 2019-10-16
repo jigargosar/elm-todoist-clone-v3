@@ -1,4 +1,4 @@
-module Drag exposing (Drag, Msg, XY, dragDomIdInfo, dragEvents, initial, pageXYDecoder, sort, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, dragDomIdInfo, dragEvents, initial, pageXYDecoder, subscriptions, update)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
@@ -7,10 +7,6 @@ import Html.Styled as H
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Task
-
-
-sort model list =
-    list
 
 
 type alias XY =
