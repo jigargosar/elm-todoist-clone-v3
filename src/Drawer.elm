@@ -253,11 +253,6 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                 |> Return.singleton
 
 
-map : (Internal -> Internal) -> Drawer -> Drawer
-map func =
-    unwrap >> func >> Drawer
-
-
 perform =
     Task.succeed >> Task.perform identity
 
