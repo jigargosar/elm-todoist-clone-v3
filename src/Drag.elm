@@ -48,7 +48,7 @@ commands drag =
                     (\res ->
                         case res of
                             Err domError ->
-                                GotDomElementError domId domError
+                                GotDomElementError domError
 
                             Ok element ->
                                 onSuccess domId element
@@ -78,7 +78,7 @@ type Msg
     | MouseOverDropZone String
     | GotDragElement String Element
     | GotDropElement String Element
-    | GotDomElementError String Dom.Error
+    | GotDomElementError Dom.Error
 
 
 pageXYDecoder : JD.Decoder XY
@@ -218,5 +218,5 @@ update message model =
                 _ ->
                     Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
 
-        GotDomElementError domId (Dom.NotFound domIdNF) ->
-            Debug.todo <| "GotDomElementError: " ++ domId ++ domIdNF
+        GotDomElementError (Dom.NotFound domIdNF) ->
+            Debug.todo <| "GotDomElementError: " ++ domIdNF
