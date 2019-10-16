@@ -1,4 +1,4 @@
-module Drag exposing (Drag, Msg, XY, commands, dragEvents, initial, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, dragEvents, initial, pageXYDecoder, subscriptions, update)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
@@ -164,8 +164,17 @@ pd =
     flip Tuple.pair False
 
 
-update : Msg -> Drag -> Drag
-update message model =
+update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
+update toMsg message model =
+    let
+        newModel =
+            updateModel message model
+    in
+    ( newModel, commands newModel |> Cmd.map toMsg )
+
+
+updateModel : Msg -> Drag -> Drag
+updateModel message model =
     case message of
         GlobalMouseMove xy ->
             setCurrentXY xy model
