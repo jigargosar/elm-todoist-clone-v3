@@ -75,8 +75,8 @@ commands drag =
 type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDragZone String XY
-    | MouseOverDropZone String
+    | MouseDownOnDraggable String XY
+    | MouseOverDroppable String
     | GotDragElement String Element
     | GotDragOverElement String Element
     | GotDomElementError Dom.Error
@@ -147,10 +147,10 @@ update message model =
         GlobalMouseUp ->
             NotDragging
 
-        MouseDownOnDragZone dragId xy ->
+        MouseDownOnDraggable dragId xy ->
             DragStartPending { dragId = dragId, startXY = xy, currentXY = xy }
 
-        MouseOverDropZone domId ->
+        MouseOverDroppable domId ->
             case model of
                 NotDragging ->
                     Debug.todo "MouseOverDropZone, NotDragging"
