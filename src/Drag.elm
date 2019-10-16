@@ -250,8 +250,8 @@ updateModel message model =
             , Cmd.none
             )
 
-        GotDomElementError (Dom.NotFound domIdNF) ->
-            Debug.todo <| "GotDomElementError: " ++ domIdNF
+        GotDomElementError (Dom.NotFound _) ->
+            ( NoDrag, Cmd.none )
 
 
 subtractXY : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> XY
