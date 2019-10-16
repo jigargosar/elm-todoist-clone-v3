@@ -315,13 +315,8 @@ view toMsg projectList ((Drawer internal) as model) =
             ++ viewExpansionPanel Filters
                 (\_ ->
                     filtersLens.get model
-                        |> (if Tuple.first internal.drag == Filters then
-                                sort (Tuple.second internal.drag)
-
-                            else
-                                identity
-                           )
-                        |> List.indexedMap (navFilterItem2 model)
+                        |> sort (getDragFor Filters internal.drag)
+                        |> List.indexedMap (navFilterItem2 (getDragFor Filters internal.drag))
                 )
                 internal.expansionPanelsState
             |> List.map (H.map toMsg)
@@ -331,6 +326,15 @@ view toMsg projectList ((Drawer internal) as model) =
             ++ navFilterGhostItem (filtersLens.get model) model
             |> List.map (H.map toMsg)
     }
+
+
+getDragFor : a -> ( a, Drag ) -> Drag
+getDragFor panel ( currentPanel, drag ) =
+    if panel == currentPanel then
+        drag
+
+    else
+        Drag.initial
 
 
 sort drag list =
@@ -478,12 +482,9 @@ filterDomId { title } =
     (panelSystem Filters).title ++ "-drag-element__" ++ title
 
 
-navFilterItem2 : Drawer -> Int -> FilterView -> Html Msg
-navFilterItem2 model idx ({ title, hue } as filter) =
+navFilterItem2 : Drag -> Int -> FilterView -> Html Msg
+navFilterItem2 drag idx ({ title, hue } as filter) =
     let
-        drag =
-            unwrap model |> .drag |> Tuple.second
-
         styles =
             case Drag.dragIdxInfo drag of
                 Nothing ->
