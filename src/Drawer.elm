@@ -478,10 +478,6 @@ navFilterItem model idx { title, hue } =
     viewItem (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "filter_list"
 
 
-filterDomId { title } =
-    (panelSystem Filters).title ++ "-drag-element__" ++ title
-
-
 navFilterItem2 : Drag -> Int -> FilterView -> Html Msg
 navFilterItem2 drag idx ({ title, hue } as filter) =
     let
@@ -498,7 +494,7 @@ navFilterItem2 drag idx ({ title, hue } as filter) =
                         []
 
         domId =
-            filterDomId filter
+            "filter-item-drag-el__" ++ title ++ "__" ++ String.fromInt idx
     in
     viewItem
         (A.id domId
