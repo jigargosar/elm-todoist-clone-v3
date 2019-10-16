@@ -103,7 +103,7 @@ type Msg
     = ToggleExpansionPanel Panel Bool
     | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
-    | DragStart Panel Drag.Msg
+    | Drag Panel Drag.Msg
 
 
 internalLens : Lens Internal Drawer
@@ -199,7 +199,7 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
             , Cmd.none
             )
 
-        DragStart panel msg ->
+        Drag panel msg ->
             ( { internal | drag = Just ( panel, Drag.update msg Drag.initial ) }
                 |> Drawer
             , Cmd.none
@@ -444,8 +444,7 @@ navFilterItem2 model idx { title, hue } =
     in
     viewItem
         (A.id domId
-            :: Drag.onDragStart domId (DragStart Filters)
-            :: []
+            :: Drag.dragEvents (Drag Filters) domId
         )
         []
         title

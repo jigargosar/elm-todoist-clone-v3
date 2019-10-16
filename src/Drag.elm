@@ -1,4 +1,4 @@
-module Drag exposing (Drag, Msg, XY, commands, dragStart, initial, onDragStart, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, commands, dragEvents, initial, pageXYDecoder, subscriptions, update)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
@@ -155,9 +155,9 @@ dragStart domId xy =
     MouseDownOnDraggable domId xy
 
 
-onDragStart : String -> (Msg -> msg) -> H.Attribute msg
-onDragStart domId tagger =
-    E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd))
+dragEvents : (Msg -> msg) -> String -> List (H.Attribute msg)
+dragEvents tagger domId =
+    [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
 
 
 pd =
