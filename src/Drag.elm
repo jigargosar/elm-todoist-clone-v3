@@ -166,8 +166,8 @@ update message model =
                         , dropId = domId
                         }
 
-                DraggingOverPending record ->
-                    model
+                DraggingOverPending state ->
+                    { state | dropId = domId } |> DraggingOverPending
 
                 DraggingOver record ->
                     model
