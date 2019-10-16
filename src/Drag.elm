@@ -3,6 +3,7 @@ module Drag exposing (..)
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
 import Json.Decode as JD
+import Task
 
 
 type alias XY =
@@ -22,6 +23,13 @@ type Drag
         , currentXY : XY
         , dragElement : Dom.Element
         }
+    | DraggingOverPending
+        { dragId : String
+        , startXY : XY
+        , currentXY : XY
+        , dragElement : Dom.Element
+        , dropId : String
+        }
     | DraggingOver
         { dragId : String
         , startXY : XY
@@ -32,6 +40,37 @@ type Drag
         }
 
 
+commands drag =
+    let
+        getElement domId onSuccess =
+            Dom.getElement domId
+                |> Task.attempt
+                    (\res ->
+                        case res of
+                            Err domError ->
+                                GotDomElementError domError
+
+                            Ok element ->
+                                onSuccess element
+                    )
+    in
+    case drag of
+        NotDragging ->
+            Cmd.none
+
+        DragStartPending model ->
+            getElement model.dragId GotDragElement
+
+        Dragging _ ->
+            Cmd.none
+
+        DraggingOverPending model ->
+            getElement model.dropId GotDropElement
+
+        DraggingOver _ ->
+            Cmd.none
+
+
 type Msg
     = GlobalMouseMove
     | GlobalMouseUp
@@ -39,7 +78,7 @@ type Msg
     | MouseOverDropZone String
     | GotDragElement Element
     | GotDropElement Element
-    | GotDomError Dom.Error
+    | GotDomElementError Dom.Error
 
 
 subscriptions drag =
@@ -58,4 +97,7 @@ subscriptions drag =
             mouseSubscriptions
 
         Dragging _ ->
+            mouseSubscriptions
+
+        DraggingOver _ ->
             mouseSubscriptions
