@@ -10,6 +10,7 @@ import Lens exposing (Lens)
 import Project exposing (Project)
 import ProjectId
 import Return
+import SelectList
 import Styles exposing (..)
 import Task
 
@@ -336,12 +337,26 @@ sort toDomId drag list =
 
         Just { dragId, dropId } ->
             let
-                dragIdx =
+                indexOfDomId domId =
                     list
                         |> List.indexedMap Tuple.pair
-                        |> List.filter (Tuple.second >> toDomId >> (==) dragId)
+                        |> List.filter (Tuple.second >> toDomId >> (==) domId)
+                        |> List.head
+                        |> Maybe.map Tuple.first
+
+                newList =
+                    Maybe.map2
+                        (\dragIdx dropIdx ->
+                            SelectList.fromList list
+                                |> Maybe.andThen (SelectList.selectBy dragIdx)
+                                |> Maybe.map (SelectList.moveBy (dropIdx - dragIdx) >> SelectList.toList)
+                                |> Maybe.withDefault list
+                        )
+                        (indexOfDomId dragId)
+                        (indexOfDomId dropId)
+                        |> Maybe.withDefault list
             in
-            list
+            newList
 
 
 navItem title iconColor iconName =
