@@ -289,6 +289,12 @@ view toMsg projectList ((Drawer internal) as model) =
                         |> List.indexedMap (navFilterItem model)
                 )
                 internal.expansionPanelsState
+            ++ viewExpansionPanel Filters
+                (\_ ->
+                    filtersLens.get model
+                        |> List.indexedMap (navFilterItem2 model)
+                )
+                internal.expansionPanelsState
             |> List.map (H.map toMsg)
     , portal =
         navProjectGhostItem projectList model
@@ -316,7 +322,7 @@ navIconItem title icon =
     navItem title Css.inherit icon
 
 
-viewItem2 attributes styles title iconColor iconName =
+viewItem attributes styles title iconColor iconName =
     div
         (css
             [ ph 1
@@ -368,7 +374,7 @@ navProjectItem model idx project =
         iconColor =
             Css.hsl (Project.hue project |> toFloat) 0.7 0.5
     in
-    viewItem2 (A.id domId :: attrs) styles title iconColor "folder"
+    viewItem (A.id domId :: attrs) styles title iconColor "folder"
 
 
 navLabelItem : Drawer -> Int -> LabelView -> Html Msg
@@ -394,7 +400,7 @@ navLabelItem model idx { title, hue } =
                         []
                     )
     in
-    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
+    viewItem (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "label"
 
 
 navFilterItem : Drawer -> Int -> FilterView -> Html Msg
@@ -420,7 +426,16 @@ navFilterItem model idx { title, hue } =
                         []
                     )
     in
-    viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "filter_list"
+    viewItem (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "filter_list"
+
+
+navFilterItem2 : Drawer -> Int -> FilterView -> Html Msg
+navFilterItem2 model idx { title, hue } =
+    let
+        domId =
+            "filter-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
+    in
+    viewItem (A.id domId :: []) [] title (Css.hsl hue 0.7 0.5) "filter_list"
 
 
 maybeDragItem dndSys model items =
@@ -447,7 +462,7 @@ navProjectGhostItem projectList model =
                     iconColor =
                         Css.hsl (Project.hue project |> toFloat) 0.7 0.5
                   in
-                  viewItem2 attrs [] title iconColor "label"
+                  viewItem attrs [] title iconColor "label"
                 ]
             )
         |> Maybe.withDefault []
@@ -461,7 +476,7 @@ navLabelGhostItem labels model =
                     attrs =
                         [ css [ labelsDnDSystem.ghostStyles model ] ]
                   in
-                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "label"
+                  viewItem attrs [] title (Css.hsl hue 0.7 0.5) "label"
                 ]
             )
         |> Maybe.withDefault []
@@ -475,7 +490,7 @@ navFilterGhostItem filters model =
                     attrs =
                         [ css [ filtersDnDSystem.ghostStyles model ] ]
                   in
-                  viewItem2 attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
+                  viewItem attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
                 ]
             )
         |> Maybe.withDefault []
