@@ -258,11 +258,6 @@ map func =
     unwrap >> func >> Drawer
 
 
-mapExpansionPanelsState : (ExpansionPanelsState -> ExpansionPanelsState) -> Drawer -> Drawer
-mapExpansionPanelsState func =
-    map (\internal -> { internal | expansionPanelsState = func internal.expansionPanelsState })
-
-
 perform =
     Task.succeed >> Task.perform identity
 
