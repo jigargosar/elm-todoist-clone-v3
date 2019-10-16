@@ -271,7 +271,10 @@ unwrap (Drawer internal) =
 
 type alias PanelSystem a =
     { get : ExpansionPanelsState -> Bool
-    , set : Bool -> { a | expansionPanelsState : ExpansionPanelsState } -> { a | expansionPanelsState : ExpansionPanelsState }
+    , set :
+        Bool
+        -> { a | expansionPanelsState : ExpansionPanelsState }
+        -> { a | expansionPanelsState : ExpansionPanelsState }
     , title : String
     }
 
