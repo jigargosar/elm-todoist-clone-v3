@@ -485,12 +485,12 @@ navFilterItem2 model idx ({ title, hue } as filter) =
             unwrap model |> .drag |> Tuple.second
 
         styles =
-            case Drag.dragDomIdInfo drag of
+            case Drag.dragIdxInfo drag of
                 Nothing ->
                     []
 
-                Just { dropId } ->
-                    if dropId == domId then
+                Just { dropIdx } ->
+                    if dropIdx == idx then
                         [ Css.opacity Css.zero ]
 
                     else

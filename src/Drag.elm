@@ -288,7 +288,7 @@ updateModel message model =
                 DragOverPending state ->
                     { state | dropId = domId } |> DragOverPending
 
-                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropIdx } ->
+                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
                     if domId /= dropId then
                         DragOverPending
                             { dragId = dragId
@@ -297,7 +297,7 @@ updateModel message model =
                             , currentXY = currentXY
                             , dragElement = dragElement
                             , dropId = domId
-                            , dropIdx = dropIdx
+                            , dropIdx = idx
                             }
 
                     else
