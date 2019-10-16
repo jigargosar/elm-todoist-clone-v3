@@ -103,13 +103,13 @@ subscriptions drag =
             Sub.none
 
         DragPending _ ->
-            mouseSubscriptions
+            Sub.none
 
         Drag _ ->
             mouseSubscriptions
 
         DragOverPending _ ->
-            mouseSubscriptions
+            Sub.none
 
         DragOver _ ->
             mouseSubscriptions
