@@ -314,9 +314,7 @@ view toMsg projectList ((Drawer internal) as model) =
                 internal.expansionPanelsState
             ++ viewExpansionPanel Filters
                 (\_ ->
-                    filtersLens.get model
-                        |> sort (getDragFor Filters internal.drag)
-                        |> List.indexedMap (navFilterItem2 (getDragFor Filters internal.drag))
+                    viewFiltersContent (getDragFor Filters internal.drag) internal.filterList
                 )
                 internal.expansionPanelsState
             |> List.map (H.map toMsg)
@@ -327,6 +325,12 @@ view toMsg projectList ((Drawer internal) as model) =
             ++ navFilter2GhostItem (filtersLens.get model) (getDragFor Filters internal.drag)
             |> List.map (H.map toMsg)
     }
+
+
+viewFiltersContent drag filterList =
+    filterList
+        |> sort drag
+        |> List.indexedMap (navFilterItem2 drag)
 
 
 getDragFor : a -> ( a, Drag ) -> Drag
