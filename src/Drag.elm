@@ -139,6 +139,7 @@ setCurrentXY xy model =
             setCurrentXYIn state |> DragOver
 
 
+update : Msg -> Drag -> Drag
 update message model =
     case message of
         GlobalMouseMove xy ->
