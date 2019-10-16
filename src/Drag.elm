@@ -293,6 +293,20 @@ updateModel message model =
                             , dropElement = element
                             }
 
+                DragOver { dragId, startXY, currentXY, dragElement, dropId, dropElement } ->
+                    if dropId /= domId then
+                        model
+
+                    else
+                        DragOver
+                            { dragId = dragId
+                            , startXY = startXY
+                            , currentXY = currentXY
+                            , dragElement = dragElement
+                            , dropId = domId
+                            , dropElement = element
+                            }
+
                 _ ->
                     Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
 
