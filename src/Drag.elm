@@ -35,6 +35,7 @@ type Drag
         , currentXY : XY
         , dragElement : Dom.Element
         , dropId : String
+        , dropIdx : Int
         }
     | DragOver
         { dragId : String
@@ -43,6 +44,7 @@ type Drag
         , currentXY : XY
         , dragElement : Dom.Element
         , dropId : String
+        , dropIdx : Int
         , dropElement : Element
         }
 
@@ -107,7 +109,7 @@ type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
     | MouseDownOnDraggable Int String XY
-    | MouseOverDroppable String
+    | MouseOverDroppable Int String
     | GotDragElement String Element
     | GotDropElement String Element
     | GotDomElementError Dom.Error
@@ -197,11 +199,11 @@ dragEvents tagger idx domId drag =
             []
 
 
-dropEvents : (Msg -> msg) -> String -> Drag -> List (H.Attribute msg)
-dropEvents tagger domId model =
+dropEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
+dropEvents tagger idx domId model =
     let
         events =
-            [ E.onMouseOver (MouseOverDroppable domId |> tagger) ]
+            [ E.onMouseOver (MouseOverDroppable idx domId |> tagger) ]
     in
     case model of
         NoDrag ->
@@ -245,7 +247,7 @@ updateModel message model =
         MouseDownOnDraggable dragIdx dragId xy ->
             DragPending { dragId = dragId, dragIdx = dragIdx, startXY = xy, currentXY = xy }
 
-        MouseOverDroppable domId ->
+        MouseOverDroppable idx domId ->
             case model of
                 NoDrag ->
                     Debug.todo "MouseOverDropZone, NotDragging"
@@ -261,12 +263,13 @@ updateModel message model =
                         , currentXY = currentXY
                         , dragElement = dragElement
                         , dropId = domId
+                        , dropIdx = idx
                         }
 
                 DragOverPending state ->
                     { state | dropId = domId } |> DragOverPending
 
-                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
+                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropIdx } ->
                     if domId /= dropId then
                         DragOverPending
                             { dragId = dragId
@@ -275,6 +278,7 @@ updateModel message model =
                             , currentXY = currentXY
                             , dragElement = dragElement
                             , dropId = domId
+                            , dropIdx = dropIdx
                             }
 
                     else
@@ -300,7 +304,7 @@ updateModel message model =
 
         GotDropElement domId element ->
             case model of
-                DragOverPending { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
+                DragOverPending { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropIdx } ->
                     if dropId /= domId then
                         model
 
@@ -312,10 +316,11 @@ updateModel message model =
                             , currentXY = currentXY
                             , dragElement = dragElement
                             , dropId = domId
+                            , dropIdx = dropIdx
                             , dropElement = element
                             }
 
-                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropElement } ->
+                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropIdx, dropElement } ->
                     if dropId /= domId then
                         model
 
@@ -327,6 +332,7 @@ updateModel message model =
                             , currentXY = currentXY
                             , dragElement = dragElement
                             , dropId = domId
+                            , dropIdx = dropIdx
                             , dropElement = element
                             }
 
