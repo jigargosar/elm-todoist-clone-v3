@@ -248,8 +248,7 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                         |> Return.singleton
 
         ToggleExpansionPanel panel bool ->
-            (panelSystem panel).set bool internal
-                |> Drawer
+            mapExpansionPanelsState ((panelSystem panel).set bool) model
                 |> Return.singleton
 
 
@@ -269,17 +268,27 @@ unwrap (Drawer internal) =
     internal
 
 
-type alias PanelSystem a =
+map : (Internal -> Internal) -> Drawer -> Drawer
+map func =
+    unwrap >> func >> Drawer
+
+
+mapExpansionPanelsState : (ExpansionPanelsState -> ExpansionPanelsState) -> Drawer -> Drawer
+mapExpansionPanelsState func =
+    map (\i -> { i | expansionPanelsState = func i.expansionPanelsState })
+
+
+type alias PanelSystem =
     { get : ExpansionPanelsState -> Bool
     , set :
         Bool
-        -> { a | expansionPanelsState : ExpansionPanelsState }
-        -> { a | expansionPanelsState : ExpansionPanelsState }
+        -> ExpansionPanelsState
+        -> ExpansionPanelsState
     , title : String
     }
 
 
-panelSystem : Panel -> PanelSystem a
+panelSystem : Panel -> PanelSystem
 panelSystem panel =
     case panel of
         Projects ->
