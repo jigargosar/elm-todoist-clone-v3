@@ -200,7 +200,23 @@ update message model =
                     Debug.todo <| "Invalid State: GotDragElement" ++ Debug.toString model
 
         GotDropElement domId element ->
-            model
+            case model of
+                DraggingOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
+                    if dropId /= domId then
+                        Debug.todo "Invalid State, GotDropElement, DraggingOverPending"
+
+                    else
+                        DraggingOver
+                            { dragId = dragId
+                            , startXY = startXY
+                            , currentXY = currentXY
+                            , dragElement = dragElement
+                            , dropId = dropId
+                            , dropElement = element
+                            }
+
+                _ ->
+                    Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
 
         GotDomElementError _ error ->
             NotDragging
