@@ -219,7 +219,7 @@ subscriptions toMsg model =
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg updateProjectListOrder projectList message model =
+update toMsg updateProjectListOrder projectList message ((Drawer internal) as model) =
     case message of
         ExpansionPanel panel msg ->
             (expansionPanelSystem panel).update msg model
@@ -247,6 +247,21 @@ update toMsg updateProjectListOrder projectList message model =
                     filtersLens.set (DnD.rotateFromInfo info (filtersLens.get model)) model
                         |> Return.singleton
 
+        ToggleExpansionPanel panel bool ->
+            (panelSystem panel).set bool internal
+                |> Drawer
+                |> Return.singleton
+
+
+map : (Internal -> Internal) -> Drawer -> Drawer
+map func =
+    unwrap >> func >> Drawer
+
+
+mapExpansionPanelsState : (ExpansionPanelsState -> ExpansionPanelsState) -> Drawer -> Drawer
+mapExpansionPanelsState func =
+    map (\internal -> { internal | expansionPanelsState = func internal.expansionPanelsState })
+
 
 perform =
     Task.succeed >> Task.perform identity
@@ -264,34 +279,24 @@ unwrap (Drawer internal) =
     internal
 
 
-getterFromPanel panel =
-    case panel of
-        Projects ->
-            .projects
-
-        Labels ->
-            .labels
-
-        Filters ->
-            .filters
-
-
-type alias PanelSystem =
+type alias PanelSystem a =
     { get : ExpansionPanelsState -> Bool
+    , set : Bool -> { a | expansionPanelsState : ExpansionPanelsState } -> { a | expansionPanelsState : ExpansionPanelsState }
     , title : String
     }
 
 
+panelSystem : Panel -> PanelSystem a
 panelSystem panel =
     case panel of
         Projects ->
-            PanelSystem .projects "Projects"
+            PanelSystem .projects (\s b -> { b | projects = s }) "Projects"
 
         Labels ->
-            PanelSystem .labels "Labels"
+            PanelSystem .labels (\s b -> { b | labels = s }) "Labels"
 
         Filters ->
-            PanelSystem .filters "Filters"
+            PanelSystem .filters (\s b -> { b | filters = s }) "Filters"
 
 
 viewExpansionPanel panel lazyContent expansionPanelsState =
