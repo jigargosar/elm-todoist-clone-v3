@@ -2,7 +2,6 @@ module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
 import DnD exposing (DnD)
-import ExpansionPanel exposing (ExpansionPanel)
 import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
@@ -46,13 +45,6 @@ type Drawer
     = Drawer Internal
 
 
-type alias ExpansionPanels =
-    { projects : ExpansionPanel
-    , labels : ExpansionPanel
-    , filters : ExpansionPanel
-    }
-
-
 type alias DndPanels =
     { projects : DnD
     , labels : DnD
@@ -68,8 +60,7 @@ type alias ExpansionPanelsState =
 
 
 type alias Internal =
-    { expansionPanels : ExpansionPanels
-    , expansionPanelsState : ExpansionPanelsState
+    { expansionPanelsState : ExpansionPanelsState
     , dndPanels : DndPanels
     , labelList : List LabelView
     , filterList : List FilterView
@@ -79,10 +70,6 @@ type alias Internal =
 initial : Drawer
 initial =
     Internal
-        { projects = projectsEPS.initial
-        , labels = labelsEPS.initial
-        , filters = filtersEPS.initial
-        }
         (ExpansionPanelsState False False False)
         { projects = projectsDnDSystem.initial
         , labels = labelsDnDSystem.initial
@@ -110,8 +97,7 @@ type Panel
 
 
 type Msg
-    = ExpansionPanel Panel ExpansionPanel.Msg
-    | ToggleExpansionPanel Panel Bool
+    = ToggleExpansionPanel Panel Bool
     | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
 
@@ -130,29 +116,6 @@ labelsLens =
 filtersLens =
     Lens.compose internalLens
         (Lens .filterList (\s b -> { b | filterList = s }))
-
-
-expansionPanelsLens : Lens ExpansionPanels Drawer
-expansionPanelsLens =
-    Lens.compose internalLens (Lens .expansionPanels (\s b -> { b | expansionPanels = s }))
-
-
-expansionPanelLens : Panel -> Lens ExpansionPanel Drawer
-expansionPanelLens panel =
-    case panel of
-        Projects ->
-            Lens.compose expansionPanelsLens (Lens .projects (\s b -> { b | projects = s }))
-
-        Labels ->
-            Lens.compose expansionPanelsLens (Lens .labels (\s b -> { b | labels = s }))
-
-        Filters ->
-            Lens.compose expansionPanelsLens (Lens .filters (\s b -> { b | filters = s }))
-
-
-expansionPanelSystem : Panel -> ExpansionPanel.System Msg Drawer
-expansionPanelSystem panel =
-    ExpansionPanel.system (ExpansionPanel panel) (expansionPanelLens panel)
 
 
 dndPanelsLens : Lens DndPanels Drawer
@@ -193,21 +156,6 @@ filtersDnDSystem =
     dndPanelSystem Filters
 
 
-projectsEPS : ExpansionPanel.System Msg Drawer
-projectsEPS =
-    expansionPanelSystem Projects
-
-
-labelsEPS : ExpansionPanel.System Msg Drawer
-labelsEPS =
-    expansionPanelSystem Labels
-
-
-filtersEPS : ExpansionPanel.System Msg Drawer
-filtersEPS =
-    expansionPanelSystem Filters
-
-
 subscriptions : (Msg -> msg) -> Drawer -> Sub msg
 subscriptions toMsg model =
     Sub.batch
@@ -221,10 +169,6 @@ subscriptions toMsg model =
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
 update toMsg updateProjectListOrder projectList message ((Drawer internal) as model) =
     case message of
-        ExpansionPanel panel msg ->
-            (expansionPanelSystem panel).update msg model
-                |> Return.mapCmd toMsg
-
         DndPanel panel msg ->
             (dndPanelSystem panel).update msg model
                 |> Return.mapCmd toMsg
