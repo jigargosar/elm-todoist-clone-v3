@@ -70,7 +70,7 @@ type alias Internal =
 initial : Drawer
 initial =
     Internal
-        (ExpansionPanelsState False False False)
+        (ExpansionPanelsState True True True)
         { projects = projectsDnDSystem.initial
         , labels = labelsDnDSystem.initial
         , filters = filtersDnDSystem.initial
