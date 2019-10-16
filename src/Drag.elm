@@ -1,6 +1,6 @@
 module Drag exposing (..)
 
-import Browser.Dom as Dom
+import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
 import Json.Decode as JD
 
@@ -18,6 +18,11 @@ type Drag
 type Msg
     = GlobalMouseMove
     | GlobalMouseUp
+    | MouseDownOnDragZone String
+    | MouseOverDropZone String
+    | GotDragElement Element
+    | GotDropElement Element
+    | GotDomError Dom.Error
 
 
 subscriptions drag =
