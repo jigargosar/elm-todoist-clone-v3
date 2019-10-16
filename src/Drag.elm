@@ -66,7 +66,7 @@ commands drag =
             Cmd.none
 
         DraggingOverPending model ->
-            getElement model.overId GotDragOverElement
+            getElement model.overId GotDroppableElement
 
         DraggingOver _ ->
             Cmd.none
@@ -78,7 +78,7 @@ type Msg
     | MouseDownOnDraggable String XY
     | MouseOverDroppable String
     | GotDragElement String Element
-    | GotDragOverElement String Element
+    | GotDroppableElement String Element
     | GotDomElementError Dom.Error
 
 
@@ -200,7 +200,7 @@ update message model =
                 _ ->
                     Debug.todo <| "Invalid State: GotDragElement" ++ Debug.toString model
 
-        GotDragOverElement domId element ->
+        GotDroppableElement domId element ->
             case model of
                 DraggingOverPending { dragId, startXY, currentXY, dragElement, overId } ->
                     if overId /= domId then
