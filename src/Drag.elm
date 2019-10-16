@@ -11,8 +11,25 @@ type alias XY =
 
 type Drag
     = NotDragging
-    | DragStartPending { domId : String, startXY : XY, currentXY : XY }
-    | Dragging { domId : String, startXY : XY, currentXY : XY, dragElement : Dom.Element }
+    | DragStartPending
+        { dragId : String
+        , startXY : XY
+        , currentXY : XY
+        }
+    | Dragging
+        { dragId : String
+        , startXY : XY
+        , currentXY : XY
+        , dragElement : Dom.Element
+        }
+    | DraggingOver
+        { dragId : String
+        , startXY : XY
+        , currentXY : XY
+        , dragElement : Dom.Element
+        , dropId : String
+        , dropElement : Element
+        }
 
 
 type Msg
