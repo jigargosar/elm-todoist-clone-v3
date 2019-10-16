@@ -442,7 +442,15 @@ navFilterItem2 model idx { title, hue } =
         domId =
             "filter-drag-element__" ++ title ++ "__" ++ String.fromInt idx
     in
-    viewItem (A.id domId :: Drag.dragEvents domId (DragStart Filters)) [] title (Css.hsl hue 0.7 0.5) "filter_list"
+    viewItem
+        (A.id domId
+            :: Drag.dragStartEvent domId (DragStart Filters)
+            :: []
+        )
+        []
+        title
+        (Css.hsl hue 0.7 0.5)
+        "filter_list"
 
 
 maybeDragItem dndSys model items =
