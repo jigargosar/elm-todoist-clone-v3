@@ -244,12 +244,14 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                         |> Return.singleton
 
                 Filters ->
-                    filtersLens.set (DnD.rotateFromInfo info (filtersLens.get model)) model
-                        |> Return.singleton
+                    ( filtersLens.set (DnD.rotateFromInfo info (filtersLens.get model)) model
+                    , Cmd.none
+                    )
 
         ToggleExpansionPanel panel bool ->
-            mapExpansionPanelsState ((panelSystem panel).set bool) model
-                |> Return.singleton
+            ( mapExpansionPanelsState ((panelSystem panel).set bool) model
+            , Cmd.none
+            )
 
 
 perform =
