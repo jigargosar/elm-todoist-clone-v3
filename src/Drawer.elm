@@ -479,7 +479,7 @@ navFilterItem model idx { title, hue } =
 
 
 navFilterItem2 : Drag -> Int -> FilterView -> Html Msg
-navFilterItem2 drag idx ({ title, hue } as filter) =
+navFilterItem2 drag idx { title, hue } =
     let
         styles =
             case Drag.dragIdxInfo drag of
