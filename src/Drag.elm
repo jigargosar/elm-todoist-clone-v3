@@ -212,7 +212,15 @@ updateModel message model =
             ( NoDrag, Cmd.none )
 
         MouseDownOnDraggable dragIdx dragId xy ->
-            ( model, getElement dragId (GotDragElement { dragId = dragId, dragIdx = dragIdx, startXY = xy }) )
+            ( model
+            , getElement dragId
+                (GotDragElement
+                    { dragId = dragId
+                    , dragIdx = dragIdx
+                    , startXY = xy
+                    }
+                )
+            )
 
         MouseOverDroppable idx domId ->
             ( model, getElement domId (GotDropElement idx domId) )
@@ -246,7 +254,12 @@ updateModel message model =
                         }
 
                 DragOver state ->
-                    DragOver { state | dropIdx = idx, dropId = domId, dropElement = element }
+                    DragOver
+                        { state
+                            | dropIdx = idx
+                            , dropId = domId
+                            , dropElement = element
+                        }
             , Cmd.none
             )
 
