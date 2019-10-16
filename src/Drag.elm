@@ -1,4 +1,16 @@
-module Drag exposing (Drag, Msg, XY, dragEvents, dragIdxInfo, dropEvents, ghostStyles, initial, pageXYDecoder, subscriptions, update)
+module Drag exposing
+    ( Drag
+    , Msg
+    , XY
+    , dragEvents
+    , dragIdxInfo
+    , dropEvents
+    , ghostStyles
+    , initial
+    , pageXYDecoder
+    , subscriptions
+    , update
+    )
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
@@ -159,13 +171,13 @@ subscriptions drag =
             Sub.none
 
         DragPending _ ->
-            getMouseUp
+            getMouseUpOrMove
 
         Drag _ ->
             getMouseUpOrMove
 
         DragOverPending _ ->
-            getMouseUp
+            getMouseUpOrMove
 
         DragOver _ ->
             getMouseUpOrMove
@@ -230,7 +242,7 @@ dropEvents tagger idx domId model =
             []
 
         DragPending _ ->
-            []
+            events
 
         Drag _ ->
             events
