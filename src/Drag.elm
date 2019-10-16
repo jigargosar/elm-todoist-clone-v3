@@ -12,7 +12,7 @@ type alias XY =
 
 type Drag
     = NotDragging
-    | DragStartPending
+    | DragPending
         { dragId : String
         , startXY : XY
         , currentXY : XY
@@ -59,7 +59,7 @@ commands drag =
         NotDragging ->
             Cmd.none
 
-        DragStartPending model ->
+        DragPending model ->
             getElement model.dragId GotDragElement
 
         Dragging _ ->
@@ -102,7 +102,7 @@ subscriptions drag =
         NotDragging ->
             Sub.none
 
-        DragStartPending _ ->
+        DragPending _ ->
             mouseSubscriptions
 
         Dragging _ ->
@@ -126,8 +126,8 @@ setCurrentXY xy model =
         NotDragging ->
             model
 
-        DragStartPending state ->
-            setCurrentXYIn state |> DragStartPending
+        DragPending state ->
+            setCurrentXYIn state |> DragPending
 
         Dragging state ->
             setCurrentXYIn state |> Dragging
@@ -148,14 +148,14 @@ update message model =
             NotDragging
 
         MouseDownOnDraggable dragId xy ->
-            DragStartPending { dragId = dragId, startXY = xy, currentXY = xy }
+            DragPending { dragId = dragId, startXY = xy, currentXY = xy }
 
         MouseOverDroppable domId ->
             case model of
                 NotDragging ->
                     Debug.todo "MouseOverDropZone, NotDragging"
 
-                DragStartPending _ ->
+                DragPending _ ->
                     Debug.todo "MouseOverDropZone, DragStartPending"
 
                 Dragging { dragId, startXY, currentXY, dragElement } ->
@@ -185,7 +185,7 @@ update message model =
 
         GotDragElement domId element ->
             case model of
-                DragStartPending { dragId, startXY, currentXY } ->
+                DragPending { dragId, startXY, currentXY } ->
                     if dragId /= domId then
                         Debug.todo "Invalid State, GotDragElement, DragStartPending"
 
