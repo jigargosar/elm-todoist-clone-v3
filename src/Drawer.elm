@@ -167,6 +167,9 @@ subscriptions toMsg model =
         [ projectsDnDSystem.subscriptions model
         , labelsDnDSystem.subscriptions model
         , filtersDnDSystem.subscriptions model
+        , case unwrap model |> .drag of
+            ( p, d ) ->
+                Drag.subscriptions d |> Sub.map (Drag p)
         ]
         |> Sub.map toMsg
 
@@ -491,14 +494,30 @@ filterDomId { title } =
 navFilterItem2 : Drawer -> Int -> FilterView -> Html Msg
 navFilterItem2 model idx ({ title, hue } as filter) =
     let
+        drag =
+            unwrap model |> .drag |> Tuple.second
+
+        styles =
+            case Drag.dragDomIdInfo drag of
+                Nothing ->
+                    []
+
+                Just { dropId } ->
+                    if dropId == domId then
+                        [ Css.opacity Css.zero ]
+
+                    else
+                        []
+
         domId =
             filterDomId filter
     in
     viewItem
         (A.id domId
             :: Drag.dragEvents (Drag Filters) domId
+            ++ Drag.dropEvents (Drag Filters) domId
         )
-        []
+        styles
         title
         (Css.hsl hue 0.7 0.5)
         "filter_list"
