@@ -11,7 +11,7 @@ type alias XY =
 
 
 type Drag
-    = NotDragging
+    = NoDrag
     | DragPending
         { dragId : String
         , startXY : XY
@@ -56,7 +56,7 @@ commands drag =
                     )
     in
     case drag of
-        NotDragging ->
+        NoDrag ->
             Cmd.none
 
         DragPending model ->
@@ -99,7 +99,7 @@ subscriptions drag =
                 ]
     in
     case drag of
-        NotDragging ->
+        NoDrag ->
             Sub.none
 
         DragPending _ ->
@@ -123,7 +123,7 @@ setCurrentXY xy model =
             { state | currentXY = xy }
     in
     case model of
-        NotDragging ->
+        NoDrag ->
             model
 
         DragPending state ->
@@ -145,14 +145,14 @@ update message model =
             setCurrentXY xy model
 
         GlobalMouseUp ->
-            NotDragging
+            NoDrag
 
         MouseDownOnDraggable dragId xy ->
             DragPending { dragId = dragId, startXY = xy, currentXY = xy }
 
         MouseOverDroppable domId ->
             case model of
-                NotDragging ->
+                NoDrag ->
                     Debug.todo "MouseOverDropZone, NotDragging"
 
                 DragPending _ ->
