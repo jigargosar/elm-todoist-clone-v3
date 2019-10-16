@@ -136,16 +136,15 @@ setCurrentXY xy model =
             setCurrentXYIn state |> DragOver
 
 
-dragStart : Int -> String -> XY -> Msg
-dragStart idx domId xy =
-    MouseDownOnDraggable idx domId xy
-
-
 dragEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
 dragEvents tagger idx domId drag =
     case drag of
         NoDrag ->
-            [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart idx domId >> tagger >> pd)) ]
+            [ E.preventDefaultOn "mousedown"
+                (pageXYDecoder
+                    |> JD.map (MouseDownOnDraggable idx domId >> tagger >> pd)
+                )
+            ]
 
         Drag _ ->
             []
