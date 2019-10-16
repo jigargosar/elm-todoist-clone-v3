@@ -1,4 +1,4 @@
-module Drag exposing (Drag, Msg, XY, dragDomIdInfo, dragEvents, dropEvents, initial, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, dragDomIdInfo, dragEvents, dragIdxInfo, dropEvents, initial, pageXYDecoder, subscriptions, update)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
@@ -71,6 +71,25 @@ dragDomIdInfo model =
 
         DragOver { dragId, dropId } ->
             Just { dragId = dragId, dropId = dropId }
+
+
+dragIdxInfo : Drag -> Maybe { dragIdx : Int, dropIdx : Int }
+dragIdxInfo model =
+    case model of
+        NoDrag ->
+            Nothing
+
+        DragPending { dragIdx } ->
+            Just { dragIdx = dragIdx, dropIdx = dragIdx }
+
+        Drag { dragIdx } ->
+            Just { dragIdx = dragIdx, dropIdx = dragIdx }
+
+        DragOverPending { dragIdx, dropIdx } ->
+            Just { dragIdx = dragIdx, dropIdx = dropIdx }
+
+        DragOver { dragIdx, dropIdx } ->
+            Just { dragIdx = dragIdx, dropIdx = dropIdx }
 
 
 commands : Drag -> Cmd Msg

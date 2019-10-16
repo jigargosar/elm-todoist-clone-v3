@@ -334,6 +334,22 @@ view toMsg projectList ((Drawer internal) as model) =
 
 
 sort toDomId drag list =
+    case Drag.dragIdxInfo drag of
+        Nothing ->
+            list
+
+        Just { dragIdx, dropIdx } ->
+            let
+                newList =
+                    SelectList.fromList list
+                        |> Maybe.andThen (SelectList.selectBy dragIdx)
+                        |> Maybe.map (SelectList.moveBy (dropIdx - dragIdx) >> SelectList.toList)
+                        |> Maybe.withDefault list
+            in
+            newList
+
+
+sort_ toDomId drag list =
     case Drag.dragDomIdInfo drag of
         Nothing ->
             list
