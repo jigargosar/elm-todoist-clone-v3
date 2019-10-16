@@ -328,14 +328,13 @@ view toMsg projectList ((Drawer internal) as model) =
                         |> List.indexedMap (navLabelItem model)
                 )
                 internal.expansionPanelsState
-            ++ [ filtersEPS.view
-                    "Filters"
-                    (filtersLens.get model
+            ++ viewExpansionPanel Filters
+                (\_ ->
+                    filtersLens.get model
                         |> filtersDnDSystem.rotate model
                         |> List.indexedMap (navFilterItem model)
-                    )
-                    model
-               ]
+                )
+                internal.expansionPanelsState
             |> List.map (H.map toMsg)
     , portal =
         navProjectGhostItem projectList model
