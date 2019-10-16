@@ -1,7 +1,6 @@
 module Drag exposing
     ( Drag
     , Msg
-    , XY
     , dragEvents
     , dragIdxInfo
     , dropEvents
