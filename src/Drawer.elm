@@ -326,9 +326,70 @@ view toMsg projectList ((Drawer internal) as model) =
     }
 
 
-viewFilters drag filterList =
-    { content = viewFiltersContent drag filterList
-    , portal = navFilter2GhostItem drag filterList
+viewFilters panelTitle filterList internal =
+    let
+        isExpanded =
+            internal.expansionPanelsState.filters
+
+        toggleExpanded =
+            ToggleExpansionPanel Filters
+
+        drag =
+            internal.drag
+                |> (\( panel, drag_ ) ->
+                        if panel == Filters then
+                            drag_
+
+                        else
+                            Drag.initial
+                   )
+
+        viewFilterItem : Int -> FilterView -> Html Msg
+        viewFilterItem idx { title, hue } =
+            let
+                styles =
+                    if Drag.dropIdxEq idx drag then
+                        [ Css.opacity Css.zero ]
+
+                    else
+                        []
+
+                domId =
+                    "filter-item-drag-el__" ++ title
+            in
+            viewItem
+                (A.id domId
+                    :: Drag.dragEvents (Drag Filters) idx domId drag
+                    ++ Drag.dropEvents (Drag Filters) idx domId drag
+                )
+                styles
+                title
+                (Css.hsl hue 0.7 0.5)
+                "filter_list"
+
+        ghostItem =
+            maybeDrag2Item drag filterList
+                |> Maybe.map
+                    (\{ title, hue } ->
+                        [ let
+                            attrs =
+                                [ css [ Drag.ghostStyles drag ] ]
+                          in
+                          viewItem attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
+                        ]
+                    )
+                |> Maybe.withDefault []
+    in
+    { content =
+        ExpansionPanelUI.view toggleExpanded
+            panelTitle
+            (\_ ->
+                filterList
+                    |> sort drag
+                    |> List.indexedMap viewFilterItem
+            )
+            isExpanded
+    , portal = ghostItem
     }
 
 

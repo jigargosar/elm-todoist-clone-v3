@@ -4,6 +4,7 @@ module Drag exposing
     , dragEvents
     , dragIdxInfo
     , dropEvents
+    , dropIdxEq
     , ghostStyles
     , initial
     , pageXYDecoder
@@ -62,6 +63,11 @@ dragElementAndXY drag =
 
         DragOver { startXY, currentXY, dragElement } ->
             Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
+
+
+dropIdxEq : Int -> Drag -> Bool
+dropIdxEq idx =
+    dragIdxInfo >> Maybe.map (.dragIdx >> (==) idx) >> Maybe.withDefault False
 
 
 dragIdxInfo : Drag -> Maybe { dragIdx : Int, dropIdx : Int }
