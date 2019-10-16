@@ -88,6 +88,7 @@ pageXYDecoder =
         (JD.field "pageY" JD.float)
 
 
+subscriptions : Drag -> Sub Msg
 subscriptions drag =
     let
         mouseSubscriptions =
