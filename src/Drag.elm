@@ -1,4 +1,4 @@
-module Drag exposing (..)
+module Drag exposing (Drag, XY, commands, dragStart, pageXYDecoder, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
@@ -140,6 +140,11 @@ setCurrentXY xy model =
 
         DragOver state ->
             setCurrentXYIn state |> DragOver
+
+
+dragStart : String -> XY -> Msg
+dragStart domId xy =
+    MouseDownOnDraggable domId xy
 
 
 update : Msg -> Drag -> Drag
