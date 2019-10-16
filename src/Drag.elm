@@ -28,15 +28,15 @@ type Drag
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
-        , overId : String
+        , dropId : String
         }
     | DraggingOver
         { dragId : String
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
-        , overId : String
-        , overElement : Element
+        , dropId : String
+        , dropElement : Element
         }
 
 
@@ -66,7 +66,7 @@ commands drag =
             Cmd.none
 
         DraggingOverPending model ->
-            getElement model.overId GotDroppableElement
+            getElement model.dropId GotDroppableElement
 
         DraggingOver _ ->
             Cmd.none
@@ -164,20 +164,20 @@ update message model =
                         , startXY = startXY
                         , currentXY = currentXY
                         , dragElement = dragElement
-                        , overId = domId
+                        , dropId = domId
                         }
 
                 DraggingOverPending state ->
-                    { state | overId = domId } |> DraggingOverPending
+                    { state | dropId = domId } |> DraggingOverPending
 
-                DraggingOver { dragId, startXY, currentXY, dragElement, overId } ->
-                    if domId /= overId then
+                DraggingOver { dragId, startXY, currentXY, dragElement, dropId } ->
+                    if domId /= dropId then
                         DraggingOverPending
                             { dragId = dragId
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
-                            , overId = overId
+                            , dropId = dropId
                             }
 
                     else
@@ -202,8 +202,8 @@ update message model =
 
         GotDroppableElement domId element ->
             case model of
-                DraggingOverPending { dragId, startXY, currentXY, dragElement, overId } ->
-                    if overId /= domId then
+                DraggingOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
+                    if dropId /= domId then
                         Debug.todo "Invalid State, GotDropElement, DraggingOverPending"
 
                     else
@@ -212,8 +212,8 @@ update message model =
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
-                            , overId = overId
-                            , overElement = element
+                            , dropId = dropId
+                            , dropElement = element
                             }
 
                 _ ->
