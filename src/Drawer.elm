@@ -322,8 +322,13 @@ view toMsg projectList ((Drawer internal) as model) =
         navProjectGhostItem projectList model
             ++ navLabelGhostItem (labelsLens.get model) model
             ++ navFilterGhostItem (filtersLens.get model) model
-            ++ navFilter2GhostItem (filtersLens.get model) (getDragFor Filters internal.drag)
             |> List.map (H.map toMsg)
+    }
+
+
+viewFilters drag filterList =
+    { content = viewFiltersContent drag filterList
+    , portal = navFilter2GhostItem drag filterList
     }
 
 
@@ -580,8 +585,8 @@ maybeDrag2Item drag items =
             )
 
 
-navFilter2GhostItem filters drag =
-    maybeDrag2Item drag filters
+navFilter2GhostItem drag filterList =
+    maybeDrag2Item drag filterList
         |> Maybe.map
             (\{ title, hue } ->
                 [ let
