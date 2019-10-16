@@ -179,9 +179,27 @@ dragEvents tagger domId =
     [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
 
 
-dropEvents : (Msg -> msg) -> String -> List (H.Attribute msg)
-dropEvents tagger domId =
-    [ E.onMouseOver (MouseOverDroppable domId |> tagger) ]
+dropEvents : (Msg -> msg) -> String -> Drag -> List (H.Attribute msg)
+dropEvents tagger domId model =
+    let
+        events =
+            [ E.onMouseOver (MouseOverDroppable domId |> tagger) ]
+    in
+    case model of
+        NoDrag ->
+            []
+
+        DragPending _ ->
+            []
+
+        Drag _ ->
+            events
+
+        DragOverPending _ ->
+            events
+
+        DragOver _ ->
+            events
 
 
 pd =
@@ -236,7 +254,7 @@ updateModel message model =
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
-                            , dropId = dropId
+                            , dropId = domId
                             }
 
                     else
@@ -263,7 +281,7 @@ updateModel message model =
             case model of
                 DragOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
                     if dropId /= domId then
-                        Debug.todo "Invalid State, GotDropElement, DraggingOverPending"
+                        model
 
                     else
                         DragOver
@@ -271,7 +289,7 @@ updateModel message model =
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
-                            , dropId = dropId
+                            , dropId = domId
                             , dropElement = element
                             }
 
