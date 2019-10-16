@@ -3,6 +3,7 @@ module Drawer exposing (Drawer, Msg, System, system)
 import Css
 import DnD exposing (DnD)
 import ExpansionPanel exposing (ExpansionPanel)
+import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Lens exposing (Lens)
@@ -110,6 +111,7 @@ type Panel
 
 type Msg
     = ExpansionPanel Panel ExpansionPanel.Msg
+    | ToggleExpansionPanel Panel Bool
     | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
 
@@ -258,19 +260,26 @@ type alias FilterView =
     { title : String, hue : Float }
 
 
+unwrap (Drawer internal) =
+    internal
+
+
 view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), portal : List (Html msg) }
 view toMsg projectList model =
     { content =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
-        , projectsEPS.view
-            "Projects"
-            (projectList
-                |> projectsDnDSystem.rotate model
-                |> List.indexedMap (navProjectItem model)
+        , div []
+            (ExpansionPanelUI.view (ToggleExpansionPanel Projects)
+                "Projects"
+                (\_ ->
+                    projectList
+                        |> projectsDnDSystem.rotate model
+                        |> List.indexedMap (navProjectItem model)
+                )
+                (model |> unwrap |> .expansionPanelsState |> .projects)
             )
-            model
         , labelsEPS.view
             "Labels"
             (labelsLens.get model

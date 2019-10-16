@@ -38,17 +38,12 @@ viewHeader toggle title isExpanded =
         ]
 
 
-view : Html msg -> List (Html msg) -> Bool -> Html msg
-view headerHtml contentHtml isExpanded =
-    let
-        isCollapsed =
-            not isExpanded
-
-        finalContent =
-            if isCollapsed then
-                []
+view : (Bool -> msg) -> String -> (() -> List (Html msg)) -> Bool -> List (Html msg)
+view toggle title lazyContent isExpanded =
+    viewHeader toggle title isExpanded
+        :: (if isExpanded then
+                lazyContent ()
 
             else
-                contentHtml
-    in
-    div [] (headerHtml :: finalContent)
+                []
+           )
