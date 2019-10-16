@@ -444,7 +444,7 @@ navFilterItem2 model idx { title, hue } =
     in
     viewItem
         (A.id domId
-            :: Drag.dragStartEvent domId (DragStart Filters)
+            :: Drag.onDragStart domId (DragStart Filters)
             :: []
         )
         []
