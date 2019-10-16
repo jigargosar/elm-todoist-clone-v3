@@ -423,8 +423,8 @@ navFilterItem model idx { title, hue } =
     viewItem2 (A.id domId :: attrs) styles title (Css.hsl hue 0.7 0.5) "filter_list"
 
 
-maybeDrag2Item dnd2Sys model items =
-    dnd2Sys.info model
+maybeDragItem dndSys model items =
+    dndSys.info model
         |> Maybe.andThen
             (\{ drag } ->
                 items
@@ -434,7 +434,7 @@ maybeDrag2Item dnd2Sys model items =
 
 
 navProjectGhostItem projectList model =
-    maybeDrag2Item projectsDnDSystem model projectList
+    maybeDragItem projectsDnDSystem model projectList
         |> Maybe.map
             (\project ->
                 [ let
@@ -454,7 +454,7 @@ navProjectGhostItem projectList model =
 
 
 navLabelGhostItem labels model =
-    maybeDrag2Item labelsDnDSystem model labels
+    maybeDragItem labelsDnDSystem model labels
         |> Maybe.map
             (\{ title, hue } ->
                 [ let
@@ -468,7 +468,7 @@ navLabelGhostItem labels model =
 
 
 navFilterGhostItem filters model =
-    maybeDrag2Item filtersDnDSystem model filters
+    maybeDragItem filtersDnDSystem model filters
         |> Maybe.map
             (\{ title, hue } ->
                 [ let
