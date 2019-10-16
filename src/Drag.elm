@@ -112,3 +112,36 @@ subscriptions drag =
 
         DraggingOver _ ->
             mouseSubscriptions
+
+
+setCurrentXY : XY -> Drag -> Drag
+setCurrentXY xy model =
+    let
+        setCurrentXYIn : { a | currentXY : b } -> { a | currentXY : b }
+        setCurrentXYIn state =
+            { state | currentXY = xy }
+    in
+    case model of
+        NotDragging ->
+            model
+
+        DragStartPending state ->
+            setCurrentXYIn state |> DragStartPending
+
+        Dragging state ->
+            setCurrentXYIn state |> Dragging
+
+        DraggingOverPending state ->
+            setCurrentXYIn state |> DraggingOverPending
+
+        DraggingOver state ->
+            setCurrentXYIn state |> DraggingOver
+
+
+update message model =
+    case message of
+        GlobalMouseMove xy ->
+            setCurrentXY xy model
+
+        _ ->
+            model
