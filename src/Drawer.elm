@@ -324,6 +324,7 @@ view toMsg projectList ((Drawer internal) as model) =
         navProjectGhostItem projectList model
             ++ navLabelGhostItem (labelsLens.get model) model
             ++ navFilterGhostItem (filtersLens.get model) model
+            ++ navFilter2GhostItem (filtersLens.get model) (getDragFor Filters internal.drag)
             |> List.map (H.map toMsg)
     }
 
@@ -494,7 +495,7 @@ navFilterItem2 drag idx { title, hue } =
                         []
 
         domId =
-            "filter-item-drag-el__" ++ title ++ "__" ++ String.fromInt idx
+            "filter-item-drag-el__" ++ title
     in
     viewItem
         (A.id domId
@@ -558,6 +559,34 @@ navFilterGhostItem filters model =
                 [ let
                     attrs =
                         [ css [ filtersDnDSystem.ghostStyles model ] ]
+                  in
+                  viewItem attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
+                ]
+            )
+        |> Maybe.withDefault []
+
+
+maybeDrag2Item drag items =
+    Drag.dragIdxInfo drag
+        |> Maybe.andThen
+            (\{ dragIdx } ->
+                items
+                    |> List.drop dragIdx
+                    |> List.head
+            )
+
+
+ghostStyles drag =
+    Drag.ghostStyles drag
+
+
+navFilter2GhostItem filters drag =
+    maybeDrag2Item drag filters
+        |> Maybe.map
+            (\{ title, hue } ->
+                [ let
+                    attrs =
+                        [ css [ ghostStyles drag ] ]
                   in
                   viewItem attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
                 ]

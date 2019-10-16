@@ -1,11 +1,13 @@
-module Drag exposing (Drag, Msg, XY, dragDomIdInfo, dragEvents, dragIdxInfo, dropEvents, initial, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, dragEvents, dragIdxInfo, dropEvents, ghostStyles, initial, pageXYDecoder, subscriptions, update)
 
 import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
+import Css
 import Html.Styled as H
 import Html.Styled.Events as E
 import Json.Decode as JD
+import Styles
 import Task
 
 
@@ -54,23 +56,22 @@ initial =
     NoDrag
 
 
-dragDomIdInfo : Drag -> Maybe { dragId : String, dropId : String }
-dragDomIdInfo model =
-    case model of
+dragElementAndXY drag =
+    case drag of
         NoDrag ->
             Nothing
 
-        DragPending { dragId } ->
-            Just { dragId = dragId, dropId = dragId }
+        DragPending _ ->
+            Nothing
 
-        Drag { dragId } ->
-            Just { dragId = dragId, dropId = dragId }
+        Drag { startXY, currentXY, dragElement } ->
+            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
-        DragOverPending { dragId, dropId } ->
-            Just { dragId = dragId, dropId = dropId }
+        DragOverPending { startXY, currentXY, dragElement } ->
+            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
-        DragOver { dragId, dropId } ->
-            Just { dragId = dragId, dropId = dropId }
+        DragOver { startXY, currentXY, dragElement } ->
+            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
 
 dragIdxInfo : Drag -> Maybe { dragIdx : Int, dropIdx : Int }
@@ -363,3 +364,33 @@ updateModel message model =
 
         GotDomElementError (Dom.NotFound domIdNF) ->
             Debug.todo <| "GotDomElementError: " ++ domIdNF
+
+
+subtractXY : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> XY
+subtractXY a b =
+    XY (a.x - b.x) (a.y - b.y)
+
+
+addXY a b =
+    XY (a.x + b.x) (a.y + b.y)
+
+
+ghostStyles : Drag -> Css.Style
+ghostStyles =
+    dragElementAndXY
+        >> Maybe.map
+            (\{ dragElement, startXY, currentXY } ->
+                let
+                    { x, y } =
+                        addXY (subtractXY currentXY startXY)
+                            (subtractXY dragElement.element dragElement.viewport)
+                in
+                [ Styles.absolute
+                , Styles.top_0
+                , Styles.left_0
+                , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                , Css.pointerEvents Css.none
+                ]
+            )
+        >> Maybe.withDefault []
+        >> Css.batch
