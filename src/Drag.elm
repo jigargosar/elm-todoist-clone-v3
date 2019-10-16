@@ -17,17 +17,20 @@ type Drag
     = NoDrag
     | DragPending
         { dragId : String
+        , dragIdx : Int
         , startXY : XY
         , currentXY : XY
         }
     | Drag
         { dragId : String
+        , dragIdx : Int
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
         }
     | DragOverPending
         { dragId : String
+        , dragIdx : Int
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
@@ -35,6 +38,7 @@ type Drag
         }
     | DragOver
         { dragId : String
+        , dragIdx : Int
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
@@ -102,7 +106,7 @@ commands drag =
 type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDraggable String XY
+    | MouseDownOnDraggable Int String XY
     | MouseOverDroppable String
     | GotDragElement String Element
     | GotDropElement String Element
@@ -169,16 +173,16 @@ setCurrentXY xy model =
             setCurrentXYIn state |> DragOver
 
 
-dragStart : String -> XY -> Msg
-dragStart domId xy =
-    MouseDownOnDraggable domId xy
+dragStart : Int -> String -> XY -> Msg
+dragStart idx domId xy =
+    MouseDownOnDraggable idx domId xy
 
 
-dragEvents : (Msg -> msg) -> String -> Drag -> List (H.Attribute msg)
-dragEvents tagger domId drag =
+dragEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
+dragEvents tagger idx domId drag =
     case drag of
         NoDrag ->
-            [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
+            [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart idx domId >> tagger >> pd)) ]
 
         DragPending _ ->
             []
@@ -238,8 +242,8 @@ updateModel message model =
         GlobalMouseUp ->
             NoDrag
 
-        MouseDownOnDraggable dragId xy ->
-            DragPending { dragId = dragId, startXY = xy, currentXY = xy }
+        MouseDownOnDraggable dragIdx dragId xy ->
+            DragPending { dragId = dragId, dragIdx = dragIdx, startXY = xy, currentXY = xy }
 
         MouseOverDroppable domId ->
             case model of
@@ -249,9 +253,10 @@ updateModel message model =
                 DragPending _ ->
                     Debug.todo "MouseOverDropZone, DragStartPending"
 
-                Drag { dragId, startXY, currentXY, dragElement } ->
+                Drag { dragId, dragIdx, startXY, currentXY, dragElement } ->
                     DragOverPending
                         { dragId = dragId
+                        , dragIdx = dragIdx
                         , startXY = startXY
                         , currentXY = currentXY
                         , dragElement = dragElement
@@ -261,10 +266,11 @@ updateModel message model =
                 DragOverPending state ->
                     { state | dropId = domId } |> DragOverPending
 
-                DragOver { dragId, startXY, currentXY, dragElement, dropId } ->
+                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
                     if domId /= dropId then
                         DragOverPending
                             { dragId = dragId
+                            , dragIdx = dragIdx
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
@@ -276,13 +282,14 @@ updateModel message model =
 
         GotDragElement domId element ->
             case model of
-                DragPending { dragId, startXY, currentXY } ->
+                DragPending { dragId, dragIdx, startXY, currentXY } ->
                     if dragId /= domId then
                         Debug.todo "Invalid State, GotDragElement, DragStartPending"
 
                     else
                         Drag
                             { dragId = dragId
+                            , dragIdx = dragIdx
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = element
@@ -293,13 +300,14 @@ updateModel message model =
 
         GotDropElement domId element ->
             case model of
-                DragOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
+                DragOverPending { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
                     if dropId /= domId then
                         model
 
                     else
                         DragOver
                             { dragId = dragId
+                            , dragIdx = dragIdx
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
@@ -307,13 +315,14 @@ updateModel message model =
                             , dropElement = element
                             }
 
-                DragOver { dragId, startXY, currentXY, dragElement, dropId, dropElement } ->
+                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId, dropElement } ->
                     if dropId /= domId then
                         model
 
                     else
                         DragOver
                             { dragId = dragId
+                            , dragIdx = dragIdx
                             , startXY = startXY
                             , currentXY = currentXY
                             , dragElement = dragElement
