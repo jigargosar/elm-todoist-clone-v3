@@ -169,8 +169,18 @@ update message model =
                 DraggingOverPending state ->
                     { state | dropId = domId } |> DraggingOverPending
 
-                DraggingOver record ->
-                    model
+                DraggingOver { dragId, startXY, currentXY, dragElement, dropId } ->
+                    if domId /= dropId then
+                        DraggingOverPending
+                            { dragId = dragId
+                            , startXY = startXY
+                            , currentXY = currentXY
+                            , dragElement = dragElement
+                            , dropId = dropId
+                            }
+
+                    else
+                        model
 
         GotDragElement element ->
             model
