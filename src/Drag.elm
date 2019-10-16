@@ -74,7 +74,7 @@ commands drag =
 type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDragZone String
+    | MouseDownOnDragZone XY String
     | MouseOverDropZone String
     | GotDragElement Element
     | GotDropElement Element
