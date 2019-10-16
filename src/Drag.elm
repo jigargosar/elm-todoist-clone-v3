@@ -40,6 +40,7 @@ type Drag
         }
 
 
+commands : Drag -> Cmd Msg
 commands drag =
     let
         getElement domId onSuccess =
