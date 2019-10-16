@@ -29,12 +29,6 @@ type alias XY =
 
 type Drag
     = NoDrag
-    | DragPending
-        { dragId : String
-        , dragIdx : Int
-        , startXY : XY
-        , currentXY : XY
-        }
     | Drag
         { dragId : String
         , dragIdx : Int
@@ -73,9 +67,6 @@ dragElementAndXY drag =
         NoDrag ->
             Nothing
 
-        DragPending _ ->
-            Nothing
-
         Drag { startXY, currentXY, dragElement } ->
             Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
@@ -92,9 +83,6 @@ dragIdxInfo model =
         NoDrag ->
             Nothing
 
-        DragPending { dragIdx } ->
-            Just { dragIdx = dragIdx, dropIdx = dragIdx }
-
         Drag { dragIdx } ->
             Just { dragIdx = dragIdx, dropIdx = dragIdx }
 
@@ -105,44 +93,17 @@ dragIdxInfo model =
             Just { dragIdx = dragIdx, dropIdx = dropIdx }
 
 
-commands : Drag -> Cmd Msg
-commands drag =
-    let
-        getElement domId onSuccess =
-            Dom.getElement domId
-                |> Task.attempt
-                    (\res ->
-                        case res of
-                            Err domError ->
-                                GotDomElementError domError
-
-                            Ok element ->
-                                onSuccess domId element
-                    )
-    in
-    case drag of
-        NoDrag ->
-            Cmd.none
-
-        DragPending model ->
-            getElement model.dragId (GotDragElement model.dragIdx)
-
-        Drag _ ->
-            Cmd.none
-
-        DragOverPending model ->
-            getElement model.dropId (GotDropElement model.dropIdx)
-
-        DragOver _ ->
-            Cmd.none
-
-
 type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
     | MouseDownOnDraggable Int String XY
     | MouseOverDroppable Int String
-    | GotDragElement Int String Element
+    | GotDragElement
+        { dragId : String
+        , dragIdx : Int
+        , startXY : XY
+        }
+        Element
     | GotDropElement Int String Element
     | GotDomElementError Dom.Error
 
@@ -170,9 +131,6 @@ subscriptions drag =
         NoDrag ->
             Sub.none
 
-        DragPending _ ->
-            getMouseUpOrMove
-
         Drag _ ->
             getMouseUpOrMove
 
@@ -193,9 +151,6 @@ setCurrentXY xy model =
     case model of
         NoDrag ->
             model
-
-        DragPending state ->
-            setCurrentXYIn state |> DragPending
 
         Drag state ->
             setCurrentXYIn state |> Drag
@@ -218,9 +173,6 @@ dragEvents tagger idx domId drag =
         NoDrag ->
             [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart idx domId >> tagger >> pd)) ]
 
-        DragPending _ ->
-            []
-
         Drag _ ->
             []
 
@@ -241,9 +193,6 @@ dropEvents tagger idx domId model =
         NoDrag ->
             []
 
-        DragPending _ ->
-            events
-
         Drag _ ->
             events
 
@@ -261,34 +210,44 @@ pd =
 update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
 update toMsg message model =
     let
-        newModel =
+        ( newModel, cmd ) =
             updateModel message model
     in
-    ( newModel, commands newModel |> Cmd.map toMsg )
+    ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateModel : Msg -> Drag -> Drag
+updateModel : Msg -> Drag -> ( Drag, Cmd Msg )
 updateModel message model =
+    let
+        getElement domId onSuccess =
+            Dom.getElement domId
+                |> Task.attempt
+                    (\res ->
+                        case res of
+                            Err domError ->
+                                GotDomElementError domError
+
+                            Ok element ->
+                                onSuccess element
+                    )
+    in
     case message of
         GlobalMouseMove xy ->
-            setCurrentXY xy model
+            ( setCurrentXY xy model, Cmd.none )
 
         GlobalMouseUp ->
-            NoDrag
+            ( NoDrag, Cmd.none )
 
         MouseDownOnDraggable dragIdx dragId xy ->
-            DragPending { dragId = dragId, dragIdx = dragIdx, startXY = xy, currentXY = xy }
+            ( model, getElement dragId (GotDragElement { dragId = dragId, dragIdx = dragIdx, startXY = xy }) )
 
         MouseOverDroppable idx domId ->
             case model of
                 NoDrag ->
                     Debug.todo "MouseOverDropZone, NotDragging"
 
-                DragPending _ ->
-                    Debug.todo "MouseOverDropZone, DragStartPending"
-
                 Drag { dragId, dragIdx, startXY, currentXY, dragElement } ->
-                    DragOverPending
+                    ( DragOverPending
                         { dragId = dragId
                         , dragIdx = dragIdx
                         , startXY = startXY
@@ -297,12 +256,14 @@ updateModel message model =
                         , dropId = domId
                         , dropIdx = idx
                         }
+                    , Cmd.none
+                    )
 
                 DragOverPending state ->
-                    { state | dropId = domId } |> DragOverPending
+                    ( { state | dropId = domId } |> DragOverPending, Cmd.none )
 
                 DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
-                    if domId /= dropId then
+                    ( if domId /= dropId then
                         DragOverPending
                             { dragId = dragId
                             , dragIdx = dragIdx
@@ -313,29 +274,24 @@ updateModel message model =
                             , dropIdx = idx
                             }
 
-                    else
+                      else
                         model
+                    , Cmd.none
+                    )
 
-        GotDragElement idx domId element ->
-            case model of
-                DragPending { dragId, dragIdx, startXY, currentXY } ->
-                    if dragId /= domId then
-                        Debug.todo "Invalid State, GotDragElement, DragStartPending"
-
-                    else
-                        Drag
-                            { dragId = domId
-                            , dragIdx = idx
-                            , startXY = startXY
-                            , currentXY = currentXY
-                            , dragElement = element
-                            }
-
-                _ ->
-                    Debug.todo <| "Invalid State: GotDragElement" ++ Debug.toString model
+        GotDragElement { dragId, dragIdx, startXY } element ->
+            ( Drag
+                { dragId = dragId
+                , dragIdx = dragIdx
+                , startXY = startXY
+                , currentXY = startXY
+                , dragElement = element
+                }
+            , Cmd.none
+            )
 
         GotDropElement idx domId element ->
-            case model of
+            ( case model of
                 DragOverPending { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
                     if dropId /= domId then
                         model
@@ -373,6 +329,8 @@ updateModel message model =
 
                 _ ->
                     Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
+            , Cmd.none
+            )
 
         GotDomElementError (Dom.NotFound domIdNF) ->
             Debug.todo <| "GotDomElementError: " ++ domIdNF
