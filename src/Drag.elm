@@ -72,7 +72,7 @@ commands drag =
 
 
 type Msg
-    = GlobalMouseMove
+    = GlobalMouseMove XY
     | GlobalMouseUp
     | MouseDownOnDragZone String
     | MouseOverDropZone String
@@ -81,12 +81,19 @@ type Msg
     | GotDomElementError Dom.Error
 
 
+pageXYDecoder : JD.Decoder XY
+pageXYDecoder =
+    JD.map2 XY
+        (JD.field "pageX" JD.float)
+        (JD.field "pageY" JD.float)
+
+
 subscriptions drag =
     let
         mouseSubscriptions =
             Sub.batch
-                [ BE.onMouseMove <| JD.succeed GlobalMouseMove
-                , BE.onMouseUp <| JD.succeed GlobalMouseUp
+                [ BE.onMouseMove (JD.map GlobalMouseMove pageXYDecoder)
+                , BE.onMouseUp (JD.succeed GlobalMouseUp)
                 ]
     in
     case drag of
