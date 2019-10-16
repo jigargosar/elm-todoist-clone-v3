@@ -576,17 +576,13 @@ maybeDrag2Item drag items =
             )
 
 
-ghostStyles drag =
-    Drag.ghostStyles drag
-
-
 navFilter2GhostItem filters drag =
     maybeDrag2Item drag filters
         |> Maybe.map
             (\{ title, hue } ->
                 [ let
                     attrs =
-                        [ css [ ghostStyles drag ] ]
+                        [ css [ Drag.ghostStyles drag ] ]
                   in
                   viewItem attrs [] title (Css.hsl hue 0.7 0.5) "filter_list"
                 ]
