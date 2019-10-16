@@ -126,7 +126,7 @@ subscriptions drag =
 setCurrentXY : XY -> Drag -> Drag
 setCurrentXY xy model =
     let
-        setCurrentXYIn : { a | currentXY : b } -> { a | currentXY : b }
+        setCurrentXYIn : { a | currentXY : XY } -> { a | currentXY : XY }
         setCurrentXYIn state =
             { state | currentXY = xy }
     in
