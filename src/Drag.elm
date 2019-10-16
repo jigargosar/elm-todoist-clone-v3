@@ -218,5 +218,5 @@ update message model =
                 _ ->
                     Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
 
-        GotDomElementError _ error ->
-            NotDragging
+        GotDomElementError domId (Dom.NotFound domIdNF) ->
+            Debug.todo <| "GotDomElementError: " ++ domId ++ domIdNF
