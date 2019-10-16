@@ -83,12 +83,7 @@ type Msg
     | GlobalMouseUp
     | MouseDownOnDraggable Int String XY
     | MouseOverDroppable Int String
-    | GotDragElement
-        { dragId : String
-        , dragIdx : Int
-        , startXY : XY
-        }
-        Element
+    | GotDragElement Int String XY Element
     | GotDropElement Int String Element
     | GotDomElementError Dom.Error
 
@@ -213,19 +208,13 @@ updateModel message model =
 
         MouseDownOnDraggable dragIdx dragId xy ->
             ( model
-            , getElement dragId
-                (GotDragElement
-                    { dragId = dragId
-                    , dragIdx = dragIdx
-                    , startXY = xy
-                    }
-                )
+            , getElement dragId (GotDragElement dragIdx dragId xy)
             )
 
         MouseOverDroppable idx domId ->
             ( model, getElement domId (GotDropElement idx domId) )
 
-        GotDragElement { dragId, dragIdx, startXY } element ->
+        GotDragElement dragIdx dragId startXY element ->
             ( Drag
                 { dragId = dragId
                 , dragIdx = dragIdx
