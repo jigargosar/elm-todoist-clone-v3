@@ -65,7 +65,7 @@ type alias Internal =
     , dndPanels : DndPanels
     , labelList : List LabelView
     , filterList : List FilterView
-    , drag : Maybe ( Panel, Drag )
+    , drag : ( Panel, Drag )
     }
 
 
@@ -89,7 +89,7 @@ initial =
         , FilterView "View all" 932325
         , FilterView "No due date" 9355
         ]
-        Nothing
+        ( Projects, Drag.initial )
         |> Drawer
 
 
@@ -203,10 +203,7 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
             let
                 prevDrag =
                     case internal.drag of
-                        Nothing ->
-                            Drag.initial
-
-                        Just ( prevPanel, prevDrag_ ) ->
+                        ( prevPanel, prevDrag_ ) ->
                             if prevPanel == panel then
                                 prevDrag_
 
@@ -216,7 +213,7 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                 ( nextDrag, dragCmd ) =
                     Drag.update (Drag panel) msg prevDrag
             in
-            ( { internal | drag = Just ( panel, nextDrag ) }
+            ( { internal | drag = ( panel, nextDrag ) }
                 |> Drawer
             , dragCmd |> Cmd.map toMsg
             )
