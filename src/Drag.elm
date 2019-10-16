@@ -180,16 +180,16 @@ dragEvents tagger domId drag =
         NoDrag ->
             [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
 
-        DragPending record ->
+        DragPending _ ->
             []
 
-        Drag record ->
+        Drag _ ->
             []
 
-        DragOverPending record ->
+        DragOverPending _ ->
             []
 
-        DragOver record ->
+        DragOver _ ->
             []
 
 
