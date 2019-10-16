@@ -1,4 +1,4 @@
-module Drag exposing (Drag, XY, commands, dragStart, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, XY, commands, dragStart, initial, pageXYDecoder, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
@@ -38,6 +38,11 @@ type Drag
         , dropId : String
         , dropElement : Element
         }
+
+
+initial : Drag
+initial =
+    NoDrag
 
 
 commands : Drag -> Cmd Msg

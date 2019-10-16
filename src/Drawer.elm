@@ -2,6 +2,7 @@ module Drawer exposing (Drawer, Msg, System, system)
 
 import Css
 import DnD exposing (DnD)
+import Drag exposing (Drag)
 import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
@@ -64,6 +65,7 @@ type alias Internal =
     , dndPanels : DndPanels
     , labelList : List LabelView
     , filterList : List FilterView
+    , drag : Drag
     }
 
 
@@ -87,6 +89,7 @@ initial =
         , FilterView "View all" 932325
         , FilterView "No due date" 9355
         ]
+        Drag.initial
         |> Drawer
 
 
