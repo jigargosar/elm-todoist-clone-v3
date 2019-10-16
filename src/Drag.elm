@@ -307,6 +307,9 @@ updateModel message model =
                             , dropElement = element
                             }
 
+                NoDrag ->
+                    model
+
                 _ ->
                     Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
 
