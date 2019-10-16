@@ -149,5 +149,14 @@ update message model =
         MouseDownOnDragZone dragId xy ->
             DragStartPending { dragId = dragId, startXY = xy, currentXY = xy }
 
-        _ ->
+        MouseOverDropZone string ->
+            model
+
+        GotDragElement element ->
+            model
+
+        GotDropElement element ->
+            model
+
+        GotDomElementError error ->
             model
