@@ -320,14 +320,15 @@ view toMsg projectList ((Drawer internal) as model) =
                         |> List.indexedMap (navProjectItem model)
                 )
                 internal.expansionPanelsState
-            ++ [ labelsEPS.view
-                    "Labels"
-                    (labelsLens.get model
+            ++ viewExpansionPanel
+                Labels
+                (\_ ->
+                    labelsLens.get model
                         |> labelsDnDSystem.rotate model
                         |> List.indexedMap (navLabelItem model)
-                    )
-                    model
-               , filtersEPS.view
+                )
+                internal.expansionPanelsState
+            ++ [ filtersEPS.view
                     "Filters"
                     (filtersLens.get model
                         |> filtersDnDSystem.rotate model
