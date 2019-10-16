@@ -92,27 +92,30 @@ pageXYDecoder =
 subscriptions : Drag -> Sub Msg
 subscriptions drag =
     let
-        mouseSubscriptions =
+        getMouseUpOrMove =
             Sub.batch
                 [ BE.onMouseMove (JD.map GlobalMouseMove pageXYDecoder)
                 , BE.onMouseUp (JD.succeed GlobalMouseUp)
                 ]
+
+        getMouseUp =
+            BE.onMouseUp (JD.succeed GlobalMouseUp)
     in
     case drag of
         NoDrag ->
             Sub.none
 
         DragPending _ ->
-            Sub.none
+            getMouseUp
 
         Drag _ ->
-            mouseSubscriptions
+            getMouseUpOrMove
 
         DragOverPending _ ->
-            Sub.none
+            getMouseUp
 
         DragOver _ ->
-            mouseSubscriptions
+            getMouseUpOrMove
 
 
 setCurrentXY : XY -> Drag -> Drag
