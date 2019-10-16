@@ -59,8 +59,16 @@ type alias DndPanels =
     }
 
 
+type alias PanelState =
+    { projects : Bool
+    , labels : Bool
+    , filters : Bool
+    }
+
+
 type alias Internal =
     { expansionPanels : ExpansionPanels
+    , panelState : PanelState
     , dndPanels : DndPanels
     , labelList : List LabelView
     , filterList : List FilterView
@@ -74,6 +82,7 @@ initial =
         , labels = labelsEPS.initial
         , filters = filtersEPS.initial
         }
+        (PanelState False False False)
         { projects = projectsDnDSystem.initial
         , labels = labelsDnDSystem.initial
         , filters = filtersDnDSystem.initial
