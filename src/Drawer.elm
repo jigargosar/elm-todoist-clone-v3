@@ -276,17 +276,34 @@ getterFromPanel panel =
             .filters
 
 
-getExpansionPanelState : Panel -> Drawer -> Bool
-getExpansionPanelState panel =
-    unwrap >> .expansionPanelsState >> getterFromPanel panel
+type alias PanelSystem =
+    { get : ExpansionPanelsState -> Bool
+    , title : String
+    }
 
 
-viewExpansionPanel panel title lazyContent expansionPanelState =
+panelSystem panel =
+    case panel of
+        Projects ->
+            PanelSystem .projects "Projects"
+
+        Labels ->
+            PanelSystem .labels "Labels"
+
+        Filters ->
+            PanelSystem .filters "Filters"
+
+
+viewExpansionPanel panel lazyContent expansionPanelsState =
+    let
+        { get, title } =
+            panelSystem panel
+    in
     div []
         (ExpansionPanelUI.view (ToggleExpansionPanel panel)
             title
             lazyContent
-            (getterFromPanel panel expansionPanelState)
+            (get expansionPanelsState)
         )
 
 
@@ -298,7 +315,6 @@ view toMsg projectList ((Drawer internal) as model) =
         , navIconItem "Next 7 Days" "view_week"
         , viewExpansionPanel
             Projects
-            "Projects"
             (\_ ->
                 projectList
                     |> projectsDnDSystem.rotate model
