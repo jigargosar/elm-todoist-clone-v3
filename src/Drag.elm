@@ -95,7 +95,7 @@ subscriptions drag =
         getMouseUpOrMove =
             Sub.batch
                 [ BE.onMouseMove (JD.map GlobalMouseMove pageXYDecoder)
-                , BE.onMouseUp (JD.succeed GlobalMouseUp)
+                , getMouseUp
                 ]
 
         getMouseUp =
