@@ -36,7 +36,7 @@ type Drag
         , currentXY : XY
         , dragElement : Dom.Element
         , overId : String
-        , dropElement : Element
+        , overElement : Element
         }
 
 
@@ -66,7 +66,7 @@ commands drag =
             Cmd.none
 
         DraggingOverPending model ->
-            getElement model.overId GotDropElement
+            getElement model.overId GotDragOverElement
 
         DraggingOver _ ->
             Cmd.none
@@ -78,7 +78,7 @@ type Msg
     | MouseDownOnDragZone String XY
     | MouseOverDropZone String
     | GotDragElement String Element
-    | GotDropElement String Element
+    | GotDragOverElement String Element
     | GotDomElementError Dom.Error
 
 
@@ -200,7 +200,7 @@ update message model =
                 _ ->
                     Debug.todo <| "Invalid State: GotDragElement" ++ Debug.toString model
 
-        GotDropElement domId element ->
+        GotDragOverElement domId element ->
             case model of
                 DraggingOverPending { dragId, startXY, currentXY, dragElement, overId } ->
                     if overId /= domId then
@@ -213,7 +213,7 @@ update message model =
                             , currentXY = currentXY
                             , dragElement = dragElement
                             , overId = overId
-                            , dropElement = element
+                            , overElement = element
                             }
 
                 _ ->
