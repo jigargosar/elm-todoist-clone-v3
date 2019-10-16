@@ -174,9 +174,23 @@ dragStart domId xy =
     MouseDownOnDraggable domId xy
 
 
-dragEvents : (Msg -> msg) -> String -> List (H.Attribute msg)
-dragEvents tagger domId =
-    [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
+dragEvents : (Msg -> msg) -> String -> Drag -> List (H.Attribute msg)
+dragEvents tagger domId drag =
+    case drag of
+        NoDrag ->
+            [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
+
+        DragPending record ->
+            []
+
+        Drag record ->
+            []
+
+        DragOverPending record ->
+            []
+
+        DragOver record ->
+            []
 
 
 dropEvents : (Msg -> msg) -> String -> Drag -> List (H.Attribute msg)
