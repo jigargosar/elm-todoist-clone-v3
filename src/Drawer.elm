@@ -349,35 +349,6 @@ sort toDomId drag list =
             newList
 
 
-sort_ toDomId drag list =
-    case Drag.dragDomIdInfo drag of
-        Nothing ->
-            list
-
-        Just { dragId, dropId } ->
-            let
-                indexOfDomId domId =
-                    list
-                        |> List.indexedMap Tuple.pair
-                        |> List.filter (Tuple.second >> toDomId >> (==) domId)
-                        |> List.head
-                        |> Maybe.map Tuple.first
-
-                newList =
-                    Maybe.map2
-                        (\dragIdx dropIdx ->
-                            SelectList.fromList list
-                                |> Maybe.andThen (SelectList.selectBy dragIdx)
-                                |> Maybe.map (SelectList.moveBy (dropIdx - dragIdx) >> SelectList.toList)
-                                |> Maybe.withDefault list
-                        )
-                        (indexOfDomId dragId)
-                        (indexOfDomId dropId)
-                        |> Maybe.withDefault list
-            in
-            newList
-
-
 navItem title iconColor iconName =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ i
