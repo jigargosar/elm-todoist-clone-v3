@@ -299,12 +299,10 @@ viewExpansionPanel panel lazyContent expansionPanelsState =
         { get, title } =
             panelSystem panel
     in
-    div []
-        (ExpansionPanelUI.view (ToggleExpansionPanel panel)
-            title
-            lazyContent
-            (get expansionPanelsState)
-        )
+    ExpansionPanelUI.view (ToggleExpansionPanel panel)
+        title
+        lazyContent
+        (get expansionPanelsState)
 
 
 view : (Msg -> msg) -> List Project -> Drawer -> { content : List (Html msg), portal : List (Html msg) }
@@ -313,29 +311,30 @@ view toMsg projectList ((Drawer internal) as model) =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
-        , viewExpansionPanel
-            Projects
-            (\_ ->
-                projectList
-                    |> projectsDnDSystem.rotate model
-                    |> List.indexedMap (navProjectItem model)
-            )
-            internal.expansionPanelsState
-        , labelsEPS.view
-            "Labels"
-            (labelsLens.get model
-                |> labelsDnDSystem.rotate model
-                |> List.indexedMap (navLabelItem model)
-            )
-            model
-        , filtersEPS.view
-            "Filters"
-            (filtersLens.get model
-                |> filtersDnDSystem.rotate model
-                |> List.indexedMap (navFilterItem model)
-            )
-            model
         ]
+            ++ viewExpansionPanel
+                Projects
+                (\_ ->
+                    projectList
+                        |> projectsDnDSystem.rotate model
+                        |> List.indexedMap (navProjectItem model)
+                )
+                internal.expansionPanelsState
+            ++ [ labelsEPS.view
+                    "Labels"
+                    (labelsLens.get model
+                        |> labelsDnDSystem.rotate model
+                        |> List.indexedMap (navLabelItem model)
+                    )
+                    model
+               , filtersEPS.view
+                    "Filters"
+                    (filtersLens.get model
+                        |> filtersDnDSystem.rotate model
+                        |> List.indexedMap (navFilterItem model)
+                    )
+                    model
+               ]
             |> List.map (H.map toMsg)
     , portal =
         navProjectGhostItem projectList model
