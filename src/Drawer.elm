@@ -316,7 +316,7 @@ view toMsg projectList ((Drawer internal) as model) =
                 (\_ ->
                     filtersLens.get model
                         |> (if Tuple.first internal.drag == Filters then
-                                sort filterDomId (Tuple.second internal.drag)
+                                sort (Tuple.second internal.drag)
 
                             else
                                 identity
@@ -333,7 +333,7 @@ view toMsg projectList ((Drawer internal) as model) =
     }
 
 
-sort toDomId drag list =
+sort drag list =
     case Drag.dragIdxInfo drag of
         Nothing ->
             list
