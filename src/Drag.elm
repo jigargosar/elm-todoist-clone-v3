@@ -36,15 +36,6 @@ type Drag
         , currentXY : XY
         , dragElement : Dom.Element
         }
-    | DragOverPending
-        { dragId : String
-        , dragIdx : Int
-        , startXY : XY
-        , currentXY : XY
-        , dragElement : Dom.Element
-        , dropId : String
-        , dropIdx : Int
-        }
     | DragOver
         { dragId : String
         , dragIdx : Int
@@ -70,9 +61,6 @@ dragElementAndXY drag =
         Drag { startXY, currentXY, dragElement } ->
             Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
-        DragOverPending { startXY, currentXY, dragElement } ->
-            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
-
         DragOver { startXY, currentXY, dragElement } ->
             Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
 
@@ -85,9 +73,6 @@ dragIdxInfo model =
 
         Drag { dragIdx } ->
             Just { dragIdx = dragIdx, dropIdx = dragIdx }
-
-        DragOverPending { dragIdx, dropIdx } ->
-            Just { dragIdx = dragIdx, dropIdx = dropIdx }
 
         DragOver { dragIdx, dropIdx } ->
             Just { dragIdx = dragIdx, dropIdx = dropIdx }
@@ -134,9 +119,6 @@ subscriptions drag =
         Drag _ ->
             getMouseUpOrMove
 
-        DragOverPending _ ->
-            getMouseUpOrMove
-
         DragOver _ ->
             getMouseUpOrMove
 
@@ -154,9 +136,6 @@ setCurrentXY xy model =
 
         Drag state ->
             setCurrentXYIn state |> Drag
-
-        DragOverPending state ->
-            setCurrentXYIn state |> DragOverPending
 
         DragOver state ->
             setCurrentXYIn state |> DragOver
@@ -176,9 +155,6 @@ dragEvents tagger idx domId drag =
         Drag _ ->
             []
 
-        DragOverPending _ ->
-            []
-
         DragOver _ ->
             []
 
@@ -194,9 +170,6 @@ dropEvents tagger idx domId model =
             []
 
         Drag _ ->
-            events
-
-        DragOverPending _ ->
             events
 
         DragOver _ ->
@@ -242,42 +215,7 @@ updateModel message model =
             ( model, getElement dragId (GotDragElement { dragId = dragId, dragIdx = dragIdx, startXY = xy }) )
 
         MouseOverDroppable idx domId ->
-            case model of
-                NoDrag ->
-                    Debug.todo "MouseOverDropZone, NotDragging"
-
-                Drag { dragId, dragIdx, startXY, currentXY, dragElement } ->
-                    ( DragOverPending
-                        { dragId = dragId
-                        , dragIdx = dragIdx
-                        , startXY = startXY
-                        , currentXY = currentXY
-                        , dragElement = dragElement
-                        , dropId = domId
-                        , dropIdx = idx
-                        }
-                    , Cmd.none
-                    )
-
-                DragOverPending state ->
-                    ( { state | dropId = domId } |> DragOverPending, Cmd.none )
-
-                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
-                    ( if domId /= dropId then
-                        DragOverPending
-                            { dragId = dragId
-                            , dragIdx = dragIdx
-                            , startXY = startXY
-                            , currentXY = currentXY
-                            , dragElement = dragElement
-                            , dropId = domId
-                            , dropIdx = idx
-                            }
-
-                      else
-                        model
-                    , Cmd.none
-                    )
+            ( model, getElement domId (GotDropElement idx domId) )
 
         GotDragElement { dragId, dragIdx, startXY } element ->
             ( Drag
@@ -292,43 +230,23 @@ updateModel message model =
 
         GotDropElement idx domId element ->
             ( case model of
-                DragOverPending { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
-                    if dropId /= domId then
-                        model
-
-                    else
-                        DragOver
-                            { dragId = dragId
-                            , dragIdx = dragIdx
-                            , startXY = startXY
-                            , currentXY = currentXY
-                            , dragElement = dragElement
-                            , dropId = domId
-                            , dropIdx = idx
-                            , dropElement = element
-                            }
-
-                DragOver { dragId, dragIdx, startXY, currentXY, dragElement, dropId } ->
-                    if dropId /= domId then
-                        model
-
-                    else
-                        DragOver
-                            { dragId = dragId
-                            , dragIdx = dragIdx
-                            , startXY = startXY
-                            , currentXY = currentXY
-                            , dragElement = dragElement
-                            , dropId = domId
-                            , dropIdx = idx
-                            , dropElement = element
-                            }
-
                 NoDrag ->
                     model
 
-                _ ->
-                    Debug.todo <| "Invalid State: GotDropElement" ++ Debug.toString model
+                Drag { dragId, dragIdx, startXY, currentXY, dragElement } ->
+                    DragOver
+                        { dragId = dragId
+                        , dragIdx = dragIdx
+                        , startXY = startXY
+                        , currentXY = currentXY
+                        , dragElement = dragElement
+                        , dropId = domId
+                        , dropIdx = idx
+                        , dropElement = element
+                        }
+
+                DragOver state ->
+                    DragOver { state | dropIdx = idx, dropId = domId, dropElement = element }
             , Cmd.none
             )
 
