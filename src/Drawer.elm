@@ -213,8 +213,7 @@ update toMsg updateProjectListOrder projectList message ((Drawer internal) as mo
                 ( nextDrag, dragCmd ) =
                     Drag.update (Drag panel) msg prevDrag
             in
-            ( { internal | drag = ( panel, nextDrag ) }
-                |> Drawer
+            ( { internal | drag = ( panel, nextDrag ) } |> Drawer
             , dragCmd |> Cmd.map toMsg
             )
 
