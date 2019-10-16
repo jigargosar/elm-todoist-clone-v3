@@ -311,6 +311,12 @@ view toMsg projectList ((Drawer internal) as model) =
             ++ viewExpansionPanel Filters
                 (\_ ->
                     filtersLens.get model
+                        |> (if Tuple.first internal.drag == Filters then
+                                Drag.sort (Tuple.second internal.drag)
+
+                            else
+                                identity
+                           )
                         |> List.indexedMap (navFilterItem2 model)
                 )
                 internal.expansionPanelsState
