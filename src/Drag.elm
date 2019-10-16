@@ -99,5 +99,8 @@ subscriptions drag =
         Dragging _ ->
             mouseSubscriptions
 
+        DraggingOverPending _ ->
+            mouseSubscriptions
+
         DraggingOver _ ->
             mouseSubscriptions
