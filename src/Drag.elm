@@ -179,13 +179,13 @@ update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
 update toMsg message model =
     let
         ( newModel, cmd ) =
-            updateInternal message model
+            updateHelp message model
     in
     ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateInternal : Msg -> Drag -> ( Drag, Cmd Msg )
-updateInternal message model =
+updateHelp : Msg -> Drag -> ( Drag, Cmd Msg )
+updateHelp message model =
     let
         getElement domId onSuccess =
             Dom.getElement domId
