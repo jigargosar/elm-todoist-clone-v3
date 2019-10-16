@@ -103,6 +103,7 @@ type Msg
     = ToggleExpansionPanel Panel Bool
     | DndPanel Panel DnD.Msg
     | DnDCommit Panel DnD.Info
+    | DragStart Panel Drag.Msg
 
 
 internalLens : Lens Internal Drawer
@@ -170,7 +171,7 @@ subscriptions toMsg model =
 
 
 update : (Msg -> msg) -> (List Project -> msg) -> List Project -> Msg -> Drawer -> ( Drawer, Cmd msg )
-update toMsg updateProjectListOrder projectList message model =
+update toMsg updateProjectListOrder projectList message ((Drawer internal) as model) =
     case message of
         DndPanel panel msg ->
             (dndPanelSystem panel).update msg model
@@ -195,6 +196,12 @@ update toMsg updateProjectListOrder projectList message model =
 
         ToggleExpansionPanel panel bool ->
             ( mapExpansionPanelsState ((panelSystem panel).set bool) model
+            , Cmd.none
+            )
+
+        DragStart panel msg ->
+            ( { internal | drag = Just ( panel, Drag.update msg Drag.initial ) }
+                |> Drawer
             , Cmd.none
             )
 
@@ -433,9 +440,9 @@ navFilterItem2 : Drawer -> Int -> FilterView -> Html Msg
 navFilterItem2 model idx { title, hue } =
     let
         domId =
-            "filter-dnd-element__" ++ title ++ "__" ++ String.fromInt idx
+            "filter-drag-element__" ++ title ++ "__" ++ String.fromInt idx
     in
-    viewItem (A.id domId :: []) [] title (Css.hsl hue 0.7 0.5) "filter_list"
+    viewItem (A.id domId :: Drag.dragEvents domId (DragStart Filters)) [] title (Css.hsl hue 0.7 0.5) "filter_list"
 
 
 maybeDragItem dndSys model items =

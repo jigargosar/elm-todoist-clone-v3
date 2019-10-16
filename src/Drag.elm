@@ -1,7 +1,10 @@
-module Drag exposing (Drag, XY, commands, dragStart, initial, pageXYDecoder, subscriptions, update)
+module Drag exposing (Drag, Msg, XY, commands, dragEvents, dragStart, initial, pageXYDecoder, subscriptions, update)
 
+import Basics.More exposing (flip)
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
+import Html.Styled as H
+import Html.Styled.Events as E
 import Json.Decode as JD
 import Task
 
@@ -150,6 +153,15 @@ setCurrentXY xy model =
 dragStart : String -> XY -> Msg
 dragStart domId xy =
     MouseDownOnDraggable domId xy
+
+
+dragEvents : String -> (Msg -> msg) -> List (H.Attribute msg)
+dragEvents domId tagger =
+    [ E.preventDefaultOn "mousedown" (pageXYDecoder |> JD.map (dragStart domId >> tagger >> pd)) ]
+
+
+pd =
+    flip Tuple.pair False
 
 
 update : Msg -> Drag -> Drag
