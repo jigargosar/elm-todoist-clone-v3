@@ -48,10 +48,10 @@ commands drag =
                     (\res ->
                         case res of
                             Err domError ->
-                                GotDomElementError domError
+                                GotDomElementError domId domError
 
                             Ok element ->
-                                onSuccess element
+                                onSuccess domId element
                     )
     in
     case drag of
@@ -76,9 +76,9 @@ type Msg
     | GlobalMouseUp
     | MouseDownOnDragZone String XY
     | MouseOverDropZone String
-    | GotDragElement Element
-    | GotDropElement Element
-    | GotDomElementError Dom.Error
+    | GotDragElement String Element
+    | GotDropElement String Element
+    | GotDomElementError String Dom.Error
 
 
 pageXYDecoder : JD.Decoder XY
@@ -152,10 +152,10 @@ update message model =
         MouseOverDropZone domId ->
             case model of
                 NotDragging ->
-                    NotDragging
+                    Debug.todo "MouseOverDropZone, NotDragging"
 
                 DragStartPending _ ->
-                    model
+                    Debug.todo "MouseOverDropZone, DragStartPending"
 
                 Dragging { dragId, startXY, currentXY, dragElement } ->
                     DraggingOverPending
@@ -182,11 +182,25 @@ update message model =
                     else
                         model
 
-        GotDragElement element ->
+        GotDragElement domId element ->
+            case model of
+                DragStartPending { dragId, startXY, currentXY } ->
+                    if dragId /= domId then
+                        Debug.todo "Invalid State, GotDragElement, DragStartPending"
+
+                    else
+                        Dragging
+                            { dragId = dragId
+                            , startXY = startXY
+                            , currentXY = currentXY
+                            , dragElement = element
+                            }
+
+                _ ->
+                    Debug.todo <| "Invalid State: GotDragElement" ++ Debug.toString model
+
+        GotDropElement domId element ->
             model
 
-        GotDropElement element ->
-            model
-
-        GotDomElementError error ->
+        GotDomElementError _ error ->
             NotDragging
