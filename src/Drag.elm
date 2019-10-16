@@ -17,20 +17,20 @@ type Drag
         , startXY : XY
         , currentXY : XY
         }
-    | Dragging
+    | Drag
         { dragId : String
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
         }
-    | DraggingOverPending
+    | DragOverPending
         { dragId : String
         , startXY : XY
         , currentXY : XY
         , dragElement : Dom.Element
         , dropId : String
         }
-    | DraggingOver
+    | DragOver
         { dragId : String
         , startXY : XY
         , currentXY : XY
@@ -62,13 +62,13 @@ commands drag =
         DragPending model ->
             getElement model.dragId GotDragElement
 
-        Dragging _ ->
+        Drag _ ->
             Cmd.none
 
-        DraggingOverPending model ->
+        DragOverPending model ->
             getElement model.dropId GotDroppableElement
 
-        DraggingOver _ ->
+        DragOver _ ->
             Cmd.none
 
 
@@ -105,13 +105,13 @@ subscriptions drag =
         DragPending _ ->
             mouseSubscriptions
 
-        Dragging _ ->
+        Drag _ ->
             mouseSubscriptions
 
-        DraggingOverPending _ ->
+        DragOverPending _ ->
             mouseSubscriptions
 
-        DraggingOver _ ->
+        DragOver _ ->
             mouseSubscriptions
 
 
@@ -129,14 +129,14 @@ setCurrentXY xy model =
         DragPending state ->
             setCurrentXYIn state |> DragPending
 
-        Dragging state ->
-            setCurrentXYIn state |> Dragging
+        Drag state ->
+            setCurrentXYIn state |> Drag
 
-        DraggingOverPending state ->
-            setCurrentXYIn state |> DraggingOverPending
+        DragOverPending state ->
+            setCurrentXYIn state |> DragOverPending
 
-        DraggingOver state ->
-            setCurrentXYIn state |> DraggingOver
+        DragOver state ->
+            setCurrentXYIn state |> DragOver
 
 
 update message model =
@@ -158,8 +158,8 @@ update message model =
                 DragPending _ ->
                     Debug.todo "MouseOverDropZone, DragStartPending"
 
-                Dragging { dragId, startXY, currentXY, dragElement } ->
-                    DraggingOverPending
+                Drag { dragId, startXY, currentXY, dragElement } ->
+                    DragOverPending
                         { dragId = dragId
                         , startXY = startXY
                         , currentXY = currentXY
@@ -167,12 +167,12 @@ update message model =
                         , dropId = domId
                         }
 
-                DraggingOverPending state ->
-                    { state | dropId = domId } |> DraggingOverPending
+                DragOverPending state ->
+                    { state | dropId = domId } |> DragOverPending
 
-                DraggingOver { dragId, startXY, currentXY, dragElement, dropId } ->
+                DragOver { dragId, startXY, currentXY, dragElement, dropId } ->
                     if domId /= dropId then
-                        DraggingOverPending
+                        DragOverPending
                             { dragId = dragId
                             , startXY = startXY
                             , currentXY = currentXY
@@ -190,7 +190,7 @@ update message model =
                         Debug.todo "Invalid State, GotDragElement, DragStartPending"
 
                     else
-                        Dragging
+                        Drag
                             { dragId = dragId
                             , startXY = startXY
                             , currentXY = currentXY
@@ -202,12 +202,12 @@ update message model =
 
         GotDroppableElement domId element ->
             case model of
-                DraggingOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
+                DragOverPending { dragId, startXY, currentXY, dragElement, dropId } ->
                     if dropId /= domId then
                         Debug.todo "Invalid State, GotDropElement, DraggingOverPending"
 
                     else
-                        DraggingOver
+                        DragOver
                             { dragId = dragId
                             , startXY = startXY
                             , currentXY = currentXY
