@@ -149,8 +149,28 @@ update message model =
         MouseDownOnDragZone dragId xy ->
             DragStartPending { dragId = dragId, startXY = xy, currentXY = xy }
 
-        MouseOverDropZone string ->
-            model
+        MouseOverDropZone domId ->
+            case model of
+                NotDragging ->
+                    NotDragging
+
+                DragStartPending _ ->
+                    model
+
+                Dragging { dragId, startXY, currentXY, dragElement } ->
+                    DraggingOverPending
+                        { dragId = dragId
+                        , startXY = startXY
+                        , currentXY = currentXY
+                        , dragElement = dragElement
+                        , dropId = domId
+                        }
+
+                DraggingOverPending record ->
+                    model
+
+                DraggingOver record ->
+                    model
 
         GotDragElement element ->
             model
@@ -159,4 +179,4 @@ update message model =
             model
 
         GotDomElementError error ->
-            model
+            NotDragging
