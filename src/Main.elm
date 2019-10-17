@@ -290,25 +290,31 @@ dropEvents panel idx domId =
     ]
 
 
-dragInfo =
-    Maybe.map
+dragInfoFor : Drawer.Panel -> Maybe PanelItemDnD -> Drawer.DragInfo
+dragInfoFor panel_ =
+    Maybe.andThen
         (\{ panel, idx, startXY, currentXY, el } ->
-            { panel = panel
-            , dragIdx = idx
-            , ghostStyles =
-                let
-                    { x, y } =
-                        addXY (subtractXY currentXY startXY)
-                            (subtractXY el.element el.viewport)
-                in
-                Css.batch
-                    [ Styles.absolute
-                    , Styles.top_0
-                    , Styles.left_0
-                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
-                    , Css.pointerEvents Css.none
-                    ]
-            }
+            if panel == panel_ then
+                Just
+                    { panel = panel
+                    , dragIdx = idx
+                    , ghostStyles =
+                        let
+                            { x, y } =
+                                addXY (subtractXY currentXY startXY)
+                                    (subtractXY el.element el.viewport)
+                        in
+                        Css.batch
+                            [ Styles.absolute
+                            , Styles.top_0
+                            , Styles.left_0
+                            , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                            , Css.pointerEvents Css.none
+                            ]
+                    }
+
+            else
+                Nothing
         )
 
 
@@ -321,7 +327,7 @@ view model =
             , dragEvents = dragEvents
             , dropEvents = dropEvents
             , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
-            , dragInfo = dragInfo model.panelItemDnD
+            , dragInfo = \panel -> dragInfoFor panel model.panelItemDnD
             , projectList = ProjectCollection.sorted model.projectCollection
             , sort = \p l -> sort p l model.panelItemDnD
             }

@@ -90,7 +90,7 @@ type alias Config msg =
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , dropEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
-    , dragInfo : DragInfo
+    , dragInfo : Panel -> DragInfo
     , projectList : List Project
     , sort : Panel -> List NavItemViewModel -> List NavItemViewModel
     }
@@ -166,17 +166,6 @@ getPanelContentPortalHelp :
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortalHelp config panel toNavItem list =
     let
-        panelDragInfo =
-            config.dragInfo
-                |> Maybe.andThen
-                    (\i ->
-                        if i.panel == panel then
-                            Just i
-
-                        else
-                            Nothing
-                    )
-
         viewDnDNavItem idx navItem =
             let
                 domId =
@@ -201,7 +190,7 @@ getPanelContentPortalHelp config panel toNavItem list =
             )
             (config.isPanelExpanded panel)
     , portal =
-        panelDragInfo
+        config.dragInfo panel
             |> Maybe.andThen
                 (\{ dragIdx, ghostStyles } ->
                     List.drop dragIdx list
