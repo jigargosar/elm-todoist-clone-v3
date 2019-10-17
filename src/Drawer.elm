@@ -3,7 +3,7 @@ module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, togg
 import Css
 import ExpansionPanelUI
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (class, css)
+import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Project exposing (Project)
 import ProjectId
@@ -144,7 +144,7 @@ getPanelViewModel config projectList expansionPanels panel =
                                     domId =
                                         "panel-item__" ++ navItem.id
                                 in
-                                viewNavItemWithAttrs (dragEvents idx domId) navItem
+                                viewNavItemWithAttrs (A.id domId :: dragEvents idx domId) navItem
                            )
                 )
                 list
