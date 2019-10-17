@@ -152,7 +152,9 @@ update message model =
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
         ToggleExpansionPanel panel ->
-            ( { model | drawerExpansionPanels = toggleDrawerExpansionPanel panel model.drawerExpansionPanels }, Cmd.none )
+            ( { model | drawerExpansionPanels = toggleDrawerExpansionPanel panel model.drawerExpansionPanels }
+            , Cmd.none
+            )
 
 
 toggleDrawerExpansionPanel panel model =
