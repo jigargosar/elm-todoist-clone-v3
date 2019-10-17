@@ -190,6 +190,13 @@ getPanelLazyContentAndPortal :
     -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
 getPanelLazyContentAndPortal config projectList dragInfo panel =
     let
+        filteredDragInfo =
+            dragInfo
+                |> Maybe.map List.singleton
+                |> Maybe.withDefault []
+                |> List.filter (\i -> i.panel == panel)
+                |> List.head
+
         viewDnDNavItem idx navItem =
             let
                 domId =
@@ -205,9 +212,13 @@ getPanelLazyContentAndPortal config projectList dragInfo panel =
                 \_ ->
                     List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
             , portal =
-                List.drop 0 list
-                    |> List.head
-                    |> Maybe.map (toNavItem >> viewNavItem [] [] >> List.singleton)
+                filteredDragInfo
+                    |> Maybe.andThen
+                        (\{ dragIdx, ghostStyles } ->
+                            List.drop dragIdx list
+                                |> List.head
+                                |> Maybe.map (toNavItem >> viewNavItem [] [ ghostStyles ] >> List.singleton)
+                        )
                     |> Maybe.withDefault []
             }
     in
