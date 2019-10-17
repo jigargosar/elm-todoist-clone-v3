@@ -73,8 +73,9 @@ type alias FilterView =
 view :
     { onToggleExpansionPanel : Panel -> msg }
     -> List Project
+    -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
-view { onToggleExpansionPanel } projectList =
+view { onToggleExpansionPanel } projectList eps =
     { content =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
@@ -85,20 +86,20 @@ view { onToggleExpansionPanel } projectList =
                 (\_ ->
                     projectList |> List.map navProjectItem
                 )
-                True
+                eps.projectsExpanded
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Labels)
                 "Labels"
                 (\_ ->
                     labelList |> List.map navLabelItem
                 )
-                True
+                eps.labelsExpanded
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Filters)
                 "Filters"
                 (\_ ->
                     filterList
                         |> List.map navFilterItem
                 )
-                True
+                eps.filtersExpanded
     , portal = []
     }
 

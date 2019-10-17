@@ -148,6 +148,7 @@ view model =
         , drawer =
             Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel }
                 (ProjectCollection.sorted model.projectCollection)
+                model.drawerExpansionPanels
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
