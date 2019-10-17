@@ -242,9 +242,12 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
-            Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel, dragEvents = dragEvents }
+            Drawer.view
+                { onToggleExpansionPanel = ToggleDrawerExpansionPanel
+                , dragEvents = dragEvents
+                , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
+                }
                 (ProjectCollection.sorted model.projectCollection)
-                model.drawerExpansionPanels
                 (model.panelItemDnD
                     |> Maybe.map
                         (\{ panel, idx, startXY, currentXY, el } ->

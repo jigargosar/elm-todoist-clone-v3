@@ -1,4 +1,4 @@
-module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, toggleExpansionPanel, view)
+module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, isPanelExpanded, toggleExpansionPanel, view)
 
 import Css
 import ExpansionPanelUI
@@ -84,16 +84,16 @@ type alias FilterView =
 view :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
+    , isPanelExpanded : Panel -> Bool
     }
     -> List Project
-    -> ExpansionPanels
     -> Maybe { x | panel : Panel, dragIdx : Int, ghostStyles : Style }
     -> { content : List (Html msg), portal : List (Html msg) }
-view config projectList eps dragInfo =
+view config projectList dragInfo =
     let
         viewPanel_ : Panel -> List (Html msg)
-        viewPanel_ =
-            getPanelViewModel config projectList eps >> viewPanel
+        viewPanel_ panel =
+            getPanelViewModel config projectList panel |> viewPanel config panel
 
         ghostItem : Maybe (Html msg)
         ghostItem =
@@ -153,12 +153,12 @@ type alias PanelViewModel msg =
 getPanelViewModel :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
+    , isPanelExpanded : Panel -> Bool
     }
     -> List Project
-    -> ExpansionPanels
     -> Panel
     -> PanelViewModel msg
-getPanelViewModel config projectList expansionPanels panel =
+getPanelViewModel config projectList panel =
     let
         toggleExpansion =
             config.onToggleExpansionPanel panel
@@ -167,7 +167,7 @@ getPanelViewModel config projectList expansionPanels panel =
             config.dragEvents panel
 
         isExpanded =
-            isPanelExpanded panel expansionPanels
+            config.isPanelExpanded panel
 
         lazyContentConfig =
             { dragEvents = dragEvents }
@@ -213,12 +213,19 @@ panelLazyContent config func list _ =
         list
 
 
-viewPanel : PanelViewModel msg -> List (Html msg)
-viewPanel { title, toggleExpansion, isExpanded, lazyContent } =
-    ExpansionPanelUI.view toggleExpansion
+viewPanel :
+    { onToggleExpansionPanel : Panel -> msg
+    , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
+    , isPanelExpanded : Panel -> Bool
+    }
+    -> Panel
+    -> PanelViewModel msg
+    -> List (Html msg)
+viewPanel config panel { title, lazyContent } =
+    ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
         title
         lazyContent
-        isExpanded
+        (config.isPanelExpanded panel)
 
 
 type alias NavItemViewModel =
