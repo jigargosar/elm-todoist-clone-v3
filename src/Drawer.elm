@@ -159,14 +159,8 @@ getPanelViewModel :
     -> PanelViewModel msg
 getPanelViewModel config projectList panel =
     let
-        toggleExpansion =
-            config.onToggleExpansionPanel panel
-
         dragEvents =
             config.dragEvents panel
-
-        isExpanded =
-            config.isPanelExpanded panel
 
         lazyContentConfig =
             { dragEvents = dragEvents }
