@@ -1,4 +1,4 @@
-module Layout exposing (Layout, Msg, Parts, initial, openDrawer, update, view)
+module Layout exposing (Layout, Msg, Parts, initial, update, view)
 
 import Css
 import Html.Styled exposing (..)
@@ -26,11 +26,6 @@ type Msg
     | CloseModalDrawer
 
 
-openDrawer : Msg
-openDrawer =
-    OpenModalDrawer
-
-
 privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.Lens small Layout
 privateLens =
     Lens.system >> Lens.compose (Lens.system { get = \(Layout p) -> p, set = \s _ -> Layout s })
@@ -42,7 +37,7 @@ drawerModalL =
 
 
 update : (Msg -> msg) -> Msg -> Layout -> ( Layout, Cmd msg )
-update toMsg message model =
+update _ message model =
     case message of
         OpenModalDrawer ->
             ( drawerModalL.set True model, Cmd.none )
@@ -58,8 +53,8 @@ type alias Parts msg =
     }
 
 
-view : (Msg -> msg) -> Parts msg -> Layout -> Html msg
-view toMsg { appbar, drawer, content } layout =
+view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
+view config { appbar, drawer, content } isDrawerModalOpen =
     styled div
         [ bgBody, h_100 ]
         [ class "sans-serif" ]
@@ -73,8 +68,8 @@ view toMsg { appbar, drawer, content } layout =
                 drawer.content
             , styledMain [] content
             ]
-         , viewModalDrawer toMsg
-            layout
+         , viewModalDrawer config.closeDrawerModal
+            isDrawerModalOpen
             -- TEST OVERFLOW SCROLL
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
             drawer.content
@@ -130,11 +125,7 @@ styledPermanentDrawer drawer =
         [ div [ css [ w_sidebar, pb 5 ] ] drawer ]
 
 
-viewModalDrawer toMsg layout drawer =
-    let
-        drawerModalOpen =
-            drawerModalL.get layout
-    in
+viewModalDrawer closeDrawerModal isDrawerModalOpen drawerContent =
     styled div
         [ z_ 10
         , batch [ fixed ]
@@ -143,17 +134,17 @@ viewModalDrawer toMsg layout drawer =
         [ styled div
             [ batch [ fixed, absFill ]
             , bg (Css.hsla 0 0 0 0.3)
-            , styleIf (not drawerModalOpen) [ dn ]
+            , styleIf (not isDrawerModalOpen) [ dn ]
             , ns [ dn ]
             ]
-            [ onClick <| toMsg CloseModalDrawer ]
+            [ onClick closeDrawerModal ]
             []
         , styled aside
             [ batch [ fixed, top_0, bottom_0, w_sidebar, max_vw 90 ]
             , bgWhite
             , commonTransitions
             , batch <|
-                if drawerModalOpen then
+                if isDrawerModalOpen then
                     [ visible, slideInDrawer ]
 
                 else
@@ -163,7 +154,7 @@ viewModalDrawer toMsg layout drawer =
             , Css.overflowX Css.hidden
             ]
             [ class "shadow-1" ]
-            [ div [ css [ w_sidebar, max_vw 90, pb 5 ] ] drawer ]
+            [ div [ css [ w_sidebar, max_vw 90, pb 5 ] ] drawerContent ]
         ]
 
 

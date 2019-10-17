@@ -36,6 +36,7 @@ type alias Flags =
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
+    , isDrawerModalOpen : Bool
     , layout : Layout
     , drawer : Drawer
     }
@@ -106,6 +107,7 @@ init flags =
         initial =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
+            , isDrawerModalOpen = False
             , layout = Layout.initial
             , drawer = drawerSystem.initial
             }
@@ -136,29 +138,37 @@ subscriptions model =
 
 type Msg
     = NoOp
-    | Toggle TodoId
+    | ToggleTodoCompleted TodoId
+    | OpenDrawerModal
+    | CloseDrawerModal
     | Layout Layout.Msg
     | Drawer Drawer.Msg
     | UpdateProjectSortOrder (List Project)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message =
+update message model =
     case message of
         NoOp ->
-            Return.singleton
+            Return.singleton model
 
-        Toggle todoId ->
-            todoDictSystem.toggle todoId
+        ToggleTodoCompleted todoId ->
+            todoDictSystem.toggle todoId model
+
+        OpenDrawerModal ->
+            ( { model | isDrawerModalOpen = True }, Cmd.none )
+
+        CloseDrawerModal ->
+            ( { model | isDrawerModalOpen = False }, Cmd.none )
 
         Layout msg ->
-            updateLayout msg
+            updateLayout msg model
 
         Drawer msg ->
-            updateDrawer msg
+            updateDrawer msg model
 
         UpdateProjectSortOrder projectList ->
-            projectsSystem.updateSortOrder projectList
+            projectsSystem.updateSortOrder projectList model
 
 
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
@@ -178,16 +188,16 @@ updateLayout msg big =
 
 view : Model -> Html Msg
 view model =
-    Layout.view Layout
-        { appbar = Appbar.view { onMenu = Layout Layout.openDrawer }
+    Layout.view { closeDrawerModal = CloseDrawerModal }
+        { appbar = Appbar.view { onMenu = OpenDrawerModal }
         , drawer = drawerSystem.view model
         , content = mainView model
         }
-        model.layout
+        model.isDrawerModalOpen
 
 
 mainView model =
-    [ Todo.viewList { toggle = Toggle } (todoDictSystem.sortedByIdx model)
+    [ Todo.viewList { toggle = ToggleTodoCompleted } (todoDictSystem.sortedByIdx model)
     ]
 
 
