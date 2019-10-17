@@ -121,8 +121,8 @@ type alias PanelViewModel msg =
     }
 
 
-getPanelViewModel : Panel -> List Project -> (Panel -> msg) -> ExpansionPanels -> PanelViewModel msg
-getPanelViewModel panel projectList onToggleExpansionPanel expansionPanels =
+getPanelViewModel : List Project -> (Panel -> msg) -> ExpansionPanels -> Panel -> PanelViewModel msg
+getPanelViewModel projectList onToggleExpansionPanel expansionPanels panel =
     let
         toggleExpansion =
             onToggleExpansionPanel panel
