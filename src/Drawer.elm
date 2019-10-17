@@ -141,63 +141,63 @@ panelTitle panel =
             "Filters"
 
 
+contentPortal : Config msg -> Panel -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
+contentPortal config panel toNavItem list =
+    let
+        filteredDragInfo =
+            config.dragInfo
+                |> Maybe.map List.singleton
+                |> Maybe.withDefault []
+                |> List.filter (\i -> i.panel == panel)
+                |> List.head
+
+        viewDnDNavItem idx navItem =
+            let
+                domId =
+                    "panel-dnd-item__" ++ navItem.id
+
+                dragEvents =
+                    config.dragEvents panel idx domId
+
+                dropEvents =
+                    config.dropEvents panel idx domId
+            in
+            viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
+    in
+    { content =
+        ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
+            (panelTitle panel)
+            (\_ ->
+                List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
+            )
+            (config.isPanelExpanded panel)
+    , portal =
+        filteredDragInfo
+            |> Maybe.andThen
+                (\{ dragIdx, ghostStyles } ->
+                    List.drop dragIdx list
+                        |> List.head
+                        |> Maybe.map (toNavItem >> viewNavItem [] [ ghostStyles ] >> List.singleton)
+                )
+            |> Maybe.withDefault []
+    }
+
+
 getPanelContentPortal :
     Config msg
     -> (List b -> List b)
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortal config sort panel =
-    let
-        contentPortal : (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
-        contentPortal toNavItem list =
-            let
-                filteredDragInfo =
-                    config.dragInfo
-                        |> Maybe.map List.singleton
-                        |> Maybe.withDefault []
-                        |> List.filter (\i -> i.panel == panel)
-                        |> List.head
-
-                viewDnDNavItem idx navItem =
-                    let
-                        domId =
-                            "panel-dnd-item__" ++ navItem.id
-
-                        dragEvents =
-                            config.dragEvents panel idx domId
-
-                        dropEvents =
-                            config.dropEvents panel idx domId
-                    in
-                    viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
-            in
-            { content =
-                ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
-                    (panelTitle panel)
-                    (\_ ->
-                        List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
-                    )
-                    (config.isPanelExpanded panel)
-            , portal =
-                filteredDragInfo
-                    |> Maybe.andThen
-                        (\{ dragIdx, ghostStyles } ->
-                            List.drop dragIdx list
-                                |> List.head
-                                |> Maybe.map (toNavItem >> viewNavItem [] [ ghostStyles ] >> List.singleton)
-                        )
-                    |> Maybe.withDefault []
-            }
-    in
     case panel of
         Projects ->
-            contentPortal projectToNavItem config.projectList
+            contentPortal config panel projectToNavItem config.projectList
 
         Labels ->
-            contentPortal labelToNavItem labelList
+            contentPortal config panel labelToNavItem labelList
 
         Filters ->
-            contentPortal filterToNavItem filterList
+            contentPortal config panel filterToNavItem filterList
 
 
 type alias NavItemViewModel =
