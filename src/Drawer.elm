@@ -165,7 +165,7 @@ getPanelLazyContentAndPortal config projectList dragInfo panel =
                 dragEvents =
                     config.dragEvents panel idx domId
             in
-            viewNavItem (A.id domId :: dragEvents) [] navItem
+            viewNavItem (A.id domId :: dragEvents) [ Css.property "user-select" "none" ] navItem
 
         lazyContentAndPortal toNavItem list =
             { lazyContent =
