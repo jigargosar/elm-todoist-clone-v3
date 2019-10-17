@@ -167,7 +167,7 @@ getPanelContentPortal config panel =
             in
             viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
 
-        contentPortal : (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html b) }
+        contentPortal : (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
         contentPortal toNavItem list =
             { content =
                 ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
