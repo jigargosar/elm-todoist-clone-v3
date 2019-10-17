@@ -40,31 +40,6 @@ type alias Model =
     }
 
 
-projectsSystem =
-    let
-        lens : Lens.Lens ProjectCollection Model
-        lens =
-            Lens.system { get = .projectCollection, set = \s b -> { b | projectCollection = s } }
-    in
-    { init =
-        \encoded ->
-            let
-                func old =
-                    case ProjectCollection.fromEncodedList encoded of
-                        Ok new ->
-                            ( new, Cmd.none )
-
-                        Err e ->
-                            ( old, logError <| JD.errorToString e )
-            in
-            Lens.update lens func
-    , sorted = lens.get >> ProjectCollection.sorted
-    , updateSortOrder =
-        \pl big ->
-            ( Lens.map lens (ProjectCollection.updateSortOrder pl) big, Cmd.none )
-    }
-
-
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
@@ -80,20 +55,33 @@ init flags =
         |> Return.andThen
             (Return.pipelK
                 [ initTodoDict flags.todoList
-                , projectsSystem.init flags.projectList
+                , initProjectCollection flags.projectList
                 ]
             )
+
+
+initProjectCollection encodedProjectList model =
+    let
+        ( newProjectCollection, cmd ) =
+            case ProjectCollection.fromEncodedList encodedProjectList of
+                Ok new ->
+                    ( new, Cmd.none )
+
+                Err e ->
+                    ( model.projectCollection, logError <| JD.errorToString e )
+    in
+    ( { model | projectCollection = newProjectCollection }, cmd )
 
 
 initTodoDict encodedTodoList model =
     let
         ( newTodoDict, cmd ) =
             case TodoDict.fromEncodedList encodedTodoList of
-                Ok todoDict_ ->
-                    ( todoDict_, Cmd.none )
+                Ok new ->
+                    ( new, Cmd.none )
 
                 Err e ->
-                    ( TodoDict.initial, logError <| JD.errorToString e )
+                    ( model.todoDict, logError <| JD.errorToString e )
     in
     ( { model | todoDict = newTodoDict }, cmd )
 
