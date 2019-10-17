@@ -192,21 +192,6 @@ getPanelContentPortal config panel =
             contentPortal filterToNavItem filterList
 
 
-viewPanel :
-    { onToggleExpansionPanel : Panel -> msg
-    , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
-    , isPanelExpanded : Panel -> Bool
-    }
-    -> Panel
-    -> (() -> List (Html msg))
-    -> List (Html msg)
-viewPanel config panel lazyContent =
-    ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
-        (panelTitle panel)
-        lazyContent
-        (config.isPanelExpanded panel)
-
-
 type alias NavItemViewModel =
     { id : String
     , title : String

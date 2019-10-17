@@ -160,6 +160,7 @@ type Msg
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelItemMouseDown Drawer.Panel Int String XY
+    | DrawerPanelItemMouseOver Drawer.Panel Int String
     | GotDrawerPanelItemDragElement Drawer.Panel Int String XY Element
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
@@ -207,6 +208,20 @@ update message model =
                     )
             )
 
+        DrawerPanelItemMouseOver panel idx domId ->
+            case model.panelItemDnD of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just dnd ->
+                    if dnd.panel == panel then
+                        ( { model | panelItemDnD = Just { dnd | over = Just { idx = idx, id = domId } } }
+                        , Cmd.none
+                        )
+
+                    else
+                        ( model, Cmd.none )
+
         GotDrawerPanelItemDragElement panel idx domId xy el ->
             ( { model
                 | panelItemDnD = PanelItemDnD panel idx domId el xy xy Nothing |> Just
@@ -240,6 +255,12 @@ dragEvents panel idx domId =
             |> JD.map (DrawerPanelItemMouseDown panel idx domId)
             |> JD.map (flip Tuple.pair True)
         )
+    ]
+
+
+dropEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
+dropEvents panel idx domId =
+    [ E.onMouseOver (DrawerPanelItemMouseOver panel idx domId)
     ]
 
 
