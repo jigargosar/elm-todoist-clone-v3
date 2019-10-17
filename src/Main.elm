@@ -2,13 +2,12 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Drawer exposing (Drawer)
+import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
 import Lens
-import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Todo exposing (Todo)
@@ -37,43 +36,7 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
-    , drawer : Drawer
     }
-
-
-drawerSystem : Drawer.System Msg Model
-drawerSystem =
-    Drawer.system Drawer
-        { onProjectListSorted = UpdateProjectSortOrder }
-        projectsSystem.sorted
-        (Lens.system { get = .drawer, set = \s b -> { b | drawer = s } })
-
-
-
---todoDictSystem =
---    let
---        todoDictL : Lens.Lens TodoDict Model
---        todoDictL =
---            Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
---    in
---    { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
---    , init =
---        \encoded big ->
---            let
---                res =
---                    case TodoDict.fromEncodedList encoded of
---                        Ok todoDict_ ->
---                            ( todoDict_, Cmd.none )
---
---                        Err e ->
---                            ( TodoDict.initial, logError <| JD.errorToString e )
---            in
---            res |> Tuple.mapFirst (\s -> todoDictL.set s big)
---    , toggle =
---        \todoId big ->
---            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) big, Cmd.none )
---    }
---
 
 
 projectsSystem =
@@ -109,7 +72,6 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
-            , drawer = drawerSystem.initial
             }
     in
     Return.singleton initial
@@ -139,10 +101,9 @@ initTodoDict encodedTodoList model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
-        [ drawerSystem.subscriptions model
-        ]
+        []
 
 
 
@@ -154,8 +115,7 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | Drawer Drawer.Msg
-    | UpdateProjectSortOrder (List Project)
+    | ToggleExpansionPanel Drawer.Panel Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -177,16 +137,8 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        Drawer msg ->
-            updateDrawer msg model
-
-        UpdateProjectSortOrder projectList ->
-            projectsSystem.updateSortOrder projectList model
-
-
-updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
-updateDrawer msg model =
-    drawerSystem.update msg model
+        ToggleExpansionPanel _ _ ->
+            ( model, Cmd.none )
 
 
 
@@ -197,7 +149,7 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = drawerSystem.view model
+        , drawer = Drawer.view { toggleExpansionPanel = ToggleExpansionPanel } (ProjectCollection.sorted model.projectCollection)
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
