@@ -36,6 +36,9 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
+    , isProjectPanelExpanded : Bool
+    , isLabelPanelExpanded : Bool
+    , isFiltersPanelExpanded : Bool
     }
 
 
@@ -72,6 +75,9 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
+            , isProjectPanelExpanded = True
+            , isLabelPanelExpanded = True
+            , isFiltersPanelExpanded = True
             }
     in
     Return.singleton initial
