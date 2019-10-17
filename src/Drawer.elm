@@ -152,7 +152,6 @@ type alias PanelViewModel msg =
 type alias PanelContentViewModel msg a =
     { list : List a
     , toNavItem : a -> NavItemViewModel
-    , dragEvents : Int -> String -> List (H.Attribute msg)
     , panelDomIdPrefix : String
     , panel : Panel
     }
