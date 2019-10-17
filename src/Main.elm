@@ -124,8 +124,8 @@ subscriptions model =
         [ case model.panelItemDnD of
             Just _ ->
                 Sub.batch
-                    [ Browser.Events.onMouseMove (pageXYDecoder |> JD.map GlobalMouseMove)
-                    , Browser.Events.onMouseUp (JD.succeed GlobalMouseUp)
+                    [ Browser.Events.onMouseMove (pageXYDecoder |> JD.map BrowserMouseMove)
+                    , Browser.Events.onMouseUp (JD.succeed BrowserMouseUp)
                     ]
 
             Nothing ->
@@ -146,8 +146,8 @@ type Msg
     | DrawerPanelItemMouseDown Drawer.Panel Int String XY
     | GotDrawerPanelItemDragElement Drawer.Panel Int String XY Element
     | GotDrawerPanelItemDomError Dom.Error
-    | GlobalMouseMove XY
-    | GlobalMouseUp
+    | BrowserMouseMove XY
+    | BrowserMouseUp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -201,7 +201,7 @@ update message model =
         GotDrawerPanelItemDomError (Dom.NotFound domId) ->
             ( { model | panelItemDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
 
-        GlobalMouseMove xy ->
+        BrowserMouseMove xy ->
             case model.panelItemDnD of
                 Just dnd ->
                     ( { model | panelItemDnD = Just { dnd | currentXY = xy } }, Cmd.none )
@@ -209,7 +209,7 @@ update message model =
                 Nothing ->
                     ( model, Cmd.none )
 
-        GlobalMouseUp ->
+        BrowserMouseUp ->
             ( { model | panelItemDnD = Nothing }, Cmd.none )
 
 
