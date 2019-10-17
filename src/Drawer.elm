@@ -189,8 +189,11 @@ getPanelLazyContentAndPortal config projectList panel =
             let
                 domId =
                     "panel-dnd-item__" ++ navItem.id
+
+                dragEvents =
+                    config.dragEvents panel idx domId
             in
-            viewNavItem (A.id domId :: config.dragEvents panel idx domId) [] navItem
+            viewNavItem (A.id domId :: dragEvents) [] navItem
 
         lazyContentAndPortal toNavItem list =
             { lazyContent =
