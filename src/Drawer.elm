@@ -93,7 +93,11 @@ view config projectList dragInfo =
     let
         viewPanel_ : Panel -> List (Html msg)
         viewPanel_ panel =
-            getPanelLazyContent config projectList panel |> viewPanel config panel
+            let
+                { lazyContent } =
+                    getPanelContent config projectList panel
+            in
+            viewPanel config panel lazyContent
 
         ghostItem : Maybe (Html msg)
         ghostItem =
@@ -163,50 +167,51 @@ getPanelTitle panel =
             "Filters"
 
 
-getPanelLazyContent :
+getPanelContent :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     }
     -> List Project
     -> Panel
-    -> ()
-    -> List (Html msg)
-getPanelLazyContent config projectList panel =
+    -> { lazyContent : () -> List (Html msg) }
+getPanelContent config projectList panel =
     let
-        lazyContent =
-            panelLazyContent { dragEvents = config.dragEvents panel }
+        getContent =
+            getPanelContentHelp { dragEvents = config.dragEvents panel }
     in
     case panel of
         Projects ->
-            lazyContent projectToNavItem projectList
+            getContent projectToNavItem projectList
 
         Labels ->
-            lazyContent labelToNavItem labelList
+            getContent labelToNavItem labelList
 
         Filters ->
-            lazyContent filterToNavItem filterList
+            getContent filterToNavItem filterList
 
 
-panelLazyContent :
+getPanelContentHelp :
     { dragEvents : Int -> String -> List (H.Attribute msg) }
     -> (a -> NavItemViewModel)
     -> List a
-    -> ()
-    -> List (Html msg)
-panelLazyContent config func list _ =
-    List.indexedMap
-        (\idx ->
-            func
-                >> (\navItem ->
-                        let
-                            domId =
-                                "panel-dnd-item__" ++ navItem.id
-                        in
-                        viewNavItem (A.id domId :: config.dragEvents idx domId) [] navItem
-                   )
-        )
-        list
+    -> { lazyContent : () -> List (Html msg) }
+getPanelContentHelp config func list =
+    { lazyContent =
+        \_ ->
+            List.indexedMap
+                (\idx ->
+                    func
+                        >> (\navItem ->
+                                let
+                                    domId =
+                                        "panel-dnd-item__" ++ navItem.id
+                                in
+                                viewNavItem (A.id domId :: config.dragEvents idx domId) [] navItem
+                           )
+                )
+                list
+    }
 
 
 viewPanel :
