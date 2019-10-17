@@ -38,7 +38,7 @@ type alias XY =
     { x : Float, y : Float }
 
 
-type alias PanelItemDragState =
+type alias PanelItemDnD =
     { panel : Drawer.Panel
     , idx : Int
     , id : String
@@ -54,7 +54,7 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , panelItemDnD : Maybe PanelItemDragState
+    , panelItemDnD : Maybe PanelItemDnD
     }
 
 
@@ -194,7 +194,7 @@ update message model =
         GotDrawerPanelItemDragElement panel idx domId xy el ->
             ( { model
                 | panelItemDnD =
-                    PanelItemDragState panel idx domId el xy xy Nothing
+                    PanelItemDnD panel idx domId el xy xy Nothing
                         |> Just
               }
             , Cmd.none
