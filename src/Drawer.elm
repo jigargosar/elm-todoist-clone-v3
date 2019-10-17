@@ -97,7 +97,7 @@ view config projectList dragInfo =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ =
-            getPanelLazyContentAndPortal config projectList dragInfo
+            getPanelContentPortal config projectList dragInfo
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -135,7 +135,7 @@ panelTitle panel =
             "Filters"
 
 
-getPanelLazyContentAndPortal :
+getPanelContentPortal :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
@@ -144,7 +144,7 @@ getPanelLazyContentAndPortal :
     -> DragInfo
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
-getPanelLazyContentAndPortal config projectList dragInfo panel =
+getPanelContentPortal config projectList dragInfo panel =
     let
         filteredDragInfo =
             dragInfo
