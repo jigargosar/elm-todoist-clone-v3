@@ -261,11 +261,15 @@ sort : Drawer.Panel -> List a -> Maybe PanelItemDnD -> List a
 sort panel items =
     Maybe.andThen
         (\dnd ->
-            dnd.over
-                |> Maybe.map
-                    (\over ->
-                        rotate dnd.idx over.idx items
-                    )
+            if dnd.panel == panel then
+                dnd.over
+                    |> Maybe.map
+                        (\over ->
+                            rotate dnd.idx over.idx items
+                        )
+
+            else
+                Nothing
         )
         >> Maybe.withDefault items
 
