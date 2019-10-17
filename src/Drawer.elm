@@ -88,8 +88,9 @@ view :
     }
     -> List Project
     -> ExpansionPanels
+    -> Maybe { x | panel : Panel, dragIdx : Int }
     -> { content : List (Html msg), portal : List (Html msg) }
-view config projectList eps =
+view config projectList eps dragInfo =
     let
         viewPanel_ : Panel -> List (Html msg)
         viewPanel_ =

@@ -234,6 +234,7 @@ view model =
             Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel, dragEvents = dragEvents }
                 (ProjectCollection.sorted model.projectCollection)
                 model.drawerExpansionPanels
+                (model.panelItemDnD |> Maybe.map (\{ panel, idx } -> { panel = panel, dragIdx = idx }))
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
