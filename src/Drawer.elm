@@ -149,7 +149,7 @@ type alias PanelViewModel msg =
     }
 
 
-type alias PanelContentViewModel msg a =
+type alias PanelContentViewModel a =
     { list : List a
     , toNavItem : a -> NavItemViewModel
     , panelDomIdPrefix : String
