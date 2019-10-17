@@ -148,28 +148,29 @@ getPanelContentPortal :
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortal config sort panel =
     let
-        filteredDragInfo =
-            config.dragInfo
-                |> Maybe.map List.singleton
-                |> Maybe.withDefault []
-                |> List.filter (\i -> i.panel == panel)
-                |> List.head
-
-        viewDnDNavItem idx navItem =
-            let
-                domId =
-                    "panel-dnd-item__" ++ navItem.id
-
-                dragEvents =
-                    config.dragEvents panel idx domId
-
-                dropEvents =
-                    config.dropEvents panel idx domId
-            in
-            viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
-
         contentPortal : (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
         contentPortal toNavItem list =
+            let
+                filteredDragInfo =
+                    config.dragInfo
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+                        |> List.filter (\i -> i.panel == panel)
+                        |> List.head
+
+                viewDnDNavItem idx navItem =
+                    let
+                        domId =
+                            "panel-dnd-item__" ++ navItem.id
+
+                        dragEvents =
+                            config.dragEvents panel idx domId
+
+                        dropEvents =
+                            config.dropEvents panel idx domId
+                    in
+                    viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
+            in
             { content =
                 ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
                     (panelTitle panel)
