@@ -93,7 +93,7 @@ view config projectList dragInfo =
     let
         viewPanel_ : Panel -> List (Html msg)
         viewPanel_ panel =
-            getPanelViewModel config projectList panel |> viewPanel config panel
+            getPanelLazyContent config projectList panel |> viewPanel config panel
 
         ghostItem : Maybe (Html msg)
         ghostItem =
@@ -142,11 +142,6 @@ view config projectList dragInfo =
     }
 
 
-type alias PanelViewModel msg =
-    { lazyContent : () -> List (Html msg)
-    }
-
-
 type alias PanelContentViewModel a =
     { list : List a
     , toNavItem : a -> NavItemViewModel
@@ -168,15 +163,16 @@ getPanelTitle panel =
             "Filters"
 
 
-getPanelViewModel :
+getPanelLazyContent :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     }
     -> List Project
     -> Panel
-    -> PanelViewModel msg
-getPanelViewModel config projectList panel =
+    -> ()
+    -> List (Html msg)
+getPanelLazyContent config projectList panel =
     let
         dragEvents =
             config.dragEvents panel
@@ -186,16 +182,13 @@ getPanelViewModel config projectList panel =
     in
     case panel of
         Projects ->
-            PanelViewModel
-                (panelLazyContent lazyContentConfig projectToNavItem projectList)
+            panelLazyContent lazyContentConfig projectToNavItem projectList
 
         Labels ->
-            PanelViewModel
-                (panelLazyContent lazyContentConfig labelToNavItem labelList)
+            panelLazyContent lazyContentConfig labelToNavItem labelList
 
         Filters ->
-            PanelViewModel
-                (panelLazyContent lazyContentConfig filterToNavItem filterList)
+            panelLazyContent lazyContentConfig filterToNavItem filterList
 
 
 panelLazyContent :
@@ -225,9 +218,9 @@ viewPanel :
     , isPanelExpanded : Panel -> Bool
     }
     -> Panel
-    -> PanelViewModel msg
+    -> (() -> List (Html msg))
     -> List (Html msg)
-viewPanel config panel { lazyContent } =
+viewPanel config panel lazyContent =
     ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
         (getPanelTitle panel)
         lazyContent
