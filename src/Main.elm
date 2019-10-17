@@ -14,6 +14,7 @@ import Json.Encode exposing (Value)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
+import SelectList
 import Styles
 import Task
 import Todo exposing (Todo)
@@ -248,6 +249,27 @@ update message model =
 -- VIEW
 
 
+rotate : Int -> Int -> List a -> List a
+rotate dragIdx dropIdx list =
+    SelectList.fromList list
+        |> Maybe.andThen (SelectList.selectBy dragIdx)
+        |> Maybe.map (SelectList.moveBy (dropIdx - dragIdx) >> SelectList.toList)
+        |> Maybe.withDefault list
+
+
+sort : Drawer.Panel -> List a -> Maybe PanelItemDnD -> List a
+sort panel items =
+    Maybe.andThen
+        (\dnd ->
+            dnd.over
+                |> Maybe.map
+                    (\over ->
+                        rotate dnd.idx over.idx items
+                    )
+        )
+        >> Maybe.withDefault items
+
+
 dragEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
 dragEvents panel idx domId =
     [ E.preventDefaultOn "mousedown"
@@ -298,6 +320,7 @@ view model =
                 , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
                 , dragInfo = dragInfo model.panelItemDnD
                 , projectList = ProjectCollection.sorted model.projectCollection
+                , sort = \panel items -> sort panel items model.panelItemDnD
                 }
         , main = mainView model.todoDict
         }

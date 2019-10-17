@@ -85,18 +85,19 @@ type alias DragInfo =
     Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style }
 
 
-type alias Config msg =
+type alias Config msg a =
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , dropEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     , dragInfo : DragInfo
     , projectList : List Project
+    , sort : Panel -> List a -> List a
     }
 
 
 view :
-    Config msg
+    Config msg x
     -> { content : List (Html msg), portal : List (Html msg) }
 view config =
     let
@@ -141,7 +142,7 @@ panelTitle panel =
 
 
 getPanelContentPortal :
-    Config msg
+    Config msg x
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortal config panel =
