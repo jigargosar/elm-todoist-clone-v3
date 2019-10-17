@@ -96,12 +96,8 @@ view :
 view config projectList dragInfo =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
-        viewPanel_ panel =
-            let
-                panelContent =
-                    getPanelLazyContentAndPortal config projectList dragInfo panel
-            in
-            { content = viewPanel config panel panelContent.lazyContent, portal = panelContent.portal }
+        viewPanel_ =
+            getPanelLazyContentAndPortal config projectList dragInfo
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -147,7 +143,7 @@ getPanelLazyContentAndPortal :
     -> List Project
     -> DragInfo
     -> Panel
-    -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
+    -> { content : List (Html msg), portal : List (Html msg) }
 getPanelLazyContentAndPortal config projectList dragInfo panel =
     let
         filteredDragInfo =
@@ -168,9 +164,13 @@ getPanelLazyContentAndPortal config projectList dragInfo panel =
             viewNavItem (A.id domId :: dragEvents) [ Css.property "user-select" "none" ] navItem
 
         lazyContentAndPortal toNavItem list =
-            { lazyContent =
-                \_ ->
-                    List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
+            { content =
+                ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
+                    (panelTitle panel)
+                    (\_ ->
+                        List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
+                    )
+                    (config.isPanelExpanded panel)
             , portal =
                 filteredDragInfo
                     |> Maybe.andThen
