@@ -1,4 +1,4 @@
-module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, toggleDrawerExpansionPanel, view)
+module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, toggleExpansionPanel, view)
 
 import Css
 import ExpansionPanelUI
@@ -20,7 +20,7 @@ initialExpansionPanels =
     ExpansionPanels True True True
 
 
-toggleDrawerExpansionPanel panel model =
+toggleExpansionPanel panel model =
     case panel of
         Projects ->
             { model | projectsExpanded = not model.projectsExpanded }
