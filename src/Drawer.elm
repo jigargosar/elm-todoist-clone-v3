@@ -177,8 +177,22 @@ getPanelContent :
     -> { lazyContent : () -> List (Html msg) }
 getPanelContent config projectList panel =
     let
-        getContent =
-            getPanelContentHelp { dragEvents = config.dragEvents panel }
+        getContent toNavItem list =
+            { lazyContent =
+                \_ ->
+                    List.indexedMap
+                        (\idx ->
+                            toNavItem
+                                >> (\navItem ->
+                                        let
+                                            domId =
+                                                "panel-dnd-item__" ++ navItem.id
+                                        in
+                                        viewNavItem (A.id domId :: config.dragEvents panel idx domId) [] navItem
+                                   )
+                        )
+                        list
+            }
     in
     case panel of
         Projects ->
@@ -189,29 +203,6 @@ getPanelContent config projectList panel =
 
         Filters ->
             getContent filterToNavItem filterList
-
-
-getPanelContentHelp :
-    { dragEvents : Int -> String -> List (H.Attribute msg) }
-    -> (a -> NavItemViewModel)
-    -> List a
-    -> { lazyContent : () -> List (Html msg) }
-getPanelContentHelp config func list =
-    { lazyContent =
-        \_ ->
-            List.indexedMap
-                (\idx ->
-                    func
-                        >> (\navItem ->
-                                let
-                                    domId =
-                                        "panel-dnd-item__" ++ navItem.id
-                                in
-                                viewNavItem (A.id domId :: config.dragEvents idx domId) [] navItem
-                           )
-                )
-                list
-    }
 
 
 viewPanel :
