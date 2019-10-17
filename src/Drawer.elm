@@ -77,9 +77,9 @@ view :
     -> { content : List (Html msg), portal : List (Html msg) }
 view { onToggleExpansionPanel } projectList eps =
     { content =
-        [ navIconItem "Inbox" "inbox"
-        , navIconItem "Today" "calendar_today"
-        , navIconItem "Next 7 Days" "view_week"
+        [ navTitleIconItem "Inbox" "inbox"
+        , navTitleIconItem "Today" "calendar_today"
+        , navTitleIconItem "Next 7 Days" "view_week"
         ]
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Projects)
                 "Projects"
@@ -134,7 +134,7 @@ filterToNavItem { title, hue } =
     }
 
 
-navIconItem title icon =
+navTitleIconItem title icon =
     viewItem [] [] title Css.inherit icon
 
 
