@@ -143,8 +143,7 @@ view config projectList dragInfo =
 
 
 type alias PanelViewModel msg =
-    { title : String
-    , lazyContent : () -> List (Html msg)
+    { lazyContent : () -> List (Html msg)
     }
 
 
@@ -187,15 +186,15 @@ getPanelViewModel config projectList panel =
     in
     case panel of
         Projects ->
-            PanelViewModel "Projects"
+            PanelViewModel
                 (panelLazyContent lazyContentConfig projectToNavItem projectList)
 
         Labels ->
-            PanelViewModel "Labels"
+            PanelViewModel
                 (panelLazyContent lazyContentConfig labelToNavItem labelList)
 
         Filters ->
-            PanelViewModel "Filters"
+            PanelViewModel
                 (panelLazyContent lazyContentConfig filterToNavItem filterList)
 
 
@@ -228,9 +227,9 @@ viewPanel :
     -> Panel
     -> PanelViewModel msg
     -> List (Html msg)
-viewPanel config panel { title, lazyContent } =
+viewPanel config panel { lazyContent } =
     ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
-        title
+        (getPanelTitle panel)
         lazyContent
         (config.isPanelExpanded panel)
 
