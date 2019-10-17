@@ -1,4 +1,4 @@
-module Drawer exposing (Panel, view)
+module Drawer exposing (Panel(..), view)
 
 import Css
 import ExpansionPanelUI

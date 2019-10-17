@@ -151,8 +151,20 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        ToggleExpansionPanel _ ->
-            ( model, Cmd.none )
+        ToggleExpansionPanel panel ->
+            ( { model | drawerExpansionPanels = toggleDrawerExpansionPanel panel model.drawerExpansionPanels }, Cmd.none )
+
+
+toggleDrawerExpansionPanel panel model =
+    case panel of
+        Drawer.Projects ->
+            { model | projectsExpanded = not model.projectsExpanded }
+
+        Drawer.Labels ->
+            { model | labelsExpanded = not model.labelsExpanded }
+
+        Drawer.Filters ->
+            { model | filtersExpanded = not model.filtersExpanded }
 
 
 
