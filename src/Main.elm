@@ -68,7 +68,7 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , panelItemDnD : Maybe PanelItemDnD
+    , panelDnD : Maybe PanelItemDnD
     }
 
 
@@ -81,7 +81,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
-            , panelItemDnD = Nothing
+            , panelDnD = Nothing
             }
     in
     Return.singleton initial
@@ -138,7 +138,7 @@ pageXYDecoder =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ case model.panelItemDnD of
+        [ case model.panelDnD of
             Just _ ->
                 Sub.batch
                     [ Browser.Events.onMouseMove (pageXYDecoder |> JD.map BrowserMouseMove)
@@ -196,7 +196,7 @@ update message model =
             )
 
         DrawerPanelItemMouseDown panel idx domId xy ->
-            ( { model | panelItemDnD = Nothing }
+            ( { model | panelDnD = Nothing }
             , getElement domId
                 |> Task.attempt
                     (\elResult ->
@@ -210,13 +210,13 @@ update message model =
             )
 
         DrawerPanelItemMouseOver panel idx domId ->
-            case model.panelItemDnD of
+            case model.panelDnD of
                 Nothing ->
                     ( model, Cmd.none )
 
                 Just dnd ->
                     if dnd.panel == panel then
-                        ( { model | panelItemDnD = Just { dnd | over = Just { idx = idx, id = domId } } }
+                        ( { model | panelDnD = Just { dnd | over = Just { idx = idx, id = domId } } }
                         , Cmd.none
                         )
 
@@ -225,24 +225,24 @@ update message model =
 
         GotDrawerPanelItemDragElement panel idx domId xy el ->
             ( { model
-                | panelItemDnD = PanelItemDnD panel idx domId el xy xy Nothing |> Just
+                | panelDnD = PanelItemDnD panel idx domId el xy xy Nothing |> Just
               }
             , Cmd.none
             )
 
         GotDrawerPanelItemDomError (Dom.NotFound domId) ->
-            ( { model | panelItemDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
+            ( { model | panelDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
 
         BrowserMouseMove xy ->
-            case model.panelItemDnD of
+            case model.panelDnD of
                 Just dnd ->
-                    ( { model | panelItemDnD = Just { dnd | currentXY = xy } }, Cmd.none )
+                    ( { model | panelDnD = Just { dnd | currentXY = xy } }, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
 
         BrowserMouseUp ->
-            ( { model | panelItemDnD = Nothing }, Cmd.none )
+            ( { model | panelDnD = Nothing }, Cmd.none )
 
 
 
@@ -329,6 +329,7 @@ view model =
         model.isDrawerModalOpen
 
 
+drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
         drawerConfig : Drawer.Config Msg
@@ -337,9 +338,9 @@ drawerView model =
             , dragEvents = dragEvents
             , dropEvents = dropEvents
             , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
-            , dragInfo = \panel -> dragInfoFor panel model.panelItemDnD
+            , dragInfo = \panel -> dragInfoFor panel model.panelDnD
             , projectList = ProjectCollection.sorted model.projectCollection
-            , sort = \panel list -> sort panel list model.panelItemDnD
+            , sort = \panel list -> sort panel list model.panelDnD
             }
     in
     Drawer.view drawerConfig
