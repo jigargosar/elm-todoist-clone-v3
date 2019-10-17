@@ -103,7 +103,7 @@ view config sort =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ =
-            getPanelContentPortal config
+            getPanelContentPortal config sort
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -143,9 +143,10 @@ panelTitle panel =
 
 getPanelContentPortal :
     Config msg
+    -> (List b -> List b)
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
-getPanelContentPortal config panel =
+getPanelContentPortal config sort panel =
     let
         filteredDragInfo =
             config.dragInfo
