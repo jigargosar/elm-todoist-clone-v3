@@ -199,7 +199,11 @@ getPanelLazyContentAndPortal config projectList panel =
             { lazyContent =
                 \_ ->
                     List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
-            , portal = []
+            , portal =
+                List.drop 0 list
+                    |> List.head
+                    |> Maybe.map (toNavItem >> viewNavItem [] [] >> List.singleton)
+                    |> Maybe.withDefault []
             }
     in
     case panel of
