@@ -138,6 +138,11 @@ navTitleIconItem title icon =
     viewItem [] [] title Css.inherit icon
 
 
+viewNavItem : NavItemViewModel -> Html msg
+viewNavItem { title, iconColor, icon } =
+    viewItem [] [] title iconColor icon
+
+
 viewItem attributes styles title iconColor iconName =
     div
         (css
