@@ -97,7 +97,7 @@ type alias Config msg =
 
 view :
     Config msg
-    -> (Panel -> List a -> List a)
+    -> (List a -> List a)
     -> { content : List (Html msg), portal : List (Html msg) }
 view config sort =
     let
@@ -167,6 +167,7 @@ getPanelContentPortal config panel =
             in
             viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
 
+        contentPortal : (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html b) }
         contentPortal toNavItem list =
             { content =
                 ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
