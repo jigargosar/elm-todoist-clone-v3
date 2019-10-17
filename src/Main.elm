@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Browser.Dom exposing (Element)
+import Browser.Dom as Dom exposing (Element, getElement)
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
@@ -10,6 +10,7 @@ import Json.Encode exposing (Value)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
+import Task
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -124,6 +125,9 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
+    | DrawerPanelItemMouseDown Drawer.Panel Int String XY
+    | GotDrawerPanelItemDragElement Drawer.Panel Int String XY Element
+    | GotDrawerPanelItemDomError Dom.Error
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -152,6 +156,26 @@ update message model =
               }
             , Cmd.none
             )
+
+        DrawerPanelItemMouseDown panel idx domId xy ->
+            ( { model | panelItemDrag = Nothing }
+            , getElement domId
+                |> Task.attempt
+                    (\r ->
+                        case r of
+                            Ok el ->
+                                GotDrawerPanelItemDragElement panel idx domId xy el
+
+                            Err err ->
+                                GotDrawerPanelItemDomError err
+                    )
+            )
+
+        GotDrawerPanelItemDragElement panel idx domId xy el ->
+            ( { model | panelItemDrag = Just <| PanelItemDrag panel idx domId el xy xy }, Cmd.none )
+
+        GotDrawerPanelItemDomError (Dom.NotFound domId) ->
+            ( { model | panelItemDrag = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
 
 
 
