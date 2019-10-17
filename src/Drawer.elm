@@ -81,13 +81,17 @@ type alias FilterView =
     { title : String, hue : Float }
 
 
+type alias DragInfo x =
+    Maybe { x | panel : Panel, dragIdx : Int, ghostStyles : Style }
+
+
 view :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     }
     -> List Project
-    -> Maybe { x | panel : Panel, dragIdx : Int, ghostStyles : Style }
+    -> DragInfo x
     -> { content : List (Html msg), portal : List (Html msg) }
 view config projectList dragInfo =
     let
