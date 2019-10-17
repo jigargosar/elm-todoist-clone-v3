@@ -10,12 +10,12 @@ import Styles exposing (..)
 type alias Parts msg =
     { appbar : List (Html msg)
     , drawer : { content : List (Html msg), portal : List (Html msg) }
-    , content : List (Html msg)
+    , main : List (Html msg)
     }
 
 
 view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
-view { closeDrawerModal } { appbar, drawer, content } isDrawerModalOpen =
+view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
         [ bgBody, h_100 ]
         [ class "sans-serif" ]
@@ -27,7 +27,7 @@ view { closeDrawerModal } { appbar, drawer, content } isDrawerModalOpen =
                 -- TEST OVERFLOW SCROLL
                 -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
                 drawer.content
-            , styledMain [] content
+            , styledMain [] main
             ]
          , viewModalDrawer closeDrawerModal
             isDrawerModalOpen

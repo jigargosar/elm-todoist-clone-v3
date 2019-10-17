@@ -198,7 +198,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { onMenu = OpenDrawerModal }
         , drawer = drawerSystem.view model
-        , content = mainView model.todoDict
+        , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
 
