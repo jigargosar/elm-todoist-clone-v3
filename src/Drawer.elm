@@ -173,7 +173,7 @@ contentPortal config panel toNavItem list =
         ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
             (panelTitle panel)
             (\_ ->
-                List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
+                list |> List.map toNavItem |> config.sort panel |> List.indexedMap (\idx -> viewDnDNavItem idx)
             )
             (config.isPanelExpanded panel)
     , portal =
