@@ -160,8 +160,11 @@ getPanelContentPortal config panel =
 
                 dragEvents =
                     config.dragEvents panel idx domId
+
+                dropEvents =
+                    config.dropEvents panel idx domId
             in
-            viewNavItem (A.id domId :: dragEvents) [] navItem
+            viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
 
         contentPortal toNavItem list =
             { content =
