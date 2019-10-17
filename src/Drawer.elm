@@ -174,18 +174,18 @@ getPanelLazyContent :
     -> List (Html msg)
 getPanelLazyContent config projectList panel =
     let
-        lazyContentConfig =
-            { dragEvents = config.dragEvents panel }
+        lazyContent =
+            panelLazyContent { dragEvents = config.dragEvents panel }
     in
     case panel of
         Projects ->
-            panelLazyContent lazyContentConfig projectToNavItem projectList
+            lazyContent projectToNavItem projectList
 
         Labels ->
-            panelLazyContent lazyContentConfig labelToNavItem labelList
+            lazyContent labelToNavItem labelList
 
         Filters ->
-            panelLazyContent lazyContentConfig filterToNavItem filterList
+            lazyContent filterToNavItem filterList
 
 
 panelLazyContent :
