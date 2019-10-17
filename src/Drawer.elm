@@ -185,7 +185,7 @@ getPanelLazyContentAndPortal :
     -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
 getPanelLazyContentAndPortal config projectList panel =
     let
-        viewNavItemHelp idx navItem =
+        viewDnDNavItem idx navItem =
             let
                 domId =
                     "panel-dnd-item__" ++ navItem.id
@@ -198,7 +198,7 @@ getPanelLazyContentAndPortal config projectList panel =
         lazyContentAndPortal toNavItem list =
             { lazyContent =
                 \_ ->
-                    List.indexedMap (\idx -> toNavItem >> viewNavItemHelp idx) list
+                    List.indexedMap (\idx -> toNavItem >> viewDnDNavItem idx) list
             , portal = []
             }
     in
