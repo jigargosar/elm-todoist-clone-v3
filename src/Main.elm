@@ -66,12 +66,13 @@ projectsSystem =
 
 
 type alias DrawerExpansionPanels =
-    { isProjectPanelExpanded : Bool
-    , isLabelPanelExpanded : Bool
-    , isFiltersPanelExpanded : Bool
+    { projectsExpanded : Bool
+    , labelsExpanded : Bool
+    , filtersExpanded : Bool
     }
 
 
+initialDrawerExpansionPanels : DrawerExpansionPanels
 initialDrawerExpansionPanels =
     DrawerExpansionPanels True True True
 
