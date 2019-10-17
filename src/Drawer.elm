@@ -86,29 +86,19 @@ view :
     -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
 view { onToggleExpansionPanel } projectList eps =
+    let
+        viewPanel_ : Panel -> List (Html msg)
+        viewPanel_ =
+            getPanelViewModel projectList onToggleExpansionPanel eps >> viewPanel
+    in
     { content =
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-            ++ ExpansionPanelUI.view (onToggleExpansionPanel Projects)
-                "Projects"
-                (\_ ->
-                    projectList |> List.map (projectToNavItem >> viewNavItem)
-                )
-                eps.projectsExpanded
-            ++ ExpansionPanelUI.view (onToggleExpansionPanel Labels)
-                "Labels"
-                (\_ ->
-                    labelList |> List.map (labelToNavItem >> viewNavItem)
-                )
-                eps.labelsExpanded
-            ++ ExpansionPanelUI.view (onToggleExpansionPanel Filters)
-                "Filters"
-                (\_ ->
-                    filterList |> List.map (filterToNavItem >> viewNavItem)
-                )
-                eps.filtersExpanded
+            ++ viewPanel_ Projects
+            ++ viewPanel_ Labels
+            ++ viewPanel_ Filters
     , portal = []
     }
 
