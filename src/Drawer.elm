@@ -168,10 +168,14 @@ getPanelContentPortalHelp config panel toNavItem list =
     let
         panelDragInfo =
             config.dragInfo
-                |> Maybe.map List.singleton
-                |> Maybe.withDefault []
-                |> List.filter (\i -> i.panel == panel)
-                |> List.head
+                |> Maybe.andThen
+                    (\i ->
+                        if i.panel == panel then
+                            Just i
+
+                        else
+                            Nothing
+                    )
 
         viewDnDNavItem idx navItem =
             let
