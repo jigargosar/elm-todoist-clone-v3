@@ -142,7 +142,7 @@ getPanelViewModel config projectList expansionPanels panel =
                         >> (\navItem ->
                                 let
                                     domId =
-                                        "panel-item__" ++ navItem.id
+                                        "panel-dnd-item__" ++ navItem.id
                                 in
                                 viewNavItemWithAttrs (A.id domId :: dragEvents idx domId) navItem
                            )
