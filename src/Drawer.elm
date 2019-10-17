@@ -192,7 +192,7 @@ getPanelLazyContentAndPortal config projectList panel =
             in
             viewNavItem (A.id domId :: config.dragEvents panel idx domId) [] navItem
 
-        getContent toNavItem list =
+        lazyContentAndPortal toNavItem list =
             { lazyContent =
                 \_ ->
                     List.indexedMap (\idx -> toNavItem >> viewNavItemHelp idx)
@@ -202,13 +202,13 @@ getPanelLazyContentAndPortal config projectList panel =
     in
     case panel of
         Projects ->
-            getContent projectToNavItem projectList
+            lazyContentAndPortal projectToNavItem projectList
 
         Labels ->
-            getContent labelToNavItem labelList
+            lazyContentAndPortal labelToNavItem labelList
 
         Filters ->
-            getContent filterToNavItem filterList
+            lazyContentAndPortal filterToNavItem filterList
 
 
 viewPanel :
