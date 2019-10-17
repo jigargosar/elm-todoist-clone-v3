@@ -96,7 +96,10 @@ initProjectCollection encodedProjectList model =
     ( { model | projectCollection = newProjectCollection }, cmd )
 
 
-initTodoDict : JD.Value -> { a | todoDict : TodoDict } -> ( { a | todoDict : TodoDict }, Cmd msg )
+initTodoDict :
+    JD.Value
+    -> { a | todoDict : TodoDict }
+    -> ( { a | todoDict : TodoDict }, Cmd msg )
 initTodoDict encodedTodoList model =
     let
         ( newTodoDict, cmd ) =
