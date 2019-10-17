@@ -90,18 +90,18 @@ type alias Config msg =
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     , dragInfo : DragInfo
+    , projectList : List Project
     }
 
 
 view :
     Config msg
-    -> List Project
     -> { content : List (Html msg), portal : List (Html msg) }
-view config projectList =
+view config =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ =
-            getPanelContentPortal config projectList
+            getPanelContentPortal config
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -141,10 +141,9 @@ panelTitle panel =
 
 getPanelContentPortal :
     Config msg
-    -> List Project
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
-getPanelContentPortal config projectList panel =
+getPanelContentPortal config panel =
     let
         filteredDragInfo =
             config.dragInfo
@@ -184,7 +183,7 @@ getPanelContentPortal config projectList panel =
     in
     case panel of
         Projects ->
-            contentPortal projectToNavItem projectList
+            contentPortal projectToNavItem config.projectList
 
         Labels ->
             contentPortal labelToNavItem labelList

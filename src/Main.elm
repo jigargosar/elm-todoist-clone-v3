@@ -275,8 +275,8 @@ view model =
                 , dragEvents = dragEvents
                 , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
                 , dragInfo = dragInfo model.panelItemDnD
+                , projectList = ProjectCollection.sorted model.projectCollection
                 }
-                (ProjectCollection.sorted model.projectCollection)
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
