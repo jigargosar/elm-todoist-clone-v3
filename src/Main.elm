@@ -243,6 +243,28 @@ dragEvents panel idx domId =
     ]
 
 
+dragInfo =
+    Maybe.map
+        (\{ panel, idx, startXY, currentXY, el } ->
+            { panel = panel
+            , dragIdx = idx
+            , ghostStyles =
+                let
+                    { x, y } =
+                        addXY (subtractXY currentXY startXY)
+                            (subtractXY el.element el.viewport)
+                in
+                Css.batch
+                    [ Styles.absolute
+                    , Styles.top_0
+                    , Styles.left_0
+                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                    , Css.pointerEvents Css.none
+                    ]
+            }
+        )
+
+
 view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
@@ -252,29 +274,9 @@ view model =
                 { onToggleExpansionPanel = ToggleDrawerExpansionPanel
                 , dragEvents = dragEvents
                 , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
+                , dragInfo = dragInfo model.panelItemDnD
                 }
                 (ProjectCollection.sorted model.projectCollection)
-                (model.panelItemDnD
-                    |> Maybe.map
-                        (\{ panel, idx, startXY, currentXY, el } ->
-                            { panel = panel
-                            , dragIdx = idx
-                            , ghostStyles =
-                                let
-                                    { x, y } =
-                                        addXY (subtractXY currentXY startXY)
-                                            (subtractXY el.element el.viewport)
-                                in
-                                Css.batch
-                                    [ Styles.absolute
-                                    , Styles.top_0
-                                    , Styles.left_0
-                                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
-                                    , Css.pointerEvents Css.none
-                                    ]
-                            }
-                        )
-                )
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen

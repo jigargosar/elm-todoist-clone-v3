@@ -1,4 +1,4 @@
-module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, isPanelExpanded, toggleExpansionPanel, view)
+module Drawer exposing (DragInfo, ExpansionPanels, Panel(..), initialExpansionPanels, isPanelExpanded, toggleExpansionPanel, view)
 
 import Css
 import ExpansionPanelUI
@@ -85,19 +85,23 @@ type alias DragInfo =
     Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style }
 
 
-view :
+type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
+    , dragInfo : DragInfo
     }
+
+
+view :
+    Config msg
     -> List Project
-    -> DragInfo
     -> { content : List (Html msg), portal : List (Html msg) }
-view config projectList dragInfo =
+view config projectList =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ =
-            getPanelContentPortal config projectList dragInfo
+            getPanelContentPortal config projectList
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -136,18 +140,14 @@ panelTitle panel =
 
 
 getPanelContentPortal :
-    { onToggleExpansionPanel : Panel -> msg
-    , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
-    , isPanelExpanded : Panel -> Bool
-    }
+    Config msg
     -> List Project
-    -> DragInfo
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
-getPanelContentPortal config projectList dragInfo panel =
+getPanelContentPortal config projectList panel =
     let
         filteredDragInfo =
-            dragInfo
+            config.dragInfo
                 |> Maybe.map List.singleton
                 |> Maybe.withDefault []
                 |> List.filter (\i -> i.panel == panel)
