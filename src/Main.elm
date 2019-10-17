@@ -59,6 +59,7 @@ init flags =
             )
 
 
+initProjectCollection : JD.Value -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
 initProjectCollection encodedProjectList model =
     let
         ( newProjectCollection, cmd ) =
@@ -72,6 +73,7 @@ initProjectCollection encodedProjectList model =
     ( { model | projectCollection = newProjectCollection }, cmd )
 
 
+initTodoDict : JD.Value -> { a | todoDict : TodoDict } -> ( { a | todoDict : TodoDict }, Cmd msg )
 initTodoDict encodedTodoList model =
     let
         ( newTodoDict, cmd ) =
