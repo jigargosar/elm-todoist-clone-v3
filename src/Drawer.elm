@@ -121,6 +121,7 @@ type alias PanelViewModel msg =
     }
 
 
+getPanelViewModel : Panel -> List Project -> (Panel -> msg) -> ExpansionPanels -> PanelViewModel msg
 getPanelViewModel panel projectList onToggleExpansionPanel expansionPanels =
     let
         toggleExpansion =
@@ -151,6 +152,14 @@ getPanelViewModel panel projectList onToggleExpansionPanel expansionPanels =
                 toggleExpansion
                 isExpanded
                 (lazyContent filterToNavItem filterList)
+
+
+viewPanel : PanelViewModel msg -> List (Html msg)
+viewPanel { title, toggleExpansion, isExpanded, lazyContent } =
+    ExpansionPanelUI.view toggleExpansion
+        title
+        lazyContent
+        isExpanded
 
 
 type alias NavItemViewModel =
