@@ -339,7 +339,7 @@ drawerView model =
             , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
             , dragInfo = \panel -> dragInfoFor panel model.panelItemDnD
             , projectList = ProjectCollection.sorted model.projectCollection
-            , sort = \p l -> sort p l model.panelItemDnD
+            , sort = \panel list -> sort panel list model.panelItemDnD
             }
     in
     Drawer.view drawerConfig
