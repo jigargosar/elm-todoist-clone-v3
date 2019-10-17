@@ -3,6 +3,7 @@ port module Main exposing (main)
 import Appbar
 import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
+import Browser.Events
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
@@ -37,11 +38,6 @@ type alias XY =
     { x : Float, y : Float }
 
 
-type PanelItemDragAndDrop
-    = PanelItemDrag PanelItemDragState
-    | PanelItemDragOver PanelItemDragState PanelItemDragOverState
-
-
 type alias PanelItemDragState =
     { panel : Drawer.Panel
     , idx : Int
@@ -49,11 +45,8 @@ type alias PanelItemDragState =
     , el : Element
     , startXY : XY
     , currentXY : XY
+    , over : Maybe { idx : Int, id : String }
     }
-
-
-type alias PanelItemDragOverState =
-    { idx : Int, id : String }
 
 
 type alias Model =
@@ -61,7 +54,7 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , panelItemDnD : Maybe PanelItemDragAndDrop
+    , panelItemDnD : Maybe PanelItemDragState
     }
 
 
@@ -86,7 +79,10 @@ init flags =
             )
 
 
-initProjectCollection : JD.Value -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
+initProjectCollection :
+    JD.Value
+    -> { a | projectCollection : ProjectCollection }
+    -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
 initProjectCollection encodedProjectList model =
     let
         ( newProjectCollection, cmd ) =
@@ -118,10 +114,23 @@ initTodoDict encodedTodoList model =
 -- Subscriptions
 
 
+pageXYDecoder =
+    JD.map2 XY (JD.field "pageX" JD.float) (JD.field "pageY" JD.float)
+
+
 subscriptions : Model -> Sub Msg
-subscriptions _ =
+subscriptions model =
     Sub.batch
-        []
+        [ case model.panelItemDnD of
+            Just _ ->
+                Sub.batch
+                    [ Browser.Events.onMouseMove (pageXYDecoder |> JD.map GlobalMouseMove)
+                    , Browser.Events.onMouseUp (JD.succeed GlobalMouseUp)
+                    ]
+
+            Nothing ->
+                Sub.none
+        ]
 
 
 
@@ -137,6 +146,8 @@ type Msg
     | DrawerPanelItemMouseDown Drawer.Panel Int String XY
     | GotDrawerPanelItemDragElement Drawer.Panel Int String XY Element
     | GotDrawerPanelItemDomError Dom.Error
+    | GlobalMouseMove XY
+    | GlobalMouseUp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -183,8 +194,7 @@ update message model =
         GotDrawerPanelItemDragElement panel idx domId xy el ->
             ( { model
                 | panelItemDnD =
-                    PanelItemDragState panel idx domId el xy xy
-                        |> PanelItemDrag
+                    PanelItemDragState panel idx domId el xy xy Nothing
                         |> Just
               }
             , Cmd.none
@@ -192,6 +202,17 @@ update message model =
 
         GotDrawerPanelItemDomError (Dom.NotFound domId) ->
             ( { model | panelItemDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
+
+        GlobalMouseMove xy ->
+            case model.panelItemDnD of
+                Just dnd ->
+                    ( { model | panelItemDnD = Just { dnd | currentXY = xy } }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        GlobalMouseUp ->
+            ( { model | panelItemDnD = Nothing }, Cmd.none )
 
 
 
