@@ -103,6 +103,15 @@ view { onToggleExpansionPanel } projectList eps =
     }
 
 
+type alias NavItemViewModel msg =
+    { title : String
+    , iconColor : Css.Color
+    , icon : String
+    , attrs : List (Attribute msg)
+    , styles : List Style
+    }
+
+
 navItem title iconColor iconName =
     div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
         [ i
