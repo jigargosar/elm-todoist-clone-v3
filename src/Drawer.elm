@@ -103,6 +103,14 @@ view { onToggleExpansionPanel } projectList eps =
     }
 
 
+type alias PanelViewModel msg =
+    { title : String
+    , toggleExpansion : msg
+    , isExpanded : Bool
+    , lazyContent : () -> List (Html msg)
+    }
+
+
 type alias NavItemViewModel =
     { title : String
     , iconColor : Css.Color
