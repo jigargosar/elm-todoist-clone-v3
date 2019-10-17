@@ -81,8 +81,8 @@ type alias FilterView =
     { title : String, hue : Float }
 
 
-type alias DragInfo x =
-    Maybe { x | panel : Panel, dragIdx : Int, ghostStyles : Style }
+type alias DragInfo =
+    Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style }
 
 
 view :
@@ -91,7 +91,7 @@ view :
     , isPanelExpanded : Panel -> Bool
     }
     -> List Project
-    -> DragInfo x
+    -> DragInfo
     -> { content : List (Html msg), portal : List (Html msg) }
 view config projectList dragInfo =
     let
@@ -99,7 +99,7 @@ view config projectList dragInfo =
         viewPanel_ panel =
             let
                 panelContent =
-                    getPanelLazyContentAndPortal config projectList panel
+                    getPanelLazyContentAndPortal config projectList dragInfo panel
             in
             { content = viewPanel config panel panelContent.lazyContent, portal = panelContent.portal }
 
@@ -185,9 +185,10 @@ getPanelLazyContentAndPortal :
     , isPanelExpanded : Panel -> Bool
     }
     -> List Project
+    -> DragInfo
     -> Panel
     -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
-getPanelLazyContentAndPortal config projectList panel =
+getPanelLazyContentAndPortal config projectList dragInfo panel =
     let
         viewDnDNavItem idx navItem =
             let
