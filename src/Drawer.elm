@@ -141,13 +141,29 @@ panelTitle panel =
             "Filters"
 
 
-contentPortal :
+getPanelContentPortal :
+    Config msg
+    -> Panel
+    -> { content : List (Html msg), portal : List (Html msg) }
+getPanelContentPortal config panel =
+    case panel of
+        Projects ->
+            getPanelContentPortalHelp config panel projectToNavItem config.projectList
+
+        Labels ->
+            getPanelContentPortalHelp config panel labelToNavItem labelList
+
+        Filters ->
+            getPanelContentPortalHelp config panel filterToNavItem filterList
+
+
+getPanelContentPortalHelp :
     Config msg
     -> Panel
     -> (a -> NavItemViewModel)
     -> List a
     -> { content : List (Html msg), portal : List (Html msg) }
-contentPortal config panel toNavItem list =
+getPanelContentPortalHelp config panel toNavItem list =
     let
         filteredDragInfo =
             config.dragInfo
@@ -186,22 +202,6 @@ contentPortal config panel toNavItem list =
                 )
             |> Maybe.withDefault []
     }
-
-
-getPanelContentPortal :
-    Config msg
-    -> Panel
-    -> { content : List (Html msg), portal : List (Html msg) }
-getPanelContentPortal config panel =
-    case panel of
-        Projects ->
-            contentPortal config panel projectToNavItem config.projectList
-
-        Labels ->
-            contentPortal config panel labelToNavItem labelList
-
-        Filters ->
-            contentPortal config panel filterToNavItem filterList
 
 
 type alias NavItemViewModel =
