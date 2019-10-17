@@ -195,8 +195,7 @@ getPanelLazyContentAndPortal config projectList panel =
         lazyContentAndPortal toNavItem list =
             { lazyContent =
                 \_ ->
-                    List.indexedMap (\idx -> toNavItem >> viewNavItemHelp idx)
-                        list
+                    List.indexedMap (\idx -> toNavItem >> viewNavItemHelp idx) list
             , portal = []
             }
     in
