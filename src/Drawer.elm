@@ -146,15 +146,19 @@ getPanelContentPortal :
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortal config panel =
+    let
+        getCP =
+            getPanelContentPortalHelp config panel
+    in
     case panel of
         Projects ->
-            getPanelContentPortalHelp config panel projectToNavItem config.projectList
+            getCP projectToNavItem config.projectList
 
         Labels ->
-            getPanelContentPortalHelp config panel labelToNavItem labelList
+            getCP labelToNavItem labelList
 
         Filters ->
-            getPanelContentPortalHelp config panel filterToNavItem filterList
+            getCP filterToNavItem filterList
 
 
 getPanelContentPortalHelp :
