@@ -4,6 +4,7 @@ import Appbar
 import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
+import Css
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Html.Styled.Events as E
@@ -12,6 +13,7 @@ import Json.Encode exposing (Value)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
+import Styles
 import Task
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
@@ -37,6 +39,15 @@ type alias Flags =
 
 type alias XY =
     { x : Float, y : Float }
+
+
+subtractXY : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> XY
+subtractXY a b =
+    XY (a.x - b.x) (a.y - b.y)
+
+
+addXY a b =
+    XY (a.x + b.x) (a.y + b.y)
 
 
 type alias PanelItemDnD =
@@ -234,7 +245,27 @@ view model =
             Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel, dragEvents = dragEvents }
                 (ProjectCollection.sorted model.projectCollection)
                 model.drawerExpansionPanels
-                (model.panelItemDnD |> Maybe.map (\{ panel, idx } -> { panel = panel, dragIdx = idx }))
+                (model.panelItemDnD
+                    |> Maybe.map
+                        (\{ panel, idx, startXY, currentXY, el } ->
+                            { panel = panel
+                            , dragIdx = idx
+                            , ghostStyles =
+                                let
+                                    { x, y } =
+                                        addXY (subtractXY currentXY startXY)
+                                            (subtractXY el.element el.viewport)
+                                in
+                                Css.batch
+                                    [ Styles.absolute
+                                    , Styles.top_0
+                                    , Styles.left_0
+                                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                                    , Css.pointerEvents Css.none
+                                    ]
+                            }
+                        )
+                )
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen

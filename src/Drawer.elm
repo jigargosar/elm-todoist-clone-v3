@@ -88,13 +88,36 @@ view :
     }
     -> List Project
     -> ExpansionPanels
-    -> Maybe { x | panel : Panel, dragIdx : Int }
+    -> Maybe { x | panel : Panel, dragIdx : Int, ghostStyles : Style }
     -> { content : List (Html msg), portal : List (Html msg) }
 view config projectList eps dragInfo =
     let
         viewPanel_ : Panel -> List (Html msg)
         viewPanel_ =
             getPanelViewModel config projectList eps >> viewPanel
+
+        ghostItem : Maybe NavItemViewModel
+        ghostItem =
+            case dragInfo of
+                Nothing ->
+                    Nothing
+
+                Just { dragIdx, panel, ghostStyles } ->
+                    case panel of
+                        Projects ->
+                            List.drop dragIdx projectList
+                                |> List.head
+                                |> Maybe.map projectToNavItem
+
+                        Labels ->
+                            List.drop dragIdx labelList
+                                |> List.head
+                                |> Maybe.map labelToNavItem
+
+                        Filters ->
+                            List.drop dragIdx filterList
+                                |> List.head
+                                |> Maybe.map filterToNavItem
     in
     { content =
         [ navTitleIconItem "Inbox" "inbox"
