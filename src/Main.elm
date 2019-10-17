@@ -37,7 +37,6 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
-    , layout : Layout
     , drawer : Drawer
     }
 
@@ -108,7 +107,6 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
-            , layout = Layout.initial
             , drawer = drawerSystem.initial
             }
     in
@@ -141,7 +139,6 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | Layout Layout.Msg
     | Drawer Drawer.Msg
     | UpdateProjectSortOrder (List Project)
 
@@ -161,9 +158,6 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        Layout msg ->
-            updateLayout msg model
-
         Drawer msg ->
             updateDrawer msg model
 
@@ -174,12 +168,6 @@ update message model =
 updateDrawer : Drawer.Msg -> Model -> ( Model, Cmd Msg )
 updateDrawer msg model =
     drawerSystem.update msg model
-
-
-updateLayout : Layout.Msg -> { a | layout : Layout } -> ( { a | layout : Layout }, Cmd Msg )
-updateLayout msg big =
-    Layout.update Layout msg big.layout
-        |> Tuple.mapFirst (\s -> { big | layout = s })
 
 
 
