@@ -12,7 +12,7 @@ iBtn styles =
 
 
 view : { menuClicked : msg } -> List (Html msg)
-view config =
+view { menuClicked } =
     let
         gap =
             batch [ mr 2, ns [ mr 3 ] ]
@@ -21,14 +21,14 @@ view config =
         []
         [ i [ class "material-icons" ] [ text "done_all" ]
         ]
-    , menu config [ gap, ns [ dn ] ]
+    , menu menuClicked [ gap, ns [ dn ] ]
     , search [ gap, flexShrink1, min_w_0 ]
     , add [ ml_auto ]
     ]
 
 
-menu config styles =
-    iBtn styles [ onClick config.onMenu ] [ i [ class "material-icons" ] [ text "menu" ] ]
+menu menuClicked styles =
+    iBtn styles [ onClick menuClicked ] [ i [ class "material-icons" ] [ text "menu" ] ]
 
 
 add styles =
