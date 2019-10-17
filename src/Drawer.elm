@@ -161,7 +161,7 @@ getPanelContentPortal config projectList dragInfo panel =
                 dragEvents =
                     config.dragEvents panel idx domId
             in
-            viewNavItem (A.id domId :: dragEvents) [ Css.property "user-select" "none" ] navItem
+            viewNavItem (A.id domId :: dragEvents) [] navItem
 
         contentPortal toNavItem list =
             { content =
