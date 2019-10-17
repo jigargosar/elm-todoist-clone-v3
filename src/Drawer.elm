@@ -102,48 +102,12 @@ view config projectList dragInfo =
                     getPanelLazyContentAndPortal config projectList dragInfo panel
             in
             { content = viewPanel config panel panelContent.lazyContent, portal = panelContent.portal }
-
-        ghostItem : Maybe (Html msg)
-        ghostItem =
-            case dragInfo of
-                Nothing ->
-                    Nothing
-
-                Just { dragIdx, panel, ghostStyles } ->
-                    let
-                        maybeGhostNavItem =
-                            case panel of
-                                Projects ->
-                                    List.drop dragIdx projectList
-                                        |> List.head
-                                        |> Maybe.map projectToNavItem
-
-                                Labels ->
-                                    List.drop dragIdx labelList
-                                        |> List.head
-                                        |> Maybe.map labelToNavItem
-
-                                Filters ->
-                                    List.drop dragIdx filterList
-                                        |> List.head
-                                        |> Maybe.map filterToNavItem
-                    in
-                    maybeGhostNavItem |> Maybe.map (viewNavItem [] [ ghostStyles ])
-
-        portal =
-            case ghostItem of
-                Nothing ->
-                    []
-
-                Just html_ ->
-                    [ html_ ]
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-    , onlyPortal portal
     , viewPanel_ Projects
     , viewPanel_ Labels
     , viewPanel_ Filters
@@ -153,10 +117,6 @@ view config projectList dragInfo =
 
 onlyContent content =
     { content = content, portal = [] }
-
-
-onlyPortal portal =
-    { content = [], portal = portal }
 
 
 mergeContentPortal : List { content : List x, portal : List x } -> { content : List x, portal : List x }
