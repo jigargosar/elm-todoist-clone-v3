@@ -100,20 +100,18 @@ view :
     Config msg
     -> { content : List (Html msg), portal : List (Html msg) }
 view config =
-    let
-        viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
-        viewPanel_ =
-            getPanelContentPortal config
-    in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-    , viewPanel_ Projects
-    , viewPanel_ Labels
-    , viewPanel_ Filters
     ]
+        ++ ([ Projects
+            , Labels
+            , Filters
+            ]
+                |> List.map (getPanelContentPortal config)
+           )
         |> mergeContentPortal
 
 
