@@ -321,6 +321,15 @@ dragInfoFor panel_ =
 
 view : Model -> Html Msg
 view model =
+    Layout.view { closeDrawerModal = CloseDrawerModal }
+        { appbar = Appbar.view { menuClicked = OpenDrawerModal }
+        , drawer = drawerView model
+        , main = mainView model.todoDict
+        }
+        model.isDrawerModalOpen
+
+
+drawerView model =
     let
         drawerConfig : Drawer.Config Msg
         drawerConfig =
@@ -333,13 +342,7 @@ view model =
             , sort = \p l -> sort p l model.panelItemDnD
             }
     in
-    Layout.view { closeDrawerModal = CloseDrawerModal }
-        { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer =
-            Drawer.view drawerConfig
-        , main = mainView model.todoDict
-        }
-        model.isDrawerModalOpen
+    Drawer.view drawerConfig
 
 
 mainView : TodoDict -> List (Html Msg)
