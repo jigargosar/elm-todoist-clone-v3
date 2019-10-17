@@ -143,6 +143,11 @@ viewNavItem { title, iconColor, icon } =
     viewItem [] [] title iconColor icon
 
 
+type alias ColorCompatible x =
+    { x | value : String, color : Css.Compatible }
+
+
+viewItem : List (Attribute msg) -> List Css.Style -> String -> ColorCompatible x -> String -> Html msg
 viewItem attributes styles title iconColor iconName =
     div
         (css
