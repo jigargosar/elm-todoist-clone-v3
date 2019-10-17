@@ -103,12 +103,34 @@ view { onToggleExpansionPanel } projectList eps =
     }
 
 
-type alias NavItemViewModel msg =
+type alias NavItemViewModel =
     { title : String
     , iconColor : Css.Color
     , icon : String
-    , attrs : List (Attribute msg)
-    , styles : List Style
+    }
+
+
+projectToNavItem : Project -> NavItemViewModel
+projectToNavItem project =
+    { title = Project.title project
+    , iconColor = Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+    , icon = "folder"
+    }
+
+
+labelToNavItem : LabelView -> NavItemViewModel
+labelToNavItem { title, hue } =
+    { title = title
+    , iconColor = Css.hsl hue 0.7 0.5
+    , icon = "label"
+    }
+
+
+filterToNavItem : FilterView -> NavItemViewModel
+filterToNavItem { title, hue } =
+    { title = title
+    , iconColor = Css.hsl hue 0.7 0.5
+    , icon = "filter_list"
     }
 
 
