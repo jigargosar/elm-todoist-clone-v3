@@ -96,28 +96,40 @@ view config projectList eps dragInfo =
         viewPanel_ =
             getPanelViewModel config projectList eps >> viewPanel
 
-        ghostItem : Maybe NavItemViewModel
+        ghostItem : Maybe (Html msg)
         ghostItem =
             case dragInfo of
                 Nothing ->
                     Nothing
 
                 Just { dragIdx, panel, ghostStyles } ->
-                    case panel of
-                        Projects ->
-                            List.drop dragIdx projectList
-                                |> List.head
-                                |> Maybe.map projectToNavItem
+                    let
+                        maybeGhostNavItem =
+                            case panel of
+                                Projects ->
+                                    List.drop dragIdx projectList
+                                        |> List.head
+                                        |> Maybe.map projectToNavItem
 
-                        Labels ->
-                            List.drop dragIdx labelList
-                                |> List.head
-                                |> Maybe.map labelToNavItem
+                                Labels ->
+                                    List.drop dragIdx labelList
+                                        |> List.head
+                                        |> Maybe.map labelToNavItem
 
-                        Filters ->
-                            List.drop dragIdx filterList
-                                |> List.head
-                                |> Maybe.map filterToNavItem
+                                Filters ->
+                                    List.drop dragIdx filterList
+                                        |> List.head
+                                        |> Maybe.map filterToNavItem
+                    in
+                    maybeGhostNavItem |> Maybe.map (viewNavItemWithAttrsAndStyles [] [ ghostStyles ])
+
+        portal =
+            case ghostItem of
+                Nothing ->
+                    []
+
+                Just html_ ->
+                    [ html_ ]
     in
     { content =
         [ navTitleIconItem "Inbox" "inbox"
@@ -127,7 +139,7 @@ view config projectList eps dragInfo =
             ++ viewPanel_ Projects
             ++ viewPanel_ Labels
             ++ viewPanel_ Filters
-    , portal = []
+    , portal = portal
     }
 
 
@@ -248,6 +260,11 @@ viewNavItem { title, iconColor, icon } =
 viewNavItemWithAttrs : List (Attribute msg) -> NavItemViewModel -> Html msg
 viewNavItemWithAttrs attrs { title, iconColor, icon } =
     viewItem attrs [] title iconColor icon
+
+
+viewNavItemWithAttrsAndStyles : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
+viewNavItemWithAttrsAndStyles attrs styles { title, iconColor, icon } =
+    viewItem attrs styles title iconColor icon
 
 
 type alias ColorCompatible x =
