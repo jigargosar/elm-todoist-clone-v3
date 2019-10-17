@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Appbar
+import Basics.More exposing (flip)
 import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
@@ -234,7 +235,12 @@ update message model =
 
 dragEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
 dragEvents panel idx domId =
-    [ E.on "mousedown" (pageXYDecoder |> JD.map (DrawerPanelItemMouseDown panel idx domId)) ]
+    [ E.preventDefaultOn "mousedown"
+        (pageXYDecoder
+            |> JD.map (DrawerPanelItemMouseDown panel idx domId)
+            |> JD.map (flip Tuple.pair True)
+        )
+    ]
 
 
 view : Model -> Html Msg
