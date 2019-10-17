@@ -196,7 +196,7 @@ updateDrawer msg model =
 view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
-        { appbar = Appbar.view { onMenu = OpenDrawerModal }
+        { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerSystem.view model
         , main = mainView model.todoDict
         }

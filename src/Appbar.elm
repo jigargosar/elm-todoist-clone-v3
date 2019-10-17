@@ -11,7 +11,7 @@ iBtn styles =
     styled button (btnReset :: styles)
 
 
-view : { onMenu : msg } -> List (Html msg)
+view : { menuClicked : msg } -> List (Html msg)
 view config =
     let
         gap =
