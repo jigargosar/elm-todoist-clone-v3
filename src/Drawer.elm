@@ -4,7 +4,6 @@ import Css
 import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
-import Html.Styled.Events as E
 import Project exposing (Project)
 import ProjectId
 import Styles exposing (..)
@@ -121,7 +120,7 @@ view config projectList eps dragInfo =
                                         |> List.head
                                         |> Maybe.map filterToNavItem
                     in
-                    maybeGhostNavItem |> Maybe.map (viewNavItemWithAttrsAndStyles [] [ ghostStyles ])
+                    maybeGhostNavItem |> Maybe.map (viewNavItem [] [ ghostStyles ])
 
         portal =
             case ghostItem of
@@ -180,7 +179,7 @@ getPanelViewModel config projectList expansionPanels panel =
                                     domId =
                                         "panel-dnd-item__" ++ navItem.id
                                 in
-                                viewNavItemWithAttrs (A.id domId :: dragEvents idx domId) navItem
+                                viewNavItem (A.id domId :: dragEvents idx domId) [] navItem
                            )
                 )
                 list
@@ -252,13 +251,8 @@ navTitleIconItem title icon =
     viewItem [] [] title Css.inherit icon
 
 
-viewNavItemWithAttrs : List (Attribute msg) -> NavItemViewModel -> Html msg
-viewNavItemWithAttrs attrs { title, iconColor, icon } =
-    viewItem attrs [] title iconColor icon
-
-
-viewNavItemWithAttrsAndStyles : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
-viewNavItemWithAttrsAndStyles attrs styles { title, iconColor, icon } =
+viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
+viewNavItem attrs styles { title, iconColor, icon } =
     viewItem attrs styles title iconColor icon
 
 
