@@ -100,13 +100,12 @@ view :
     Config msg
     -> { content : List (Html msg), portal : List (Html msg) }
 view config =
-    [ onlyContent
+    onlyContent
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-    ]
-        ++ ([ Projects
+        :: ([ Projects
             , Labels
             , Filters
             ]
