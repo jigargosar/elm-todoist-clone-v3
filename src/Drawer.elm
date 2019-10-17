@@ -141,8 +141,8 @@ panelTitle panel =
             "Filters"
 
 
-contentPortal : Config msg -> Panel -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
-contentPortal config panel toNavItem list =
+contentPortal : Config msg -> Panel -> (List a -> List a) -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
+contentPortal config panel sort toNavItem list =
     let
         filteredDragInfo =
             config.dragInfo
@@ -191,13 +191,13 @@ getPanelContentPortal :
 getPanelContentPortal config sort panel =
     case panel of
         Projects ->
-            contentPortal config panel projectToNavItem config.projectList
+            contentPortal config panel identity projectToNavItem config.projectList
 
         Labels ->
-            contentPortal config panel labelToNavItem labelList
+            contentPortal config panel identity labelToNavItem labelList
 
         Filters ->
-            contentPortal config panel filterToNavItem filterList
+            contentPortal config panel identity filterToNavItem filterList
 
 
 type alias NavItemViewModel =
