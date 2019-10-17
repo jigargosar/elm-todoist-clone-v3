@@ -84,19 +84,19 @@ view { onToggleExpansionPanel } projectList eps =
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Projects)
                 "Projects"
                 (\_ ->
-                    projectList |> List.map navProjectItem
+                    projectList |> List.map (projectToNavItem >> viewNavItem)
                 )
                 eps.projectsExpanded
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Labels)
                 "Labels"
                 (\_ ->
-                    labelList |> List.map navLabelItem
+                    labelList |> List.map (labelToNavItem >> viewNavItem)
                 )
                 eps.labelsExpanded
             ++ ExpansionPanelUI.view (onToggleExpansionPanel Filters)
                 "Filters"
                 (\_ ->
-                    filterList |> List.map navFilterItem
+                    filterList |> List.map (filterToNavItem >> viewNavItem)
                 )
                 eps.filtersExpanded
     , portal = []
