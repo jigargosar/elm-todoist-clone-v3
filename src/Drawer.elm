@@ -134,22 +134,8 @@ filterToNavItem { title, hue } =
     }
 
 
-navItem title iconColor iconName =
-    div [ css [ ph 1, pointer, flex, c_grayL 0.3 ] ]
-        [ i
-            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
-            , class "material-icons"
-            ]
-            [ text iconName ]
-        , div
-            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
-            ]
-            [ text title ]
-        ]
-
-
 navIconItem title icon =
-    navItem title Css.inherit icon
+    viewItem [] [] title Css.inherit icon
 
 
 viewItem attributes styles title iconColor iconName =
