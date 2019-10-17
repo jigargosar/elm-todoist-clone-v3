@@ -6,6 +6,7 @@ import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
+import Html.Styled.Events as E
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
@@ -220,12 +221,17 @@ update message model =
 -- VIEW
 
 
+dragEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
+dragEvents panel idx domId =
+    [ E.on "mousedown" (pageXYDecoder |> JD.map (DrawerPanelItemMouseDown panel idx domId)) ]
+
+
 view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
-            Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel }
+            Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel, dragEvents = dragEvents }
                 (ProjectCollection.sorted model.projectCollection)
                 model.drawerExpansionPanels
         , main = mainView model.todoDict

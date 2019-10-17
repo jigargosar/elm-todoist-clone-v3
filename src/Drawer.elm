@@ -4,6 +4,7 @@ import Css
 import ExpansionPanelUI
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
+import Html.Styled.Events as E
 import Project exposing (Project)
 import Styles exposing (..)
 
@@ -81,7 +82,9 @@ type alias FilterView =
 
 
 view :
-    { onToggleExpansionPanel : Panel -> msg }
+    { onToggleExpansionPanel : Panel -> msg
+    , dragEvents : Panel -> Int -> String -> List (Html.Styled.Attribute msg)
+    }
     -> List Project
     -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
