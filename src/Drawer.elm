@@ -163,7 +163,7 @@ getPanelContentPortal config projectList dragInfo panel =
             in
             viewNavItem (A.id domId :: dragEvents) [ Css.property "user-select" "none" ] navItem
 
-        lazyContentAndPortal toNavItem list =
+        contentPortal toNavItem list =
             { content =
                 ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
                     (panelTitle panel)
@@ -184,13 +184,13 @@ getPanelContentPortal config projectList dragInfo panel =
     in
     case panel of
         Projects ->
-            lazyContentAndPortal projectToNavItem projectList
+            contentPortal projectToNavItem projectList
 
         Labels ->
-            lazyContentAndPortal labelToNavItem labelList
+            contentPortal labelToNavItem labelList
 
         Filters ->
-            lazyContentAndPortal filterToNavItem filterList
+            contentPortal filterToNavItem filterList
 
 
 viewPanel :
