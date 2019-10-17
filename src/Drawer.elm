@@ -164,25 +164,3 @@ viewItem attributes styles title iconColor iconName =
             ]
             [ text title ]
         ]
-
-
-navProjectItem : Project -> Html msg
-navProjectItem project =
-    let
-        title =
-            Project.title project
-
-        iconColor =
-            Css.hsl (Project.hue project |> toFloat) 0.7 0.5
-    in
-    viewItem [] [] title iconColor "folder"
-
-
-navLabelItem : LabelView -> Html msg
-navLabelItem { title, hue } =
-    viewItem [] [] title (Css.hsl hue 0.7 0.5) "label"
-
-
-navFilterItem : FilterView -> Html msg
-navFilterItem { title, hue } =
-    viewItem [] [] title (Css.hsl hue 0.7 0.5) "filter_list"
