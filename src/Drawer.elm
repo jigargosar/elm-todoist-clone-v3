@@ -2,7 +2,7 @@ module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, togg
 
 import Css
 import ExpansionPanelUI
-import Html.Styled exposing (..)
+import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Project exposing (Project)
@@ -84,7 +84,7 @@ type alias FilterView =
 
 view :
     { onToggleExpansionPanel : Panel -> msg
-    , dragEvents : Panel -> Int -> String -> List (Html.Styled.Attribute msg)
+    , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     }
     -> List Project
     -> ExpansionPanels
@@ -153,7 +153,7 @@ type alias PanelViewModel msg =
 
 getPanelViewModel :
     { onToggleExpansionPanel : Panel -> msg
-    , dragEvents : Panel -> Int -> String -> List (Html.Styled.Attribute msg)
+    , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
     }
     -> List Project
     -> ExpansionPanels
@@ -250,11 +250,6 @@ filterToNavItem { title, hue } =
 
 navTitleIconItem title icon =
     viewItem [] [] title Css.inherit icon
-
-
-viewNavItem : NavItemViewModel -> Html msg
-viewNavItem { title, iconColor, icon } =
-    viewItem [] [] title iconColor icon
 
 
 viewNavItemWithAttrs : List (Attribute msg) -> NavItemViewModel -> Html msg
