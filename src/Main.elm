@@ -193,9 +193,7 @@ update message model =
 
         GotDrawerPanelItemDragElement panel idx domId xy el ->
             ( { model
-                | panelItemDnD =
-                    PanelItemDnD panel idx domId el xy xy Nothing
-                        |> Just
+                | panelItemDnD = PanelItemDnD panel idx domId el xy xy Nothing |> Just
               }
             , Cmd.none
             )
