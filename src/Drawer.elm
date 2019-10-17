@@ -144,7 +144,6 @@ view config projectList dragInfo =
 
 type alias PanelViewModel msg =
     { title : String
-    , panel : Panel
     , lazyContent : () -> List (Html msg)
     }
 
@@ -176,17 +175,14 @@ getPanelViewModel config projectList panel =
     case panel of
         Projects ->
             PanelViewModel "Projects"
-                Projects
                 (panelLazyContent lazyContentConfig projectToNavItem projectList)
 
         Labels ->
             PanelViewModel "Labels"
-                Labels
                 (panelLazyContent lazyContentConfig labelToNavItem labelList)
 
         Filters ->
             PanelViewModel "Filters"
-                Labels
                 (panelLazyContent lazyContentConfig filterToNavItem filterList)
 
 
