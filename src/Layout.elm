@@ -15,7 +15,7 @@ type alias Parts msg =
 
 
 view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
-view config { appbar, drawer, content } isDrawerModalOpen =
+view { closeDrawerModal } { appbar, drawer, content } isDrawerModalOpen =
     styled div
         [ bgBody, h_100 ]
         [ class "sans-serif" ]
@@ -29,7 +29,7 @@ view config { appbar, drawer, content } isDrawerModalOpen =
                 drawer.content
             , styledMain [] content
             ]
-         , viewModalDrawer config.closeDrawerModal
+         , viewModalDrawer closeDrawerModal
             isDrawerModalOpen
             -- TEST OVERFLOW SCROLL
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
