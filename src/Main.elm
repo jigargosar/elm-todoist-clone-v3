@@ -149,7 +149,9 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = Drawer.view { toggleExpansionPanel = ToggleExpansionPanel } (ProjectCollection.sorted model.projectCollection)
+        , drawer =
+            Drawer.view { toggleExpansionPanel = ToggleExpansionPanel }
+                (ProjectCollection.sorted model.projectCollection)
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen
