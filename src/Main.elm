@@ -203,6 +203,7 @@ view model =
         model.isDrawerModalOpen
 
 
+mainView : TodoDict -> List (Html Msg)
 mainView todoDict =
     [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
     ]
