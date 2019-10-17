@@ -162,14 +162,6 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
-type alias PanelContentViewModel a =
-    { list : List a
-    , toNavItem : a -> NavItemViewModel
-    , panelDomIdPrefix : String
-    , panel : Panel
-    }
-
-
 getPanelTitle : Panel -> String
 getPanelTitle panel =
     case panel of
