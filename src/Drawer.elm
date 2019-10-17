@@ -133,21 +133,26 @@ view config projectList dragInfo =
 
                 Just html_ ->
                     [ html_ ]
-
-        panelCP =
-            [ viewPanel_ Projects, viewPanel_ Labels, viewPanel_ Filters ]
-                |> List.foldl
-                    (\cp acc -> { acc | content = acc.content ++ cp.content, portal = acc.portal ++ cp.portal })
-                    { content = [], portal = [] }
     in
-    { content =
+    [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-            ++ panelCP.content
-    , portal = portal ++ panelCP.portal
-    }
+    , onlyPortal portal
+    , viewPanel_ Projects
+    , viewPanel_ Labels
+    , viewPanel_ Filters
+    ]
+        |> mergeContentPortal
+
+
+onlyContent content =
+    { content = content, portal = [] }
+
+
+onlyPortal portal =
+    { content = [], portal = portal }
 
 
 mergeContentPortal : List { content : List x, portal : List x } -> { content : List x, portal : List x }
