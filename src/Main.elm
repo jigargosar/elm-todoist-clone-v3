@@ -293,11 +293,12 @@ dropEvents panel idx domId =
 dragInfoFor : Drawer.Panel -> Maybe PanelItemDnD -> Drawer.DragInfo
 dragInfoFor panel_ =
     Maybe.andThen
-        (\{ panel, idx, startXY, currentXY, el } ->
+        (\{ panel, idx, startXY, currentXY, el, over } ->
             if panel == panel_ then
                 Just
                     { panel = panel
                     , dragIdx = idx
+                    , dropIdx = over |> Maybe.map .idx |> Maybe.withDefault idx
                     , ghostStyles =
                         let
                             { x, y } =

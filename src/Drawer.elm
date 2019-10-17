@@ -82,7 +82,7 @@ type alias FilterView =
 
 
 type alias DragInfo =
-    Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style }
+    Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style, dropIdx : Int }
 
 
 type alias Config msg =
@@ -176,8 +176,20 @@ getPanelContentPortalHelp config panel toNavItem list =
 
                 dropEvents =
                     config.dropEvents panel idx domId
+
+                styles =
+                    config.dragInfo panel
+                        |> Maybe.andThen
+                            (\{ dropIdx } ->
+                                if idx == dropIdx then
+                                    Just [ Css.opacity <| Css.num 0 ]
+
+                                else
+                                    Nothing
+                            )
+                        |> Maybe.withDefault []
             in
-            viewNavItem (A.id domId :: dragEvents ++ dropEvents) [] navItem
+            viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
     in
     { content =
         ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
