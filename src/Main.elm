@@ -37,7 +37,12 @@ type alias XY =
     { x : Float, y : Float }
 
 
-type alias PanelItemDrag =
+type PanelItemDragAndDrop
+    = PanelItemDrag PanelItemDragState
+    | PanelItemDragOver PanelItemDragState PanelItemDragOverState
+
+
+type alias PanelItemDragState =
     { panel : Drawer.Panel
     , idx : Int
     , id : String
@@ -47,12 +52,16 @@ type alias PanelItemDrag =
     }
 
 
+type alias PanelItemDragOverState =
+    { idx : Int, id : String }
+
+
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , panelItemDrag : Maybe PanelItemDrag
+    , panelItemDnD : Maybe PanelItemDragAndDrop
     }
 
 
@@ -65,7 +74,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
-            , panelItemDrag = Nothing
+            , panelItemDnD = Nothing
             }
     in
     Return.singleton initial
@@ -158,11 +167,11 @@ update message model =
             )
 
         DrawerPanelItemMouseDown panel idx domId xy ->
-            ( { model | panelItemDrag = Nothing }
+            ( { model | panelItemDnD = Nothing }
             , getElement domId
                 |> Task.attempt
-                    (\r ->
-                        case r of
+                    (\elResult ->
+                        case elResult of
                             Ok el ->
                                 GotDrawerPanelItemDragElement panel idx domId xy el
 
@@ -172,10 +181,17 @@ update message model =
             )
 
         GotDrawerPanelItemDragElement panel idx domId xy el ->
-            ( { model | panelItemDrag = Just <| PanelItemDrag panel idx domId el xy xy }, Cmd.none )
+            ( { model
+                | panelItemDnD =
+                    PanelItemDragState panel idx domId el xy xy
+                        |> PanelItemDrag
+                        |> Just
+              }
+            , Cmd.none
+            )
 
         GotDrawerPanelItemDomError (Dom.NotFound domId) ->
-            ( { model | panelItemDrag = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
+            ( { model | panelItemDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
 
 
 
