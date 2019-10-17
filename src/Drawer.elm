@@ -1,18 +1,11 @@
 module Drawer exposing (Panel, view)
 
 import Css
-import DnD exposing (DnD)
-import Drag exposing (Drag)
 import ExpansionPanelUI
-import Html.Styled as H exposing (..)
-import Html.Styled.Attributes as A exposing (class, css)
-import Lens exposing (Lens)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (class, css)
 import Project exposing (Project)
-import ProjectId
-import Return
-import SelectList
 import Styles exposing (..)
-import Task
 
 
 
