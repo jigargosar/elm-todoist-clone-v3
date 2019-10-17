@@ -36,7 +36,7 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
-    , drawerExpansionPanels : DrawerExpansionPanels
+    , drawerExpansionPanels : Drawer.ExpansionPanels
     }
 
 
@@ -65,18 +65,6 @@ projectsSystem =
     }
 
 
-type alias DrawerExpansionPanels =
-    { projectsExpanded : Bool
-    , labelsExpanded : Bool
-    , filtersExpanded : Bool
-    }
-
-
-initialDrawerExpansionPanels : DrawerExpansionPanels
-initialDrawerExpansionPanels =
-    DrawerExpansionPanels True True True
-
-
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
@@ -85,7 +73,7 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
-            , drawerExpansionPanels = initialDrawerExpansionPanels
+            , drawerExpansionPanels = Drawer.initialExpansionPanels
             }
     in
     Return.singleton initial
@@ -152,21 +140,12 @@ update message model =
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
         ToggleExpansionPanel panel ->
-            ( { model | drawerExpansionPanels = toggleDrawerExpansionPanel panel model.drawerExpansionPanels }
+            ( { model
+                | drawerExpansionPanels =
+                    Drawer.toggleDrawerExpansionPanel panel model.drawerExpansionPanels
+              }
             , Cmd.none
             )
-
-
-toggleDrawerExpansionPanel panel model =
-    case panel of
-        Drawer.Projects ->
-            { model | projectsExpanded = not model.projectsExpanded }
-
-        Drawer.Labels ->
-            { model | labelsExpanded = not model.labelsExpanded }
-
-        Drawer.Filters ->
-            { model | filtersExpanded = not model.filtersExpanded }
 
 
 

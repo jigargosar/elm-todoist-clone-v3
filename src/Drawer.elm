@@ -1,4 +1,4 @@
-module Drawer exposing (Panel(..), view)
+module Drawer exposing (ExpansionPanels, Panel(..), initialExpansionPanels, toggleDrawerExpansionPanel, view)
 
 import Css
 import ExpansionPanelUI
@@ -8,8 +8,28 @@ import Project exposing (Project)
 import Styles exposing (..)
 
 
+type alias ExpansionPanels =
+    { projectsExpanded : Bool
+    , labelsExpanded : Bool
+    , filtersExpanded : Bool
+    }
 
---
+
+initialExpansionPanels : ExpansionPanels
+initialExpansionPanels =
+    ExpansionPanels True True True
+
+
+toggleDrawerExpansionPanel panel model =
+    case panel of
+        Projects ->
+            { model | projectsExpanded = not model.projectsExpanded }
+
+        Labels ->
+            { model | labelsExpanded = not model.labelsExpanded }
+
+        Filters ->
+            { model | filtersExpanded = not model.filtersExpanded }
 
 
 type alias Internal =
