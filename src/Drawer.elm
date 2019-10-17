@@ -141,7 +141,12 @@ panelTitle panel =
             "Filters"
 
 
-contentPortal : Config msg -> Panel -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
+contentPortal :
+    Config msg
+    -> Panel
+    -> (a -> NavItemViewModel)
+    -> List a
+    -> { content : List (Html msg), portal : List (Html msg) }
 contentPortal config panel toNavItem list =
     let
         filteredDragInfo =
