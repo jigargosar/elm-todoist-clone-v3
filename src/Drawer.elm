@@ -150,6 +150,13 @@ view config projectList dragInfo =
     }
 
 
+mergeContentPortal : List { content : List x, portal : List x } -> { content : List x, portal : List x }
+mergeContentPortal =
+    List.foldl
+        (\cp acc -> { acc | content = acc.content ++ cp.content, portal = acc.portal ++ cp.portal })
+        { content = [], portal = [] }
+
+
 type alias PanelContentViewModel a =
     { list : List a
     , toNavItem : a -> NavItemViewModel
