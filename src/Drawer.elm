@@ -169,39 +169,48 @@ getPanelViewModel config projectList expansionPanels panel =
         isExpanded =
             isPanelExpanded panel expansionPanels
 
-        lazyContent : (a -> NavItemViewModel) -> List a -> () -> List (Html msg)
-        lazyContent func list _ =
-            List.indexedMap
-                (\idx ->
-                    func
-                        >> (\navItem ->
-                                let
-                                    domId =
-                                        "panel-dnd-item__" ++ navItem.id
-                                in
-                                viewNavItem (A.id domId :: dragEvents idx domId) [] navItem
-                           )
-                )
-                list
+        lazyContentConfig =
+            { dragEvents = dragEvents }
     in
     case panel of
         Projects ->
             PanelViewModel "Projects"
                 toggleExpansion
                 isExpanded
-                (lazyContent projectToNavItem projectList)
+                (panelLazyContent lazyContentConfig projectToNavItem projectList)
 
         Labels ->
             PanelViewModel "Labels"
                 toggleExpansion
                 isExpanded
-                (lazyContent labelToNavItem labelList)
+                (panelLazyContent lazyContentConfig labelToNavItem labelList)
 
         Filters ->
             PanelViewModel "Filters"
                 toggleExpansion
                 isExpanded
-                (lazyContent filterToNavItem filterList)
+                (panelLazyContent lazyContentConfig filterToNavItem filterList)
+
+
+panelLazyContent :
+    { dragEvents : Int -> String -> List (H.Attribute msg) }
+    -> (a -> NavItemViewModel)
+    -> List a
+    -> ()
+    -> List (Html msg)
+panelLazyContent config func list _ =
+    List.indexedMap
+        (\idx ->
+            func
+                >> (\navItem ->
+                        let
+                            domId =
+                                "panel-dnd-item__" ++ navItem.id
+                        in
+                        viewNavItem (A.id domId :: config.dragEvents idx domId) [] navItem
+                   )
+        )
+        list
 
 
 viewPanel : PanelViewModel msg -> List (Html msg)
