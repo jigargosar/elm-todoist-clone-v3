@@ -157,7 +157,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
-            Drawer.view { toggleExpansionPanel = ToggleExpansionPanel }
+            Drawer.view { onToggleExpansionPanel = ToggleExpansionPanel }
                 (ProjectCollection.sorted model.projectCollection)
         , main = mainView model.todoDict
         }

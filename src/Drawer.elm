@@ -70,26 +70,29 @@ type alias FilterView =
     { title : String, hue : Float }
 
 
-view : { toggleExpansionPanel : Panel -> msg } -> List Project -> { content : List (Html msg), portal : List (Html msg) }
-view { toggleExpansionPanel } projectList =
+view :
+    { onToggleExpansionPanel : Panel -> msg }
+    -> List Project
+    -> { content : List (Html msg), portal : List (Html msg) }
+view { onToggleExpansionPanel } projectList =
     { content =
         [ navIconItem "Inbox" "inbox"
         , navIconItem "Today" "calendar_today"
         , navIconItem "Next 7 Days" "view_week"
         ]
-            ++ ExpansionPanelUI.view (toggleExpansionPanel Projects)
+            ++ ExpansionPanelUI.view (onToggleExpansionPanel Projects)
                 "Projects"
                 (\_ ->
                     projectList |> List.map navProjectItem
                 )
                 True
-            ++ ExpansionPanelUI.view (toggleExpansionPanel Labels)
+            ++ ExpansionPanelUI.view (onToggleExpansionPanel Labels)
                 "Labels"
                 (\_ ->
                     labelList |> List.map navLabelItem
                 )
                 True
-            ++ ExpansionPanelUI.view (toggleExpansionPanel Filters)
+            ++ ExpansionPanelUI.view (onToggleExpansionPanel Filters)
                 "Filters"
                 (\_ ->
                     filterList
