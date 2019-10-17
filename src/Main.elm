@@ -49,29 +49,31 @@ drawerSystem =
         (Lens.system { get = .drawer, set = \s b -> { b | drawer = s } })
 
 
-todoDictSystem =
-    let
-        todoDictL : Lens.Lens TodoDict Model
-        todoDictL =
-            Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
-    in
-    { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
-    , init =
-        \encoded big ->
-            let
-                res =
-                    case TodoDict.fromEncodedList encoded of
-                        Ok todoDict_ ->
-                            ( todoDict_, Cmd.none )
 
-                        Err e ->
-                            ( TodoDict.initial, logError <| JD.errorToString e )
-            in
-            res |> Tuple.mapFirst (\s -> todoDictL.set s big)
-    , toggle =
-        \todoId big ->
-            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) big, Cmd.none )
-    }
+--todoDictSystem =
+--    let
+--        todoDictL : Lens.Lens TodoDict Model
+--        todoDictL =
+--            Lens.system { get = .todoDict, set = \s b -> { b | todoDict = s } }
+--    in
+--    { sortedByIdx = todoDictL.get >> TodoDict.sortedByIdx
+--    , init =
+--        \encoded big ->
+--            let
+--                res =
+--                    case TodoDict.fromEncodedList encoded of
+--                        Ok todoDict_ ->
+--                            ( todoDict_, Cmd.none )
+--
+--                        Err e ->
+--                            ( TodoDict.initial, logError <| JD.errorToString e )
+--            in
+--            res |> Tuple.mapFirst (\s -> todoDictL.set s big)
+--    , toggle =
+--        \todoId big ->
+--            ( Lens.map todoDictL (TodoDict.toggleCompleted todoId) big, Cmd.none )
+--    }
+--
 
 
 projectsSystem =
@@ -113,10 +115,23 @@ init flags =
     Return.singleton initial
         |> Return.andThen
             (Return.pipelK
-                [ todoDictSystem.init flags.todoList
+                [ initTodoDict flags.todoList
                 , projectsSystem.init flags.projectList
                 ]
             )
+
+
+initTodoDict encodedTodoList model =
+    let
+        ( newTodoDict, cmd ) =
+            case TodoDict.fromEncodedList encodedTodoList of
+                Ok todoDict_ ->
+                    ( todoDict_, Cmd.none )
+
+                Err e ->
+                    ( TodoDict.initial, logError <| JD.errorToString e )
+    in
+    ( { model | todoDict = newTodoDict }, cmd )
 
 
 
@@ -150,7 +165,11 @@ update message model =
             Return.singleton model
 
         ToggleTodoCompleted todoId ->
-            todoDictSystem.toggle todoId model
+            let
+                newTodoDict =
+                    TodoDict.toggleCompleted todoId model.todoDict
+            in
+            ( { model | todoDict = newTodoDict }, Cmd.none )
 
         OpenDrawerModal ->
             ( { model | isDrawerModalOpen = True }, Cmd.none )
@@ -185,7 +204,7 @@ view model =
 
 
 mainView model =
-    [ Todo.viewList { toggle = ToggleTodoCompleted } (todoDictSystem.sortedByIdx model)
+    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx model.todoDict)
     ]
 
 
