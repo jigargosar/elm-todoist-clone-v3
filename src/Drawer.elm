@@ -130,9 +130,8 @@ getPanelViewModel panel projectList onToggleExpansionPanel expansionPanels =
             isPanelExpanded panel expansionPanels
 
         lazyContent : (a -> NavItemViewModel) -> List a -> () -> List (Html msg)
-        lazyContent func list =
-            \_ ->
-                List.map (func >> viewNavItem) list
+        lazyContent func list _ =
+            List.map (func >> viewNavItem) list
     in
     case panel of
         Projects ->
