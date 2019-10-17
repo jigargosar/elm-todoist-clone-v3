@@ -6,6 +6,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events as E
 import Project exposing (Project)
+import ProjectId
 import Styles exposing (..)
 
 
@@ -88,11 +89,11 @@ view :
     -> List Project
     -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
-view { onToggleExpansionPanel } projectList eps =
+view config projectList eps =
     let
         viewPanel_ : Panel -> List (Html msg)
         viewPanel_ =
-            getPanelViewModel projectList onToggleExpansionPanel eps >> viewPanel
+            getPanelViewModel config projectList eps >> viewPanel
     in
     { content =
         [ navTitleIconItem "Inbox" "inbox"
@@ -114,18 +115,39 @@ type alias PanelViewModel msg =
     }
 
 
-getPanelViewModel : List Project -> (Panel -> msg) -> ExpansionPanels -> Panel -> PanelViewModel msg
-getPanelViewModel projectList onToggleExpansionPanel expansionPanels panel =
+getPanelViewModel :
+    { onToggleExpansionPanel : Panel -> msg
+    , dragEvents : Panel -> Int -> String -> List (Html.Styled.Attribute msg)
+    }
+    -> List Project
+    -> ExpansionPanels
+    -> Panel
+    -> PanelViewModel msg
+getPanelViewModel config projectList expansionPanels panel =
     let
         toggleExpansion =
-            onToggleExpansionPanel panel
+            config.onToggleExpansionPanel panel
+
+        dragEvents =
+            config.dragEvents panel
 
         isExpanded =
             isPanelExpanded panel expansionPanels
 
         lazyContent : (a -> NavItemViewModel) -> List a -> () -> List (Html msg)
         lazyContent func list _ =
-            List.map (func >> viewNavItem) list
+            List.indexedMap
+                (\idx ->
+                    func
+                        >> (\navItem ->
+                                let
+                                    domId =
+                                        "panel-item__" ++ navItem.id
+                                in
+                                viewNavItemWithAttrs (dragEvents idx domId) navItem
+                           )
+                )
+                list
     in
     case panel of
         Projects ->
@@ -156,7 +178,8 @@ viewPanel { title, toggleExpansion, isExpanded, lazyContent } =
 
 
 type alias NavItemViewModel =
-    { title : String
+    { id : String
+    , title : String
     , iconColor : Css.Color
     , icon : String
     }
@@ -164,7 +187,8 @@ type alias NavItemViewModel =
 
 projectToNavItem : Project -> NavItemViewModel
 projectToNavItem project =
-    { title = Project.title project
+    { id = ProjectId.toString (Project.id project)
+    , title = Project.title project
     , iconColor = Css.hsl (Project.hue project |> toFloat) 0.7 0.5
     , icon = "folder"
     }
@@ -172,7 +196,8 @@ projectToNavItem project =
 
 labelToNavItem : LabelView -> NavItemViewModel
 labelToNavItem { title, hue } =
-    { title = title
+    { id = title
+    , title = title
     , iconColor = Css.hsl hue 0.7 0.5
     , icon = "label"
     }
@@ -180,7 +205,8 @@ labelToNavItem { title, hue } =
 
 filterToNavItem : FilterView -> NavItemViewModel
 filterToNavItem { title, hue } =
-    { title = title
+    { id = title
+    , title = title
     , iconColor = Css.hsl hue 0.7 0.5
     , icon = "filter_list"
     }
@@ -193,6 +219,11 @@ navTitleIconItem title icon =
 viewNavItem : NavItemViewModel -> Html msg
 viewNavItem { title, iconColor, icon } =
     viewItem [] [] title iconColor icon
+
+
+viewNavItemWithAttrs : List (Attribute msg) -> NavItemViewModel -> Html msg
+viewNavItemWithAttrs attrs { title, iconColor, icon } =
+    viewItem attrs [] title iconColor icon
 
 
 type alias ColorCompatible x =
