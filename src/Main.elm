@@ -325,7 +325,7 @@ view model =
                 , dragInfo = dragInfo model.panelItemDnD
                 , projectList = ProjectCollection.sorted model.projectCollection
                 }
-                identity
+                (\p l -> sort p l model.panelItemDnD)
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen

@@ -97,7 +97,7 @@ type alias Config msg =
 
 view :
     Config msg
-    -> (List a -> List a)
+    -> (Panel -> List NavItemViewModel -> List NavItemViewModel)
     -> { content : List (Html msg), portal : List (Html msg) }
 view config sort =
     let
@@ -141,8 +141,8 @@ panelTitle panel =
             "Filters"
 
 
-contentPortal : Config msg -> Panel -> (List a -> List a) -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
-contentPortal config panel sort toNavItem list =
+contentPortal : Config msg -> Panel -> (a -> NavItemViewModel) -> List a -> { content : List (Html msg), portal : List (Html msg) }
+contentPortal config panel toNavItem list =
     let
         filteredDragInfo =
             config.dragInfo
@@ -185,19 +185,19 @@ contentPortal config panel sort toNavItem list =
 
 getPanelContentPortal :
     Config msg
-    -> (List b -> List b)
+    -> (Panel -> List NavItemViewModel -> List NavItemViewModel)
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortal config sort panel =
     case panel of
         Projects ->
-            contentPortal config panel identity projectToNavItem config.projectList
+            contentPortal config panel projectToNavItem config.projectList
 
         Labels ->
-            contentPortal config panel identity labelToNavItem labelList
+            contentPortal config panel labelToNavItem labelList
 
         Filters ->
-            contentPortal config panel identity filterToNavItem filterList
+            contentPortal config panel filterToNavItem filterList
 
 
 type alias NavItemViewModel =
