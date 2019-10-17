@@ -162,8 +162,8 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
-getPanelTitle : Panel -> String
-getPanelTitle panel =
+panelTitle : Panel -> String
+panelTitle panel =
     case panel of
         Projects ->
             "Projects"
@@ -224,7 +224,7 @@ viewPanel :
     -> List (Html msg)
 viewPanel config panel lazyContent =
     ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
-        (getPanelTitle panel)
+        (panelTitle panel)
         lazyContent
         (config.isPanelExpanded panel)
 
