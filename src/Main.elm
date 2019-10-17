@@ -36,9 +36,7 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
-    , isProjectPanelExpanded : Bool
-    , isLabelPanelExpanded : Bool
-    , isFiltersPanelExpanded : Bool
+    , drawerExpansionPanels : DrawerExpansionPanels
     }
 
 
@@ -67,6 +65,17 @@ projectsSystem =
     }
 
 
+type alias DrawerExpansionPanels =
+    { isProjectPanelExpanded : Bool
+    , isLabelPanelExpanded : Bool
+    , isFiltersPanelExpanded : Bool
+    }
+
+
+initialDrawerExpansionPanels =
+    DrawerExpansionPanels True True True
+
+
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
@@ -75,9 +84,7 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
-            , isProjectPanelExpanded = True
-            , isLabelPanelExpanded = True
-            , isFiltersPanelExpanded = True
+            , drawerExpansionPanels = initialDrawerExpansionPanels
             }
     in
     Return.singleton initial
