@@ -20,6 +20,7 @@ initialExpansionPanels =
     ExpansionPanels True True True
 
 
+toggleExpansionPanel : Panel -> ExpansionPanels -> ExpansionPanels
 toggleExpansionPanel panel model =
     case panel of
         Projects ->
@@ -32,12 +33,20 @@ toggleExpansionPanel panel model =
             { model | filtersExpanded = not model.filtersExpanded }
 
 
-type alias Internal =
-    { labelList : List LabelView
-    , filterList : List FilterView
-    }
+isPanelExpanded : Panel -> ExpansionPanels -> Bool
+isPanelExpanded panel =
+    case panel of
+        Projects ->
+            .projectsExpanded
+
+        Labels ->
+            .labelsExpanded
+
+        Filters ->
+            .filtersExpanded
 
 
+labelList : List LabelView
 labelList =
     [ LabelView "to read" 333
     , LabelView "medical" 93990
@@ -45,6 +54,7 @@ labelList =
     ]
 
 
+filterList : List FilterView
 filterList =
     [ FilterView "Assigned to me" 933
     , FilterView "Assigned to others" 9354
@@ -111,35 +121,37 @@ type alias PanelViewModel msg =
     }
 
 
-getPanelViewModel panel projectList onToggleExpansionPanel eps =
+getPanelViewModel panel projectList onToggleExpansionPanel expansionPanels =
     let
         toggleExpansion =
             onToggleExpansionPanel panel
+
+        isExpanded =
+            isPanelExpanded panel expansionPanels
+
+        lazyContent : (a -> NavItemViewModel) -> List a -> () -> List (Html msg)
+        lazyContent func list =
+            \_ ->
+                List.map (func >> viewNavItem) list
     in
     case panel of
         Projects ->
             PanelViewModel "Projects"
                 toggleExpansion
-                eps.projectsExpanded
-                (\_ ->
-                    projectList |> List.map (projectToNavItem >> viewNavItem)
-                )
+                isExpanded
+                (lazyContent projectToNavItem projectList)
 
         Labels ->
             PanelViewModel "Labels"
                 toggleExpansion
-                eps.labelsExpanded
-                (\_ ->
-                    labelList |> List.map (labelToNavItem >> viewNavItem)
-                )
+                isExpanded
+                (lazyContent labelToNavItem labelList)
 
         Filters ->
             PanelViewModel "Filters"
                 toggleExpansion
-                eps.filtersExpanded
-                (\_ ->
-                    filterList |> List.map (filterToNavItem >> viewNavItem)
-                )
+                isExpanded
+                (lazyContent filterToNavItem filterList)
 
 
 type alias NavItemViewModel =
