@@ -82,7 +82,12 @@ type alias FilterView =
 
 
 type alias DragInfo =
-    Maybe { panel : Panel, dragIdx : Int, ghostStyles : Style, dropIdx : Int }
+    Maybe
+        { panel : Panel
+        , dragIdx : Int
+        , ghostStyles : Style
+        , dropIdx : Int
+        }
 
 
 type alias Config msg =
