@@ -91,13 +91,13 @@ view :
     -> { content : List (Html msg), portal : List (Html msg) }
 view config projectList dragInfo =
     let
-        viewPanel_ : Panel -> List (Html msg)
+        viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ panel =
             let
-                { lazyContent } =
+                panelContent =
                     getPanelContent config projectList panel
             in
-            viewPanel config panel lazyContent
+            { content = viewPanel config panel panelContent.lazyContent, portal = panelContent.portal }
 
         ghostItem : Maybe (Html msg)
         ghostItem =
@@ -133,16 +133,25 @@ view config projectList dragInfo =
 
                 Just html_ ->
                     [ html_ ]
+
+        projectPanelContent =
+            viewPanel_ Projects
+
+        labelPanelContent =
+            viewPanel_ Labels
+
+        filterPanel =
+            viewPanel_ Filters
     in
     { content =
         [ navTitleIconItem "Inbox" "inbox"
         , navTitleIconItem "Today" "calendar_today"
         , navTitleIconItem "Next 7 Days" "view_week"
         ]
-            ++ viewPanel_ Projects
-            ++ viewPanel_ Labels
-            ++ viewPanel_ Filters
-    , portal = portal
+            ++ projectPanelContent.content
+            ++ labelPanelContent.content
+            ++ filterPanel.content
+    , portal = portal ++ projectPanelContent.portal ++ labelPanelContent.portal ++ filterPanel.content
     }
 
 
@@ -174,7 +183,7 @@ getPanelContent :
     }
     -> List Project
     -> Panel
-    -> { lazyContent : () -> List (Html msg) }
+    -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
 getPanelContent config projectList panel =
     let
         getContent toNavItem list =
@@ -192,6 +201,7 @@ getPanelContent config projectList panel =
                                    )
                         )
                         list
+            , portal = []
             }
     in
     case panel of
