@@ -156,6 +156,19 @@ type alias PanelContentViewModel a =
     }
 
 
+getPanelTitle : Panel -> String
+getPanelTitle panel =
+    case panel of
+        Projects ->
+            "Projects"
+
+        Labels ->
+            "Labels"
+
+        Filters ->
+            "Filters"
+
+
 getPanelViewModel :
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
