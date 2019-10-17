@@ -88,6 +88,7 @@ type alias DragInfo =
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
     , dragEvents : Panel -> Int -> String -> List (H.Attribute msg)
+    , dropEvents : Panel -> Int -> String -> List (H.Attribute msg)
     , isPanelExpanded : Panel -> Bool
     , dragInfo : DragInfo
     , projectList : List Project

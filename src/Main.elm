@@ -294,6 +294,7 @@ view model =
             Drawer.view
                 { onToggleExpansionPanel = ToggleDrawerExpansionPanel
                 , dragEvents = dragEvents
+                , dropEvents = dropEvents
                 , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
                 , dragInfo = dragInfo model.panelItemDnD
                 , projectList = ProjectCollection.sorted model.projectCollection
