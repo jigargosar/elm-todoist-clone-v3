@@ -57,7 +57,7 @@ type alias FilterView =
     { title : String, hue : Float }
 
 
-view : { toggleExpansionPanel : Panel -> Bool -> msg } -> List Project -> { content : List (Html msg), portal : List (Html msg) }
+view : { toggleExpansionPanel : Panel -> msg } -> List Project -> { content : List (Html msg), portal : List (Html msg) }
 view { toggleExpansionPanel } projectList =
     { content =
         [ navIconItem "Inbox" "inbox"

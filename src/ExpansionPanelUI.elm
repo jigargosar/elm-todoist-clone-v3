@@ -12,7 +12,7 @@ iBtnStyle =
     batch [ btnReset, pointer ]
 
 
-viewHeader : (Bool -> msg) -> String -> Bool -> Html msg
+viewHeader : msg -> String -> Bool -> Html msg
 viewHeader toggle title isExpanded =
     let
         isCollapsed =
@@ -21,7 +21,7 @@ viewHeader toggle title isExpanded =
     div
         [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
-            [ css [ iBtnStyle, pa 1, flexGrow1 ], onClick (toggle (not isExpanded)) ]
+            [ css [ iBtnStyle, pa 1, flexGrow1 ], onClick toggle ]
             [ span
                 [ css
                     [ c_grayL 0.6
@@ -38,7 +38,7 @@ viewHeader toggle title isExpanded =
         ]
 
 
-view : (Bool -> msg) -> String -> (() -> List (Html msg)) -> Bool -> List (Html msg)
+view : msg -> String -> (() -> List (Html msg)) -> Bool -> List (Html msg)
 view toggle title lazyContent isExpanded =
     viewHeader toggle title isExpanded
         :: (if isExpanded then

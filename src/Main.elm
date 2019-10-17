@@ -115,7 +115,7 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | ToggleExpansionPanel Drawer.Panel Bool
+    | ToggleExpansionPanel Drawer.Panel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -137,7 +137,7 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        ToggleExpansionPanel _ _ ->
+        ToggleExpansionPanel _ ->
             ( model, Cmd.none )
 
 
