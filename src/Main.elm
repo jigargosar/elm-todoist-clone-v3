@@ -2,6 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
+import Browser.Dom exposing (Element)
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
@@ -31,11 +32,26 @@ type alias Flags =
 -- MODEL
 
 
+type alias XY =
+    { x : Float, y : Float }
+
+
+type alias PanelItemDrag =
+    { panel : Drawer.Panel
+    , idx : Int
+    , id : String
+    , el : Element
+    , startXY : XY
+    , currentXY : XY
+    }
+
+
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
+    , panelItemDrag : Maybe PanelItemDrag
     }
 
 
@@ -48,6 +64,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
+            , panelItemDrag = Nothing
             }
     in
     Return.singleton initial
