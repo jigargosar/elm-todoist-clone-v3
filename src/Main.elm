@@ -7,7 +7,6 @@ import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
-import Lens
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Todo exposing (Todo)
