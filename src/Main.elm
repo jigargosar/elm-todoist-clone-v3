@@ -117,7 +117,7 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | ToggleExpansionPanel Drawer.Panel
+    | ToggleDrawerExpansionPanel Drawer.Panel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -139,7 +139,7 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        ToggleExpansionPanel panel ->
+        ToggleDrawerExpansionPanel panel ->
             ( { model
                 | drawerExpansionPanels =
                     Drawer.toggleExpansionPanel panel model.drawerExpansionPanels
@@ -157,7 +157,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
-            Drawer.view { onToggleExpansionPanel = ToggleExpansionPanel }
+            Drawer.view { onToggleExpansionPanel = ToggleDrawerExpansionPanel }
                 (ProjectCollection.sorted model.projectCollection)
         , main = mainView model.todoDict
         }
