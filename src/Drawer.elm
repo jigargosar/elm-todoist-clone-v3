@@ -190,7 +190,10 @@ getPanelContentPortalHelp config panel toNavItem list =
         ExpansionPanelUI.view (config.onToggleExpansionPanel panel)
             (panelTitle panel)
             (\_ ->
-                list |> List.map toNavItem |> config.sort panel |> List.indexedMap (\idx -> viewDnDNavItem idx)
+                list
+                    |> List.map toNavItem
+                    |> config.sort panel
+                    |> List.indexedMap (\idx -> viewDnDNavItem idx)
             )
             (config.isPanelExpanded panel)
     , portal =
