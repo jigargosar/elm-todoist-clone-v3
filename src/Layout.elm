@@ -1,49 +1,10 @@
-module Layout exposing (Layout, Msg, Parts, initial, update, view)
+module Layout exposing (Parts, view)
 
 import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events exposing (onClick)
-import Lens
 import Styles exposing (..)
-
-
-type Layout
-    = Layout Private
-
-
-initial : Layout
-initial =
-    Layout <| Private False
-
-
-type alias Private =
-    { drawerModal : Bool }
-
-
-type Msg
-    = OpenModalDrawer
-    | CloseModalDrawer
-
-
-privateLens : { get : Private -> small, set : small -> Private -> Private } -> Lens.Lens small Layout
-privateLens =
-    Lens.system >> Lens.compose (Lens.system { get = \(Layout p) -> p, set = \s _ -> Layout s })
-
-
-drawerModalL : Lens.Lens Bool Layout
-drawerModalL =
-    privateLens { get = .drawerModal, set = \s b -> { b | drawerModal = s } }
-
-
-update : (Msg -> msg) -> Msg -> Layout -> ( Layout, Cmd msg )
-update _ message model =
-    case message of
-        OpenModalDrawer ->
-            ( drawerModalL.set True model, Cmd.none )
-
-        CloseModalDrawer ->
-            ( drawerModalL.set False model, Cmd.none )
 
 
 type alias Parts msg =

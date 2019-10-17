@@ -6,7 +6,7 @@ import Drawer exposing (Drawer)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import Layout exposing (Layout)
+import Layout
 import Lens
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
