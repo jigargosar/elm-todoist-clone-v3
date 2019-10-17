@@ -111,6 +111,37 @@ type alias PanelViewModel msg =
     }
 
 
+getPanelViewModel panel projectList onToggleExpansionPanel eps =
+    let
+        toggleExpansion =
+            onToggleExpansionPanel panel
+    in
+    case panel of
+        Projects ->
+            PanelViewModel "Projects"
+                toggleExpansion
+                eps.projectsExpanded
+                (\_ ->
+                    projectList |> List.map (projectToNavItem >> viewNavItem)
+                )
+
+        Labels ->
+            PanelViewModel "Labels"
+                toggleExpansion
+                eps.labelsExpanded
+                (\_ ->
+                    labelList |> List.map (labelToNavItem >> viewNavItem)
+                )
+
+        Filters ->
+            PanelViewModel "Filters"
+                toggleExpansion
+                eps.filtersExpanded
+                (\_ ->
+                    filterList |> List.map (filterToNavItem >> viewNavItem)
+                )
+
+
 type alias NavItemViewModel =
     { title : String
     , iconColor : Css.Color
