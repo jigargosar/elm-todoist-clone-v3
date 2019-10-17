@@ -166,7 +166,7 @@ getPanelContentPortalHelp :
     -> { content : List (Html msg), portal : List (Html msg) }
 getPanelContentPortalHelp config panel toNavItem list =
     let
-        filteredDragInfo =
+        panelDragInfo =
             config.dragInfo
                 |> Maybe.map List.singleton
                 |> Maybe.withDefault []
@@ -197,7 +197,7 @@ getPanelContentPortalHelp config panel toNavItem list =
             )
             (config.isPanelExpanded panel)
     , portal =
-        filteredDragInfo
+        panelDragInfo
             |> Maybe.andThen
                 (\{ dragIdx, ghostStyles } ->
                     List.drop dragIdx list
