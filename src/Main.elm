@@ -314,18 +314,22 @@ dragInfo =
 
 view : Model -> Html Msg
 view model =
+    let
+        drawerConfig : Drawer.Config Msg
+        drawerConfig =
+            { onToggleExpansionPanel = ToggleDrawerExpansionPanel
+            , dragEvents = dragEvents
+            , dropEvents = dropEvents
+            , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
+            , dragInfo = dragInfo model.panelItemDnD
+            , projectList = ProjectCollection.sorted model.projectCollection
+            , sort = \p l -> sort p l model.panelItemDnD
+            }
+    in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
-            Drawer.view
-                { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-                , dragEvents = dragEvents
-                , dropEvents = dropEvents
-                , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
-                , dragInfo = dragInfo model.panelItemDnD
-                , projectList = ProjectCollection.sorted model.projectCollection
-                }
-                (\p l -> sort p l model.panelItemDnD)
+            Drawer.view drawerConfig
         , main = mainView model.todoDict
         }
         model.isDrawerModalOpen

@@ -1,4 +1,4 @@
-module Drawer exposing (DragInfo, ExpansionPanels, Panel(..), initialExpansionPanels, isPanelExpanded, toggleExpansionPanel, view)
+module Drawer exposing (Config, DragInfo, ExpansionPanels, Panel(..), initialExpansionPanels, isPanelExpanded, toggleExpansionPanel, view)
 
 import Css
 import ExpansionPanelUI
@@ -92,18 +92,18 @@ type alias Config msg =
     , isPanelExpanded : Panel -> Bool
     , dragInfo : DragInfo
     , projectList : List Project
+    , sort : Panel -> List NavItemViewModel -> List NavItemViewModel
     }
 
 
 view :
     Config msg
-    -> (Panel -> List NavItemViewModel -> List NavItemViewModel)
     -> { content : List (Html msg), portal : List (Html msg) }
-view config sort =
+view config =
     let
         viewPanel_ : Panel -> { content : List (Html msg), portal : List (Html msg) }
         viewPanel_ =
-            getPanelContentPortal config sort
+            getPanelContentPortal config
     in
     [ onlyContent
         [ navTitleIconItem "Inbox" "inbox"
@@ -185,10 +185,9 @@ contentPortal config panel toNavItem list =
 
 getPanelContentPortal :
     Config msg
-    -> (Panel -> List NavItemViewModel -> List NavItemViewModel)
     -> Panel
     -> { content : List (Html msg), portal : List (Html msg) }
-getPanelContentPortal config sort panel =
+getPanelContentPortal config panel =
     case panel of
         Projects ->
             contentPortal config panel projectToNavItem config.projectList
