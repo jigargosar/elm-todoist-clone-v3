@@ -198,13 +198,13 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { onMenu = OpenDrawerModal }
         , drawer = drawerSystem.view model
-        , content = mainView model
+        , content = mainView model.todoDict
         }
         model.isDrawerModalOpen
 
 
-mainView model =
-    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx model.todoDict)
+mainView todoDict =
+    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
     ]
 
 
