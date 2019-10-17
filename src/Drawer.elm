@@ -185,20 +185,17 @@ getPanelContent :
     -> { lazyContent : () -> List (Html msg), portal : List (Html msg) }
 getPanelContent config projectList panel =
     let
+        viewNavItemHelp idx navItem =
+            let
+                domId =
+                    "panel-dnd-item__" ++ navItem.id
+            in
+            viewNavItem (A.id domId :: config.dragEvents panel idx domId) [] navItem
+
         getContent toNavItem list =
             { lazyContent =
                 \_ ->
-                    List.indexedMap
-                        (\idx ->
-                            toNavItem
-                                >> (\navItem ->
-                                        let
-                                            domId =
-                                                "panel-dnd-item__" ++ navItem.id
-                                        in
-                                        viewNavItem (A.id domId :: config.dragEvents panel idx domId) [] navItem
-                                   )
-                        )
+                    List.indexedMap (\idx -> toNavItem >> viewNavItemHelp idx)
                         list
             , portal = []
             }
