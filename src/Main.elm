@@ -11,7 +11,6 @@ import Lens
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import Return
-import Screen exposing (Screen)
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -37,7 +36,6 @@ type alias Flags =
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
-    , screen : Screen
     , layout : Layout
     , drawer : Drawer
     }
@@ -49,16 +47,6 @@ drawerSystem =
         { onProjectListSorted = UpdateProjectSortOrder }
         projectsSystem.sorted
         (Lens.system { get = .drawer, set = \s b -> { b | drawer = s } })
-
-
-screenSystem : Screen.System Msg Model
-screenSystem =
-    let
-        screenL : Lens.Lens Screen Model
-        screenL =
-            Lens.system { get = .screen, set = \s b -> { b | screen = s } }
-    in
-    Screen.system screenL (\_ -> NoOp) (\_ _ -> NoOp)
 
 
 todoDictSystem =
@@ -118,7 +106,6 @@ init flags =
         initial =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
-            , screen = screenSystem.initial
             , layout = Layout.initial
             , drawer = drawerSystem.initial
             }
@@ -128,7 +115,6 @@ init flags =
             (Return.pipelK
                 [ todoDictSystem.init flags.todoList
                 , projectsSystem.init flags.projectList
-                , screenSystem.init
                 ]
             )
 
@@ -140,8 +126,7 @@ init flags =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ screenSystem.subscriptions model
-        , drawerSystem.subscriptions model
+        [ drawerSystem.subscriptions model
         ]
 
 
@@ -152,7 +137,6 @@ subscriptions model =
 type Msg
     = NoOp
     | Toggle TodoId
-    | Screen Screen.Msg
     | Layout Layout.Msg
     | Drawer Drawer.Msg
     | UpdateProjectSortOrder (List Project)
@@ -166,9 +150,6 @@ update message =
 
         Toggle todoId ->
             todoDictSystem.toggle todoId
-
-        Screen msg ->
-            screenSystem.update msg
 
         Layout msg ->
             updateLayout msg
