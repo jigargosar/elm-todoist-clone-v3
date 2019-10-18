@@ -148,7 +148,7 @@ update message model =
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelsDragState DrawerPanelDrag panel msg model.drawerPanelDrag
+            Drawer.updatePanelsDrag DrawerPanelDrag panel msg model.drawerPanelDrag
                 |> Tuple.mapFirst
                     (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
 

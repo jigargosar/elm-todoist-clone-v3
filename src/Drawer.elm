@@ -8,7 +8,7 @@ module Drawer exposing
     , initialPanelsDragState
     , panelDragSubscriptions
     , toggleExpansionPanel
-    , updatePanelsDragState
+    , updatePanelsDrag
     , view
     )
 
@@ -109,13 +109,13 @@ initialPanelsDragState =
     }
 
 
-updatePanelsDragState :
+updatePanelsDrag :
     (Panel -> Drag.Msg -> msg)
     -> Panel
     -> Drag.Msg
     -> PanelsDragState
     -> ( PanelsDragState, Cmd msg )
-updatePanelsDragState toMsg panel msg model =
+updatePanelsDrag toMsg panel msg model =
     case panel of
         Projects ->
             Drag.update (toMsg panel) msg model.projectsDrag
