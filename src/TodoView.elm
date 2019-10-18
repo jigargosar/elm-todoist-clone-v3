@@ -30,17 +30,18 @@ listContainer =
 viewListItem : Config msg -> ProjectCollection -> LabelCollection -> Todo -> Html msg
 viewListItem config pc lc todo =
     li
-        ([ viewIsCompleted config todo
-         , viewTitle todo
-         , viewProject pc todo
-         ]
-            ++ viewLabels lc todo
-        )
+        [ div [ css [ flex, itemsCenter ] ]
+            [ viewIsCompleted config todo
+            , viewTitle todo
+            , viewProject pc todo
+            ]
+        , div [ css [ flex ] ] (viewLabels lc todo)
+        ]
 
 
 li : List (Html msg) -> Html msg
 li =
-    Html.li [ class "flex items-center lh-copy ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+    Html.li [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
 
 
 viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
@@ -91,7 +92,7 @@ viewLabelId label =
         [ css
             [ ph 1
             , Css.fontSize Css.small
-            , c_ (Label.hue label |> fromHue |> Color.blacken 10 |> toCssColor)
+            , c_ (Label.hue label |> fromHue |> Color.whiten 10 |> toCssColor)
             ]
         ]
         [ text <| Label.title label ]
