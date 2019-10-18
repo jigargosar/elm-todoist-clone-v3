@@ -211,7 +211,10 @@ drawerView model =
             }
     in
     Drawer.view drawerConfig
-        { projectList = ProjectCollection.sorted model.projectCollection, labelList = model.labelList, filterList = model.filterList }
+        { projectList = ProjectCollection.sorted model.projectCollection
+        , labelList = model.labelList
+        , filterList = model.filterList
+        }
         model.drawerExpansionPanels
         model.drawerPanelDrag
 
