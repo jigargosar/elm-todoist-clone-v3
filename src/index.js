@@ -75,7 +75,14 @@ function moveRandomTodoToRandomProject() {
   randomTodo.maybeProjectId = randomProject.id
 }
 
+function assignRandomLabelsToRandomTodo() {
+  const randomTodo = getRandomListItem(mockTodoList)
+  const randomLabel = getRandomListItem(mockLabelList)
+  randomTodo.labelIdList.push(randomLabel.id)
+}
+
 times(moveRandomTodoToRandomProject, 3)
+times(assignRandomLabelsToRandomTodo, 7)
 
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
