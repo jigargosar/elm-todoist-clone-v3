@@ -133,7 +133,7 @@ viewPanel togglePanel title isExpanded dragToMsg drag toNavItem list =
                 viewDnDNavItem idx navItem =
                     let
                         domId =
-                            "panel-dnd-item__" ++ navItem.id
+                            String.toLower title ++ "-panel-drag-item__" ++ navItem.id
 
                         dragEvents =
                             Drag.dragEvents dragToMsg idx domId drag
