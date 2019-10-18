@@ -188,7 +188,7 @@ updateHelp message model =
                         }
 
                 DragOver state ->
-                    DragOver { state | dropIdx = a }
+                    DragOver { state | dragOver = a }
             , Cmd.none
             )
 
