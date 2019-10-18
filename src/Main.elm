@@ -83,7 +83,6 @@ type alias Model =
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerDnD : Maybe PanelItemDnD
-    , drag : Drag ( Drawer.Panel, Int ) ( Drawer.Panel, Int )
     , projectsDrag : ListDrag
     , labelsDrag : ListDrag
     , filtersDrag : ListDrag
@@ -100,7 +99,6 @@ init flags =
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerDnD = Nothing
-            , drag = Drag.initial
             , projectsDrag = Drag.initial
             , labelsDrag = Drag.initial
             , filtersDrag = Drag.initial
@@ -169,7 +167,6 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , Drag.subscriptions Drag model.drag
         , Drag.subscriptions (PanelDragList Drawer.Projects) model.projectsDrag
         , Drag.subscriptions (PanelDragList Drawer.Labels) model.labelsDrag
         , Drag.subscriptions (PanelDragList Drawer.Filters) model.filtersDrag
@@ -192,7 +189,6 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
-    | Drag (Drag.Msg ( Drawer.Panel, Int ) ( Drawer.Panel, Int ))
     | PanelDragList Drawer.Panel (Drag.Msg Int Int)
 
 
@@ -271,10 +267,6 @@ update message model =
 
         BrowserMouseUp ->
             ( { model | drawerDnD = Nothing }, Cmd.none )
-
-        Drag msg ->
-            Drag.update Drag { canAccept = \( p1, _ ) ( p2, _ ) -> p1 == p2 } msg model.drag
-                |> Tuple.mapFirst (\drag -> { model | drag = drag })
 
         PanelDragList panel msg ->
             let
@@ -412,41 +404,27 @@ mainView2 model =
 
         rotateProjectList : List a -> List a
         rotateProjectList =
-            Drag.info model.drag
+            Drag.info model.projectsDrag
                 |> Maybe.map
                     (\{ drag, dragOver } ->
-                        case ( drag, dragOver ) of
-                            ( ( Drawer.Projects, dragIdx ), ( Drawer.Projects, dragOverIdx ) ) ->
-                                rotateList dragIdx dragOverIdx
-
-                            _ ->
-                                identity
+                        rotateList drag dragOver
                     )
                 |> Maybe.withDefault identity
 
         eqDragOverIdx : Int -> Bool
         eqDragOverIdx idx =
-            Drag.info model.drag
+            Drag.info model.projectsDrag
                 |> Maybe.map
                     (\{ drag, dragOver } ->
-                        case ( drag, dragOver ) of
-                            ( ( Drawer.Projects, _ ), ( Drawer.Projects, dragOverIdx ) ) ->
-                                idx == dragOverIdx
-
-                            _ ->
-                                False
+                        idx == dragOver
                     )
                 |> Maybe.withDefault False
 
         ghostItem =
-            Drag.ghostStyles model.drag
+            Drag.ghostStyles model.projectsDrag
                 |> Maybe.andThen
-                    (\( ( panel, idx ), styles ) ->
-                        if panel == Drawer.Projects then
-                            List.drop idx projectList |> List.head |> Maybe.map (Tuple.pair styles)
-
-                        else
-                            Nothing
+                    (\( idx, styles ) ->
+                        List.drop idx projectList |> List.head |> Maybe.map (Tuple.pair styles)
                     )
                 |> Maybe.map
                     (\( styles, project ) ->
@@ -474,8 +452,8 @@ mainView2 model =
                     div
                         (A.id domId
                             :: css [ Styles.noSelection, Styles.commonTransitions, dragOverStyles ]
-                            :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
-                            ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
+                            :: Drag.dragEvents (PanelDragList Drawer.Projects) idx domId model.projectsDrag
+                            ++ Drag.dropEvents (PanelDragList Drawer.Projects) idx model.projectsDrag
                         )
                         [ text <| Project.title project ]
                 )
