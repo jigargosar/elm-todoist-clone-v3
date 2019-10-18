@@ -4,6 +4,7 @@ module Drag exposing
     , Msg
     , dragEvents
     , dropEvents
+    , eqDragOverIdx
     , ghostStyles
     , info
     , initial
@@ -47,6 +48,16 @@ rotateFromInfo { drag, dragOver } list =
         |> Maybe.andThen (SelectList.selectBy drag)
         |> Maybe.map (SelectList.moveBy (dragOver - drag) >> SelectList.toList)
         |> Maybe.withDefault list
+
+
+eqDragOverIdx : Int -> Drag -> Bool
+eqDragOverIdx idx =
+    info
+        >> Maybe.map
+            (\{ drag, dragOver } ->
+                idx == dragOver
+            )
+        >> Maybe.withDefault False
 
 
 rotate : Drag -> List a -> List a

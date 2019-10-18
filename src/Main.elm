@@ -394,15 +394,6 @@ mainView2 model =
         rotateProjectList =
             Drag.rotate model.projectsDrag
 
-        eqDragOverIdx : Int -> Bool
-        eqDragOverIdx idx =
-            Drag.info model.projectsDrag
-                |> Maybe.map
-                    (\{ drag, dragOver } ->
-                        idx == dragOver
-                    )
-                |> Maybe.withDefault False
-
         ghostItem =
             Drag.ghostStyles model.projectsDrag
                 |> Maybe.andThen
@@ -430,7 +421,7 @@ mainView2 model =
                                 >> (++) "project-dnd-item"
 
                         dragOverStyles =
-                            Styles.styleIf (eqDragOverIdx idx) [ Css.opacity <| Css.zero ]
+                            Styles.styleIf (Drag.eqDragOverIdx idx model.projectsDrag) [ Css.opacity <| Css.zero ]
                     in
                     div
                         (A.id domId
