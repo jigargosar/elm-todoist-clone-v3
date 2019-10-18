@@ -35,7 +35,7 @@ const mockProjectList = [
 
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
-  flags: { todoList: mockTodoList, projectList: mockProjectList },
+  flags: { todoList: mockTodoList, projectList: mockProjectList, labelList : [], filterList: [] },
 })
 
 const pubs = ports(
