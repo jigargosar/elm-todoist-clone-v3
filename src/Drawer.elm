@@ -12,7 +12,7 @@ module Drawer exposing
 import Css
 import Drag exposing (Drag)
 import ExpansionPanelUI
-import Html.Styled as H exposing (..)
+import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Project exposing (Project)
 import ProjectId
@@ -206,19 +206,6 @@ mergeContentPortal =
     List.foldl
         (\cp acc -> { acc | content = acc.content ++ cp.content, portal = acc.portal ++ cp.portal })
         { content = [], portal = [] }
-
-
-panelTitle : Panel -> String
-panelTitle panel =
-    case panel of
-        Projects ->
-            "Projects"
-
-        Labels ->
-            "Labels"
-
-        Filters ->
-            "Filters"
 
 
 
