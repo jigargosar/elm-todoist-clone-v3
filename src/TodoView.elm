@@ -5,6 +5,7 @@ import Css
 import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
+import LabelId
 import ProjectCollection exposing (ProjectCollection)
 import Styles exposing (..)
 import Todo exposing (Todo)
@@ -27,7 +28,13 @@ listContainer =
 
 viewListItem : Config msg -> ProjectCollection -> Todo -> Html msg
 viewListItem config pc todo =
-    li [ viewIsCompleted config todo, viewTitle todo, viewProject pc todo ]
+    li
+        ([ viewIsCompleted config todo
+         , viewTitle todo
+         , viewProject pc todo
+         ]
+            ++ viewLabels todo
+        )
 
 
 li : List (Html msg) -> Html msg
@@ -72,3 +79,21 @@ viewProject pc todo =
             ]
         ]
         [ text tp.title ]
+
+
+viewLabels todo =
+    List.map viewLabelId (Todo.labelIdList todo)
+
+
+viewLabelId labelId =
+    div
+        [ css
+            [ ph 1
+            , Css.fontSize Css.small
+
+            --                , bg (toCssColor tp.color)
+            --                , c_ (toCssColor <| Color.highContrast tp.color)
+            --                , bor 2
+            ]
+        ]
+        [ text <| LabelId.toString labelId ]
