@@ -10,7 +10,7 @@ module Drawer exposing
     )
 
 import Css
-import Drag
+import Drag exposing (Drag)
 import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
@@ -115,20 +115,34 @@ type alias PanelLists =
     }
 
 
+type alias PanelsDragState =
+    { projectsDrag : Drag
+    , labelsDrag : Drag
+    , filtersDrag : Drag
+    }
+
+
 view :
     Config msg
     -> List Project
     -> ExpansionPanels
+    -> PanelsDragState
     -> { content : List (Html msg), portal : List (Html msg) }
-view config projectList expansionPanels =
+view config projectList expansionPanels panelsDragState =
     let
         panelLists =
             { projectList = projectList, labelList = labelList, filterList = filterList }
+
+        _ =
+            viewPanel (config.onToggleExpansionPanel Projects)
+                "Projects"
+                expansionPanels.projectsExpanded
+                config.toProjectsDragMsg
     in
     { content = [], portal = [] }
 
 
-viewPanel togglePanel title isExpanded dragToMsg drag toNavItem list =
+viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
     ExpansionPanelUI.view togglePanel
         title
         (\_ ->
@@ -139,10 +153,10 @@ viewPanel togglePanel title isExpanded dragToMsg drag toNavItem list =
                             String.toLower title ++ "-panel-drag-item__" ++ navItem.id
 
                         dragEvents =
-                            Drag.dragEvents dragToMsg idx domId drag
+                            Drag.dragEvents dragMsgTagger idx domId drag
 
                         dropEvents =
-                            Drag.dropEvents dragToMsg idx drag
+                            Drag.dropEvents dragMsgTagger idx drag
 
                         dragOverStyles =
                             Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]

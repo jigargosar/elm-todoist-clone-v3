@@ -378,7 +378,13 @@ drawerView model =
             , toFiltersDragMsg = FiltersDrag
             }
     in
-    Drawer.view drawerConfig (ProjectCollection.sorted model.projectCollection) model.drawerExpansionPanels
+    Drawer.view drawerConfig
+        (ProjectCollection.sorted model.projectCollection)
+        model.drawerExpansionPanels
+        { projectsDrag = model.projectsDrag
+        , filtersDrag = model.filtersDrag
+        , labelsDrag = model.labelsDrag
+        }
 
 
 mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }
