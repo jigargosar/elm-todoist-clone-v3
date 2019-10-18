@@ -1,4 +1,4 @@
-module Drag exposing
+module Sortable exposing
     ( Drag
     , Info
     , Msg

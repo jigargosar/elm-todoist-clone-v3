@@ -6,7 +6,6 @@ import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
 import Css
-import Drag exposing (Drag)
 import Drawer
 import Html.Styled exposing (Html, div, text, toUnstyled)
 import Html.Styled.Attributes as A exposing (css)
@@ -19,6 +18,7 @@ import ProjectCollection exposing (ProjectCollection)
 import ProjectId
 import Return
 import SelectList
+import Sortable exposing (Drag)
 import Styles
 import Task
 import TodoDict exposing (TodoDict)
@@ -99,9 +99,9 @@ init flags =
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerDnD = Nothing
-            , projectsDrag = Drag.initial
-            , labelsDrag = Drag.initial
-            , filtersDrag = Drag.initial
+            , projectsDrag = Sortable.initial
+            , labelsDrag = Sortable.initial
+            , filtersDrag = Sortable.initial
             }
     in
     Return.singleton initial
@@ -167,9 +167,9 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , Drag.subscriptions ProjectsDrag model.projectsDrag
-        , Drag.subscriptions LabelsDrag model.labelsDrag
-        , Drag.subscriptions FiltersDrag model.filtersDrag
+        , Sortable.subscriptions ProjectsDrag model.projectsDrag
+        , Sortable.subscriptions LabelsDrag model.labelsDrag
+        , Sortable.subscriptions FiltersDrag model.filtersDrag
         ]
 
 
@@ -189,9 +189,9 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
-    | ProjectsDrag Drag.Msg
-    | LabelsDrag Drag.Msg
-    | FiltersDrag Drag.Msg
+    | ProjectsDrag Sortable.Msg
+    | LabelsDrag Sortable.Msg
+    | FiltersDrag Sortable.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -271,15 +271,15 @@ update message model =
             ( { model | drawerDnD = Nothing }, Cmd.none )
 
         ProjectsDrag msg ->
-            Drag.update ProjectsDrag msg model.projectsDrag
+            Sortable.update ProjectsDrag msg model.projectsDrag
                 |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
 
         LabelsDrag msg ->
-            Drag.update LabelsDrag msg model.labelsDrag
+            Sortable.update LabelsDrag msg model.labelsDrag
                 |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
 
         FiltersDrag msg ->
-            Drag.update FiltersDrag msg model.filtersDrag
+            Sortable.update FiltersDrag msg model.filtersDrag
                 |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
@@ -400,7 +400,7 @@ mainView2 model =
 
         rotateProjectList : List a -> List a
         rotateProjectList =
-            Drag.info model.projectsDrag
+            Sortable.info model.projectsDrag
                 |> Maybe.map
                     (\{ drag, dragOver } ->
                         rotateList drag dragOver
@@ -409,7 +409,7 @@ mainView2 model =
 
         eqDragOverIdx : Int -> Bool
         eqDragOverIdx idx =
-            Drag.info model.projectsDrag
+            Sortable.info model.projectsDrag
                 |> Maybe.map
                     (\{ drag, dragOver } ->
                         idx == dragOver
@@ -417,7 +417,7 @@ mainView2 model =
                 |> Maybe.withDefault False
 
         ghostItem =
-            Drag.ghostStyles model.projectsDrag
+            Sortable.ghostStyles model.projectsDrag
                 |> Maybe.andThen
                     (\( idx, styles ) ->
                         List.drop idx projectList |> List.head |> Maybe.map (Tuple.pair styles)
@@ -448,8 +448,8 @@ mainView2 model =
                     div
                         (A.id domId
                             :: css [ Styles.noSelection, Styles.commonTransitions, dragOverStyles ]
-                            :: Drag.dragEvents ProjectsDrag idx domId model.projectsDrag
-                            ++ Drag.dropEvents ProjectsDrag idx model.projectsDrag
+                            :: Sortable.dragEvents ProjectsDrag idx domId model.projectsDrag
+                            ++ Sortable.dropEvents ProjectsDrag idx model.projectsDrag
                         )
                         [ text <| Project.title project ]
                 )
