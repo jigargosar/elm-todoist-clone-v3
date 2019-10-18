@@ -33,21 +33,6 @@ type alias Flags =
 -- MODEL
 
 
-type alias XY =
-    { x : Float, y : Float }
-
-
-type alias PanelItemDnD =
-    { panel : Drawer.Panel
-    , idx : Int
-    , id : String
-    , el : Element
-    , startXY : XY
-    , currentXY : XY
-    , over : Maybe { idx : Int, id : String }
-    }
-
-
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
