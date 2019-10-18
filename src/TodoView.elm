@@ -71,8 +71,3 @@ viewProject pc todo =
             ]
         ]
         [ text tp.title ]
-
-
-toCssColor : Color.Color -> Css.Color
-toCssColor =
-    Color.toHex >> Css.hex

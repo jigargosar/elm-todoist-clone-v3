@@ -1,5 +1,6 @@
 module Styles exposing (..)
 
+import Color
 import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, transparent, zero)
 import Css.Media as Media
 import Css.Transitions as CT
@@ -12,6 +13,11 @@ batch =
 
 type alias Style =
     Css.Style
+
+
+toCssColor : Color.Color -> Css.Color
+toCssColor =
+    Color.toHex >> Css.hex
 
 
 bg : Css.ColorValue compatible -> Css.Style
