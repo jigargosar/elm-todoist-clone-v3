@@ -3,7 +3,7 @@ port module Main exposing (main)
 import Appbar
 import Browser
 import Drag exposing (Drag)
-import Drawer
+import Drawer exposing (FilterView, LabelView)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -35,6 +35,8 @@ type alias Flags =
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
+    , labelList : List LabelView
+    , filterList : List FilterView
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerPanelDrag : Drawer.PanelsDragState
@@ -48,6 +50,8 @@ init flags =
         initial =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
+            , labelList = Drawer.labelList
+            , filterList = Drawer.filterList
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerPanelDrag = Drawer.initialPanelsDragState

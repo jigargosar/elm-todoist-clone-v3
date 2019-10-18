@@ -1,11 +1,15 @@
 module Drawer exposing
     ( Config
     , ExpansionPanels
+    , FilterView
+    , LabelView
     , Panel(..)
     , PanelLists
     , PanelsDragState
+    , filterList
     , initialExpansionPanels
     , initialPanelsDragState
+    , labelList
     , panelDragSubscriptions
     , toggleExpansionPanel
     , updatePanelDrag
