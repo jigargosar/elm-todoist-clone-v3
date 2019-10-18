@@ -72,7 +72,7 @@ type alias Model =
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerDnD : Maybe PanelItemDnD
-    , drag : Drag ( Drawer.Panel, Int )
+    , drag : Drag ( Drawer.Panel, Int ) ( Drawer.Panel, Int )
     }
 
 
@@ -171,7 +171,7 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
-    | Drag (Drag.Msg ( Drawer.Panel, Int ))
+    | Drag (Drag.Msg ( Drawer.Panel, Int ) ( Drawer.Panel, Int ))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

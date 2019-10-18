@@ -22,7 +22,7 @@ import XY exposing (XY)
 import XYDelta exposing (XYDelta)
 
 
-type Drag a
+type Drag a b
     = NoDrag
     | Drag
         { drag : a
@@ -33,11 +33,11 @@ type Drag a
         { drag : a
         , mouseMoveDelta : XYDelta
         , dragElementOffset : XY
-        , dragOver : a
+        , dragOver : b
         }
 
 
-initial : Drag a
+initial : Drag a b
 initial =
     NoDrag
 
@@ -54,16 +54,16 @@ dragElementAndXY drag =
             Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
 
-type Msg a
+type Msg a b
     = GlobalMouseMove XY
     | GlobalMouseUp
     | MouseDownOnDraggable a String XY
-    | MouseOverDroppable a
+    | MouseOverDroppable b
     | GotDragElement a XY Element
     | GotDomElementError Dom.Error
 
 
-subscriptions : Drag a -> Sub (Msg a)
+subscriptions : Drag a b -> Sub (Msg a b)
 subscriptions drag =
     let
         subs =
@@ -83,7 +83,7 @@ subscriptions drag =
             subs
 
 
-xyMovedTo : XY -> Drag a -> Drag a
+xyMovedTo : XY -> Drag a b -> Drag a b
 xyMovedTo xy model =
     let
         setCurrentXYIn state =
@@ -100,7 +100,7 @@ xyMovedTo xy model =
             setCurrentXYIn state |> DragOver
 
 
-dragEvents : (Msg a -> msg) -> a -> String -> Drag a -> List (H.Attribute msg)
+dragEvents : (Msg a b -> msg) -> a -> String -> Drag a b -> List (H.Attribute msg)
 dragEvents tagger a domId drag =
     case drag of
         NoDrag ->
@@ -117,7 +117,7 @@ dragEvents tagger a domId drag =
             []
 
 
-dropEvents : (Msg a -> msg) -> a -> Drag a -> List (H.Attribute msg)
+dropEvents : (Msg a b -> msg) -> b -> Drag a b -> List (H.Attribute msg)
 dropEvents tagger a model =
     let
         events =
@@ -138,7 +138,7 @@ pd =
     flip Tuple.pair False
 
 
-update : (Msg a -> msg) -> Msg a -> Drag a -> ( Drag a, Cmd msg )
+update : (Msg a b -> msg) -> Msg a b -> Drag a b -> ( Drag a b, Cmd msg )
 update toMsg message model =
     let
         ( newModel, cmd ) =
@@ -147,7 +147,7 @@ update toMsg message model =
     ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateHelp : Msg a -> Drag a -> ( Drag a, Cmd (Msg a) )
+updateHelp : Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
 updateHelp message model =
     let
         getElement domId onSuccess =
@@ -174,7 +174,7 @@ updateHelp message model =
             , getElement dragId (GotDragElement dragIdx xy)
             )
 
-        MouseOverDroppable a ->
+        MouseOverDroppable b ->
             ( case model of
                 NoDrag ->
                     model
@@ -184,11 +184,11 @@ updateHelp message model =
                         { drag = drag
                         , mouseMoveDelta = mouseMoveDelta
                         , dragElementOffset = dragElementOffset
-                        , dragOver = a
+                        , dragOver = b
                         }
 
                 DragOver state ->
-                    DragOver { state | dragOver = a }
+                    DragOver { state | dragOver = b }
             , Cmd.none
             )
 
@@ -205,7 +205,7 @@ updateHelp message model =
             ( NoDrag, Cmd.none )
 
 
-ghostStyles : Drag a -> Css.Style
+ghostStyles : Drag a b -> Css.Style
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
