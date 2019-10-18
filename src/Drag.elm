@@ -20,12 +20,8 @@ import Html.Styled.Events as E
 import Json.Decode as JD
 import Styles
 import Task
-import XY
+import XY exposing (XY)
 import XYDelta exposing (XYDelta)
-
-
-type alias XY =
-    { x : Float, y : Float }
 
 
 type Drag
