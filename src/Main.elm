@@ -48,14 +48,10 @@ type alias PanelItemDnD =
     }
 
 
-type alias ListDrag =
-    Drag
-
-
 type alias PanelsDragState =
-    { projects : ListDrag
-    , labels : ListDrag
-    , filters : ListDrag
+    { projects : Drag
+    , labels : Drag
+    , filters : Drag
     }
 
 
@@ -64,9 +60,9 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , projectsDrag : ListDrag
-    , labelsDrag : ListDrag
-    , filtersDrag : ListDrag
+    , projectsDrag : Drag
+    , labelsDrag : Drag
+    , filtersDrag : Drag
     }
 
 
