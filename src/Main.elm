@@ -373,10 +373,9 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-            , projectList = ProjectCollection.sorted model.projectCollection
             }
     in
-    Drawer.view drawerConfig model.drawerExpansionPanels
+    Drawer.view drawerConfig (ProjectCollection.sorted model.projectCollection) model.drawerExpansionPanels
 
 
 mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }

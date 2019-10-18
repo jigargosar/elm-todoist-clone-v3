@@ -101,15 +101,15 @@ type alias DragInfo =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
-    , projectList : List Project
     }
 
 
 view :
     Config msg
+    -> List Project
     -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
-view config expansionPanels =
+view config projectList expansionPanels =
     { content = [], portal = [] }
 
 
