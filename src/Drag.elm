@@ -188,10 +188,7 @@ updateHelp message model =
                         }
 
                 DragOver state ->
-                    DragOver
-                        { state
-                            | dropIdx = idx
-                        }
+                    DragOver { state | dropIdx = idx }
             , Cmd.none
             )
 
