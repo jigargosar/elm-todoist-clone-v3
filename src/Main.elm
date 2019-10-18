@@ -2,7 +2,6 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Browser.Dom exposing (Element)
 import Drag exposing (Drag)
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
