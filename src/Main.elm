@@ -154,7 +154,12 @@ update message model =
                     (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
 
         DrawerPanelDragChange panel info ->
-            ( model, Cmd.none )
+            case panel of
+                Drawer.Projects ->
+                    ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 
