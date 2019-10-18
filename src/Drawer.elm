@@ -102,6 +102,9 @@ type alias DragInfo =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
+    , toProjectsDragMsg : Drag.Msg -> msg
+    , toLabelsDragMsg : Drag.Msg -> msg
+    , toFiltersDragMsg : Drag.Msg -> msg
     }
 
 

@@ -373,6 +373,9 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
+            , toProjectsDragMsg = ProjectsDrag
+            , toLabelsDragMsg = LabelsDrag
+            , toFiltersDragMsg = FiltersDrag
             }
     in
     Drawer.view drawerConfig (ProjectCollection.sorted model.projectCollection) model.drawerExpansionPanels
