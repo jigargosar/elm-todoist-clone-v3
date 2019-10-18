@@ -206,7 +206,11 @@ update toMsg onChange message ((Drag internal) as model) =
             ( xyMovedTo xy model, Cmd.none )
 
         GlobalMouseUp ->
-            ( Drag Nothing, Cmd.none )
+            ( Drag Nothing
+            , info model
+                |> Maybe.map (onChange >> Task.succeed >> Task.perform identity)
+                |> Maybe.withDefault Cmd.none
+            )
 
         MouseDownOnDraggable dragIdx dragId xy ->
             ( model
@@ -237,9 +241,7 @@ update toMsg onChange message ((Drag internal) as model) =
 
         GotDomElementError (Dom.NotFound _) ->
             ( Drag Nothing
-            , info model
-                |> Maybe.map (onChange >> Task.succeed >> Task.perform identity)
-                |> Maybe.withDefault Cmd.none
+            , Cmd.none
             )
 
 
