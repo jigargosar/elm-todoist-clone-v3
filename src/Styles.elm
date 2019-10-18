@@ -25,6 +25,10 @@ bg =
     Css.backgroundColor
 
 
+lh =
+    Css.lineHeight << Css.num
+
+
 bgTransparent : Css.Style
 bgTransparent =
     bg transparent
