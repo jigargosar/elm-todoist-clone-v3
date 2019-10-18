@@ -1,9 +1,11 @@
 module TodoView exposing (Config, viewList)
 
+import Css
 import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import ProjectCollection exposing (ProjectCollection)
+import Styles exposing (pa)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 import TodoProject
@@ -59,4 +61,4 @@ viewProject pc todo =
         tp =
             TodoProject.fromTodo pc todo
     in
-    div [ class "pa2" ] [ text tp.title ]
+    div [ css [ pa 2, Css.fontSize Css.small ] ] [ text tp.title ]
