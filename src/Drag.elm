@@ -198,7 +198,7 @@ updateHelp message model =
         GotDragElement dragIdx xy element ->
             ( Drag
                 { dragIdx = dragIdx
-                , xyDelta = XYDelta.init xy
+                , xyDelta = XYDelta.init (XY.add xy (XY.subtract element.element element.viewport))
                 , dragElementOffset = XY.subtract element.element element.viewport
                 }
             , Cmd.none
