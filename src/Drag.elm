@@ -26,12 +26,12 @@ type Drag
     = NoDrag
     | Drag
         { dragIdx : Int
-        , xyDelta : XYDelta
+        , mouseMoveDelta : XYDelta
         , dragElementOffset : XY
         }
     | DragOver
         { dragIdx : Int
-        , xyDelta : XYDelta
+        , mouseMoveDelta : XYDelta
         , dragElementOffset : XY
         , dropIdx : Int
         }
@@ -47,11 +47,11 @@ dragElementAndXY drag =
         NoDrag ->
             Nothing
 
-        Drag { xyDelta, dragElementOffset } ->
-            Just { xyDelta = xyDelta, dragElementOffset = dragElementOffset }
+        Drag { mouseMoveDelta, dragElementOffset } ->
+            Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
-        DragOver { xyDelta, dragElementOffset } ->
-            Just { xyDelta = xyDelta, dragElementOffset = dragElementOffset }
+        DragOver { mouseMoveDelta, dragElementOffset } ->
+            Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
 
 type Msg
@@ -87,7 +87,7 @@ xyMovedTo : XY -> Drag -> Drag
 xyMovedTo xy model =
     let
         setCurrentXYIn state =
-            { state | xyDelta = XYDelta.moveTo xy state.xyDelta }
+            { state | mouseMoveDelta = XYDelta.moveTo xy state.mouseMoveDelta }
     in
     case model of
         NoDrag ->
@@ -179,10 +179,10 @@ updateHelp message model =
                 NoDrag ->
                     model
 
-                Drag { dragIdx, xyDelta, dragElementOffset } ->
+                Drag { dragIdx, mouseMoveDelta, dragElementOffset } ->
                     DragOver
                         { dragIdx = dragIdx
-                        , xyDelta = xyDelta
+                        , mouseMoveDelta = mouseMoveDelta
                         , dragElementOffset = dragElementOffset
                         , dropIdx = idx
                         }
@@ -198,7 +198,7 @@ updateHelp message model =
         GotDragElement dragIdx xy element ->
             ( Drag
                 { dragIdx = dragIdx
-                , xyDelta = XYDelta.init (XY.add xy (XY.subtract element.element element.viewport))
+                , mouseMoveDelta = XYDelta.init (XY.add xy (XY.subtract element.element element.viewport))
                 , dragElementOffset = XY.subtract element.element element.viewport
                 }
             , Cmd.none
@@ -212,11 +212,10 @@ ghostStyles : Drag -> Css.Style
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
-            (\{ dragElementOffset, xyDelta } ->
+            (\{ dragElementOffset, mouseMoveDelta } ->
                 let
                     { x, y } =
-                        XY.add (XYDelta.diff xyDelta)
-                            dragElementOffset
+                        XY.add (XYDelta.diff mouseMoveDelta) dragElementOffset
                 in
                 [ Styles.absolute
                 , Styles.top_0
