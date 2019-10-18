@@ -26,6 +26,7 @@ port logError : String -> Cmd msg
 type alias Flags =
     { todoList : Value
     , projectList : Value
+    , labelList : Value
     }
 
 
