@@ -67,6 +67,7 @@ init flags =
             (Return.pipelK
                 [ initTodoDict flags.todoList
                 , initProjectCollection flags.projectList
+                , initLabelCollection flags.labelList
                 ]
             )
 
@@ -86,6 +87,23 @@ initProjectCollection encodedProjectList model =
                     ( model.projectCollection, logError <| JD.errorToString e )
     in
     ( { model | projectCollection = newProjectCollection }, cmd )
+
+
+initLabelCollection :
+    JD.Value
+    -> { a | labelCollection : LabelCollection }
+    -> ( { a | labelCollection : LabelCollection }, Cmd msg )
+initLabelCollection encodedLabelList model =
+    let
+        ( newLabelCollection, cmd ) =
+            case LabelCollection.fromEncodedList encodedLabelList of
+                Ok new ->
+                    ( new, Cmd.none )
+
+                Err e ->
+                    ( model.labelCollection, logError <| JD.errorToString e )
+    in
+    ( { model | labelCollection = newLabelCollection }, cmd )
 
 
 initTodoDict :
