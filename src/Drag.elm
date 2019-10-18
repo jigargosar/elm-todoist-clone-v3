@@ -35,9 +35,7 @@ type Drag
         { dragIdx : Int
         , xyDelta : XYDelta
         , dragElement : Dom.Element
-        , dropId : String
         , dropIdx : Int
-        , dropElement : Element
         }
 
 
@@ -219,17 +217,13 @@ updateHelp message model =
                         { dragIdx = dragIdx
                         , xyDelta = xyDelta
                         , dragElement = dragElement
-                        , dropId = domId
                         , dropIdx = idx
-                        , dropElement = element
                         }
 
                 DragOver state ->
                     DragOver
                         { state
                             | dropIdx = idx
-                            , dropId = domId
-                            , dropElement = element
                         }
             , Cmd.none
             )
