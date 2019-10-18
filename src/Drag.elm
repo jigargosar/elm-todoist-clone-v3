@@ -34,8 +34,8 @@ type alias Info =
 info : Drag -> Maybe Info
 info (Drag internal) =
     internal
-        |> Maybe.andThen
-            (\state -> state.dragOver |> Maybe.map (\dragOver -> { drag = state.drag, dragOver = dragOver }))
+        |> Maybe.map
+            (\state -> { drag = state.drag, dragOver = state.dragOver })
 
 
 type Drag
@@ -74,7 +74,7 @@ type alias State =
     { drag : Int
     , mouseMoveDelta : XYDelta
     , dragElementOffset : XY
-    , dragOver : Maybe Int
+    , dragOver : Int
     }
 
 
@@ -197,7 +197,7 @@ updateHelp message ((Drag internal) as model) =
                     model
 
                 Just state ->
-                    Drag (Just { state | dragOver = Just b })
+                    Drag (Just { state | dragOver = b })
             , Cmd.none
             )
 
@@ -207,7 +207,7 @@ updateHelp message ((Drag internal) as model) =
                     { drag = a
                     , mouseMoveDelta = XYDelta.init xy
                     , dragElementOffset = XY.subtract element.element element.viewport
-                    , dragOver = Nothing
+                    , dragOver = a
                     }
                 )
             , Cmd.none
