@@ -26,6 +26,7 @@ type alias Internal =
     , isCompleted : Bool
     , idx : Int
     , maybeProjectId : Maybe ProjectId
+    , labelIdList : List LabelId
     }
 
 
@@ -44,6 +45,7 @@ decoder =
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
         |> andMap (JD.field "maybeProjectId" (JD.maybe ProjectId.decoder))
+        |> andMap (JD.field "labelIdList" (JD.list LabelId.decoder))
         |> JD.map Todo
 
 

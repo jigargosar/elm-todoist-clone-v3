@@ -19,6 +19,7 @@ const mockTodoList = [
   isCompleted: Math.random() > 0.3,
   idx,
   maybeProjectId: null,
+  labelIdList: []
 }))
 
 const mockProjectList = [
