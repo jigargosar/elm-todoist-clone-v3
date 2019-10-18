@@ -25,7 +25,6 @@ import XYDelta exposing (XYDelta)
 type Drag a b
     = NoDrag
     | Drag (State a b)
-    | DragOver (State a b)
 
 
 type alias State a b =
@@ -47,9 +46,6 @@ dragElementAndXY model =
             Nothing
 
         Drag { drag, mouseMoveDelta, dragElementOffset } ->
-            Just { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
-
-        DragOver { drag, mouseMoveDelta, dragElementOffset } ->
             Just { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
 
@@ -79,9 +75,6 @@ subscriptions toMsg drag =
         Drag _ ->
             subs
 
-        DragOver _ ->
-            subs
-
 
 xyMovedTo : XY -> Drag a b -> Drag a b
 xyMovedTo xy model =
@@ -95,9 +88,6 @@ xyMovedTo xy model =
 
         Drag state ->
             setCurrentXYIn state |> Drag
-
-        DragOver state ->
-            setCurrentXYIn state |> DragOver
 
 
 dragEvents : (Msg a b -> msg) -> a -> String -> Drag a b -> List (H.Attribute msg)
@@ -113,9 +103,6 @@ dragEvents tagger a domId drag =
         Drag _ ->
             []
 
-        DragOver _ ->
-            []
-
 
 dropEvents : (Msg a b -> msg) -> b -> Drag a b -> List (H.Attribute msg)
 dropEvents tagger a model =
@@ -128,9 +115,6 @@ dropEvents tagger a model =
             []
 
         Drag _ ->
-            events
-
-        DragOver _ ->
             events
 
 
@@ -185,15 +169,8 @@ updateHelp config message model =
 
                 Drag state ->
                     if config.canAccept state.drag b then
-                        DragOver
+                        Drag
                             { state | dragOver = Just b }
-
-                    else
-                        model
-
-                DragOver state ->
-                    if config.canAccept state.drag b then
-                        DragOver { state | dragOver = Just b }
 
                     else
                         model
