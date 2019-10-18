@@ -3,6 +3,8 @@ module Drawer exposing
     , DragInfo
     , ExpansionPanels
     , Panel(..)
+    , PanelLists
+    , PanelsDragState
     , initialExpansionPanels
     , isPanelExpanded
     , toggleExpansionPanel
