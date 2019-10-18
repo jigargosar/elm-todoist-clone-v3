@@ -385,6 +385,20 @@ mainView2 model =
                     )
                 |> Maybe.withDefault identity
 
+        eqDragOverIdx : Int -> Bool
+        eqDragOverIdx idx =
+            Drag.info model.drag
+                |> Maybe.map
+                    (\{ drag, dragOver } ->
+                        case ( drag, dragOver ) of
+                            ( ( Drawer.Projects, _ ), ( Drawer.Projects, dragOverIdx ) ) ->
+                                idx == dragOverIdx
+
+                            _ ->
+                                False
+                    )
+                |> Maybe.withDefault False
+
         ghostItem =
             Drag.ghostStyles model.drag
                 |> Maybe.andThen
@@ -414,10 +428,13 @@ mainView2 model =
                                 |> Project.id
                                 >> ProjectId.toString
                                 >> (++) "project-dnd-item"
+
+                        dragOverStyles =
+                            Styles.styleIf (eqDragOverIdx idx) [ Css.opacity <| Css.zero ]
                     in
                     div
                         (A.id domId
-                            :: css [ Styles.noSelection ]
+                            :: css [ Styles.noSelection, dragOverStyles ]
                             :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
                             ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
                         )
