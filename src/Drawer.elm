@@ -102,9 +102,9 @@ type alias DragInfo =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
-    , toProjectsDragMsg : Drag.Msg -> msg
-    , toLabelsDragMsg : Drag.Msg -> msg
-    , toFiltersDragMsg : Drag.Msg -> msg
+    , projectsDragSystem : Drag.System Project msg
+    , labelsDragSystem : Drag.System LabelView msg
+    , filtersDragSystem : Drag.System FilterView msg
     }
 
 
@@ -144,7 +144,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Projects)
                 "Projects"
                 expansionPanels.projectsExpanded
-                config.toProjectsDragMsg
+                config.projectsDragSystem
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
@@ -153,7 +153,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Labels)
                 "Labels"
                 expansionPanels.labelsExpanded
-                config.toLabelsDragMsg
+                config.labelsDragSystem
                 panelsDragState.labelsDrag
                 labelToNavItem
                 panelLists.labelList
@@ -162,7 +162,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Filters)
                 "Filters"
                 expansionPanels.filtersExpanded
-                config.toFiltersDragMsg
+                config.filtersDragSystem
                 panelsDragState.filtersDrag
                 filterToNavItem
                 panelLists.filterList
@@ -171,10 +171,10 @@ view config projectList expansionPanels panelsDragState =
         |> mergeContentPortal
 
 
-viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
+viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
     let
         ghostItem =
-            Drag.ghostStyles drag
+            dragSystem.ghostStyles drag
                 |> Maybe.andThen
                     (\( idx, styles ) ->
                         List.drop idx list |> List.head |> Maybe.map (toNavItem >> Tuple.pair styles)
@@ -196,13 +196,13 @@ viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
                                 String.toLower title ++ "-panel-drag-item__" ++ navItem.id
 
                             dragEvents =
-                                Drag.dragEvents dragMsgTagger idx domId drag
+                                dragSystem.dragEvents idx domId drag
 
                             dropEvents =
-                                Drag.dropEvents dragMsgTagger idx drag
+                                dragSystem.dropEvents idx drag
 
                             dragOverStyles =
-                                Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+                                Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
                             styles =
                                 [ Styles.noSelection, dragOverStyles ]
@@ -210,7 +210,7 @@ viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
                         viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
                 in
                 list
-                    |> Drag.rotate drag
+                    |> dragSystem.rotate drag
                     |> List.map toNavItem
                     |> List.indexedMap viewDnDNavItem
             )

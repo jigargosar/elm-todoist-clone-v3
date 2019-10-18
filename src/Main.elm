@@ -208,9 +208,9 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-            , toProjectsDragMsg = ProjectsDrag
-            , toLabelsDragMsg = LabelsDrag
-            , toFiltersDragMsg = FiltersDrag
+            , projectsDragSystem = projectsDragSystem
+            , labelsDragSystem = labelsDragSystem
+            , filtersDragSystem = filterDragSystem
             }
     in
     Drawer.view drawerConfig

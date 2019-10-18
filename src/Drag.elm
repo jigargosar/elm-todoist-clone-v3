@@ -38,6 +38,7 @@ type alias System a msg =
     , eqDragOverIdx : Int -> Drag -> Bool
     , info : Drag -> Maybe Info
     , rotate : Drag -> List a -> List a
+    , ghostStyles : Drag -> Maybe ( Int, Css.Style )
     }
 
 
@@ -51,6 +52,7 @@ system toMsg =
     , eqDragOverIdx = eqDragOverIdx
     , info = info
     , rotate = rotate
+    , ghostStyles = ghostStyles
     }
 
 
