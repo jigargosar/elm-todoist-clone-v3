@@ -27,6 +27,31 @@ import XY exposing (XY)
 import XYDelta exposing (XYDelta)
 
 
+type alias System a msg =
+    { initial : Drag
+    , update : Msg -> Drag -> ( Drag, Cmd msg )
+    , subscriptions : Drag -> Sub msg
+    , dragEvents : Int -> String -> Drag -> List (H.Attribute msg)
+    , dropEvents : Int -> Drag -> List (H.Attribute msg)
+    , eqDragOverIdx : Int -> Drag -> Bool
+    , info : Drag -> Maybe Info
+    , rotate : Drag -> List a -> List a
+    }
+
+
+system : (Msg -> msg) -> System a msg
+system toMsg =
+    { initial = initial
+    , update = update toMsg
+    , subscriptions = subscriptions toMsg
+    , dragEvents = dragEvents toMsg
+    , dropEvents = dropEvents toMsg
+    , eqDragOverIdx = eqDragOverIdx
+    , info = info
+    , rotate = rotate
+    }
+
+
 type alias Info =
     { drag : Int, dragOver : Int }
 
