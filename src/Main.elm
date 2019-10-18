@@ -14,6 +14,7 @@ import Return
 import Todo
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
+import TodoView
 
 
 port logError : String -> Cmd msg
@@ -223,7 +224,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
-        , main = { content = mainView model.todoDict, portal = [] }
+        , main = { content = mainView model.projectCollection model.todoDict, portal = [] }
         }
         model.isDrawerModalOpen
 
@@ -247,9 +248,9 @@ drawerView model =
         model.drawerPanelDrag
 
 
-mainView : TodoDict -> List (Html Msg)
-mainView todoDict =
-    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
+mainView : ProjectCollection -> TodoDict -> List (Html Msg)
+mainView pc todoDict =
+    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc (TodoDict.sortedByIdx todoDict)
     ]
 
 
