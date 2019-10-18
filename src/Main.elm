@@ -6,6 +6,7 @@ import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
 import Css
+import Drag exposing (Drag)
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
 import Html.Styled.Events as E
@@ -69,6 +70,7 @@ type alias Model =
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerDnD : Maybe PanelItemDnD
+    , drag : Drag ( Drawer.Panel, Int )
     }
 
 
@@ -82,6 +84,7 @@ init flags =
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerDnD = Nothing
+            , drag = Drag.initial
             }
     in
     Return.singleton initial
@@ -166,6 +169,7 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
+    | Drag (Drag.Msg ( Drawer.Panel, Int ))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -243,6 +247,10 @@ update message model =
 
         BrowserMouseUp ->
             ( { model | drawerDnD = Nothing }, Cmd.none )
+
+        Drag msg ->
+            Drag.update Drag msg model.drag
+                |> Tuple.mapFirst (\drag -> { model | drag = drag })
 
 
 
