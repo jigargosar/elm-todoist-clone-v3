@@ -20,6 +20,14 @@ fromPageXYDecoder =
     JD.map (\xy -> MouseMoveDelta xy xy) pageXYDecoder
 
 
-moveToPageXYDecoder : XYDelta -> JD.Decoder XYDelta
-moveToPageXYDecoder (MouseMoveDelta start _) =
-    JD.map (\xy -> MouseMoveDelta start xy) pageXYDecoder
+moveTo : XY -> XYDelta -> XYDelta
+moveTo xy (MouseMoveDelta start _) =
+    MouseMoveDelta start xy
+
+
+diff (MouseMoveDelta start current) =
+    XY.subtract current start
+
+
+init xy =
+    MouseMoveDelta xy xy

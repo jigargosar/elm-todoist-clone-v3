@@ -21,6 +21,7 @@ import Html.Styled.Events as E
 import Json.Decode as JD
 import Styles
 import Task
+import XY
 import XYDelta exposing (XYDelta)
 
 
@@ -39,8 +40,7 @@ type Drag
     | DragOver
         { dragId : String
         , dragIdx : Int
-        , startXY : XY
-        , currentXY : XY
+        , xyDelta : XYDelta
         , dragElement : Dom.Element
         , dropId : String
         , dropIdx : Int
@@ -58,11 +58,11 @@ dragElementAndXY drag =
         NoDrag ->
             Nothing
 
-        Drag { startXY, currentXY, dragElement } ->
-            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
+        Drag { xyDelta, dragElement } ->
+            Just { xyDelta = xyDelta, dragElement = dragElement }
 
-        DragOver { startXY, currentXY, dragElement } ->
-            Just { startXY = startXY, currentXY = currentXY, dragElement = dragElement }
+        DragOver { xyDelta, dragElement } ->
+            Just { xyDelta = xyDelta, dragElement = dragElement }
 
 
 dropIdxEq : Int -> Drag -> Bool
@@ -103,9 +103,9 @@ pageXYDecoder =
 subscriptions : Drag -> Sub Msg
 subscriptions drag =
     let
-        getMouseUpOrMove =
+        getMouseUpOrMove xyDelta =
             Sub.batch
-                [ BE.onMouseMove (JD.map GlobalMouseMove pageXYDecoder)
+                [ BE.onMouseMove (JD.map GlobalMouseMove (XYDelta.moveToPageXYDecoder xyDelta))
                 , getMouseUp
                 ]
 
@@ -116,19 +116,18 @@ subscriptions drag =
         NoDrag ->
             Sub.none
 
-        Drag _ ->
-            getMouseUpOrMove
+        Drag { xyDelta } ->
+            getMouseUpOrMove xyDelta
 
-        DragOver _ ->
-            getMouseUpOrMove
+        DragOver { xyDelta } ->
+            getMouseUpOrMove xyDelta
 
 
-setCurrentXY : XY -> Drag -> Drag
-setCurrentXY xy model =
+xyMovedTo : XY -> Drag -> Drag
+xyMovedTo xy model =
     let
-        setCurrentXYIn : { a | currentXY : XY } -> { a | currentXY : XY }
         setCurrentXYIn state =
-            { state | currentXY = xy }
+            { state | xyDelta = XYDelta.moveTo xy state.xyDelta }
     in
     case model of
         NoDrag ->
@@ -146,7 +145,7 @@ dragEvents tagger idx domId drag =
     case drag of
         NoDrag ->
             [ E.preventDefaultOn "mousedown"
-                (pageXYDecoder
+                (XY.pageXYDecoder
                     |> JD.map (MouseDownOnDraggable idx domId >> tagger >> pd)
                 )
             ]
@@ -205,7 +204,7 @@ updateHelp message model =
     in
     case message of
         GlobalMouseMove xy ->
-            ( setCurrentXY xy model, Cmd.none )
+            ( xyMovedTo xy model, Cmd.none )
 
         GlobalMouseUp ->
             ( NoDrag, Cmd.none )
@@ -218,12 +217,11 @@ updateHelp message model =
         MouseOverDroppable idx domId ->
             ( model, getElement domId (GotDropElement idx domId) )
 
-        GotDragElement dragIdx dragId startXY element ->
+        GotDragElement dragIdx dragId xy element ->
             ( Drag
                 { dragId = dragId
                 , dragIdx = dragIdx
-                , startXY = startXY
-                , currentXY = startXY
+                , xyDelta = XYDelta.init xy
                 , dragElement = element
                 }
             , Cmd.none
@@ -234,12 +232,11 @@ updateHelp message model =
                 NoDrag ->
                     model
 
-                Drag { dragId, dragIdx, startXY, currentXY, dragElement } ->
+                Drag { dragId, dragIdx, xyDelta, dragElement } ->
                     DragOver
                         { dragId = dragId
                         , dragIdx = dragIdx
-                        , startXY = startXY
-                        , currentXY = currentXY
+                        , xyDelta = xyDelta
                         , dragElement = dragElement
                         , dropId = domId
                         , dropIdx = idx
@@ -260,24 +257,15 @@ updateHelp message model =
             ( NoDrag, Cmd.none )
 
 
-subtractXY : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> XY
-subtractXY a b =
-    XY (a.x - b.x) (a.y - b.y)
-
-
-addXY a b =
-    XY (a.x + b.x) (a.y + b.y)
-
-
 ghostStyles : Drag -> Css.Style
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
-            (\{ dragElement, startXY, currentXY } ->
+            (\{ dragElement, xyDelta } ->
                 let
                     { x, y } =
-                        addXY (subtractXY currentXY startXY)
-                            (subtractXY dragElement.element dragElement.viewport)
+                        XY.add (XYDelta.diff xyDelta)
+                            (XY.subtract dragElement.element dragElement.viewport)
                 in
                 [ Styles.absolute
                 , Styles.top_0
