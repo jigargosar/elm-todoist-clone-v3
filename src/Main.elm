@@ -1,25 +1,18 @@
 port module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip)
 import Browser
 import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Events
-import Css
 import Drag exposing (Drag)
 import Drawer
-import Html.Styled exposing (Html, div, text, toUnstyled)
-import Html.Styled.Attributes as A exposing (css)
-import Html.Styled.Events as E
+import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
-import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
-import ProjectId
 import Return
 import SelectList
-import Styles
 import Task
 import Todo
 import TodoDict exposing (TodoDict)
@@ -45,15 +38,6 @@ type alias Flags =
 
 type alias XY =
     { x : Float, y : Float }
-
-
-subtractXY : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> XY
-subtractXY a b =
-    XY (a.x - b.x) (a.y - b.y)
-
-
-addXY a b =
-    XY (a.x + b.x) (a.y + b.y)
 
 
 type alias PanelItemDnD =
@@ -286,76 +270,6 @@ update message model =
 
 
 -- VIEW
-
-
-rotate : Int -> Int -> List a -> List a
-rotate dragIdx dropIdx list =
-    SelectList.fromList list
-        |> Maybe.andThen (SelectList.selectBy dragIdx)
-        |> Maybe.map (SelectList.moveBy (dropIdx - dragIdx) >> SelectList.toList)
-        |> Maybe.withDefault list
-
-
-sort : Drawer.Panel -> List a -> Maybe PanelItemDnD -> List a
-sort panel items =
-    Maybe.andThen
-        (\dnd ->
-            if dnd.panel == panel then
-                dnd.over
-                    |> Maybe.map
-                        (\over ->
-                            rotate dnd.idx over.idx items
-                        )
-
-            else
-                Nothing
-        )
-        >> Maybe.withDefault items
-
-
-dragEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
-dragEvents panel idx domId =
-    [ E.preventDefaultOn "mousedown"
-        (pageXYDecoder
-            |> JD.map (DrawerPanelItemMouseDown panel idx domId)
-            |> JD.map (flip Tuple.pair True)
-        )
-    ]
-
-
-dropEvents : Drawer.Panel -> Int -> String -> List (Html.Styled.Attribute Msg)
-dropEvents panel idx domId =
-    [ E.onMouseOver (DrawerPanelItemMouseOver panel idx domId)
-    ]
-
-
-dragInfoFor : Drawer.Panel -> Maybe PanelItemDnD -> Drawer.DragInfo
-dragInfoFor panel_ =
-    Maybe.andThen
-        (\{ panel, idx, startXY, currentXY, el, over } ->
-            if panel == panel_ then
-                Just
-                    { panel = panel
-                    , dragIdx = idx
-                    , dropIdx = over |> Maybe.map .idx |> Maybe.withDefault idx
-                    , ghostStyles =
-                        let
-                            { x, y } =
-                                addXY (subtractXY currentXY startXY)
-                                    (subtractXY el.element el.viewport)
-                        in
-                        Css.batch
-                            [ Styles.absolute
-                            , Styles.top_0
-                            , Styles.left_0
-                            , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
-                            , Css.pointerEvents Css.none
-                            ]
-                    }
-
-            else
-                Nothing
-        )
 
 
 view : Model -> Html Msg
