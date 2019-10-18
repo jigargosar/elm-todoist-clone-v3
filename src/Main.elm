@@ -170,6 +170,9 @@ subscriptions model =
             Nothing ->
                 Sub.none
         , Drag.subscriptions Drag model.drag
+        , Drag.subscriptions (PanelDragList Drawer.Projects) model.projectsDrag
+        , Drag.subscriptions (PanelDragList Drawer.Labels) model.labelsDrag
+        , Drag.subscriptions (PanelDragList Drawer.Filters) model.filtersDrag
         ]
 
 
