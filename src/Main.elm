@@ -357,6 +357,14 @@ drawerView model =
     Drawer.view drawerConfig
 
 
+rotateList : Int -> Int -> List a -> List a
+rotateList dragIdx dragOverIdx list =
+    SelectList.fromList list
+        |> Maybe.andThen (SelectList.selectBy dragIdx)
+        |> Maybe.map (SelectList.moveBy (dragOverIdx - dragIdx) >> SelectList.toList)
+        |> Maybe.withDefault list
+
+
 mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 mainView2 model =
     let
