@@ -11,7 +11,6 @@ import LabelCollection exposing (LabelCollection)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
-import Todo
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
