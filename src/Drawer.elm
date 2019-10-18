@@ -121,10 +121,10 @@ updatePanelDrag :
     -> Drag.Msg
     -> PanelsDragState
     -> ( PanelsDragState, Cmd msg )
-updatePanelDrag toMsg onChange panel msg model =
+updatePanelDrag toMsg onComplete panel msg model =
     let
         updateHelp =
-            Drag.update (toMsg panel) (onChange panel) msg
+            Drag.update (toMsg panel) (onComplete panel) msg
     in
     case panel of
         Projects ->

@@ -44,9 +44,9 @@ type alias System a msg =
 
 
 system : (Msg -> msg) -> (Info -> msg) -> System a msg
-system toMsg onChange =
+system toMsg onComplete =
     { initial = initial
-    , update = update toMsg onChange
+    , update = update toMsg onComplete
     , subscriptions = subscriptions toMsg
     , dragEvents = dragEvents toMsg
     , dropEvents = dropEvents toMsg
@@ -186,7 +186,7 @@ pd =
 
 
 update : (Msg -> msg) -> (Info -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
-update toMsg onChange message ((Drag internal) as model) =
+update toMsg onComplete message ((Drag internal) as model) =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -208,7 +208,7 @@ update toMsg onChange message ((Drag internal) as model) =
         GlobalMouseUp ->
             ( Drag Nothing
             , info model
-                |> Maybe.map (onChange >> Task.succeed >> Task.perform identity)
+                |> Maybe.map (onComplete >> Task.succeed >> Task.perform identity)
                 |> Maybe.withDefault Cmd.none
             )
 
