@@ -103,7 +103,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelDragSubscriptions UpdateDrawerPanelsDragState model.drawerPanelsDragState
+        [ Drawer.panelDragSubscriptions DrawerPanelDrag model.drawerPanelsDragState
         ]
 
 
@@ -117,7 +117,7 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
-    | UpdateDrawerPanelsDragState Drawer.Panel Drag.Msg
+    | DrawerPanelDrag Drawer.Panel Drag.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -147,8 +147,8 @@ update message model =
             , Cmd.none
             )
 
-        UpdateDrawerPanelsDragState panel msg ->
-            Drawer.updatePanelsDragState UpdateDrawerPanelsDragState panel msg model.drawerPanelsDragState
+        DrawerPanelDrag panel msg ->
+            Drawer.updatePanelsDragState DrawerPanelDrag panel msg model.drawerPanelsDragState
                 |> Tuple.mapFirst
                     (\drawerPanelsDragState -> { model | drawerPanelsDragState = drawerPanelsDragState })
 
@@ -173,7 +173,7 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-            , panelToDragMsg = UpdateDrawerPanelsDragState
+            , panelToDragMsg = DrawerPanelDrag
             }
     in
     Drawer.view drawerConfig
