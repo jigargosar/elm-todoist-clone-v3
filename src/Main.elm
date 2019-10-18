@@ -7,6 +7,7 @@ import Drawer exposing (FilterView, LabelView)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
+import LabelCollection exposing (LabelCollection)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
@@ -35,6 +36,7 @@ type alias Flags =
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
+    , labelCollection : LabelCollection
     , labelList : List LabelView
     , filterList : List FilterView
     , isDrawerModalOpen : Bool
@@ -50,6 +52,7 @@ init flags =
         initial =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
+            , labelCollection = LabelCollection.initial
             , labelList = Drawer.labelList
             , filterList = Drawer.filterList
             , isDrawerModalOpen = False
