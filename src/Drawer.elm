@@ -46,27 +46,6 @@ toggleExpansionPanel panel model =
             { model | filtersExpanded = not model.filtersExpanded }
 
 
-updatePanelsDragState :
-    (Panel -> Drag.Msg -> msg)
-    -> Panel
-    -> Drag.Msg
-    -> PanelsDragState
-    -> ( PanelsDragState, Cmd msg )
-updatePanelsDragState toMsg panel msg model =
-    case panel of
-        Projects ->
-            Drag.update (toMsg panel) msg model.projectsDrag
-                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
-
-        Labels ->
-            Drag.update (toMsg panel) msg model.labelsDrag
-                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
-
-        Filters ->
-            Drag.update (toMsg panel) msg model.filtersDrag
-                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
-
-
 labelList : List LabelView
 labelList =
     [ LabelView "to read" 333
@@ -127,6 +106,27 @@ initialPanelsDragState =
     , labelsDrag = Drag.initial
     , filtersDrag = Drag.initial
     }
+
+
+updatePanelsDragState :
+    (Panel -> Drag.Msg -> msg)
+    -> Panel
+    -> Drag.Msg
+    -> PanelsDragState
+    -> ( PanelsDragState, Cmd msg )
+updatePanelsDragState toMsg panel msg model =
+    case panel of
+        Projects ->
+            Drag.update (toMsg panel) msg model.projectsDrag
+                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
+
+        Labels ->
+            Drag.update (toMsg panel) msg model.labelsDrag
+                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
+
+        Filters ->
+            Drag.update (toMsg panel) msg model.filtersDrag
+                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
 view :
