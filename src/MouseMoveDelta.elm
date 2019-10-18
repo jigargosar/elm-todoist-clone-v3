@@ -18,3 +18,8 @@ pageXYDecoder =
 fromPageXYDecoder : JD.Decoder MouseMoveDelta
 fromPageXYDecoder =
     JD.map (\xy -> MouseMoveDelta xy xy) pageXYDecoder
+
+
+moveToPageXYDecoder : MouseMoveDelta -> JD.Decoder MouseMoveDelta
+moveToPageXYDecoder (MouseMoveDelta start _) =
+    JD.map (\xy -> MouseMoveDelta start xy) pageXYDecoder
