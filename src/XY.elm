@@ -19,10 +19,3 @@ subtract a b =
 add : HasXY a -> HasXY b -> XY
 add a b =
     XY (a.x + b.x) (a.y + b.y)
-
-
-pageXYDecoder : JD.Decoder XY
-pageXYDecoder =
-    JD.map2 XY
-        (JD.field "pageX" JD.float)
-        (JD.field "pageY" JD.float)
