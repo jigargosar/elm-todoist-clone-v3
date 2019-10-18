@@ -8,17 +8,19 @@ import Browser.Events
 import Css
 import Drag exposing (Drag)
 import Drawer
-import Html.Styled exposing (Html, toUnstyled)
+import Html.Styled exposing (Html, div, text, toUnstyled)
+import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
+import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
+import ProjectId
 import Return
 import SelectList
 import Styles
 import Task
-import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 
@@ -332,7 +334,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
-        , main = mainView model.todoDict
+        , main = mainView2 model
         }
         model.isDrawerModalOpen
 
@@ -354,13 +356,33 @@ drawerView model =
     Drawer.view drawerConfig
 
 
-mainView : TodoDict -> List (Html Msg)
-mainView todoDict =
-    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
-    ]
+mainView2 : Model -> List (Html Msg)
+mainView2 model =
+    let
+        projectList =
+            ProjectCollection.sorted model.projectCollection
+    in
+    List.indexedMap
+        (\idx project ->
+            let
+                domId =
+                    project
+                        |> Project.id
+                        >> ProjectId.toString
+                        >> (++) "project-dnd-item"
+            in
+            div (A.id domId :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag) [ text <| Project.title project ]
+        )
+        projectList
 
 
 
+--mainView : TodoDict -> List (Html Msg)
+--mainView todoDict =
+--    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
+--    ]
+--
+--
 -- MAIN
 
 
