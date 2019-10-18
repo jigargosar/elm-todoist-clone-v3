@@ -39,8 +39,8 @@ initial =
     Drag Nothing
 
 
-dragElementAndXY (Drag model) =
-    model
+dragElementAndXY (Drag internal) =
+    internal
         |> Maybe.map
             (\{ drag, mouseMoveDelta, dragElementOffset } ->
                 { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
@@ -57,7 +57,7 @@ type Msg a b
 
 
 subscriptions : (Msg a b -> msg) -> Drag a b -> Sub msg
-subscriptions toMsg (Drag model) =
+subscriptions toMsg (Drag internal) =
     let
         subs =
             Sub.batch
@@ -66,7 +66,7 @@ subscriptions toMsg (Drag model) =
                 ]
                 |> Sub.map toMsg
     in
-    case model of
+    case internal of
         Nothing ->
             Sub.none
 
@@ -75,17 +75,17 @@ subscriptions toMsg (Drag model) =
 
 
 xyMovedTo : XY -> Drag a b -> Drag a b
-xyMovedTo xy (Drag model) =
+xyMovedTo xy (Drag internal) =
     let
         setCurrentXYIn state =
             { state | mouseMoveDelta = XYDelta.moveTo xy state.mouseMoveDelta }
     in
-    model |> Maybe.map setCurrentXYIn |> Drag
+    internal |> Maybe.map setCurrentXYIn |> Drag
 
 
 dragEvents : (Msg a b -> msg) -> a -> String -> Drag a b -> List (H.Attribute msg)
-dragEvents tagger a domId (Drag model) =
-    case model of
+dragEvents tagger a domId (Drag internal) =
+    case internal of
         Nothing ->
             [ E.preventDefaultOn "mousedown"
                 (XY.pageXYDecoder
@@ -98,8 +98,8 @@ dragEvents tagger a domId (Drag model) =
 
 
 dropEvents : (Msg a b -> msg) -> b -> Drag a b -> List (H.Attribute msg)
-dropEvents tagger a (Drag model) =
-    case model of
+dropEvents tagger a (Drag internal) =
+    case internal of
         Nothing ->
             []
 
@@ -125,7 +125,7 @@ update toMsg config message model =
 
 
 updateHelp : Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
-updateHelp config message ((Drag model) as model_) =
+updateHelp config message ((Drag internal) as model) =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -141,27 +141,27 @@ updateHelp config message ((Drag model) as model_) =
     in
     case message of
         GlobalMouseMove xy ->
-            ( xyMovedTo xy model_, Cmd.none )
+            ( xyMovedTo xy model, Cmd.none )
 
         GlobalMouseUp ->
             ( Drag Nothing, Cmd.none )
 
         MouseDownOnDraggable dragIdx dragId xy ->
-            ( model_
+            ( model
             , getElement dragId (GotDragElement dragIdx xy)
             )
 
         MouseOverDroppable b ->
-            ( case model of
+            ( case internal of
                 Nothing ->
-                    model_
+                    model
 
                 Just state ->
                     if config.canAccept state.drag b then
                         Drag (Just { state | dragOver = Just b })
 
                     else
-                        model_
+                        model
             , Cmd.none
             )
 
