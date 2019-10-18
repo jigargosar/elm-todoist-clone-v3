@@ -7,6 +7,7 @@ module Drag exposing
     , ghostStyles
     , info
     , initial
+    , rotate
     , subscriptions
     , update
     )
@@ -18,6 +19,7 @@ import Css
 import Html.Styled as H
 import Html.Styled.Events as E
 import Json.Decode as JD
+import SelectList
 import Styles
 import Task
 import XY exposing (XY)
@@ -37,6 +39,14 @@ info (Drag internal) =
 
 type Drag
     = Drag (Maybe State)
+
+
+rotate : Info -> List a -> List a
+rotate { drag, dragOver } list =
+    SelectList.fromList list
+        |> Maybe.andThen (SelectList.selectBy drag)
+        |> Maybe.map (SelectList.moveBy (dragOver - drag) >> SelectList.toList)
+        |> Maybe.withDefault list
 
 
 type alias State =
