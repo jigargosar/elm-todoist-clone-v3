@@ -2,8 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser
-import Browser.Dom as Dom exposing (Element, getElement)
-import Browser.Events
+import Browser.Dom exposing (Element)
 import Drag exposing (Drag)
 import Drawer
 import Html.Styled exposing (Html, toUnstyled)
@@ -12,8 +11,6 @@ import Json.Encode exposing (Value)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
-import SelectList
-import Task
 import Todo
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
@@ -67,7 +64,6 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , drawerDnD : Maybe PanelItemDnD
     , projectsDrag : ListDrag
     , labelsDrag : ListDrag
     , filtersDrag : ListDrag
@@ -83,7 +79,6 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
-            , drawerDnD = Nothing
             , projectsDrag = Drag.initial
             , labelsDrag = Drag.initial
             , filtersDrag = Drag.initial
@@ -136,23 +131,10 @@ initTodoDict encodedTodoList model =
 -- Subscriptions
 
 
-pageXYDecoder =
-    JD.map2 XY (JD.field "pageX" JD.float) (JD.field "pageY" JD.float)
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ case model.drawerDnD of
-            Just _ ->
-                Sub.batch
-                    [ Browser.Events.onMouseMove (pageXYDecoder |> JD.map BrowserMouseMove)
-                    , Browser.Events.onMouseUp (JD.succeed BrowserMouseUp)
-                    ]
-
-            Nothing ->
-                Sub.none
-        , Drag.subscriptions ProjectsDrag model.projectsDrag
+        [ Drag.subscriptions ProjectsDrag model.projectsDrag
         , Drag.subscriptions LabelsDrag model.labelsDrag
         , Drag.subscriptions FiltersDrag model.filtersDrag
         ]
@@ -168,12 +150,6 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
-    | DrawerPanelItemMouseDown Drawer.Panel Int String XY
-    | DrawerPanelItemMouseOver Drawer.Panel Int String
-    | GotDrawerPanelItemDragElement Drawer.Panel Int String XY Element
-    | GotDrawerPanelItemDomError Dom.Error
-    | BrowserMouseMove XY
-    | BrowserMouseUp
     | ProjectsDrag Drag.Msg
     | LabelsDrag Drag.Msg
     | FiltersDrag Drag.Msg
@@ -205,55 +181,6 @@ update message model =
               }
             , Cmd.none
             )
-
-        DrawerPanelItemMouseDown panel idx domId xy ->
-            ( { model | drawerDnD = Nothing }
-            , getElement domId
-                |> Task.attempt
-                    (\elResult ->
-                        case elResult of
-                            Ok el ->
-                                GotDrawerPanelItemDragElement panel idx domId xy el
-
-                            Err err ->
-                                GotDrawerPanelItemDomError err
-                    )
-            )
-
-        DrawerPanelItemMouseOver panel idx domId ->
-            case model.drawerDnD of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just dnd ->
-                    if dnd.panel == panel then
-                        ( { model | drawerDnD = Just { dnd | over = Just { idx = idx, id = domId } } }
-                        , Cmd.none
-                        )
-
-                    else
-                        ( model, Cmd.none )
-
-        GotDrawerPanelItemDragElement panel idx domId xy el ->
-            ( { model
-                | drawerDnD = PanelItemDnD panel idx domId el xy xy Nothing |> Just
-              }
-            , Cmd.none
-            )
-
-        GotDrawerPanelItemDomError (Dom.NotFound domId) ->
-            ( { model | drawerDnD = Nothing }, logError ("GotDrawerPanelItemDomError: " ++ domId) )
-
-        BrowserMouseMove xy ->
-            case model.drawerDnD of
-                Just dnd ->
-                    ( { model | drawerDnD = Just { dnd | currentXY = xy } }, Cmd.none )
-
-                Nothing ->
-                    ( model, Cmd.none )
-
-        BrowserMouseUp ->
-            ( { model | drawerDnD = Nothing }, Cmd.none )
 
         ProjectsDrag msg ->
             Drag.update ProjectsDrag msg model.projectsDrag
