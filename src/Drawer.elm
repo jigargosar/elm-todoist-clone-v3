@@ -10,6 +10,7 @@ module Drawer exposing
     )
 
 import Css
+import Drag
 import ExpansionPanelUI
 import Html.Styled as H exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
@@ -104,13 +105,55 @@ type alias Config msg =
     }
 
 
+type alias PanelLists =
+    { projectList : List Project
+    , labelList : List LabelView
+    , filterList : List FilterView
+    }
+
+
 view :
     Config msg
     -> List Project
     -> ExpansionPanels
     -> { content : List (Html msg), portal : List (Html msg) }
 view config projectList expansionPanels =
+    let
+        panelLists =
+            { projectList = projectList, labelList = labelList, filterList = filterList }
+    in
     { content = [], portal = [] }
+
+
+viewPanel togglePanel title isExpanded dragToMsg drag toNavItem list =
+    ExpansionPanelUI.view togglePanel
+        title
+        (\_ ->
+            let
+                viewDnDNavItem idx navItem =
+                    let
+                        domId =
+                            "panel-dnd-item__" ++ navItem.id
+
+                        dragEvents =
+                            Drag.dragEvents dragToMsg idx domId drag
+
+                        dropEvents =
+                            Drag.dropEvents dragToMsg idx drag
+
+                        dragOverStyles =
+                            Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+
+                        styles =
+                            [ Styles.noSelection, dragOverStyles ]
+                    in
+                    viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
+            in
+            list
+                |> List.map toNavItem
+                |> List.indexedMap viewDnDNavItem
+        )
+        isExpanded
 
 
 onlyContent content =
@@ -212,73 +255,75 @@ panelTitle panel =
 --    }
 --
 --
---type alias NavItemViewModel =
---    { id : String
---    , title : String
---    , iconColor : Css.Color
---    , icon : String
---    }
---
---
---projectToNavItem : Project -> NavItemViewModel
---projectToNavItem project =
---    { id = ProjectId.toString (Project.id project)
---    , title = Project.title project
---    , iconColor = Css.hsl (Project.hue project |> toFloat) 0.7 0.5
---    , icon = "folder"
---    }
---
---
---labelToNavItem : LabelView -> NavItemViewModel
---labelToNavItem { title, hue } =
---    { id = title
---    , title = title
---    , iconColor = Css.hsl hue 0.7 0.5
---    , icon = "label"
---    }
---
---
---filterToNavItem : FilterView -> NavItemViewModel
---filterToNavItem { title, hue } =
---    { id = title
---    , title = title
---    , iconColor = Css.hsl hue 0.7 0.5
---    , icon = "filter_list"
---    }
---
---
---navTitleIconItem title icon =
---    viewItem [] [] title Css.inherit icon
---
---
---viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
---viewNavItem attrs styles { title, iconColor, icon } =
---    viewItem attrs styles title iconColor icon
---
---
---type alias ColorCompatible x =
---    { x | value : String, color : Css.Compatible }
---
---
---viewItem : List (Attribute msg) -> List Css.Style -> String -> ColorCompatible x -> String -> Html msg
---viewItem attributes styles title iconColor iconName =
---    div
---        (css
---            [ ph 1
---            , pointer
---            , flex
---            , c_grayL 0.3
---            , batch styles
---            ]
---            :: attributes
---        )
---        [ i
---            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
---            , class "material-icons"
---            ]
---            [ text iconName ]
---        , div
---            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
---            ]
---            [ text title ]
---        ]
+
+
+type alias NavItemViewModel =
+    { id : String
+    , title : String
+    , iconColor : Css.Color
+    , icon : String
+    }
+
+
+projectToNavItem : Project -> NavItemViewModel
+projectToNavItem project =
+    { id = ProjectId.toString (Project.id project)
+    , title = Project.title project
+    , iconColor = Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+    , icon = "folder"
+    }
+
+
+labelToNavItem : LabelView -> NavItemViewModel
+labelToNavItem { title, hue } =
+    { id = title
+    , title = title
+    , iconColor = Css.hsl hue 0.7 0.5
+    , icon = "label"
+    }
+
+
+filterToNavItem : FilterView -> NavItemViewModel
+filterToNavItem { title, hue } =
+    { id = title
+    , title = title
+    , iconColor = Css.hsl hue 0.7 0.5
+    , icon = "filter_list"
+    }
+
+
+navTitleIconItem title icon =
+    viewItem [] [] title Css.inherit icon
+
+
+viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
+viewNavItem attrs styles { title, iconColor, icon } =
+    viewItem attrs styles title iconColor icon
+
+
+type alias ColorCompatible x =
+    { x | value : String, color : Css.Compatible }
+
+
+viewItem : List (Attribute msg) -> List Css.Style -> String -> ColorCompatible x -> String -> Html msg
+viewItem attributes styles title iconColor iconName =
+    div
+        (css
+            [ ph 1
+            , pointer
+            , flex
+            , c_grayL 0.3
+            , batch styles
+            ]
+            :: attributes
+        )
+        [ i
+            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
+            , class "material-icons"
+            ]
+            [ text iconName ]
+        , div
+            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
+            ]
+            [ text title ]
+        ]
