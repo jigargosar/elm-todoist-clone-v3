@@ -27,14 +27,12 @@ import XYDelta exposing (XYDelta)
 type Drag
     = NoDrag
     | Drag
-        { dragId : String
-        , dragIdx : Int
+        { dragIdx : Int
         , xyDelta : XYDelta
         , dragElement : Dom.Element
         }
     | DragOver
-        { dragId : String
-        , dragIdx : Int
+        { dragIdx : Int
         , xyDelta : XYDelta
         , dragElement : Dom.Element
         , dropId : String
@@ -83,7 +81,7 @@ type Msg
     | GlobalMouseUp
     | MouseDownOnDraggable Int String XY
     | MouseOverDroppable Int String
-    | GotDragElement Int String XY Element
+    | GotDragElement Int XY Element
     | GotDropElement Int String Element
     | GotDomElementError Dom.Error
 
@@ -196,16 +194,15 @@ updateHelp message model =
 
         MouseDownOnDraggable dragIdx dragId xy ->
             ( model
-            , getElement dragId (GotDragElement dragIdx dragId xy)
+            , getElement dragId (GotDragElement dragIdx xy)
             )
 
         MouseOverDroppable idx domId ->
             ( model, getElement domId (GotDropElement idx domId) )
 
-        GotDragElement dragIdx dragId xy element ->
+        GotDragElement dragIdx xy element ->
             ( Drag
-                { dragId = dragId
-                , dragIdx = dragIdx
+                { dragIdx = dragIdx
                 , xyDelta = XYDelta.init xy
                 , dragElement = element
                 }
@@ -217,10 +214,9 @@ updateHelp message model =
                 NoDrag ->
                     model
 
-                Drag { dragId, dragIdx, xyDelta, dragElement } ->
+                Drag { dragIdx, xyDelta, dragElement } ->
                     DragOver
-                        { dragId = dragId
-                        , dragIdx = dragIdx
+                        { dragIdx = dragIdx
                         , xyDelta = xyDelta
                         , dragElement = dragElement
                         , dropId = domId
