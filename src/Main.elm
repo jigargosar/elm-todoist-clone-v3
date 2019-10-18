@@ -48,13 +48,6 @@ type alias PanelItemDnD =
     }
 
 
-type alias PanelsDragState =
-    { projects : Drag
-    , labels : Drag
-    , filters : Drag
-    }
-
-
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
