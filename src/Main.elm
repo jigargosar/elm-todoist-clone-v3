@@ -167,9 +167,9 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , Drag.subscriptions (PanelDragList Drawer.Projects) model.projectsDrag
-        , Drag.subscriptions (PanelDragList Drawer.Labels) model.labelsDrag
-        , Drag.subscriptions (PanelDragList Drawer.Filters) model.filtersDrag
+        , Drag.subscriptions ProjectsDrag model.projectsDrag
+        , Drag.subscriptions LabelsDrag model.labelsDrag
+        , Drag.subscriptions FiltersDrag model.filtersDrag
         ]
 
 
@@ -189,7 +189,9 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
-    | PanelDragList Drawer.Panel (Drag.Msg Int Int)
+    | ProjectsDrag (Drag.Msg Int Int)
+    | LabelsDrag (Drag.Msg Int Int)
+    | FiltersDrag (Drag.Msg Int Int)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -268,23 +270,17 @@ update message model =
         BrowserMouseUp ->
             ( { model | drawerDnD = Nothing }, Cmd.none )
 
-        PanelDragList panel msg ->
-            let
-                updateHelp =
-                    Drag.update (PanelDragList panel) { canAccept = \_ _ -> True } msg
-            in
-            case panel of
-                Drawer.Projects ->
-                    updateHelp model.projectsDrag
-                        |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
+        ProjectsDrag msg ->
+            Drag.update ProjectsDrag { canAccept = \_ _ -> True } msg model.projectsDrag
+                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
 
-                Drawer.Labels ->
-                    updateHelp model.labelsDrag
-                        |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
+        LabelsDrag msg ->
+            Drag.update LabelsDrag { canAccept = \_ _ -> True } msg model.labelsDrag
+                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
 
-                Drawer.Filters ->
-                    updateHelp model.filtersDrag
-                        |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
+        FiltersDrag msg ->
+            Drag.update FiltersDrag { canAccept = \_ _ -> True } msg model.filtersDrag
+                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
 
@@ -452,8 +448,8 @@ mainView2 model =
                     div
                         (A.id domId
                             :: css [ Styles.noSelection, Styles.commonTransitions, dragOverStyles ]
-                            :: Drag.dragEvents (PanelDragList Drawer.Projects) idx domId model.projectsDrag
-                            ++ Drag.dropEvents (PanelDragList Drawer.Projects) idx model.projectsDrag
+                            :: Drag.dragEvents ProjectsDrag idx domId model.projectsDrag
+                            ++ Drag.dropEvents ProjectsDrag idx model.projectsDrag
                         )
                         [ text <| Project.title project ]
                 )
