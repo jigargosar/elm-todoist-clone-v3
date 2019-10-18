@@ -1,11 +1,12 @@
 module TodoView exposing (Config, viewList)
 
+import Color
 import Css
 import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import ProjectCollection exposing (ProjectCollection)
-import Styles exposing (pa)
+import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 import TodoProject
@@ -61,4 +62,16 @@ viewProject pc todo =
         tp =
             TodoProject.fromTodo pc todo
     in
-    div [ css [ pa 2, Css.fontSize Css.small ] ] [ text tp.title ]
+    div
+        [ css
+            [ ph 1
+            , Css.fontSize Css.small
+            , bg (toCssColor tp.color)
+            , c_ (toCssColor <| Color.highContrast tp.color)
+            ]
+        ]
+        [ text tp.title ]
+
+
+toCssColor =
+    Color.toHex >> Css.hex

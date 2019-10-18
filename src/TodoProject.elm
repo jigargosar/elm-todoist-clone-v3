@@ -7,7 +7,7 @@ module TodoProject exposing
     )
 
 import Basics.More exposing (flip)
-import Css
+import Color exposing (Color)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
@@ -17,7 +17,7 @@ import Todo
 type alias TodoProject =
     { id : Maybe ProjectId
     , title : String
-    , color : Css.Color
+    , color : Color
     }
 
 
@@ -25,14 +25,14 @@ fromProject : Project -> TodoProject
 fromProject project =
     TodoProject (Just (Project.id project))
         (Project.title project)
-        (Project.cssColor project)
+        (Color.fromHSL ( toFloat <| Project.hue project, 70, 50 ))
 
 
 inbox : TodoProject
 inbox =
     TodoProject Nothing
         "Inbox"
-        (Css.hsl 123 0.7 0.5)
+        (Color.fromHSL ( 123, 70, 50 ))
 
 
 fromMaybeProjectId : ProjectCollection -> Maybe ProjectId -> TodoProject
