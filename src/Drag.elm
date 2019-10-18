@@ -7,7 +7,6 @@ module Drag exposing
     , dropIdxEq
     , ghostStyles
     , initial
-    , pageXYDecoder
     , subscriptions
     , update
     )
@@ -93,34 +92,24 @@ type Msg
     | GotDomElementError Dom.Error
 
 
-pageXYDecoder : JD.Decoder XY
-pageXYDecoder =
-    JD.map2 XY
-        (JD.field "pageX" JD.float)
-        (JD.field "pageY" JD.float)
-
-
 subscriptions : Drag -> Sub Msg
 subscriptions drag =
     let
-        getMouseUpOrMove xyDelta =
+        subs =
             Sub.batch
-                [ BE.onMouseMove (JD.map GlobalMouseMove (XYDelta.moveToPageXYDecoder xyDelta))
-                , getMouseUp
+                [ BE.onMouseMove (JD.map GlobalMouseMove XY.pageXYDecoder)
+                , BE.onMouseUp (JD.succeed GlobalMouseUp)
                 ]
-
-        getMouseUp =
-            BE.onMouseUp (JD.succeed GlobalMouseUp)
     in
     case drag of
         NoDrag ->
             Sub.none
 
-        Drag { xyDelta } ->
-            getMouseUpOrMove xyDelta
+        Drag _ ->
+            subs
 
-        DragOver { xyDelta } ->
-            getMouseUpOrMove xyDelta
+        DragOver _ ->
+            subs
 
 
 xyMovedTo : XY -> Drag -> Drag
