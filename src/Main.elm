@@ -216,6 +216,7 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
+            , panelToDragMsg = UpdateDrawerPanelsDragState
             , projectsDragSystem = projectsDragSystem
             , labelsDragSystem = labelsDragSystem
             , filtersDragSystem = filterDragSystem

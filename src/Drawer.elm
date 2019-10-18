@@ -103,6 +103,7 @@ type alias FilterView =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
+    , panelToDragMsg : Panel -> Drag.Msg -> msg
     , projectsDragSystem : Drag.System Project msg
     , labelsDragSystem : Drag.System LabelView msg
     , filtersDragSystem : Drag.System FilterView msg
