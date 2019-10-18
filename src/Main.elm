@@ -122,7 +122,7 @@ type Msg
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
-    | DrawerPanelDragChange Drawer.Panel Drag.Info
+    | DrawerPanelDragChanged Drawer.Panel Drag.Info
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -153,11 +153,11 @@ update message model =
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragChange panel msg model.drawerPanelDrag
+            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragChanged panel msg model.drawerPanelDrag
                 |> Tuple.mapFirst
                     (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
 
-        DrawerPanelDragChange panel info ->
+        DrawerPanelDragChanged panel info ->
             let
                 rotate =
                     Drag.rotateFromInfo info
@@ -207,7 +207,7 @@ drawerView model =
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
             , panelToDragMsg = DrawerPanelDrag
-            , panelToDragChangeMsg = DrawerPanelDragChange
+            , panelToDragChangeMsg = DrawerPanelDragChanged
             }
     in
     Drawer.view drawerConfig
