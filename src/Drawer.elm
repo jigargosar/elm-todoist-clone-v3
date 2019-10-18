@@ -105,7 +105,7 @@ view :
     -> List Project
     -> ExpansionPanels
     -> PanelsDragState
-    -> { content : List (Html msg), portal : List (Html msg) }
+    -> ContentPortal msg
 view config projectList expansionPanels panelsDragState =
     let
         panelLists =
@@ -149,6 +149,10 @@ view config projectList expansionPanels panelsDragState =
         |> mergeContentPortal
 
 
+type alias ContentPortal msg =
+    { content : List (Html msg), portal : List (Html msg) }
+
+
 viewPanel :
     msg
     -> String
@@ -157,7 +161,7 @@ viewPanel :
     -> Drag
     -> (a -> NavItemViewModel)
     -> List a
-    -> { content : List (Html msg), portal : List (Html msg) }
+    -> ContentPortal msg
 viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
     let
         ghostItem =
