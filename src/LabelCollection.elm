@@ -1,4 +1,4 @@
-module LabelCollection exposing (LabelCollection, fromEncodedList, initial, sorted, updateSortOrder)
+module LabelCollection exposing (LabelCollection, byId, fromEncodedList, initial, sorted, updateSortOrder)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
@@ -46,6 +46,11 @@ toList =
 
 unwrap (LabelCollection internal) =
     internal
+
+
+byId : LabelId -> LabelCollection -> Maybe Label
+byId id =
+    unwrap >> dict.get id
 
 
 

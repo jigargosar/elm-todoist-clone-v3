@@ -5,7 +5,8 @@ import Css
 import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
-import LabelId
+import Label
+import LabelCollection exposing (LabelCollection)
 import ProjectCollection exposing (ProjectCollection)
 import Styles exposing (..)
 import Todo exposing (Todo)
@@ -17,23 +18,23 @@ type alias Config msg =
     { toggle : TodoId -> msg }
 
 
-viewList : Config msg -> ProjectCollection -> List Todo -> Html msg
-viewList config pc =
-    listContainer << List.map (viewListItem config pc)
+viewList : Config msg -> ProjectCollection -> LabelCollection -> List Todo -> Html msg
+viewList config pc lc =
+    listContainer << List.map (viewListItem config pc lc)
 
 
 listContainer =
     ol [ class "list pl0 ma0" ]
 
 
-viewListItem : Config msg -> ProjectCollection -> Todo -> Html msg
-viewListItem config pc todo =
+viewListItem : Config msg -> ProjectCollection -> LabelCollection -> Todo -> Html msg
+viewListItem config pc lc todo =
     li
         ([ viewIsCompleted config todo
          , viewTitle todo
          , viewProject pc todo
          ]
-            ++ viewLabels todo
+            ++ viewLabels lc todo
         )
 
 
@@ -81,11 +82,11 @@ viewProject pc todo =
         [ text tp.title ]
 
 
-viewLabels todo =
-    List.map viewLabelId (Todo.labelIdList todo)
+viewLabels lc todo =
+    List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabelId) (Todo.labelIdList todo)
 
 
-viewLabelId labelId =
+viewLabelId label =
     div
         [ css
             [ ph 1
@@ -96,4 +97,4 @@ viewLabelId labelId =
             --                , bor 2
             ]
         ]
-        [ text <| LabelId.toString labelId ]
+        [ text <| Label.title label ]
