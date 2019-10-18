@@ -371,6 +371,20 @@ mainView2 model =
         projectList =
             ProjectCollection.sorted model.projectCollection
 
+        rotateProjectList : List a -> List a
+        rotateProjectList =
+            Drag.info model.drag
+                |> Maybe.map
+                    (\{ drag, dragOver } ->
+                        case ( drag, dragOver ) of
+                            ( ( Drawer.Projects, dragIdx ), ( Drawer.Projects, dragOverIdx ) ) ->
+                                rotateList dragIdx dragOverIdx
+
+                            _ ->
+                                identity
+                    )
+                |> Maybe.withDefault identity
+
         ghostItem =
             Drag.ghostStyles model.drag
                 |> Maybe.andThen
@@ -390,24 +404,25 @@ mainView2 model =
                 |> Maybe.withDefault (text "")
     in
     { content =
-        List.indexedMap
-            (\idx project ->
-                let
-                    domId =
-                        project
-                            |> Project.id
-                            >> ProjectId.toString
-                            >> (++) "project-dnd-item"
-                in
-                div
-                    (A.id domId
-                        :: css [ Styles.noSelection ]
-                        :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
-                        ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
-                    )
-                    [ text <| Project.title project ]
-            )
-            projectList
+        projectList
+            |> rotateProjectList
+            |> List.indexedMap
+                (\idx project ->
+                    let
+                        domId =
+                            project
+                                |> Project.id
+                                >> ProjectId.toString
+                                >> (++) "project-dnd-item"
+                    in
+                    div
+                        (A.id domId
+                            :: css [ Styles.noSelection ]
+                            :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
+                            ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
+                        )
+                        [ text <| Project.title project ]
+                )
     , portal = [ ghostItem ]
     }
 
