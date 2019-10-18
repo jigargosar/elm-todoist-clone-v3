@@ -141,8 +141,15 @@ view config projectList expansionPanels panelsDragState =
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
+
+        prefix =
+            onlyContent
+                [ navTitleIconItem "Inbox" "inbox"
+                , navTitleIconItem "Today" "calendar_today"
+                , navTitleIconItem "Next 7 Days" "view_week"
+                ]
     in
-    { content = [], portal = [] }
+    prefix
 
 
 viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
