@@ -236,7 +236,11 @@ update toMsg onChange message ((Drag internal) as model) =
             )
 
         GotDomElementError (Dom.NotFound _) ->
-            ( Drag Nothing, Cmd.none )
+            ( Drag Nothing
+            , info model
+                |> Maybe.map (onChange >> Task.succeed >> Task.perform identity)
+                |> Maybe.withDefault Cmd.none
+            )
 
 
 ghostStyles : Drag -> Maybe ( Int, Css.Style )
