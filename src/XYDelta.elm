@@ -1,10 +1,10 @@
-module MouseMoveDelta exposing (..)
+module XYDelta exposing (..)
 
 import Json.Decode as JD
 import XY exposing (XY)
 
 
-type MouseMoveDelta
+type XYDelta
     = MouseMoveDelta XY XY
 
 
@@ -15,11 +15,11 @@ pageXYDecoder =
         (JD.field "pageY" JD.float)
 
 
-fromPageXYDecoder : JD.Decoder MouseMoveDelta
+fromPageXYDecoder : JD.Decoder XYDelta
 fromPageXYDecoder =
     JD.map (\xy -> MouseMoveDelta xy xy) pageXYDecoder
 
 
-moveToPageXYDecoder : MouseMoveDelta -> JD.Decoder MouseMoveDelta
+moveToPageXYDecoder : XYDelta -> JD.Decoder XYDelta
 moveToPageXYDecoder (MouseMoveDelta start _) =
     JD.map (\xy -> MouseMoveDelta start xy) pageXYDecoder

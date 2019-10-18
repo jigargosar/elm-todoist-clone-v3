@@ -21,6 +21,7 @@ import Html.Styled.Events as E
 import Json.Decode as JD
 import Styles
 import Task
+import XYDelta exposing (XYDelta)
 
 
 type alias XY =
@@ -32,8 +33,7 @@ type Drag
     | Drag
         { dragId : String
         , dragIdx : Int
-        , startXY : XY
-        , currentXY : XY
+        , xyDelta : XYDelta
         , dragElement : Dom.Element
         }
     | DragOver
