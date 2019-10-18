@@ -43,7 +43,7 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
-        |> andMap (JD.maybe (JD.field "maybeProjectId" ProjectId.decoder))
+        |> andMap (JD.field "maybeProjectId" (JD.maybe ProjectId.decoder))
         |> JD.map Todo
 
 
