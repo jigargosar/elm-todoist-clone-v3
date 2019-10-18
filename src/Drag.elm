@@ -23,8 +23,7 @@ import XYDelta exposing (XYDelta)
 
 
 type Drag a b
-    = NoDrag
-    | Drag (State a b)
+    = Drag (Maybe (State a b))
 
 
 type alias State a b =
@@ -37,16 +36,15 @@ type alias State a b =
 
 initial : Drag a b
 initial =
-    NoDrag
+    Drag Nothing
 
 
-dragElementAndXY model =
-    case model of
-        NoDrag ->
-            Nothing
-
-        Drag { drag, mouseMoveDelta, dragElementOffset } ->
-            Just { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
+dragElementAndXY (Drag model) =
+    model
+        |> Maybe.map
+            (\{ drag, mouseMoveDelta, dragElementOffset } ->
+                { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
+            )
 
 
 type Msg a b
@@ -59,7 +57,7 @@ type Msg a b
 
 
 subscriptions : (Msg a b -> msg) -> Drag a b -> Sub msg
-subscriptions toMsg drag =
+subscriptions toMsg (Drag model) =
     let
         subs =
             Sub.batch
@@ -68,54 +66,45 @@ subscriptions toMsg drag =
                 ]
                 |> Sub.map toMsg
     in
-    case drag of
-        NoDrag ->
+    case model of
+        Nothing ->
             Sub.none
 
-        Drag _ ->
+        Just _ ->
             subs
 
 
 xyMovedTo : XY -> Drag a b -> Drag a b
-xyMovedTo xy model =
+xyMovedTo xy (Drag model) =
     let
         setCurrentXYIn state =
             { state | mouseMoveDelta = XYDelta.moveTo xy state.mouseMoveDelta }
     in
-    case model of
-        NoDrag ->
-            model
-
-        Drag state ->
-            setCurrentXYIn state |> Drag
+    model |> Maybe.map setCurrentXYIn |> Drag
 
 
 dragEvents : (Msg a b -> msg) -> a -> String -> Drag a b -> List (H.Attribute msg)
-dragEvents tagger a domId drag =
-    case drag of
-        NoDrag ->
+dragEvents tagger a domId (Drag model) =
+    case model of
+        Nothing ->
             [ E.preventDefaultOn "mousedown"
                 (XY.pageXYDecoder
                     |> JD.map (MouseDownOnDraggable a domId >> tagger >> pd)
                 )
             ]
 
-        Drag _ ->
+        Just _ ->
             []
 
 
 dropEvents : (Msg a b -> msg) -> b -> Drag a b -> List (H.Attribute msg)
-dropEvents tagger a model =
-    let
-        events =
-            [ E.onMouseOver (MouseOverDroppable a |> tagger) ]
-    in
+dropEvents tagger a (Drag model) =
     case model of
-        NoDrag ->
+        Nothing ->
             []
 
-        Drag _ ->
-            events
+        Just _ ->
+            [ E.onMouseOver (MouseOverDroppable a |> tagger) ]
 
 
 pd =
@@ -136,7 +125,7 @@ update toMsg config message model =
 
 
 updateHelp : Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
-updateHelp config message model =
+updateHelp config message ((Drag model) as model_) =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -152,43 +141,44 @@ updateHelp config message model =
     in
     case message of
         GlobalMouseMove xy ->
-            ( xyMovedTo xy model, Cmd.none )
+            ( xyMovedTo xy model_, Cmd.none )
 
         GlobalMouseUp ->
-            ( NoDrag, Cmd.none )
+            ( Drag Nothing, Cmd.none )
 
         MouseDownOnDraggable dragIdx dragId xy ->
-            ( model
+            ( model_
             , getElement dragId (GotDragElement dragIdx xy)
             )
 
         MouseOverDroppable b ->
             ( case model of
-                NoDrag ->
-                    model
+                Nothing ->
+                    model_
 
-                Drag state ->
+                Just state ->
                     if config.canAccept state.drag b then
-                        Drag
-                            { state | dragOver = Just b }
+                        Drag (Just { state | dragOver = Just b })
 
                     else
-                        model
+                        model_
             , Cmd.none
             )
 
         GotDragElement a xy element ->
             ( Drag
-                { drag = a
-                , mouseMoveDelta = XYDelta.init xy
-                , dragElementOffset = XY.subtract element.element element.viewport
-                , dragOver = Nothing
-                }
+                (Just
+                    { drag = a
+                    , mouseMoveDelta = XYDelta.init xy
+                    , dragElementOffset = XY.subtract element.element element.viewport
+                    , dragOver = Nothing
+                    }
+                )
             , Cmd.none
             )
 
         GotDomElementError (Dom.NotFound _) ->
-            ( NoDrag, Cmd.none )
+            ( Drag Nothing, Cmd.none )
 
 
 ghostStyles : Drag a b -> Maybe ( a, Css.Style )
