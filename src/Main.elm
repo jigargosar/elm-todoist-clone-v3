@@ -356,29 +356,32 @@ drawerView model =
     Drawer.view drawerConfig
 
 
-mainView2 : Model -> List (Html Msg)
+mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 mainView2 model =
     let
         projectList =
             ProjectCollection.sorted model.projectCollection
     in
-    List.indexedMap
-        (\idx project ->
-            let
-                domId =
-                    project
-                        |> Project.id
-                        >> ProjectId.toString
-                        >> (++) "project-dnd-item"
-            in
-            div
-                (A.id domId
-                    :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
-                    ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
-                )
-                [ text <| Project.title project ]
-        )
-        projectList
+    { content =
+        List.indexedMap
+            (\idx project ->
+                let
+                    domId =
+                        project
+                            |> Project.id
+                            >> ProjectId.toString
+                            >> (++) "project-dnd-item"
+                in
+                div
+                    (A.id domId
+                        :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
+                        ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
+                    )
+                    [ text <| Project.title project ]
+            )
+            projectList
+    , portal = []
+    }
 
 
 
