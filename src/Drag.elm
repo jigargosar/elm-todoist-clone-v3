@@ -4,6 +4,7 @@ module Drag exposing
     , dragEvents
     , dropEvents
     , ghostStyles
+    , info
     , initial
     , subscriptions
     , update
@@ -20,6 +21,17 @@ import Styles
 import Task
 import XY exposing (XY)
 import XYDelta exposing (XYDelta)
+
+
+type alias Info a b =
+    { drag : a, dragOver : b }
+
+
+info : Drag b a -> Maybe { drag : b, dragOver : a }
+info (Drag internal) =
+    internal
+        |> Maybe.andThen
+            (\state -> state.dragOver |> Maybe.map (\dragOver -> { drag = state.drag, dragOver = dragOver }))
 
 
 type Drag a b
