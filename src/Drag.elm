@@ -208,7 +208,7 @@ updateHelp config message model =
         GotDragElement a xy element ->
             ( Drag
                 { drag = a
-                , mouseMoveDelta = XYDelta.init (XY.add xy (XY.subtract element.element element.viewport))
+                , mouseMoveDelta = XYDelta.init xy
                 , dragElementOffset = XY.subtract element.element element.viewport
                 }
             , Cmd.none
@@ -232,7 +232,7 @@ ghostStyles =
                     [ Styles.absolute
                     , Styles.top_0
                     , Styles.left_0
-                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                    , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
                     , Css.pointerEvents Css.none
                     ]
                 )
