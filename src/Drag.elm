@@ -24,17 +24,16 @@ import XYDelta exposing (XYDelta)
 
 type Drag a b
     = NoDrag
-    | Drag
-        { drag : a
-        , mouseMoveDelta : XYDelta
-        , dragElementOffset : XY
-        }
-    | DragOver
-        { drag : a
-        , mouseMoveDelta : XYDelta
-        , dragElementOffset : XY
-        , dragOver : b
-        }
+    | Drag (State a b)
+    | DragOver (State a b)
+
+
+type alias State a b =
+    { drag : a
+    , mouseMoveDelta : XYDelta
+    , dragElementOffset : XY
+    , dragOver : Maybe b
+    }
 
 
 initial : Drag a b
@@ -184,21 +183,17 @@ updateHelp config message model =
                 NoDrag ->
                     model
 
-                Drag { drag, mouseMoveDelta, dragElementOffset } ->
-                    if config.canAccept drag b then
+                Drag state ->
+                    if config.canAccept state.drag b then
                         DragOver
-                            { drag = drag
-                            , mouseMoveDelta = mouseMoveDelta
-                            , dragElementOffset = dragElementOffset
-                            , dragOver = b
-                            }
+                            { state | dragOver = Just b }
 
                     else
                         model
 
                 DragOver state ->
                     if config.canAccept state.drag b then
-                        DragOver { state | dragOver = b }
+                        DragOver { state | dragOver = Just b }
 
                     else
                         model
@@ -210,6 +205,7 @@ updateHelp config message model =
                 { drag = a
                 , mouseMoveDelta = XYDelta.init xy
                 , dragElementOffset = XY.subtract element.element element.viewport
+                , dragOver = Nothing
                 }
             , Cmd.none
             )
