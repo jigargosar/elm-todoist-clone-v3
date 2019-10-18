@@ -373,15 +373,10 @@ drawerView model =
         drawerConfig : Drawer.Config Msg
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-            , dragEvents = dragEvents
-            , dropEvents = dropEvents
-            , isPanelExpanded = \panel -> Drawer.isPanelExpanded panel model.drawerExpansionPanels
-            , dragInfo = \panel -> dragInfoFor panel model.drawerDnD
             , projectList = ProjectCollection.sorted model.projectCollection
-            , sort = \panel list -> sort panel list model.drawerDnD
             }
     in
-    Drawer.view drawerConfig
+    Drawer.view drawerConfig model.drawerExpansionPanels
 
 
 mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }
