@@ -138,6 +138,9 @@ view config projectList expansionPanels panelsDragState =
                 "Projects"
                 expansionPanels.projectsExpanded
                 config.toProjectsDragMsg
+                panelsDragState.projectsDrag
+                projectToNavItem
+                panelLists.projectList
     in
     { content = [], portal = [] }
 
