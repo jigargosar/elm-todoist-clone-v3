@@ -8,6 +8,7 @@ import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
+import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Todo
@@ -98,6 +99,25 @@ initTodoDict encodedTodoList model =
                     ( model.todoDict, logError <| JD.errorToString e )
     in
     ( { model | todoDict = newTodoDict }, cmd )
+
+
+
+-- DND
+
+
+projectsDragSystem : Drag.System Project Msg
+projectsDragSystem =
+    Drag.system ProjectsDrag
+
+
+labelsDragSystem : Drag.System a Msg
+labelsDragSystem =
+    Drag.system LabelsDrag
+
+
+filterDragSystem : Drag.System a Msg
+filterDragSystem =
+    Drag.system FiltersDrag
 
 
 
