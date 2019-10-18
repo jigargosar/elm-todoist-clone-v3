@@ -79,6 +79,7 @@ viewProject pc todo =
             , bg (toCssColor todoProject.color)
             , c_ (toCssColor <| Color.highContrast todoProject.color)
             , bor 2
+            , hover [ underline, pointer ]
             ]
         ]
         [ text todoProject.title ]
@@ -94,6 +95,7 @@ viewLabelId label =
             [ ph 1
             , Css.fontSize Css.small
             , c_ (Label.hue label |> fromHue |> Color.whiten 10 |> toCssColor)
+            , hover [ underline, pointer ]
             ]
         ]
         [ text <| Label.title label ]

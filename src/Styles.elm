@@ -439,6 +439,10 @@ hover =
     Css.hover
 
 
+underline =
+    Css.textDecoration Css.underline
+
+
 focus =
     Css.focus
 
