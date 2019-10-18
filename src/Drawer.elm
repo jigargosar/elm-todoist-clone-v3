@@ -6,6 +6,7 @@ module Drawer exposing
     , PanelsDragState
     , initialExpansionPanels
     , initialPanelsDragState
+    , panelDragSubscriptions
     , toggleExpansionPanel
     , updatePanelsDragState
     , view
@@ -127,6 +128,15 @@ updatePanelsDragState toMsg panel msg model =
         Filters ->
             Drag.update (toMsg panel) msg model.filtersDrag
                 |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
+
+
+panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
+panelDragSubscriptions toMsg model =
+    Sub.batch
+        [ Drag.subscriptions (toMsg Projects) model.projectsDrag
+        , Drag.subscriptions (toMsg Labels) model.labelsDrag
+        , Drag.subscriptions (toMsg Filters) model.filtersDrag
+        ]
 
 
 view :

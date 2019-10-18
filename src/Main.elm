@@ -8,7 +8,6 @@ import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Layout
-import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Todo
@@ -39,9 +38,6 @@ type alias Model =
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerPanelsDragState : Drawer.PanelsDragState
-    , projectsDrag : Drag
-    , labelsDrag : Drag
-    , filtersDrag : Drag
     }
 
 
@@ -55,9 +51,6 @@ init flags =
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerPanelsDragState = Drawer.initialPanelsDragState
-            , projectsDrag = Drag.initial
-            , labelsDrag = Drag.initial
-            , filtersDrag = Drag.initial
             }
     in
     Return.singleton initial
@@ -110,9 +103,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drag.subscriptions ProjectsDrag model.projectsDrag
-        , Drag.subscriptions LabelsDrag model.labelsDrag
-        , Drag.subscriptions FiltersDrag model.filtersDrag
+        [ Drawer.panelDragSubscriptions UpdateDrawerPanelsDragState model.drawerPanelsDragState
         ]
 
 
@@ -127,9 +118,6 @@ type Msg
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
     | UpdateDrawerPanelsDragState Drawer.Panel Drag.Msg
-    | ProjectsDrag Drag.Msg
-    | LabelsDrag Drag.Msg
-    | FiltersDrag Drag.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -163,18 +151,6 @@ update message model =
             Drawer.updatePanelsDragState UpdateDrawerPanelsDragState panel msg model.drawerPanelsDragState
                 |> Tuple.mapFirst
                     (\drawerPanelsDragState -> { model | drawerPanelsDragState = drawerPanelsDragState })
-
-        ProjectsDrag msg ->
-            Drag.update ProjectsDrag msg model.projectsDrag
-                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
-
-        LabelsDrag msg ->
-            Drag.update LabelsDrag msg model.labelsDrag
-                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
-
-        FiltersDrag msg ->
-            Drag.update FiltersDrag msg model.filtersDrag
-                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
 
