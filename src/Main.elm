@@ -434,7 +434,7 @@ mainView2 model =
                     in
                     div
                         (A.id domId
-                            :: css [ Styles.noSelection, dragOverStyles ]
+                            :: css [ Styles.noSelection, Styles.commonTransitions, dragOverStyles ]
                             :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
                             ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
                         )
