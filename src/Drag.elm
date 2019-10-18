@@ -42,16 +42,16 @@ initial =
     NoDrag
 
 
-dragElementAndXY drag =
-    case drag of
+dragElementAndXY model =
+    case model of
         NoDrag ->
             Nothing
 
-        Drag { mouseMoveDelta, dragElementOffset } ->
-            Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
+        Drag { drag, mouseMoveDelta, dragElementOffset } ->
+            Just { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
-        DragOver { mouseMoveDelta, dragElementOffset } ->
-            Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
+        DragOver { drag, mouseMoveDelta, dragElementOffset } ->
+            Just { drag = drag, mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
 
 type Msg a b
@@ -217,21 +217,22 @@ updateHelp config message model =
             ( NoDrag, Cmd.none )
 
 
-ghostStyles : Drag a b -> Css.Style
+ghostStyles : Drag a b -> Maybe ( a, Css.Style )
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
-            (\{ dragElementOffset, mouseMoveDelta } ->
+            (\{ drag, dragElementOffset, mouseMoveDelta } ->
                 let
                     { x, y } =
                         XY.add (XYDelta.diff mouseMoveDelta) dragElementOffset
                 in
-                [ Styles.absolute
-                , Styles.top_0
-                , Styles.left_0
-                , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
-                , Css.pointerEvents Css.none
-                ]
+                ( drag
+                , Css.batch
+                    [ Styles.absolute
+                    , Styles.top_0
+                    , Styles.left_0
+                    , Css.transform (Css.translate2 (Css.px 0) (Css.px y))
+                    , Css.pointerEvents Css.none
+                    ]
+                )
             )
-        >> Maybe.withDefault []
-        >> Css.batch

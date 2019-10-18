@@ -9,7 +9,7 @@ import Css
 import Drag exposing (Drag)
 import Drawer
 import Html.Styled exposing (Html, div, text, toUnstyled)
-import Html.Styled.Attributes as A
+import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -361,6 +361,24 @@ mainView2 model =
     let
         projectList =
             ProjectCollection.sorted model.projectCollection
+
+        ghostItem =
+            Drag.ghostStyles model.drag
+                |> Maybe.andThen
+                    (\( ( panel, idx ), styles ) ->
+                        if panel == Drawer.Projects then
+                            List.drop idx projectList |> List.head |> Maybe.map (Tuple.pair styles)
+
+                        else
+                            Nothing
+                    )
+                |> Maybe.map
+                    (\( styles, project ) ->
+                        div
+                            [ css [ styles ] ]
+                            [ text <| Project.title project ]
+                    )
+                |> Maybe.withDefault (text "")
     in
     { content =
         List.indexedMap
@@ -380,7 +398,7 @@ mainView2 model =
                     [ text <| Project.title project ]
             )
             projectList
-    , portal = []
+    , portal = [ ghostItem ]
     }
 
 
