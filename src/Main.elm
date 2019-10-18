@@ -104,25 +104,6 @@ initTodoDict encodedTodoList model =
 
 
 
--- DND
-
-
-projectsDragSystem : Drag.System Project Msg
-projectsDragSystem =
-    Drag.system ProjectsDrag
-
-
-labelsDragSystem : Drag.System a Msg
-labelsDragSystem =
-    Drag.system LabelsDrag
-
-
-filterDragSystem : Drag.System a Msg
-filterDragSystem =
-    Drag.system FiltersDrag
-
-
-
 -- Subscriptions
 
 
