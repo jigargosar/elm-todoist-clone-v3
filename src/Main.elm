@@ -67,7 +67,7 @@ type alias PanelItemDnD =
 
 
 type alias ListDrag =
-    Drag Int Int
+    Drag
 
 
 type alias PanelsDragState =
@@ -189,9 +189,9 @@ type Msg
     | GotDrawerPanelItemDomError Dom.Error
     | BrowserMouseMove XY
     | BrowserMouseUp
-    | ProjectsDrag (Drag.Msg Int Int)
-    | LabelsDrag (Drag.Msg Int Int)
-    | FiltersDrag (Drag.Msg Int Int)
+    | ProjectsDrag Drag.Msg
+    | LabelsDrag Drag.Msg
+    | FiltersDrag Drag.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -271,15 +271,15 @@ update message model =
             ( { model | drawerDnD = Nothing }, Cmd.none )
 
         ProjectsDrag msg ->
-            Drag.update ProjectsDrag { canAccept = \_ _ -> True } msg model.projectsDrag
+            Drag.update ProjectsDrag msg model.projectsDrag
                 |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
 
         LabelsDrag msg ->
-            Drag.update LabelsDrag { canAccept = \_ _ -> True } msg model.labelsDrag
+            Drag.update LabelsDrag msg model.labelsDrag
                 |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
 
         FiltersDrag msg ->
-            Drag.update FiltersDrag { canAccept = \_ _ -> True } msg model.filtersDrag
+            Drag.update FiltersDrag msg model.filtersDrag
                 |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 

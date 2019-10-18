@@ -1,5 +1,6 @@
 module Drag exposing
     ( Drag
+    , Info
     , Msg
     , dragEvents
     , dropEvents
@@ -23,30 +24,30 @@ import XY exposing (XY)
 import XYDelta exposing (XYDelta)
 
 
-type alias Info a b =
-    { drag : a, dragOver : b }
+type alias Info =
+    { drag : Int, dragOver : Int }
 
 
-info : Drag b a -> Maybe { drag : b, dragOver : a }
+info : Drag -> Maybe Info
 info (Drag internal) =
     internal
         |> Maybe.andThen
             (\state -> state.dragOver |> Maybe.map (\dragOver -> { drag = state.drag, dragOver = dragOver }))
 
 
-type Drag a b
-    = Drag (Maybe (State a b))
+type Drag
+    = Drag (Maybe State)
 
 
-type alias State a b =
-    { drag : a
+type alias State =
+    { drag : Int
     , mouseMoveDelta : XYDelta
     , dragElementOffset : XY
-    , dragOver : Maybe b
+    , dragOver : Maybe Int
     }
 
 
-initial : Drag a b
+initial : Drag
 initial =
     Drag Nothing
 
@@ -59,16 +60,16 @@ dragElementAndXY (Drag internal) =
             )
 
 
-type Msg a b
+type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDraggable a String XY
-    | MouseOverDroppable b
-    | GotDragElement a XY Element
+    | MouseDownOnDraggable Int String XY
+    | MouseOverDroppable Int
+    | GotDragElement Int XY Element
     | GotDomElementError Dom.Error
 
 
-subscriptions : (Msg a b -> msg) -> Drag a b -> Sub msg
+subscriptions : (Msg -> msg) -> Drag -> Sub msg
 subscriptions toMsg (Drag internal) =
     let
         subs =
@@ -86,7 +87,7 @@ subscriptions toMsg (Drag internal) =
             subs
 
 
-xyMovedTo : XY -> Drag a b -> Drag a b
+xyMovedTo : XY -> Drag -> Drag
 xyMovedTo xy (Drag internal) =
     let
         setCurrentXYIn state =
@@ -95,13 +96,13 @@ xyMovedTo xy (Drag internal) =
     internal |> Maybe.map setCurrentXYIn |> Drag
 
 
-dragEvents : (Msg a b -> msg) -> a -> String -> Drag a b -> List (H.Attribute msg)
-dragEvents tagger a domId (Drag internal) =
+dragEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
+dragEvents tagger idx domId (Drag internal) =
     case internal of
         Nothing ->
             [ E.preventDefaultOn "mousedown"
                 (XY.pageXYDecoder
-                    |> JD.map (MouseDownOnDraggable a domId >> tagger >> pd)
+                    |> JD.map (MouseDownOnDraggable idx domId >> tagger >> pd)
                 )
             ]
 
@@ -109,35 +110,31 @@ dragEvents tagger a domId (Drag internal) =
             []
 
 
-dropEvents : (Msg a b -> msg) -> b -> Drag a b -> List (H.Attribute msg)
-dropEvents tagger a (Drag internal) =
+dropEvents : (Msg -> msg) -> Int -> Drag -> List (H.Attribute msg)
+dropEvents tagger idx (Drag internal) =
     case internal of
         Nothing ->
             []
 
         Just _ ->
-            [ E.onMouseOver (MouseOverDroppable a |> tagger) ]
+            [ E.onMouseOver (MouseOverDroppable idx |> tagger) ]
 
 
 pd =
     flip Tuple.pair False
 
 
-type alias Config a b =
-    { canAccept : a -> b -> Bool }
-
-
-update : (Msg a b -> msg) -> Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd msg )
-update toMsg config message model =
+update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
+update toMsg message model =
     let
         ( newModel, cmd ) =
-            updateHelp config message model
+            updateHelp message model
     in
     ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateHelp : Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
-updateHelp config message ((Drag internal) as model) =
+updateHelp : Msg -> Drag -> ( Drag, Cmd Msg )
+updateHelp message ((Drag internal) as model) =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -169,11 +166,7 @@ updateHelp config message ((Drag internal) as model) =
                     model
 
                 Just state ->
-                    if config.canAccept state.drag b then
-                        Drag (Just { state | dragOver = Just b })
-
-                    else
-                        model
+                    Drag (Just { state | dragOver = Just b })
             , Cmd.none
             )
 
@@ -193,7 +186,7 @@ updateHelp config message ((Drag internal) as model) =
             ( Drag Nothing, Cmd.none )
 
 
-ghostStyles : Drag a b -> Maybe ( a, Css.Style )
+ghostStyles : Drag -> Maybe ( Int, Css.Style )
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
