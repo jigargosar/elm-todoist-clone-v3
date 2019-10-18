@@ -207,7 +207,7 @@ drawerView model =
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
             , panelToDragMsg = DrawerPanelDrag
-            , panelToDragChangeMsg = DrawerPanelDragComplete
+            , panelToDragCompleteMsg = DrawerPanelDragComplete
             }
     in
     Drawer.view drawerConfig
