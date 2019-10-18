@@ -68,6 +68,7 @@ viewProject pc todo =
             , Css.fontSize Css.small
             , bg (toCssColor tp.color)
             , c_ (toCssColor <| Color.highContrast tp.color)
+            , bor 2
             ]
         ]
         [ text tp.title ]
