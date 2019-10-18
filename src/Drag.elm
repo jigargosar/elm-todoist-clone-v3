@@ -63,14 +63,15 @@ type Msg a b
     | GotDomElementError Dom.Error
 
 
-subscriptions : Drag a b -> Sub (Msg a b)
-subscriptions drag =
+subscriptions : (Msg a b -> msg) -> Drag a b -> Sub msg
+subscriptions toMsg drag =
     let
         subs =
             Sub.batch
                 [ BE.onMouseMove (JD.map GlobalMouseMove XY.pageXYDecoder)
                 , BE.onMouseUp (JD.succeed GlobalMouseUp)
                 ]
+                |> Sub.map toMsg
     in
     case drag of
         NoDrag ->

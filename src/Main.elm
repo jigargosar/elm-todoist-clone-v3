@@ -152,6 +152,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
+        , Drag.subscriptions Drag model.drag
         ]
 
 
