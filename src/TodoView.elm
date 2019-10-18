@@ -74,7 +74,7 @@ viewProject pc todo =
     div
         [ css
             [ ph 1
-            , Css.lineHeight <| Css.num 1.5
+            , lh 1.5
             , Css.fontSize Css.small
             , bg (toCssColor todoProject.color)
             , c_ (toCssColor <| Color.highContrast todoProject.color)
