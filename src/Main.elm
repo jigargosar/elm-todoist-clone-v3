@@ -37,7 +37,7 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
-    , drawerPanelsDragState : Drawer.PanelsDragState
+    , drawerPanelDrag : Drawer.PanelsDragState
     }
 
 
@@ -50,7 +50,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
-            , drawerPanelsDragState = Drawer.initialPanelsDragState
+            , drawerPanelDrag = Drawer.initialPanelsDragState
             }
     in
     Return.singleton initial
@@ -103,7 +103,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelDragSubscriptions DrawerPanelDrag model.drawerPanelsDragState
+        [ Drawer.panelDragSubscriptions DrawerPanelDrag model.drawerPanelDrag
         ]
 
 
@@ -148,9 +148,9 @@ update message model =
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelsDragState DrawerPanelDrag panel msg model.drawerPanelsDragState
+            Drawer.updatePanelsDragState DrawerPanelDrag panel msg model.drawerPanelDrag
                 |> Tuple.mapFirst
-                    (\drawerPanelsDragState -> { model | drawerPanelsDragState = drawerPanelsDragState })
+                    (\drawerPanelsDragState -> { model | drawerPanelDrag = drawerPanelsDragState })
 
 
 
@@ -179,7 +179,7 @@ drawerView model =
     Drawer.view drawerConfig
         (ProjectCollection.sorted model.projectCollection)
         model.drawerExpansionPanels
-        model.drawerPanelsDragState
+        model.drawerPanelDrag
 
 
 mainView : TodoDict -> List (Html Msg)
