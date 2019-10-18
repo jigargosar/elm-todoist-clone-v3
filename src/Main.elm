@@ -118,6 +118,7 @@ type Msg
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
+    | DrawerPanelDragChange Drawer.Panel Drag.Info
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -148,9 +149,12 @@ update message model =
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelDrag DrawerPanelDrag panel msg model.drawerPanelDrag
+            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragChange panel msg model.drawerPanelDrag
                 |> Tuple.mapFirst
                     (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
+
+        DrawerPanelDragChange panel info ->
+            ( model, Cmd.none )
 
 
 
@@ -174,6 +178,7 @@ drawerView model =
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
             , panelToDragMsg = DrawerPanelDrag
+            , panelToDragChangeMsg = DrawerPanelDragChange
             }
     in
     Drawer.view drawerConfig

@@ -42,10 +42,10 @@ type alias System a msg =
     }
 
 
-system : (Msg -> msg) -> System a msg
-system toMsg =
+system : (Msg -> msg) -> (Info -> msg) -> System a msg
+system toMsg onChange =
     { initial = initial
-    , update = update toMsg
+    , update = update toMsg onChange
     , subscriptions = subscriptions toMsg
     , dragEvents = dragEvents toMsg
     , dropEvents = dropEvents toMsg
@@ -184,17 +184,8 @@ pd =
     flip Tuple.pair False
 
 
-update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
-update toMsg message model =
-    let
-        ( newModel, cmd ) =
-            updateHelp message model
-    in
-    ( newModel, cmd |> Cmd.map toMsg )
-
-
-updateHelp : Msg -> Drag -> ( Drag, Cmd Msg )
-updateHelp message ((Drag internal) as model) =
+update : (Msg -> msg) -> (Info -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
+update toMsg onChange message ((Drag internal) as model) =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -207,6 +198,7 @@ updateHelp message ((Drag internal) as model) =
                             Ok element ->
                                 onSuccess element
                     )
+                |> Cmd.map toMsg
     in
     case message of
         GlobalMouseMove xy ->

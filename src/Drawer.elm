@@ -84,6 +84,7 @@ type alias FilterView =
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
     , panelToDragMsg : Panel -> Drag.Msg -> msg
+    , panelToDragChangeMsg : Panel -> Drag.Info -> msg
     }
 
 
@@ -111,22 +112,27 @@ initialPanelsDragState =
 
 updatePanelDrag :
     (Panel -> Drag.Msg -> msg)
+    -> (Panel -> Drag.Info -> msg)
     -> Panel
     -> Drag.Msg
     -> PanelsDragState
     -> ( PanelsDragState, Cmd msg )
-updatePanelDrag toMsg panel msg model =
+updatePanelDrag toMsg onChange panel msg model =
+    let
+        updateHelp =
+            Drag.update (toMsg panel) (onChange panel) msg
+    in
     case panel of
         Projects ->
-            Drag.update (toMsg panel) msg model.projectsDrag
+            updateHelp model.projectsDrag
                 |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
 
         Labels ->
-            Drag.update (toMsg panel) msg model.labelsDrag
+            updateHelp model.labelsDrag
                 |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
 
         Filters ->
-            Drag.update (toMsg panel) msg model.filtersDrag
+            updateHelp model.filtersDrag
                 |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
@@ -161,7 +167,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Projects)
                 "Projects"
                 expansionPanels.projectsExpanded
-                (Drag.system (config.panelToDragMsg Projects))
+                (Drag.system (config.panelToDragMsg Projects) (config.panelToDragChangeMsg Projects))
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
@@ -170,7 +176,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Labels)
                 "Labels"
                 expansionPanels.labelsExpanded
-                (Drag.system (config.panelToDragMsg Labels))
+                (Drag.system (config.panelToDragMsg Labels) (config.panelToDragChangeMsg Labels))
                 panelsDragState.labelsDrag
                 labelToNavItem
                 panelLists.labelList
@@ -179,7 +185,7 @@ view config projectList expansionPanels panelsDragState =
             viewPanel (config.onToggleExpansionPanel Filters)
                 "Filters"
                 expansionPanels.filtersExpanded
-                (Drag.system (config.panelToDragMsg Filters))
+                (Drag.system (config.panelToDragMsg Filters) (config.panelToDragChangeMsg Filters))
                 panelsDragState.filtersDrag
                 filterToNavItem
                 panelLists.filterList
