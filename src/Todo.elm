@@ -1,4 +1,4 @@
-module Todo exposing (Todo, decoder, id, idx, mapCompleted, maybeProjectId, title, toggle, viewList)
+module Todo exposing (Todo, decoder, id, idx, isCompleted, mapCompleted, maybeProjectId, title, toggle, viewList)
 
 import Emoji
 import Html.Styled as Html exposing (..)
@@ -56,6 +56,7 @@ unwrap (Todo t) =
     t
 
 
+isCompleted : Todo -> Bool
 isCompleted =
     unwrap >> .isCompleted
 
