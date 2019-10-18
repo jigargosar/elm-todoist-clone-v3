@@ -46,9 +46,26 @@ const mockLabelList = [
   idx,
 }))
 
+const mockFilterList = [
+  'Assigned to me',
+  'Assigned to others',
+  'Priority 1',
+  'Priority 2',
+  'Priority 3',
+  'View all',
+  'No Due Date',
+].map((title, idx) => ({
+  id: `FilterId-${nanoid()}`,
+  title,
+  createdAt: Date.now(),
+  modifiedAt: Date.now(),
+  hue: Math.round(Math.random() * 360),
+  idx,
+}))
+
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
-  flags: { todoList: mockTodoList, projectList: mockProjectList, labelList : mockLabelList, filterList: [] },
+  flags: { todoList: mockTodoList, projectList: mockProjectList, labelList : mockLabelList, filterList: mockFilterList },
 })
 
 const pubs = ports(
