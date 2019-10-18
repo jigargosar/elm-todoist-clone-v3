@@ -5,6 +5,7 @@ module Drawer exposing
     , PanelLists
     , PanelsDragState
     , initialExpansionPanels
+    , initialPanelsDragState
     , toggleExpansionPanel
     , view
     )
@@ -97,6 +98,14 @@ type alias PanelsDragState =
     { projectsDrag : Drag
     , labelsDrag : Drag
     , filtersDrag : Drag
+    }
+
+
+initialPanelsDragState : PanelsDragState
+initialPanelsDragState =
+    { projectsDrag = Drag.initial
+    , labelsDrag = Drag.initial
+    , filtersDrag = Drag.initial
     }
 
 

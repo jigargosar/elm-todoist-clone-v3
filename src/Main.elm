@@ -38,6 +38,7 @@ type alias Model =
     , projectCollection : ProjectCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
+    , drawerPanelsDragState : Drawer.PanelsDragState
     , projectsDrag : Drag
     , labelsDrag : Drag
     , filtersDrag : Drag
@@ -53,6 +54,7 @@ init flags =
             , projectCollection = ProjectCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
+            , drawerPanelsDragState = Drawer.initialPanelsDragState
             , projectsDrag = Drag.initial
             , labelsDrag = Drag.initial
             , filtersDrag = Drag.initial
