@@ -27,6 +27,7 @@ type alias Flags =
     { todoList : Value
     , projectList : Value
     , labelList : Value
+    , filterList : Value
     }
 
 
