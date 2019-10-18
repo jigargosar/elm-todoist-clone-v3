@@ -22,22 +22,22 @@ import XY exposing (XY)
 import XYDelta exposing (XYDelta)
 
 
-type Drag
+type Drag a
     = NoDrag
     | Drag
-        { dragIdx : Int
+        { drag : a
         , mouseMoveDelta : XYDelta
         , dragElementOffset : XY
         }
     | DragOver
-        { dragIdx : Int
+        { drag : a
         , mouseMoveDelta : XYDelta
         , dragElementOffset : XY
-        , dropIdx : Int
+        , dragOver : a
         }
 
 
-initial : Drag
+initial : Drag a
 initial =
     NoDrag
 
@@ -54,16 +54,16 @@ dragElementAndXY drag =
             Just { mouseMoveDelta = mouseMoveDelta, dragElementOffset = dragElementOffset }
 
 
-type Msg
+type Msg a
     = GlobalMouseMove XY
     | GlobalMouseUp
-    | MouseDownOnDraggable Int String XY
-    | MouseOverDroppable Int
-    | GotDragElement Int XY Element
+    | MouseDownOnDraggable a String XY
+    | MouseOverDroppable a
+    | GotDragElement a XY Element
     | GotDomElementError Dom.Error
 
 
-subscriptions : Drag -> Sub Msg
+subscriptions : Drag a -> Sub (Msg a)
 subscriptions drag =
     let
         subs =
@@ -83,7 +83,7 @@ subscriptions drag =
             subs
 
 
-xyMovedTo : XY -> Drag -> Drag
+xyMovedTo : XY -> Drag a -> Drag a
 xyMovedTo xy model =
     let
         setCurrentXYIn state =
@@ -100,13 +100,13 @@ xyMovedTo xy model =
             setCurrentXYIn state |> DragOver
 
 
-dragEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
-dragEvents tagger idx domId drag =
+dragEvents : (Msg a -> msg) -> a -> String -> Drag a -> List (H.Attribute msg)
+dragEvents tagger a domId drag =
     case drag of
         NoDrag ->
             [ E.preventDefaultOn "mousedown"
                 (XY.pageXYDecoder
-                    |> JD.map (MouseDownOnDraggable idx domId >> tagger >> pd)
+                    |> JD.map (MouseDownOnDraggable a domId >> tagger >> pd)
                 )
             ]
 
@@ -117,11 +117,11 @@ dragEvents tagger idx domId drag =
             []
 
 
-dropEvents : (Msg -> msg) -> Int -> Drag -> List (H.Attribute msg)
-dropEvents tagger idx model =
+dropEvents : (Msg a -> msg) -> a -> Drag a -> List (H.Attribute msg)
+dropEvents tagger a model =
     let
         events =
-            [ E.onMouseOver (MouseOverDroppable idx |> tagger) ]
+            [ E.onMouseOver (MouseOverDroppable a |> tagger) ]
     in
     case model of
         NoDrag ->
@@ -138,7 +138,7 @@ pd =
     flip Tuple.pair False
 
 
-update : (Msg -> msg) -> Msg -> Drag -> ( Drag, Cmd msg )
+update : (Msg a -> msg) -> Msg a -> Drag a -> ( Drag a, Cmd msg )
 update toMsg message model =
     let
         ( newModel, cmd ) =
@@ -147,7 +147,7 @@ update toMsg message model =
     ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateHelp : Msg -> Drag -> ( Drag, Cmd Msg )
+updateHelp : Msg a -> Drag a -> ( Drag a, Cmd (Msg a) )
 updateHelp message model =
     let
         getElement domId onSuccess =
@@ -174,27 +174,27 @@ updateHelp message model =
             , getElement dragId (GotDragElement dragIdx xy)
             )
 
-        MouseOverDroppable idx ->
+        MouseOverDroppable a ->
             ( case model of
                 NoDrag ->
                     model
 
-                Drag { dragIdx, mouseMoveDelta, dragElementOffset } ->
+                Drag { drag, mouseMoveDelta, dragElementOffset } ->
                     DragOver
-                        { dragIdx = dragIdx
+                        { drag = drag
                         , mouseMoveDelta = mouseMoveDelta
                         , dragElementOffset = dragElementOffset
-                        , dropIdx = idx
+                        , dragOver = a
                         }
 
                 DragOver state ->
-                    DragOver { state | dropIdx = idx }
+                    DragOver { state | dropIdx = a }
             , Cmd.none
             )
 
-        GotDragElement dragIdx xy element ->
+        GotDragElement a xy element ->
             ( Drag
-                { dragIdx = dragIdx
+                { drag = a
                 , mouseMoveDelta = XYDelta.init (XY.add xy (XY.subtract element.element element.viewport))
                 , dragElementOffset = XY.subtract element.element element.viewport
                 }
@@ -205,7 +205,7 @@ updateHelp message model =
             ( NoDrag, Cmd.none )
 
 
-ghostStyles : Drag -> Css.Style
+ghostStyles : Drag a -> Css.Style
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
