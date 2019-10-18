@@ -1,12 +1,10 @@
 module Drawer exposing
     ( Config
-    , DragInfo
     , ExpansionPanels
     , Panel(..)
     , PanelLists
     , PanelsDragState
     , initialExpansionPanels
-    , isPanelExpanded
     , toggleExpansionPanel
     , view
     )
@@ -46,19 +44,6 @@ toggleExpansionPanel panel model =
             { model | filtersExpanded = not model.filtersExpanded }
 
 
-isPanelExpanded : Panel -> ExpansionPanels -> Bool
-isPanelExpanded panel =
-    case panel of
-        Projects ->
-            .projectsExpanded
-
-        Labels ->
-            .labelsExpanded
-
-        Filters ->
-            .filtersExpanded
-
-
 labelList : List LabelView
 labelList =
     [ LabelView "to read" 333
@@ -91,15 +76,6 @@ type alias LabelView =
 
 type alias FilterView =
     { title : String, hue : Float }
-
-
-type alias DragInfo =
-    Maybe
-        { panel : Panel
-        , dragIdx : Int
-        , ghostStyles : Style
-        , dropIdx : Int
-        }
 
 
 type alias Config msg =
