@@ -21,6 +21,7 @@ import Return
 import SelectList
 import Styles
 import Task
+import Todo
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 
@@ -362,7 +363,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
-        , main = mainView2 model
+        , main = { content = mainView model.todoDict, portal = [] }
         }
         model.isDrawerModalOpen
 
@@ -387,63 +388,13 @@ drawerView model =
         }
 
 
-mainView2 : Model -> { content : List (Html Msg), portal : List (Html Msg) }
-mainView2 model =
-    let
-        projectList =
-            ProjectCollection.sorted model.projectCollection
-
-        rotateProjectList : List a -> List a
-        rotateProjectList =
-            Drag.rotate model.projectsDrag
-
-        ghostItem =
-            Drag.ghostStyles model.projectsDrag
-                |> Maybe.andThen
-                    (\( idx, styles ) ->
-                        List.drop idx projectList |> List.head |> Maybe.map (Tuple.pair styles)
-                    )
-                |> Maybe.map
-                    (\( styles, project ) ->
-                        div
-                            [ css [ styles ] ]
-                            [ text <| Project.title project ]
-                    )
-                |> Maybe.withDefault (text "")
-    in
-    { content =
-        projectList
-            |> rotateProjectList
-            |> List.indexedMap
-                (\idx project ->
-                    let
-                        domId =
-                            project
-                                |> Project.id
-                                >> ProjectId.toString
-                                >> (++) "project-dnd-item"
-
-                        dragOverStyles =
-                            Styles.styleIf (Drag.eqDragOverIdx idx model.projectsDrag) [ Css.opacity <| Css.zero ]
-                    in
-                    div
-                        (A.id domId
-                            :: css [ Styles.noSelection, Styles.commonTransitions, dragOverStyles ]
-                            :: Drag.dragEvents ProjectsDrag idx domId model.projectsDrag
-                            ++ Drag.dropEvents ProjectsDrag idx model.projectsDrag
-                        )
-                        [ text <| Project.title project ]
-                )
-    , portal = [ ghostItem ]
-    }
+mainView : TodoDict -> List (Html Msg)
+mainView todoDict =
+    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
+    ]
 
 
 
---mainView : TodoDict -> List (Html Msg)
---mainView todoDict =
---    [ Todo.viewList { toggle = ToggleTodoCompleted } (TodoDict.sortedByIdx todoDict)
---    ]
---
 --
 -- MAIN
 
