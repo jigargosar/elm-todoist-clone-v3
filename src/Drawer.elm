@@ -46,6 +46,12 @@ toggleExpansionPanel panel model =
             { model | filtersExpanded = not model.filtersExpanded }
 
 
+updatePanelsDragState :
+    (Panel -> Drag.Msg -> msg)
+    -> Panel
+    -> Drag.Msg
+    -> PanelsDragState
+    -> ( PanelsDragState, Cmd msg )
 updatePanelsDragState toMsg panel msg model =
     case panel of
         Projects ->

@@ -122,13 +122,6 @@ filterDragSystem =
     Drag.system FiltersDrag
 
 
-drawerPanelDragSystems =
-    { projects = projectsDragSystem
-    , labels = labelsDragSystem
-    , filters = filterDragSystem
-    }
-
-
 
 -- Subscriptions
 
