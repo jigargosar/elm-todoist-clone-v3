@@ -145,6 +145,7 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | ToggleDrawerExpansionPanel Drawer.Panel
+    | UpdateDrawerPanelsDragState Drawer.Panel Drag.Msg
     | ProjectsDrag Drag.Msg
     | LabelsDrag Drag.Msg
     | FiltersDrag Drag.Msg
@@ -176,6 +177,11 @@ update message model =
               }
             , Cmd.none
             )
+
+        UpdateDrawerPanelsDragState panel msg ->
+            Drawer.updatePanelsDragState UpdateDrawerPanelsDragState panel msg model.drawerPanelsDragState
+                |> Tuple.mapFirst
+                    (\drawerPanelsDragState -> { model | drawerPanelsDragState = drawerPanelsDragState })
 
         ProjectsDrag msg ->
             Drag.update ProjectsDrag msg model.projectsDrag

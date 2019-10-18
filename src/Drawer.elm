@@ -7,6 +7,7 @@ module Drawer exposing
     , initialExpansionPanels
     , initialPanelsDragState
     , toggleExpansionPanel
+    , updatePanelsDragState
     , view
     )
 
@@ -43,6 +44,21 @@ toggleExpansionPanel panel model =
 
         Filters ->
             { model | filtersExpanded = not model.filtersExpanded }
+
+
+updatePanelsDragState toMsg panel msg model =
+    case panel of
+        Projects ->
+            Drag.update (toMsg panel) msg model.projectsDrag
+                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
+
+        Labels ->
+            Drag.update (toMsg panel) msg model.labelsDrag
+                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
+
+        Filters ->
+            Drag.update (toMsg panel) msg model.filtersDrag
+                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
 labelList : List LabelView
