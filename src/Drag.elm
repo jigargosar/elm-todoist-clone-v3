@@ -41,12 +41,22 @@ type Drag
     = Drag (Maybe State)
 
 
-rotate : Info -> List a -> List a
-rotate { drag, dragOver } list =
+rotateFromInfo : Info -> List a -> List a
+rotateFromInfo { drag, dragOver } list =
     SelectList.fromList list
         |> Maybe.andThen (SelectList.selectBy drag)
         |> Maybe.map (SelectList.moveBy (dragOver - drag) >> SelectList.toList)
         |> Maybe.withDefault list
+
+
+rotate : Drag -> List a -> List a
+rotate drag =
+    case info drag of
+        Nothing ->
+            identity
+
+        Just inf ->
+            rotateFromInfo inf
 
 
 type alias State =
