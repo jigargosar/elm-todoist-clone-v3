@@ -60,7 +60,6 @@ type Msg
     | MouseDownOnDraggable Int String XY
     | MouseOverDroppable Int
     | GotDragElement Int XY Element
-    | GotDropElement Int String Element
     | GotDomElementError Dom.Error
 
 
@@ -202,27 +201,6 @@ updateHelp message model =
                 , xyDelta = XYDelta.init xy
                 , dragElementOffset = XY.subtract element.element element.viewport
                 }
-            , Cmd.none
-            )
-
-        GotDropElement idx domId element ->
-            ( case model of
-                NoDrag ->
-                    model
-
-                Drag { dragIdx, xyDelta, dragElementOffset } ->
-                    DragOver
-                        { dragIdx = dragIdx
-                        , xyDelta = xyDelta
-                        , dragElementOffset = dragElementOffset
-                        , dropIdx = idx
-                        }
-
-                DragOver state ->
-                    DragOver
-                        { state
-                            | dropIdx = idx
-                        }
             , Cmd.none
             )
 
