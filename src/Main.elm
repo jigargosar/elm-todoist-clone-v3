@@ -158,24 +158,32 @@ update message model =
                     (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
 
         DrawerPanelDragChange panel info ->
+            let
+                rotate =
+                    Drag.rotateFromInfo info
+            in
             case panel of
                 Drawer.Projects ->
                     let
                         projectList =
                             ProjectCollection.sorted model.projectCollection
-
-                        newProjectList =
-                            Drag.rotateFromInfo info projectList
                     in
                     ( { model
                         | projectCollection =
-                            ProjectCollection.updateSortOrder newProjectList model.projectCollection
+                            ProjectCollection.updateSortOrder (rotate projectList) model.projectCollection
                       }
                     , Cmd.none
                     )
 
-                _ ->
-                    ( model, Cmd.none )
+                Drawer.Labels ->
+                    ( { model | labelList = rotate model.labelList }
+                    , Cmd.none
+                    )
+
+                Drawer.Filters ->
+                    ( { model | filterList = rotate model.filterList }
+                    , Cmd.none
+                    )
 
 
 
