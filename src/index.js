@@ -1,4 +1,5 @@
 import ports from './ports'
+import { times } from 'ramda'
 
 const nanoid = require('nanoid')
 const Module = require('./Main.elm')
@@ -17,7 +18,7 @@ const mockTodoList = [
   modifiedAt: Date.now(),
   isCompleted: Math.random() > 0.3,
   idx,
-  maybeProjectId : null
+  maybeProjectId: null,
 }))
 
 const mockProjectList = [
@@ -34,18 +35,21 @@ const mockProjectList = [
   idx,
 }))
 
-const mockLabelList = [
-  'to-read',
-  'medical',
-  'quick-ref',
-].map((title, idx) => ({
-  id: `LabelId-${nanoid()}`,
-  title,
-  createdAt: Date.now(),
-  modifiedAt: Date.now(),
-  hue: Math.round(Math.random() * 360),
-  idx,
-}))
+function getRandomListItem(list) {
+  const randomIdx = Math.floor(Math.random() * list.length)
+  return list[randomIdx]
+}
+
+const mockLabelList = ['to-read', 'medical', 'quick-ref'].map(
+  (title, idx) => ({
+    id: `LabelId-${nanoid()}`,
+    title,
+    createdAt: Date.now(),
+    modifiedAt: Date.now(),
+    hue: Math.round(Math.random() * 360),
+    idx,
+  }),
+)
 
 const mockFilterList = [
   'Assigned to me',
@@ -64,9 +68,22 @@ const mockFilterList = [
   idx,
 }))
 
+function moveRandomTodoToRandomProject() {
+  const randomTodo = getRandomListItem(mockTodoList)
+  const randomProject = getRandomListItem(mockProjectList)
+  randomTodo.maybeProjectId = randomProject.id
+}
+
+times(moveRandomTodoToRandomProject, 4)
+
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
-  flags: { todoList: mockTodoList, projectList: mockProjectList, labelList : mockLabelList, filterList: mockFilterList },
+  flags: {
+    todoList: mockTodoList,
+    projectList: mockProjectList,
+    labelList: mockLabelList,
+    filterList: mockFilterList,
+  },
 })
 
 const pubs = ports(
