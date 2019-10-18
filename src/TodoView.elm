@@ -67,19 +67,19 @@ viewTitle todo =
 viewProject : ProjectCollection -> Todo -> Html msg
 viewProject pc todo =
     let
-        tp =
+        todoProject =
             TodoProject.fromTodo pc todo
     in
     div
         [ css
             [ ph 1
             , Css.fontSize Css.small
-            , bg (toCssColor tp.color)
-            , c_ (toCssColor <| Color.highContrast tp.color)
+            , bg (toCssColor todoProject.color)
+            , c_ (toCssColor <| Color.highContrast todoProject.color)
             , bor 2
             ]
         ]
-        [ text tp.title ]
+        [ text todoProject.title ]
 
 
 viewLabels lc todo =
