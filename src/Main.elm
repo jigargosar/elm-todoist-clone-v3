@@ -156,7 +156,19 @@ update message model =
         DrawerPanelDragChange panel info ->
             case panel of
                 Drawer.Projects ->
-                    ( model, Cmd.none )
+                    let
+                        projectList =
+                            ProjectCollection.sorted model.projectCollection
+
+                        newProjectList =
+                            Drag.rotateFromInfo info projectList
+                    in
+                    ( { model
+                        | projectCollection =
+                            ProjectCollection.updateSortOrder newProjectList model.projectCollection
+                      }
+                    , Cmd.none
+                    )
 
                 _ ->
                     ( model, Cmd.none )

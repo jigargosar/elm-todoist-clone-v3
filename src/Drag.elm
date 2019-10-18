@@ -10,6 +10,7 @@ module Drag exposing
     , info
     , initial
     , rotate
+    , rotateFromInfo
     , subscriptions
     , system
     , update
