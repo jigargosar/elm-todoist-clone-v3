@@ -1,5 +1,6 @@
-module Project exposing (Project, decoder, hue, id, idx, setIdx, title)
+module Project exposing (Project, cssColor, decoder, hue, id, idx, setIdx, title)
 
+import Css
 import Json.Decode as JD exposing (Decoder)
 import ProjectId exposing (ProjectId)
 import Timestamp exposing (Timestamp)
@@ -48,6 +49,11 @@ title =
 hue : Project -> Int
 hue =
     unwrap >> .hue
+
+
+cssColor : Project -> Css.Color
+cssColor project =
+    Css.hsl (toFloat (hue project)) 0.7 0.5
 
 
 unwrap (Project t) =

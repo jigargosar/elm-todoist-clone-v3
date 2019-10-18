@@ -1,4 +1,4 @@
-module ProjectCollection exposing (ProjectCollection, fromEncodedList, initial, sorted, updateSortOrder)
+module ProjectCollection exposing (ProjectCollection, byId, fromEncodedList, initial, sorted, updateSortOrder)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
@@ -46,6 +46,11 @@ toList =
 
 unwrap (ProjectCollection internal) =
     internal
+
+
+byId : ProjectId -> ProjectCollection -> Maybe Project
+byId id =
+    unwrap >> dict.get id
 
 
 

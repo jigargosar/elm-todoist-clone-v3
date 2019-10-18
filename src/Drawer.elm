@@ -272,7 +272,7 @@ projectToNavItem : Project -> NavItemViewModel
 projectToNavItem project =
     { id = ProjectId.toString (Project.id project)
     , title = Project.title project
-    , iconColor = Css.hsl (Project.hue project |> toFloat) 0.7 0.5
+    , iconColor = Project.cssColor project
     , icon = "folder"
     }
 
