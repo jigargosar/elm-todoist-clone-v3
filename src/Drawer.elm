@@ -148,8 +148,26 @@ view config projectList expansionPanels panelsDragState =
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
+
+        labelsCP =
+            viewPanel (config.onToggleExpansionPanel Labels)
+                "Labels"
+                expansionPanels.labelsExpanded
+                config.toLabelsDragMsg
+                panelsDragState.labelsDrag
+                labelToNavItem
+                panelLists.labelList
+
+        filtersCP =
+            viewPanel (config.onToggleExpansionPanel Filters)
+                "Filters"
+                expansionPanels.filtersExpanded
+                config.toFiltersDragMsg
+                panelsDragState.filtersDrag
+                filterToNavItem
+                panelLists.filterList
     in
-    [ prefixCP, projectsCP ]
+    [ prefixCP, projectsCP, labelsCP, filtersCP ]
         |> mergeContentPortal
 
 
