@@ -133,7 +133,14 @@ view config projectList expansionPanels panelsDragState =
         panelLists =
             { projectList = projectList, labelList = labelList, filterList = filterList }
 
-        foo =
+        prefixCP =
+            onlyContent
+                [ navTitleIconItem "Inbox" "inbox"
+                , navTitleIconItem "Today" "calendar_today"
+                , navTitleIconItem "Next 7 Days" "view_week"
+                ]
+
+        projectsCP =
             viewPanel (config.onToggleExpansionPanel Projects)
                 "Projects"
                 expansionPanels.projectsExpanded
@@ -141,15 +148,9 @@ view config projectList expansionPanels panelsDragState =
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
-
-        prefix =
-            onlyContent
-                [ navTitleIconItem "Inbox" "inbox"
-                , navTitleIconItem "Today" "calendar_today"
-                , navTitleIconItem "Next 7 Days" "view_week"
-                ]
     in
-    prefix
+    [ prefixCP, projectsCP ]
+        |> mergeContentPortal
 
 
 viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
