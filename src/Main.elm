@@ -217,18 +217,12 @@ drawerView model =
         drawerConfig =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
             , panelToDragMsg = UpdateDrawerPanelsDragState
-            , projectsDragSystem = projectsDragSystem
-            , labelsDragSystem = labelsDragSystem
-            , filtersDragSystem = filterDragSystem
             }
     in
     Drawer.view drawerConfig
         (ProjectCollection.sorted model.projectCollection)
         model.drawerExpansionPanels
-        { projectsDrag = model.projectsDrag
-        , filtersDrag = model.filtersDrag
-        , labelsDrag = model.labelsDrag
-        }
+        model.drawerPanelsDragState
 
 
 mainView : TodoDict -> List (Html Msg)
