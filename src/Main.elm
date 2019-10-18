@@ -371,7 +371,11 @@ mainView2 model =
                         >> ProjectId.toString
                         >> (++) "project-dnd-item"
             in
-            div (A.id domId :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag)
+            div
+                (A.id domId
+                    :: Drag.dragEvents Drag ( Drawer.Projects, idx ) domId model.drag
+                    ++ Drag.dropEvents Drag ( Drawer.Projects, idx ) model.drag
+                )
                 [ text <| Project.title project ]
         )
         projectList
