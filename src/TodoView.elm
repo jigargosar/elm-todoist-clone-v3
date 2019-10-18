@@ -93,7 +93,7 @@ viewLabelId label =
             , Css.fontSize Css.small
 
             --                , bg (toCssColor tp.color)
-            , c_ (toCssColor <| fromHue (Label.hue label))
+            , c_ (fromHue (Label.hue label) |> Color.blacken 10 |> toCssColor)
 
             --                , bor 2
             ]
@@ -102,4 +102,4 @@ viewLabelId label =
 
 
 fromHue h =
-    Color.fromHSL ( toFloat h, 70, 50 )
+    Color.fromHSL ( toFloat h, 70, 30 )
