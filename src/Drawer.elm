@@ -210,6 +210,7 @@ viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
                         viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
                 in
                 list
+                    |> Drag.rotate drag
                     |> List.map toNavItem
                     |> List.indexedMap viewDnDNavItem
             )
