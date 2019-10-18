@@ -4,6 +4,8 @@ import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Json.Decode as JD exposing (Decoder)
+import LabelId exposing (LabelId)
+import ProjectId exposing (ProjectId)
 import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)
 
@@ -23,6 +25,7 @@ type alias Internal =
     , title : String
     , isCompleted : Bool
     , idx : Int
+    , maybeProjectId : Maybe ProjectId
     }
 
 
@@ -40,6 +43,7 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
+        |> andMap (JD.oneOf [ JD.field "maybeProjectId" (JD.nullable ProjectId.decoder), JD.succeed Nothing ])
         |> JD.map Todo
 
 
