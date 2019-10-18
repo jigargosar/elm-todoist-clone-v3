@@ -1,13 +1,9 @@
-module TodoView exposing (..)
+module TodoView exposing (Config, viewList)
 
 import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Json.Decode as JD exposing (Decoder)
-import LabelId exposing (LabelId)
 import ProjectCollection exposing (ProjectCollection)
-import ProjectId exposing (ProjectId)
-import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 import TodoProject
@@ -15,6 +11,15 @@ import TodoProject
 
 type alias Config msg =
     { toggle : TodoId -> msg }
+
+
+viewList : Config msg -> ProjectCollection -> List Todo -> Html msg
+viewList config pc =
+    listContainer << List.map (viewListItem config pc)
+
+
+listContainer =
+    ol [ class "list pl0 ma0" ]
 
 
 viewListItem : Config msg -> ProjectCollection -> Todo -> Html msg
