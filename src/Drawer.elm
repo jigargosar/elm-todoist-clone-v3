@@ -9,7 +9,6 @@ module Drawer exposing
     , filterList
     , initialExpansionPanels
     , initialPanelsDragState
-    , labelList
     , panelDragSubscriptions
     , toggleExpansionPanel
     , updatePanelDrag
@@ -21,6 +20,8 @@ import Drag exposing (Drag)
 import ExpansionPanelUI
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
+import Label exposing (Label)
+import LabelId
 import Project exposing (Project)
 import ProjectId
 import Styles exposing (..)
@@ -49,14 +50,6 @@ toggleExpansionPanel panel model =
 
         Filters ->
             { model | filtersExpanded = not model.filtersExpanded }
-
-
-labelList : List LabelView
-labelList =
-    [ LabelView "to read" 333
-    , LabelView "medical" 93990
-    , LabelView "quick-ref" 444
-    ]
 
 
 filterList : List FilterView
@@ -94,7 +87,7 @@ type alias Config msg =
 
 type alias PanelLists =
     { projectList : List Project
-    , labelList : List LabelView
+    , labelList : List Label
     , filterList : List FilterView
     }
 
@@ -284,11 +277,11 @@ projectToNavItem project =
     }
 
 
-labelToNavItem : LabelView -> NavItemViewModel
-labelToNavItem { title, hue } =
-    { id = title
-    , title = title
-    , iconColor = Css.hsl hue 0.7 0.5
+labelToNavItem : Label -> NavItemViewModel
+labelToNavItem label =
+    { id = LabelId.toString (Label.id label)
+    , title = Label.title label
+    , iconColor = Css.hsl (Label.hue label |> toFloat) 0.7 0.5
     , icon = "label"
     }
 

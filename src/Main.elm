@@ -39,7 +39,6 @@ type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
-    , labelList : List LabelView
     , filterList : List FilterView
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
@@ -55,7 +54,6 @@ init flags =
             { todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , labelCollection = LabelCollection.initial
-            , labelList = Drawer.labelList
             , filterList = Drawer.filterList
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
@@ -199,7 +197,14 @@ update message model =
                     )
 
                 Drawer.Labels ->
-                    ( { model | labelList = rotate model.labelList }
+                    let
+                        labelList =
+                            LabelCollection.sorted model.labelCollection
+                    in
+                    ( { model
+                        | labelCollection =
+                            LabelCollection.updateSortOrder (rotate labelList) model.labelCollection
+                      }
                     , Cmd.none
                     )
 
@@ -235,7 +240,7 @@ drawerView model =
     in
     Drawer.view drawerConfig
         { projectList = ProjectCollection.sorted model.projectCollection
-        , labelList = model.labelList
+        , labelList = LabelCollection.sorted model.labelCollection
         , filterList = model.filterList
         }
         model.drawerExpansionPanels
