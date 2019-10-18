@@ -153,10 +153,10 @@ viewPanel :
     msg
     -> String
     -> Bool
-    -> Drag.System f msg
+    -> Drag.System a msg
     -> Drag
-    -> (f -> NavItemViewModel)
-    -> List f
+    -> (a -> NavItemViewModel)
+    -> List a
     -> { content : List (Html msg), portal : List (Html msg) }
 viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
     let
