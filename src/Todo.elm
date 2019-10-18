@@ -108,7 +108,7 @@ listContainer =
 
 viewListItem : Config msg -> Todo -> Html msg
 viewListItem config todo =
-    li [ viewIsCompleted config todo, viewTitle todo ]
+    li [ viewIsCompleted config todo, viewTitle todo, viewProjectId todo ]
 
 
 li : List (Html msg) -> Html msg
@@ -135,3 +135,17 @@ viewIsCompleted config todo =
 viewTitle : Todo -> Html msg
 viewTitle todo =
     div [ class "pa2 flex-grow-1" ] [ text <| title todo ]
+
+
+viewProjectId : Todo -> Html msg
+viewProjectId (Todo model) =
+    let
+        pid =
+            case model.maybeProjectId of
+                Nothing ->
+                    "Inbox"
+
+                Just projectId ->
+                    ProjectId.toString projectId
+    in
+    div [ class "pa2 flex-grow-1" ] [ text pid ]

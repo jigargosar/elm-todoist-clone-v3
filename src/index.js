@@ -74,7 +74,7 @@ function moveRandomTodoToRandomProject() {
   randomTodo.maybeProjectId = randomProject.id
 }
 
-times(moveRandomTodoToRandomProject, 4)
+times(moveRandomTodoToRandomProject, 3)
 
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
