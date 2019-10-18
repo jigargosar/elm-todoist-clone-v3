@@ -2,9 +2,7 @@ module Drag exposing
     ( Drag
     , Msg
     , dragEvents
-    , dragIdxInfo
     , dropEvents
-    , dropIdxEq
     , ghostStyles
     , initial
     , subscriptions
@@ -29,12 +27,12 @@ type Drag
     | Drag
         { dragIdx : Int
         , xyDelta : XYDelta
-        , dragElement : Dom.Element
+        , dragElementOffset : XY
         }
     | DragOver
         { dragIdx : Int
         , xyDelta : XYDelta
-        , dragElement : Dom.Element
+        , dragElementOffset : XY
         , dropIdx : Int
         }
 
@@ -49,29 +47,11 @@ dragElementAndXY drag =
         NoDrag ->
             Nothing
 
-        Drag { xyDelta, dragElement } ->
-            Just { xyDelta = xyDelta, dragElement = dragElement }
+        Drag { xyDelta, dragElementOffset } ->
+            Just { xyDelta = xyDelta, dragElementOffset = dragElementOffset }
 
-        DragOver { xyDelta, dragElement } ->
-            Just { xyDelta = xyDelta, dragElement = dragElement }
-
-
-dropIdxEq : Int -> Drag -> Bool
-dropIdxEq idx =
-    dragIdxInfo >> Maybe.map (.dragIdx >> (==) idx) >> Maybe.withDefault False
-
-
-dragIdxInfo : Drag -> Maybe { dragIdx : Int, dropIdx : Int }
-dragIdxInfo model =
-    case model of
-        NoDrag ->
-            Nothing
-
-        Drag { dragIdx } ->
-            Just { dragIdx = dragIdx, dropIdx = dragIdx }
-
-        DragOver { dragIdx, dropIdx } ->
-            Just { dragIdx = dragIdx, dropIdx = dropIdx }
+        DragOver { xyDelta, dragElementOffset } ->
+            Just { xyDelta = xyDelta, dragElementOffset = dragElementOffset }
 
 
 type Msg
@@ -200,11 +180,11 @@ updateHelp message model =
                 NoDrag ->
                     model
 
-                Drag { dragIdx, xyDelta, dragElement } ->
+                Drag { dragIdx, xyDelta, dragElementOffset } ->
                     DragOver
                         { dragIdx = dragIdx
                         , xyDelta = xyDelta
-                        , dragElement = dragElement
+                        , dragElementOffset = dragElementOffset
                         , dropIdx = idx
                         }
 
@@ -220,7 +200,7 @@ updateHelp message model =
             ( Drag
                 { dragIdx = dragIdx
                 , xyDelta = XYDelta.init xy
-                , dragElement = element
+                , dragElementOffset = XY.subtract element.element element.viewport
                 }
             , Cmd.none
             )
@@ -230,11 +210,11 @@ updateHelp message model =
                 NoDrag ->
                     model
 
-                Drag { dragIdx, xyDelta, dragElement } ->
+                Drag { dragIdx, xyDelta, dragElementOffset } ->
                     DragOver
                         { dragIdx = dragIdx
                         , xyDelta = xyDelta
-                        , dragElement = dragElement
+                        , dragElementOffset = dragElementOffset
                         , dropIdx = idx
                         }
 
@@ -254,11 +234,11 @@ ghostStyles : Drag -> Css.Style
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
-            (\{ dragElement, xyDelta } ->
+            (\{ dragElementOffset, xyDelta } ->
                 let
                     { x, y } =
                         XY.add (XYDelta.diff xyDelta)
-                            (XY.subtract dragElement.element dragElement.viewport)
+                            dragElementOffset
                 in
                 [ Styles.absolute
                 , Styles.top_0
