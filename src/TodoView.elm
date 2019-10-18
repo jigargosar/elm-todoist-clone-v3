@@ -91,11 +91,7 @@ viewLabelId label =
         [ css
             [ ph 1
             , Css.fontSize Css.small
-
-            --                , bg (toCssColor tp.color)
             , c_ (fromHue (Label.hue label) |> Color.blacken 10 |> toCssColor)
-
-            --                , bor 2
             ]
         ]
         [ text <| Label.title label ]
