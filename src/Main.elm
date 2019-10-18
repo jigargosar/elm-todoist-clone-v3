@@ -66,6 +66,17 @@ type alias PanelItemDnD =
     }
 
 
+type alias ListDrag =
+    Drag Int Int
+
+
+type alias PanelsDragState =
+    { projects : ListDrag
+    , labels : ListDrag
+    , filters : ListDrag
+    }
+
+
 type alias Model =
     { todoDict : TodoDict
     , projectCollection : ProjectCollection
@@ -73,6 +84,7 @@ type alias Model =
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerDnD : Maybe PanelItemDnD
     , drag : Drag ( Drawer.Panel, Int ) ( Drawer.Panel, Int )
+    , panelsDragState : PanelsDragState
     }
 
 
@@ -87,6 +99,7 @@ init flags =
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerDnD = Nothing
             , drag = Drag.initial
+            , panelsDragState = { projects = Drag.initial, labels = Drag.initial, filters = Drag.initial }
             }
     in
     Return.singleton initial
