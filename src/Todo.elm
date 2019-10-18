@@ -47,7 +47,7 @@ decoder =
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
         |> andMap (JD.field "maybeProjectId" (JD.maybe ProjectId.decoder))
-        |> andMap (JD.field "labelIdList" (JD.list LabelId.decoder))
+        |> andMap (JD.field "labelIdList" LabelId.uniqueListDecoder)
         |> JD.map Todo
 
 

@@ -1,6 +1,7 @@
-module LabelId exposing (LabelId, decoder, toString)
+module LabelId exposing (LabelId, decoder, toString, unique, uniqueListDecoder)
 
 import Json.Decode as JD exposing (Decoder)
+import Set
 
 
 type LabelId
@@ -29,3 +30,13 @@ fromStringDecoder str =
 decoder : Decoder LabelId
 decoder =
     JD.andThen fromStringDecoder JD.string
+
+
+unique : List LabelId -> List LabelId
+unique =
+    List.map unwrap >> Set.fromList >> Set.toList >> List.map LabelId
+
+
+uniqueListDecoder : Decoder (List LabelId)
+uniqueListDecoder =
+    JD.list decoder |> JD.map unique
