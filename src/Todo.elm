@@ -148,4 +148,4 @@ viewProjectId (Todo model) =
                 Just projectId ->
                     ProjectId.toString projectId
     in
-    div [ class "pa2 flex-grow-1" ] [ text pid ]
+    div [ class "pa2" ] [ text pid ]
