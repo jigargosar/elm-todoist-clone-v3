@@ -1,4 +1,10 @@
-module TodoProject exposing (..)
+module TodoProject exposing
+    ( TodoProject
+    , fromMaybeProjectId
+    , fromProject
+    , fromTodo
+    , inbox
+    )
 
 import Basics.More exposing (flip)
 import Css
