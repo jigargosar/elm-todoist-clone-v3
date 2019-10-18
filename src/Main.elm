@@ -203,7 +203,7 @@ drawerView model =
             }
     in
     Drawer.view drawerConfig
-        (ProjectCollection.sorted model.projectCollection)
+        { projectList = ProjectCollection.sorted model.projectCollection, labelList = model.labelList, filterList = model.filterList }
         model.drawerExpansionPanels
         model.drawerPanelDrag
 

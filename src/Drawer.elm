@@ -151,15 +151,12 @@ panelDragSubscriptions toMsg model =
 
 view :
     Config msg
-    -> List Project
+    -> PanelLists
     -> ExpansionPanels
     -> PanelsDragState
     -> ContentPortal msg
-view config projectList expansionPanels panelsDragState =
+view config panelLists expansionPanels panelsDragState =
     let
-        panelLists =
-            { projectList = projectList, labelList = labelList, filterList = filterList }
-
         prefixCP =
             onlyContent
                 [ navTitleIconItem "Inbox" "inbox"
