@@ -78,7 +78,7 @@ type Msg
     = GlobalMouseMove XY
     | GlobalMouseUp
     | MouseDownOnDraggable Int String XY
-    | MouseOverDroppable Int String
+    | MouseOverDroppable Int
     | GotDragElement Int XY Element
     | GotDropElement Int String Element
     | GotDomElementError Dom.Error
@@ -138,11 +138,11 @@ dragEvents tagger idx domId drag =
             []
 
 
-dropEvents : (Msg -> msg) -> Int -> String -> Drag -> List (H.Attribute msg)
-dropEvents tagger idx domId model =
+dropEvents : (Msg -> msg) -> Int -> Drag -> List (H.Attribute msg)
+dropEvents tagger idx model =
     let
         events =
-            [ E.onMouseOver (MouseOverDroppable idx domId |> tagger) ]
+            [ E.onMouseOver (MouseOverDroppable idx |> tagger) ]
     in
     case model of
         NoDrag ->
@@ -195,8 +195,26 @@ updateHelp message model =
             , getElement dragId (GotDragElement dragIdx xy)
             )
 
-        MouseOverDroppable idx domId ->
-            ( model, getElement domId (GotDropElement idx domId) )
+        MouseOverDroppable idx ->
+            ( case model of
+                NoDrag ->
+                    model
+
+                Drag { dragIdx, xyDelta, dragElement } ->
+                    DragOver
+                        { dragIdx = dragIdx
+                        , xyDelta = xyDelta
+                        , dragElement = dragElement
+                        , dropIdx = idx
+                        }
+
+                DragOver state ->
+                    DragOver
+                        { state
+                            | dropIdx = idx
+                        }
+            , Cmd.none
+            )
 
         GotDragElement dragIdx xy element ->
             ( Drag
