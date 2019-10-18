@@ -251,7 +251,7 @@ update message model =
             ( { model | drawerDnD = Nothing }, Cmd.none )
 
         Drag msg ->
-            Drag.update Drag msg model.drag
+            Drag.update Drag { canAccept = \( p1, _ ) ( p2, _ ) -> p1 == p2 } msg model.drag
                 |> Tuple.mapFirst (\drag -> { model | drag = drag })
 
 

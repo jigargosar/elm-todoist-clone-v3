@@ -138,17 +138,21 @@ pd =
     flip Tuple.pair False
 
 
-update : (Msg a b -> msg) -> Msg a b -> Drag a b -> ( Drag a b, Cmd msg )
-update toMsg message model =
+type alias Config a b =
+    { canAccept : a -> b -> Bool }
+
+
+update : (Msg a b -> msg) -> Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd msg )
+update toMsg config message model =
     let
         ( newModel, cmd ) =
-            updateHelp message model
+            updateHelp config message model
     in
     ( newModel, cmd |> Cmd.map toMsg )
 
 
-updateHelp : Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
-updateHelp message model =
+updateHelp : Config a b -> Msg a b -> Drag a b -> ( Drag a b, Cmd (Msg a b) )
+updateHelp config message model =
     let
         getElement domId onSuccess =
             Dom.getElement domId
@@ -180,15 +184,23 @@ updateHelp message model =
                     model
 
                 Drag { drag, mouseMoveDelta, dragElementOffset } ->
-                    DragOver
-                        { drag = drag
-                        , mouseMoveDelta = mouseMoveDelta
-                        , dragElementOffset = dragElementOffset
-                        , dragOver = b
-                        }
+                    if config.canAccept drag b then
+                        DragOver
+                            { drag = drag
+                            , mouseMoveDelta = mouseMoveDelta
+                            , dragElementOffset = dragElementOffset
+                            , dragOver = b
+                            }
+
+                    else
+                        model
 
                 DragOver state ->
-                    DragOver { state | dragOver = b }
+                    if config.canAccept state.drag b then
+                        DragOver { state | dragOver = b }
+
+                    else
+                        model
             , Cmd.none
             )
 
