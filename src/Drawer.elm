@@ -133,7 +133,7 @@ view config projectList expansionPanels panelsDragState =
         panelLists =
             { projectList = projectList, labelList = labelList, filterList = filterList }
 
-        _ =
+        foo =
             viewPanel (config.onToggleExpansionPanel Projects)
                 "Projects"
                 expansionPanels.projectsExpanded
@@ -146,34 +146,50 @@ view config projectList expansionPanels panelsDragState =
 
 
 viewPanel togglePanel title isExpanded dragMsgTagger drag toNavItem list =
-    ExpansionPanelUI.view togglePanel
-        title
-        (\_ ->
-            let
-                viewDnDNavItem idx navItem =
-                    let
-                        domId =
-                            String.toLower title ++ "-panel-drag-item__" ++ navItem.id
+    let
+        ghostItem =
+            Drag.ghostStyles drag
+                |> Maybe.andThen
+                    (\( idx, styles ) ->
+                        List.drop idx list |> List.head |> Maybe.map (toNavItem >> Tuple.pair styles)
+                    )
+                |> Maybe.map
+                    (\( styles, navItem ) ->
+                        viewNavItem [] [ styles ] navItem
+                    )
+                |> Maybe.withDefault (text "")
+    in
+    { content =
+        ExpansionPanelUI.view togglePanel
+            title
+            (\_ ->
+                let
+                    viewDnDNavItem idx navItem =
+                        let
+                            domId =
+                                String.toLower title ++ "-panel-drag-item__" ++ navItem.id
 
-                        dragEvents =
-                            Drag.dragEvents dragMsgTagger idx domId drag
+                            dragEvents =
+                                Drag.dragEvents dragMsgTagger idx domId drag
 
-                        dropEvents =
-                            Drag.dropEvents dragMsgTagger idx drag
+                            dropEvents =
+                                Drag.dropEvents dragMsgTagger idx drag
 
-                        dragOverStyles =
-                            Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+                            dragOverStyles =
+                                Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
-                        styles =
-                            [ Styles.noSelection, dragOverStyles ]
-                    in
-                    viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
-            in
-            list
-                |> List.map toNavItem
-                |> List.indexedMap viewDnDNavItem
-        )
-        isExpanded
+                            styles =
+                                [ Styles.noSelection, dragOverStyles ]
+                        in
+                        viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
+                in
+                list
+                    |> List.map toNavItem
+                    |> List.indexedMap viewDnDNavItem
+            )
+            isExpanded
+    , portal = [ ghostItem ]
+    }
 
 
 onlyContent content =
