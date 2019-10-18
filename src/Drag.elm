@@ -2,6 +2,7 @@ module Drag exposing
     ( Drag
     , Info
     , Msg
+    , System
     , dragEvents
     , dropEvents
     , eqDragOverIdx
@@ -10,6 +11,7 @@ module Drag exposing
     , initial
     , rotate
     , subscriptions
+    , system
     , update
     )
 
