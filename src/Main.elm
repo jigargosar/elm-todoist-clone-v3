@@ -84,7 +84,9 @@ type alias Model =
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerDnD : Maybe PanelItemDnD
     , drag : Drag ( Drawer.Panel, Int ) ( Drawer.Panel, Int )
-    , panelsDragState : PanelsDragState
+    , projectsDrag : ListDrag
+    , labelsDrag : ListDrag
+    , filtersDrag : ListDrag
     }
 
 
@@ -99,7 +101,9 @@ init flags =
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerDnD = Nothing
             , drag = Drag.initial
-            , panelsDragState = { projects = Drag.initial, labels = Drag.initial, filters = Drag.initial }
+            , projectsDrag = Drag.initial
+            , labelsDrag = Drag.initial
+            , filtersDrag = Drag.initial
             }
     in
     Return.singleton initial
@@ -186,6 +190,7 @@ type Msg
     | BrowserMouseMove XY
     | BrowserMouseUp
     | Drag (Drag.Msg ( Drawer.Panel, Int ) ( Drawer.Panel, Int ))
+    | PanelDragList Drawer.Panel (Drag.Msg Int Int)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -267,6 +272,24 @@ update message model =
         Drag msg ->
             Drag.update Drag { canAccept = \( p1, _ ) ( p2, _ ) -> p1 == p2 } msg model.drag
                 |> Tuple.mapFirst (\drag -> { model | drag = drag })
+
+        PanelDragList panel msg ->
+            let
+                updateHelp =
+                    Drag.update (PanelDragList panel) { canAccept = \_ _ -> True } msg
+            in
+            case panel of
+                Drawer.Projects ->
+                    updateHelp model.projectsDrag
+                        |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
+
+                Drawer.Labels ->
+                    updateHelp model.labelsDrag
+                        |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
+
+                Drawer.Filters ->
+                    updateHelp model.filtersDrag
+                        |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
 
 
 
