@@ -82,6 +82,7 @@ init flags url navKey =
                 [ initTodoDict flags.todoList
                 , initProjectCollection flags.projectList
                 , initLabelCollection flags.labelList
+                , onUrlChange url
                 ]
             )
 
