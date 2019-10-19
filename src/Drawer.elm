@@ -62,7 +62,7 @@ filterList =
     , FilterView "Priority 2" 932323
     , FilterView "Priority 3" 932323
     , FilterView "View all" 932325
-    , FilterView "No due date" 9355
+    , FilterView "No due date" 93555
     ]
 
 
