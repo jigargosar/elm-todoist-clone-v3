@@ -68,11 +68,11 @@ html {
 }
 
 
-.hover_parent .parent_hovered{
+.hover_parent .show_on_parent_hover{
   visibility: hidden;
 }
 
-.hover_parent:hover .parent_hovered{
+.hover_parent:hover .show_on_parent_hover{
   visibility: visible;
 }
 
