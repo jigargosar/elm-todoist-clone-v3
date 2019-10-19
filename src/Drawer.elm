@@ -360,7 +360,7 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
             ]
             [ text title ]
         , i
-            [ css [ mr 3 ]
+            [ css [ pv 2, ph 1, mr 3 ]
             , class "show_on_parent_hover"
             , class "material-icons"
             ]
