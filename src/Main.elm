@@ -56,12 +56,16 @@ type Page
     | NotFound Url
 
 
+pageFromUrl url =
+    Route.fromUrl url |> Maybe.map Route |> Maybe.withDefault (NotFound url)
+
+
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
     let
         initial : Model
         initial =
-            { page = Route.fromUrl url |> Maybe.map Route |> Maybe.withDefault (NotFound url)
+            { page = pageFromUrl url
             , navKey = navKey
             , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
@@ -245,7 +249,15 @@ update message model =
 
 onUrlChange : Url -> Model -> ( Model, Cmd Msg )
 onUrlChange url model =
-    ( model, Cmd.none )
+    let
+        page =
+            pageFromUrl url
+    in
+    if page /= model.page then
+        ( { model | page = page }, Cmd.none )
+
+    else
+        ( model, Cmd.none )
 
 
 
