@@ -333,7 +333,7 @@ viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } ic drag idx item =
             StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
 
         iconSA =
-            StyleAttrs [ Css.cursor Css.move ] dragEvents
+            StyleAttrs [ Css.cursor Css.move, ic.iconStyle item ] dragEvents
 
         iconName =
             ic.iconName
