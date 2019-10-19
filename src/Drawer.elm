@@ -304,6 +304,18 @@ type alias PanelNavItemViewConfig id item =
     }
 
 
+projectNavItemViewConfig : PanelNavItemViewConfig ProjectId Project
+projectNavItemViewConfig =
+    { id = Project.id
+    , idToString = ProjectId.toString
+    , panelItemId = ProjectItemId
+    , title = Project.title
+    , route = Project.id >> Route.Project
+    , iconName = "folder"
+    , iconStyle = c_ << Project.cssColor
+    }
+
+
 type alias PanelConfig item msg =
     { domIdPrefix : String
     , dragSystem : Drag.System item msg
