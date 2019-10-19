@@ -21,6 +21,7 @@ import Drag exposing (Drag)
 import ExpansionPanelUI
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
+import Html.Styled.Events exposing (onClick)
 import Label exposing (Label)
 import LabelId exposing (LabelId)
 import Project exposing (Project)
@@ -357,7 +358,7 @@ navTitleIconItem href title iconName =
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg
-viewNavItem rootSA { title, iconName, iconSA, href, panelItemId } =
+viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTriggerClicked } =
     div
         (SA.toAttrsWithBase
             [ ph 1
@@ -391,12 +392,13 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId } =
             , href
             ]
             [ text title ]
-        , case panelItemId of
-            Just _ ->
+        , case onMoreMenuTriggerClicked of
+            Just msg ->
                 i
                     [ css [ pv 2, ph 1 ]
                     , class "show_on_parent_hover"
                     , class "material-icons"
+                    , onClick msg
                     ]
                     [ text "more_horiz" ]
 
