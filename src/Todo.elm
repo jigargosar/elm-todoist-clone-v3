@@ -47,9 +47,14 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
-        |> andMap (JD.field "maybeProjectId" (JD.oneOf [ JD.null Nothing, JD.map Just ProjectId.decoder ]))
+        |> andMap (JD.field "maybeProjectId" maybeProjectIdDecoder)
         |> andMap (JD.field "labelIdList" LabelId.uniqueListDecoder)
         |> JD.map Todo
+
+
+maybeProjectIdDecoder : Decoder (Maybe ProjectId)
+maybeProjectIdDecoder =
+    JD.oneOf [ JD.null Nothing, JD.map Just ProjectId.decoder ]
 
 
 title : Todo -> String
