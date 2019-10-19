@@ -153,9 +153,9 @@ view config panelLists expansionPanels panelsDragState =
     let
         prefixCP =
             onlyContent
-                [ navTitleIconItem "Inbox" "inbox"
-                , navTitleIconItem "Today" "calendar_today"
-                , navTitleIconItem "Next 7 Days" "view_week"
+                [ navTitleIconItem (Route.href Route.Inbox) "Inbox" "inbox"
+                , navTitleIconItem (Route.href Route.Inbox) "Today" "calendar_today"
+                , navTitleIconItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
         projectsCP =
@@ -304,21 +304,21 @@ filterToNavItem { title, hue } =
     }
 
 
-navTitleIconItem title icon =
-    viewItem [] [] title Css.inherit icon
+navTitleIconItem href title icon =
+    viewItem [] [] href title Css.inherit icon
 
 
 viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel msg -> Html msg
-viewNavItem attrs styles { title, iconColor, icon } =
-    viewItem attrs styles title iconColor icon
+viewNavItem attrs styles { title, iconColor, icon, href } =
+    viewItem attrs styles href title iconColor icon
 
 
 type alias ColorCompatible x =
     { x | value : String, color : Css.Compatible }
 
 
-viewItem : List (Attribute msg) -> List Css.Style -> String -> ColorCompatible x -> String -> Html msg
-viewItem attributes styles title iconColor iconName =
+viewItem : List (Attribute msg) -> List Css.Style -> Attribute msg -> String -> ColorCompatible x -> String -> Html msg
+viewItem attributes styles href title iconColor iconName =
     div
         (css
             [ ph 1
@@ -336,6 +336,7 @@ viewItem attributes styles title iconColor iconName =
             [ text iconName ]
         , a
             [ css [ pv 2, ph 1, flex, flexGrow1, itemsCenter, mr 3 ]
+            , href
             ]
             [ text title ]
         ]
