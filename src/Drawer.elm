@@ -304,13 +304,13 @@ filterToNavItem { title, hue } =
     }
 
 
-navTitleIconItem href title icon =
-    viewItem [] [] href title Css.inherit icon
+navTitleIconItem href title iconName =
+    viewItem [] [] href title (IconView iconName [ c_inherit ] [])
 
 
 viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel msg -> Html msg
 viewNavItem attrs styles { title, iconColor, icon, href } =
-    viewItem attrs styles href title iconColor icon
+    viewItem attrs styles href title (IconView icon [ c_ iconColor ] [])
 
 
 type alias ColorCompatible x =
@@ -320,12 +320,12 @@ type alias ColorCompatible x =
 type alias IconView msg =
     { name : String
     , styles : List Style
-    , attrs : List (Html msg)
+    , attrs : List (Attribute msg)
     }
 
 
-viewItem : List (Attribute msg) -> List Css.Style -> Attribute msg -> String -> ColorCompatible x -> String -> Html msg
-viewItem attributes styles href title iconColor iconName =
+viewItem : List (Attribute msg) -> List Css.Style -> Attribute msg -> String -> IconView msg -> Html msg
+viewItem attributes styles href title icon =
     div
         (css
             [ ph 1
@@ -338,10 +338,12 @@ viewItem attributes styles href title iconColor iconName =
             :: attributes
         )
         [ i
-            [ css [ pv 2, ph 1, flex, itemsCenter, c_ iconColor ]
-            , class "material-icons"
-            ]
-            [ text iconName ]
+            ([ css [ pv 2, ph 1, flex, itemsCenter, batch icon.styles ]
+             , class "material-icons"
+             ]
+                ++ icon.attrs
+            )
+            [ text icon.name ]
         , a
             [ css
                 [ Css.textDecoration Css.none
