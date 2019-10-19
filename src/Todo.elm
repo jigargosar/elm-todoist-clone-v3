@@ -1,14 +1,20 @@
-module Todo exposing (Todo, decoder, id, idx, isCompleted, labelIdList, mapCompleted, projectRef, title, toggle, viewList)
+module Todo exposing
+    ( Todo
+    , decoder
+    , id
+    , idx
+    , isCompleted
+    , labelIdList
+    , mapCompleted
+    , projectRef
+    , title
+    , toggle
+    )
 
-import Emoji
-import Html.Styled as Html exposing (..)
-import Html.Styled.Attributes exposing (..)
 import Json.Decode as JD exposing (Decoder)
-import Json.Encode as JE
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
-import Set
 import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)
 
@@ -28,7 +34,7 @@ type alias Internal =
     , title : String
     , isCompleted : Bool
     , idx : Int
-    , maybeProjectId : Maybe ProjectId
+    , maybeProjectId : ProjectRef
     , labelIdList : List LabelId
     }
 
@@ -47,7 +53,7 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
-        |> andMap (JD.field "maybeProjectId" maybeProjectIdDecoder)
+        |> andMap (JD.field "maybeProjectId" projectRefDecoder)
         |> andMap (JD.field "labelIdList" LabelId.uniqueListDecoder)
         |> JD.map Todo
 
@@ -86,19 +92,9 @@ idx =
     unwrap >> .idx
 
 
-maybeProjectId : Todo -> Maybe ProjectId
-maybeProjectId =
-    unwrap >> .maybeProjectId
-
-
 projectRef : Todo -> ProjectRef.ProjectRef
-projectRef todo =
-    case maybeProjectId todo of
-        Nothing ->
-            ProjectRef.inbox
-
-        Just projectId ->
-            ProjectRef.fromId projectId
+projectRef =
+    unwrap >> .maybeProjectId
 
 
 labelIdList : Todo -> List LabelId
@@ -127,61 +123,3 @@ toggle =
 
 
 -- VIEW
-
-
-type alias Config msg =
-    { toggle : TodoId -> msg }
-
-
-viewList : Config msg -> List Todo -> Html msg
-viewList config =
-    listContainer << List.map (viewListItem config)
-
-
-listContainer =
-    ol [ class "list pl0 ma0" ]
-
-
-viewListItem : Config msg -> Todo -> Html msg
-viewListItem config todo =
-    li [ viewIsCompleted config todo, viewTitle todo, viewProjectId todo ]
-
-
-li : List (Html msg) -> Html msg
-li =
-    Html.li [ class "flex items-center lh-copy ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
-
-
-viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
-viewIsCompleted config todo =
-    let
-        emoji =
-            if isCompleted todo then
-                Emoji.heavy_check_mark
-
-            else
-                Emoji.heavy_large_circle
-
-        toggleMsg =
-            config.toggle <| id todo
-    in
-    Emoji.button toggleMsg emoji
-
-
-viewTitle : Todo -> Html msg
-viewTitle todo =
-    div [ class "pa2 flex-grow-1" ] [ text <| title todo ]
-
-
-viewProjectId : Todo -> Html msg
-viewProjectId (Todo model) =
-    let
-        pid =
-            case model.maybeProjectId of
-                Nothing ->
-                    "Inbox"
-
-                Just projectId ->
-                    ProjectId.toString projectId
-    in
-    div [ class "pa2" ] [ text pid ]
