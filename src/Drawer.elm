@@ -293,14 +293,14 @@ type alias SimpleNavItemViewModel =
     }
 
 
-type alias PanelNavItemViewModel id item msg =
+type alias PanelNavItemViewModel id item =
     { id : item -> id
     , idToString : id -> String
     , panelItemId : PanelItemId
     , title : item -> String
     , route : item -> Route.Route
     , iconName : String
-    , iconSA : item -> StyleAttrs msg
+    , iconStyle : item -> Style
     }
 
 
