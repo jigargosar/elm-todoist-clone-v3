@@ -350,8 +350,7 @@ viewItem rootSA href title iconName iconSA =
         [ i
             (SA.toAttrsWithBase
                 [ pv 2, ph 1, flex, itemsCenter ]
-                [ class "material-icons"
-                ]
+                [ class "material-icons" ]
                 iconSA
             )
             [ text iconName ]
