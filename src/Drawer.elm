@@ -167,12 +167,19 @@ view config panelLists expansionPanels panelsDragState =
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             }
 
+        panelConfig2 panel =
+            { togglePanel = config.onToggleExpansionPanel panel
+            , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
+            , domIdPrefix = "panel-nav-item__"
+            , onMoreClicked = config.onPanelItemMoreMenuClicked
+            }
+
         projectsCP =
-            viewPanel (panelConfig Projects)
+            viewPanel2 (panelConfig2 Projects)
+                projectNavItemViewConfig
                 "Projects"
                 expansionPanels.projectsExpanded
                 panelsDragState.projectsDrag
-                (projectToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.projectList
 
         labelsCP =
@@ -270,6 +277,49 @@ viewPanel { togglePanel, dragSystem } title isExpanded drag toNavItem list =
     }
 
 
+viewPanel2 :
+    PanelConfig item msg
+    -> PanelNavItemViewConfig id item
+    -> String
+    -> Bool
+    -> Drag
+    -> List item
+    -> ContentPortal msg
+viewPanel2 pc ic title isExpanded drag list =
+    let
+        ghostItem =
+            {- pc.dragSystem.ghostStyles drag
+               |> Maybe.andThen
+                   (\( idx, styles ) ->
+                       List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
+                   )
+               |> Maybe.map
+                   (\( styles, navItem ) ->
+                       [ viewNavItem (StyleAttrs [ styles ] []) navItem
+                       , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                       ]
+                   )
+               |> Maybe.withDefault
+            -}
+            []
+    in
+    { content =
+        ExpansionPanelUI.view pc.togglePanel
+            title
+            (\_ ->
+                let
+                    _ =
+                        1
+                in
+                list
+                    |> pc.dragSystem.rotate drag
+                    |> List.indexedMap (viewPanelNavItem pc ic drag)
+            )
+            isExpanded
+    , portal = ghostItem
+    }
+
+
 onlyContent content =
     { content = content, portal = [] }
 
@@ -317,7 +367,8 @@ projectNavItemViewConfig =
 
 
 type alias PanelConfig item msg =
-    { domIdPrefix : String
+    { togglePanel : msg
+    , domIdPrefix : String
     , dragSystem : Drag.System item msg
     , onMoreClicked : PanelItemId -> msg
     }
