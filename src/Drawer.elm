@@ -335,7 +335,7 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
             , hover [ bgGrayL 0.9 ]
             , noSelection
             ]
-            []
+            [ class "hover_parent" ]
             rootSA
         )
         [ i
@@ -360,4 +360,5 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
             , href
             ]
             [ text title ]
+        , i [ class "show_on_parent_hover", class "material-icons" ] [ text "more_horiz" ]
         ]
