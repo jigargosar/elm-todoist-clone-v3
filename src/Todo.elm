@@ -58,11 +58,6 @@ decoder =
         |> JD.map Todo
 
 
-maybeProjectIdDecoder : Decoder (Maybe ProjectId)
-maybeProjectIdDecoder =
-    JD.oneOf [ JD.null Nothing, JD.map Just ProjectId.decoder ]
-
-
 projectRefDecoder : Decoder ProjectRef
 projectRefDecoder =
     JD.oneOf [ JD.null ProjectRef.inbox, JD.map ProjectRef.fromId ProjectId.decoder ]
