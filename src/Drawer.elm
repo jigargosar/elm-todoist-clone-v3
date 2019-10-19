@@ -281,6 +281,29 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
+type NavItem
+    = SimpleNavItem
+    | PanelNavItem
+
+
+type alias SimpleNavItemViewModel =
+    { route : Route.Route
+    , iconName : String
+    , title : String
+    }
+
+
+type alias PanelNavItemViewModel id item msg =
+    { id : item -> id
+    , idToString : id -> String
+    , panelItemId : PanelItemId
+    , title : item -> String
+    , route : item -> Route.Route
+    , iconName : String
+    , iconSA : item -> StyleAttrs msg
+    }
+
+
 type alias NavItemViewModel id msg =
     { id : id
     , panelItemId : Maybe PanelItemId
