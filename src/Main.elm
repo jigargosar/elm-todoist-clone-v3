@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
-import Browser.Navigation as Navigation
+import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer exposing (FilterView, LabelView)
 import Html.Styled exposing (Html, toUnstyled)
@@ -40,6 +40,7 @@ type alias Flags =
 
 type alias Model =
     { page : Page
+    , navKey : Nav.Key
     , todoDict : TodoDict
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
@@ -55,12 +56,13 @@ type Page
     | NotFound Url
 
 
-init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Msg )
+init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
     let
         initial : Model
         initial =
             { page = Route.fromUrl url |> Maybe.map Route |> Maybe.withDefault (NotFound url)
+            , navKey = navKey
             , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , labelCollection = LabelCollection.initial
