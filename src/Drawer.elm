@@ -202,6 +202,12 @@ type PanelItem
     | FilterItem FilterView
 
 
+type PanelItemId
+    = ProjectItemId ProjectId
+    | LabelItemId LabelId
+    | FilterItemId String
+
+
 viewPanel :
     { togglePanel : msg, dragSystem : Drag.System a msg }
     -> String
