@@ -22,6 +22,7 @@ module.exports = (_, config) => {
     devServer: {
       contentBase: 'public',
       watchContentBase: true,
+      historyApiFallback: true,
       hot: true,
       overlay: true,
     },

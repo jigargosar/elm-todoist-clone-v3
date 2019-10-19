@@ -4,6 +4,7 @@ import Browser.Navigation as Nav
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
+import Json.Encode as JE
 import ProjectId exposing (ProjectId)
 import Url exposing (Url)
 import Url.Builder
@@ -33,7 +34,8 @@ fromUrl url =
 parseProjectId : Parser (ProjectId -> b) b
 parseProjectId =
     Url.Parser.custom "PROJECT_ID" <|
-        (JD.decodeString ProjectId.decoder
+        (JE.string
+            >> JD.decodeValue ProjectId.decoder
             >> Result.toMaybe
         )
 
