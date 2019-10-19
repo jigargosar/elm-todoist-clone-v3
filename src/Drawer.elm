@@ -160,28 +160,34 @@ view config panelLists expansionPanels panelsDragState =
                 ]
 
         projectsCP =
-            viewPanel { togglePanel = config.onToggleExpansionPanel Projects }
+            viewPanel
+                { togglePanel = config.onToggleExpansionPanel Projects
+                , dragSystem = Drag.system (config.panelToDragMsg Projects) (config.panelToDragCompleteMsg Projects)
+                }
                 "Projects"
                 expansionPanels.projectsExpanded
-                (Drag.system (config.panelToDragMsg Projects) (config.panelToDragCompleteMsg Projects))
                 panelsDragState.projectsDrag
                 projectToNavItem
                 panelLists.projectList
 
         labelsCP =
-            viewPanel { togglePanel = config.onToggleExpansionPanel Labels }
+            viewPanel
+                { togglePanel = config.onToggleExpansionPanel Labels
+                , dragSystem = Drag.system (config.panelToDragMsg Labels) (config.panelToDragCompleteMsg Labels)
+                }
                 "Labels"
                 expansionPanels.labelsExpanded
-                (Drag.system (config.panelToDragMsg Labels) (config.panelToDragCompleteMsg Labels))
                 panelsDragState.labelsDrag
                 labelToNavItem
                 panelLists.labelList
 
         filtersCP =
-            viewPanel { togglePanel = config.onToggleExpansionPanel Filters }
+            viewPanel
+                { togglePanel = config.onToggleExpansionPanel Filters
+                , dragSystem = Drag.system (config.panelToDragMsg Filters) (config.panelToDragCompleteMsg Filters)
+                }
                 "Filters"
                 expansionPanels.filtersExpanded
-                (Drag.system (config.panelToDragMsg Filters) (config.panelToDragCompleteMsg Filters))
                 panelsDragState.filtersDrag
                 filterToNavItem
                 panelLists.filterList
@@ -195,15 +201,14 @@ type alias ContentPortal msg =
 
 
 viewPanel :
-    { togglePanel : msg }
+    { togglePanel : msg, dragSystem : Drag.System a msg }
     -> String
     -> Bool
-    -> Drag.System a msg
     -> Drag
     -> (a -> NavItemViewModel id msg)
     -> List a
     -> ContentPortal msg
-viewPanel { togglePanel } title isExpanded dragSystem drag toNavItem list =
+viewPanel { togglePanel, dragSystem } title isExpanded drag toNavItem list =
     let
         ghostItem =
             dragSystem.ghostStyles drag
