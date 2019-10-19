@@ -6,6 +6,7 @@ import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import ProjectId exposing (ProjectId)
 import Url exposing (Url)
+import Url.Builder
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, parse, s, string, top)
 
 
@@ -50,7 +51,7 @@ replaceUrl key route =
 routeToString : Route -> String
 routeToString route =
     let
-        pieces =
+        pathSegments =
             case route of
                 Root ->
                     []
@@ -61,4 +62,4 @@ routeToString route =
                 ProjectTodoList projectId ->
                     [ "project", ProjectId.toString projectId ]
     in
-    "#/" ++ String.join "/" pieces
+    Url.Builder.absolute pathSegments []
