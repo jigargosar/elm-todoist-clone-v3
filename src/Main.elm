@@ -167,7 +167,16 @@ update message model =
             Return.singleton model
 
         OnUrlRequest urlRequest ->
-            ( model, Cmd.none )
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl model.navKey (Url.toString url)
+                    )
+
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
 
         OnUrlChange url ->
             ( model, Cmd.none )
