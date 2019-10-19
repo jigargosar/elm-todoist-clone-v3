@@ -1,4 +1,4 @@
-module Todo exposing (Todo, decoder, id, idx, isCompleted, labelIdList, mapCompleted, maybeProjectId, title, toggle, viewList)
+module Todo exposing (Todo, decoder, id, idx, isCompleted, labelIdList, mapCompleted, maybeProjectId, projectRef, title, toggle, viewList)
 
 import Emoji
 import Html.Styled as Html exposing (..)
@@ -7,6 +7,7 @@ import Json.Decode as JD exposing (Decoder)
 import Json.Encode as JE
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
+import ProjectRef
 import Set
 import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)
@@ -78,6 +79,16 @@ idx =
 maybeProjectId : Todo -> Maybe ProjectId
 maybeProjectId =
     unwrap >> .maybeProjectId
+
+
+projectRef : Todo -> ProjectRef.ProjectRef
+projectRef todo =
+    case maybeProjectId todo of
+        Nothing ->
+            ProjectRef.inbox
+
+        Just projectId ->
+            ProjectRef.fromId projectId
 
 
 labelIdList : Todo -> List LabelId
