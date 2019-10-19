@@ -311,8 +311,9 @@ filterToNavItem { title, hue } =
     }
 
 
+navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
-    viewItem (StyleAttrs [] []) href title iconName (StyleAttrs [ c_inherit ] [])
+    viewNavItem SA.none (NavItemViewModel title title iconName (StyleAttrs [ c_inherit ] []) href)
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
