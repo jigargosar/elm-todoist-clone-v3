@@ -3,6 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = (_, config) => {
   const prod = config.mode === 'production'
   return {
+    output: {
+      publicPath: '/',
+    },
     resolve: {
       extensions: ['.js', '.elm'],
     },
@@ -20,7 +23,6 @@ module.exports = (_, config) => {
       ],
     },
     devServer: {
-      publicPath:'/',
       contentBase: 'public',
       watchContentBase: true,
       historyApiFallback: true,
