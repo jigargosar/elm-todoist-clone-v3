@@ -307,10 +307,6 @@ viewPanel2 pc ic title isExpanded drag list =
         ExpansionPanelUI.view pc.togglePanel
             title
             (\_ ->
-                let
-                    _ =
-                        1
-                in
                 list
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc ic drag)
