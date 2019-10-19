@@ -337,15 +337,14 @@ type alias IconView msg =
 viewItem : StyleAttrs msg -> Attribute msg -> String -> String -> StyleAttrs msg -> Html msg
 viewItem rootSA href title iconName iconSA =
     div
-        (css
+        (SA.toAttrsWithStyles
             [ ph 1
             , pointer
             , flex
             , c_grayL 0.3
             , hover [ bgGrayL 0.9 ]
-            , batch rootSA.styles
             ]
-            :: rootSA.attrs
+            rootSA
         )
         [ i
             ([ css [ pv 2, ph 1, flex, itemsCenter, batch iconSA.styles ]
