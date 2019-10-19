@@ -1,15 +1,15 @@
-module View exposing (ContentPortal, content, singleton)
+module View exposing (View, content, singleton)
 
 
-type alias ContentPortal a =
+type alias View a =
     { content : List a, portal : List a }
 
 
-singleton : a -> ContentPortal a
+singleton : a -> View a
 singleton el =
-    ContentPortal [ el ] []
+    View [ el ] []
 
 
-content : List a -> ContentPortal a
+content : List a -> View a
 content c =
-    ContentPortal c []
+    View c []

@@ -5,6 +5,6 @@ import Url
 import View
 
 
-view : Url.Url -> View.ContentPortal (Html.Styled.Html msg)
+view : Url.Url -> View.View (Html.Styled.Html msg)
 view url =
     View.singleton <| div [] [ text <| "NotFound: " ++ Url.toString url ]

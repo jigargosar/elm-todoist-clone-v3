@@ -311,6 +311,7 @@ drawerCP model =
         model.drawerPanelDrag
 
 
+mainCP : Model -> View.View (Html Msg)
 mainCP model =
     case model.page of
         NotFound url ->
