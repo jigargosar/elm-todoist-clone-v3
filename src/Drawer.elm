@@ -196,6 +196,12 @@ type alias ContentPortal msg =
     { content : List (Html msg), portal : List (Html msg) }
 
 
+type PanelItem
+    = ProjectItem Project
+    | LabelItem Label
+    | FilterItem FilterView
+
+
 viewPanel :
     { togglePanel : msg, dragSystem : Drag.System a msg }
     -> String
