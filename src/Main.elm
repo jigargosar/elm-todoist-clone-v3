@@ -270,11 +270,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
-        , main =
-            { content =
-                mainView model.projectCollection model.labelCollection model.todoDict
-            , portal = []
-            }
+        , main = mainCP model
         }
         model.isDrawerModalOpen
 
@@ -296,6 +292,13 @@ drawerView model =
         }
         model.drawerExpansionPanels
         model.drawerPanelDrag
+
+
+mainCP model =
+    { content =
+        mainView model.projectCollection model.labelCollection model.todoDict
+    , portal = []
+    }
 
 
 mainView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
