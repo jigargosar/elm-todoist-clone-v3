@@ -208,7 +208,6 @@ type PanelItemId
     = ProjectItemId ProjectId
     | LabelItemId LabelId
     | FilterItemId String
-    | OtherItemId
 
 
 viewPanel :
@@ -289,7 +288,7 @@ mergeContentPortal =
 
 type alias NavItemViewModel id msg =
     { id : id
-    , panelItemId : PanelItemId
+    , panelItemId : Maybe PanelItemId
     , idToString : id -> String
     , title : String
     , href : Attribute msg
@@ -305,7 +304,7 @@ projectToNavItem project =
             Project.id project
     in
     { id = projectId
-    , panelItemId = ProjectItemId projectId
+    , panelItemId = Just <| ProjectItemId projectId
     , idToString = ProjectId.toString
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
@@ -317,7 +316,7 @@ projectToNavItem project =
 labelToNavItem : Label -> NavItemViewModel LabelId msg
 labelToNavItem label =
     { id = Label.id label
-    , panelItemId = LabelItemId (Label.id label)
+    , panelItemId = Just <| LabelItemId (Label.id label)
     , idToString = LabelId.toString
     , title = Label.title label
     , href = Route.href Route.Root
@@ -329,7 +328,7 @@ labelToNavItem label =
 filterToNavItem : FilterView -> NavItemViewModel String msg
 filterToNavItem { title, hue } =
     { id = title
-    , panelItemId = FilterItemId title
+    , panelItemId = Just <| FilterItemId title
     , idToString = identity
     , title = title
     , href = Route.href Route.Root
@@ -342,7 +341,7 @@ navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
     viewNavItem SA.none
         { id = title
-        , panelItemId = OtherItemId
+        , panelItemId = Nothing
         , idToString = identity
         , title = title
         , href = href
