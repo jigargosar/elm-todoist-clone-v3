@@ -34,7 +34,7 @@ type alias Internal =
     , title : String
     , isCompleted : Bool
     , idx : Int
-    , maybeProjectId : ProjectRef
+    , projectRef : ProjectRef
     , labelIdList : List LabelId
     }
 
@@ -53,7 +53,7 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "isCompleted" JD.bool)
         |> andMap (JD.field "idx" JD.int)
-        |> andMap (JD.field "maybeProjectId" projectRefDecoder)
+        |> andMap (JD.field "projectRef" projectRefDecoder)
         |> andMap (JD.field "labelIdList" LabelId.uniqueListDecoder)
         |> JD.map Todo
 
@@ -89,7 +89,7 @@ idx =
 
 projectRef : Todo -> ProjectRef.ProjectRef
 projectRef =
-    unwrap >> .maybeProjectId
+    unwrap >> .projectRef
 
 
 labelIdList : Todo -> List LabelId

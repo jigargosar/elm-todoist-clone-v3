@@ -18,7 +18,7 @@ const mockTodoList = [
   modifiedAt: Date.now(),
   isCompleted: Math.random() > 0.3,
   idx,
-  maybeProjectId: null,
+  projectRef: null,
   labelIdList: []
 }))
 
@@ -72,7 +72,7 @@ const mockFilterList = [
 function moveRandomTodoToRandomProject() {
   const randomTodo = getRandomListItem(mockTodoList)
   const randomProject = getRandomListItem(mockProjectList)
-  randomTodo.maybeProjectId = randomProject.id
+  randomTodo.projectRef = randomProject.id
 }
 
 function assignRandomLabelsToRandomTodo() {
