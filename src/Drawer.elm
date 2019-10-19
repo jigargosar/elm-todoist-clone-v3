@@ -325,6 +325,7 @@ viewItem attributes styles href title iconColor iconName =
             , pointer
             , flex
             , c_grayL 0.3
+            , hover [ bgGrayL 0.9 ]
             , batch styles
             ]
             :: attributes
@@ -335,7 +336,17 @@ viewItem attributes styles href title iconColor iconName =
             ]
             [ text iconName ]
         , a
-            [ css [ pv 2, ph 1, flex, flexGrow1, itemsCenter, mr 3 ]
+            [ css
+                [ Css.textDecoration Css.none
+                , Css.visited [ Css.color Css.inherit ]
+                , Css.color Css.inherit
+                , pv 2
+                , ph 1
+                , flex
+                , flexGrow1
+                , itemsCenter
+                , mr 3
+                ]
             , href
             ]
             [ text title ]
