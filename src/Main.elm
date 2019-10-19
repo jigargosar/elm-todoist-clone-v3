@@ -269,7 +269,7 @@ main : Program Flags Model Msg
 main =
     Browser.application
         { init = init
-        , view = view >> toUnstyled
+        , view = view >> toUnstyled >> List.singleton >> Browser.Document "Todoist Clone"
         , update = update
         , subscriptions = subscriptions
         , onUrlRequest = OnUrlRequest
