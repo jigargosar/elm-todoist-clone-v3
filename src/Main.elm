@@ -18,6 +18,7 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
+import View
 
 
 port logError : String -> Cmd msg
@@ -303,22 +304,13 @@ mainCP model =
         Route route ->
             case route of
                 Route.Root ->
-                    { content =
-                        mainView model.projectCollection model.labelCollection model.todoDict
-                    , portal = []
-                    }
+                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
                 Route.Inbox ->
-                    { content =
-                        mainView model.projectCollection model.labelCollection model.todoDict
-                    , portal = []
-                    }
+                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
                 Route.Project projectId ->
-                    { content =
-                        mainView model.projectCollection model.labelCollection model.todoDict
-                    , portal = []
-                    }
+                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
 
 mainView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
