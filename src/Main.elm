@@ -82,7 +82,7 @@ init flags url navKey =
                 [ initTodoDict flags.todoList
                 , initProjectCollection flags.projectList
                 , initLabelCollection flags.labelList
-                , onUrlChange url
+                , onUrlChanged url
                 ]
             )
 
@@ -184,7 +184,7 @@ update message model =
                     )
 
         OnUrlChange url ->
-            onUrlChange url model
+            onUrlChanged url model
 
         ToggleTodoCompleted todoId ->
             let
@@ -248,8 +248,8 @@ update message model =
                     )
 
 
-onUrlChange : Url -> Model -> ( Model, Cmd Msg )
-onUrlChange url model =
+onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
+onUrlChanged url model =
     let
         page =
             pageFromUrl url
