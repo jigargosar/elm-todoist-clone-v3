@@ -313,6 +313,10 @@ type alias ColorCompatible x =
     { x | value : String, color : Css.Compatible }
 
 
+type alias StyleAttrs msg =
+    { styles : List Style, attrs : List (Attribute msg) }
+
+
 type alias IconView msg =
     { name : String
     , styles : List Style
