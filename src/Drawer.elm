@@ -271,9 +271,9 @@ mergeContentPortal =
 type alias NavItemViewModel msg =
     { id : String
     , title : String
+    , href : Attribute msg
     , iconName : String
     , iconSA : StyleAttrs msg
-    , href : Attribute msg
     }
 
 
@@ -285,9 +285,9 @@ projectToNavItem project =
     in
     { id = ProjectId.toString projectId
     , title = Project.title project
+    , href = Route.href (Route.Project projectId)
     , iconName = "folder"
     , iconSA = StyleAttrs [ c_ <| Project.cssColor project ] []
-    , href = Route.href (Route.Project projectId)
     }
 
 
@@ -295,9 +295,9 @@ labelToNavItem : Label -> NavItemViewModel msg
 labelToNavItem label =
     { id = LabelId.toString (Label.id label)
     , title = Label.title label
+    , href = Route.href Route.Root
     , iconName = "label"
     , iconSA = StyleAttrs [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
-    , href = Route.href Route.Root
     }
 
 
@@ -305,15 +305,21 @@ filterToNavItem : FilterView -> NavItemViewModel msg
 filterToNavItem { title, hue } =
     { id = title
     , title = title
+    , href = Route.href Route.Root
     , iconName = "filter_list"
     , iconSA = StyleAttrs [ c_ <| Css.hsl hue 0.7 0.5 ] []
-    , href = Route.href Route.Root
     }
 
 
 navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
-    viewNavItem SA.none (NavItemViewModel title title iconName (StyleAttrs [ c_inherit ] []) href)
+    viewNavItem SA.none
+        { id = title
+        , title = title
+        , href = href
+        , iconName = iconName
+        , iconSA = StyleAttrs [ c_inherit ] []
+        }
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
