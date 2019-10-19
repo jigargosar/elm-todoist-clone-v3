@@ -355,10 +355,14 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
                 , flex
                 , flexGrow1
                 , itemsCenter
-                , mr 3
                 ]
             , href
             ]
             [ text title ]
-        , i [ class "show_on_parent_hover", class "material-icons" ] [ text "more_horiz" ]
+        , i
+            [ css [ mr 3 ]
+            , class "show_on_parent_hover"
+            , class "material-icons"
+            ]
+            [ text "more_horiz" ]
         ]
