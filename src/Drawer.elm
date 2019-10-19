@@ -212,7 +212,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                     )
                 |> Maybe.map
                     (\( styles, navItem ) ->
-                        viewNavItem [] [ styles ] navItem
+                        viewNavItem (StyleAttrs [ styles ] []) navItem
                     )
                 |> Maybe.withDefault (text "")
     in
@@ -238,7 +238,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                             styles =
                                 [ Styles.noSelection, dragOverStyles ]
                         in
-                        viewNavItem (A.id domId :: dragEvents ++ dropEvents) styles navItem
+                        viewNavItem (StyleAttrs styles (A.id domId :: dragEvents ++ dropEvents)) navItem
                 in
                 list
                     |> dragSystem.rotate drag
@@ -301,12 +301,12 @@ filterToNavItem { title, hue } =
 
 
 navTitleIconItem href title iconName =
-    viewItem [] [] href title (IconView iconName [ c_inherit ] [])
+    viewItem (StyleAttrs [] []) href title (IconView iconName [ c_inherit ] [])
 
 
-viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel msg -> Html msg
-viewNavItem attrs styles { title, icon, href } =
-    viewItem attrs styles href title icon
+viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
+viewNavItem rootSA { title, icon, href } =
+    viewItem rootSA href title icon
 
 
 type alias ColorCompatible x =
@@ -324,8 +324,8 @@ type alias IconView msg =
     }
 
 
-viewItem : List (Attribute msg) -> List Css.Style -> Attribute msg -> String -> IconView msg -> Html msg
-viewItem attributes styles href title icon =
+viewItem : StyleAttrs msg -> Attribute msg -> String -> IconView msg -> Html msg
+viewItem rootSA href title icon =
     div
         (css
             [ ph 1
@@ -333,9 +333,9 @@ viewItem attributes styles href title icon =
             , flex
             , c_grayL 0.3
             , hover [ bgGrayL 0.9 ]
-            , batch styles
+            , batch rootSA.styles
             ]
-            :: attributes
+            :: rootSA.attrs
         )
         [ i
             ([ css [ pv 2, ph 1, flex, itemsCenter, batch icon.styles ]
