@@ -21,9 +21,9 @@ import ExpansionPanelUI
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Label exposing (Label)
-import LabelId
+import LabelId exposing (LabelId)
 import Project exposing (Project)
-import ProjectId
+import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
@@ -200,7 +200,7 @@ viewPanel :
     -> Bool
     -> Drag.System a msg
     -> Drag
-    -> (a -> NavItemViewModel msg)
+    -> (a -> NavItemViewModel id msg)
     -> List a
     -> ContentPortal msg
 viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
@@ -270,8 +270,9 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
-type alias NavItemViewModel msg =
-    { stringId : String
+type alias NavItemViewModel id msg =
+    { id : id
+    , stringId : String
     , title : String
     , href : Attribute msg
     , iconName : String
@@ -279,13 +280,14 @@ type alias NavItemViewModel msg =
     }
 
 
-projectToNavItem : Project -> NavItemViewModel msg
+projectToNavItem : Project -> NavItemViewModel ProjectId msg
 projectToNavItem project =
     let
         projectId =
             Project.id project
     in
-    { stringId = ProjectId.toString projectId
+    { id = projectId
+    , stringId = ProjectId.toString projectId
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
     , iconName = "folder"
@@ -293,9 +295,10 @@ projectToNavItem project =
     }
 
 
-labelToNavItem : Label -> NavItemViewModel msg
+labelToNavItem : Label -> NavItemViewModel LabelId msg
 labelToNavItem label =
-    { stringId = LabelId.toString (Label.id label)
+    { id = Label.id label
+    , stringId = LabelId.toString (Label.id label)
     , title = Label.title label
     , href = Route.href Route.Root
     , iconName = "label"
@@ -303,9 +306,10 @@ labelToNavItem label =
     }
 
 
-filterToNavItem : FilterView -> NavItemViewModel msg
+filterToNavItem : FilterView -> NavItemViewModel String msg
 filterToNavItem { title, hue } =
-    { stringId = title
+    { id = title
+    , stringId = title
     , title = title
     , href = Route.href Route.Root
     , iconName = "filter_list"
@@ -316,7 +320,8 @@ filterToNavItem { title, hue } =
 navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
     viewNavItem SA.none
-        { stringId = title
+        { id = title
+        , stringId = title
         , title = title
         , href = href
         , iconName = iconName
@@ -324,7 +329,7 @@ navTitleIconItem href title iconName =
         }
 
 
-viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
+viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg
 viewNavItem rootSA { title, iconName, iconSA, href } =
     div
         (SA.toAttrsWithBase
