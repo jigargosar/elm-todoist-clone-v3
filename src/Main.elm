@@ -318,11 +318,11 @@ mainCP model =
             Page.NotFound.view url
 
         TodoListByProjectRef projectRef ->
-            View.content <| mainView model.projectCollection model.labelCollection model.todoDict
+            View.content <| allTodoView model.projectCollection model.labelCollection model.todoDict
 
 
-mainView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-mainView pc lc todoDict =
+allTodoView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
+allTodoView pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.sortedByIdx todoDict)
     ]
 
