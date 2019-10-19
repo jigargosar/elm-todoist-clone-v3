@@ -12,6 +12,7 @@ import LabelCollection exposing (LabelCollection)
 import Layout
 import Page.NotFound
 import ProjectCollection exposing (ProjectCollection)
+import ProjectRef exposing (ProjectRef)
 import Return
 import Route
 import TodoDict exposing (TodoDict)
@@ -54,12 +55,26 @@ type alias Model =
 
 
 type Page
-    = Route Route.Route
+    = TodoListByProjectRef ProjectRef
     | NotFound Url
 
 
+pageFromRoute : Route.Route -> Page
+pageFromRoute route =
+    case route of
+        Route.Root ->
+            TodoListByProjectRef ProjectRef.inbox
+
+        Route.Inbox ->
+            TodoListByProjectRef ProjectRef.inbox
+
+        Route.Project projectId ->
+            TodoListByProjectRef <| ProjectRef.fromId projectId
+
+
+pageFromUrl : Url -> Page
 pageFromUrl url =
-    Route.fromUrl url |> Maybe.map Route |> Maybe.withDefault (NotFound url)
+    Route.fromUrl url |> Maybe.map pageFromRoute |> Maybe.withDefault (NotFound url)
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -301,16 +316,8 @@ mainCP model =
         NotFound url ->
             Page.NotFound.view url
 
-        Route route ->
-            case route of
-                Route.Root ->
-                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
-
-                Route.Inbox ->
-                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
-
-                Route.Project _ ->
-                    View.content <| mainView model.projectCollection model.labelCollection model.todoDict
+        TodoListByProjectRef projectRef ->
+            View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
 
 mainView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
