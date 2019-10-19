@@ -224,10 +224,11 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
             title
             (\_ ->
                 let
+                    viewDnDNavItem : Int -> NavItemViewModel id msg -> Html msg
                     viewDnDNavItem idx navItem =
                         let
                             domId =
-                                String.toLower title ++ "-panel-drag-item__" ++ navItem.stringId
+                                String.toLower title ++ "-panel-drag-item__" ++ navItem.idToString navItem.id
 
                             dragEvents =
                                 dragSystem.dragEvents idx domId drag
@@ -272,7 +273,7 @@ mergeContentPortal =
 
 type alias NavItemViewModel id msg =
     { id : id
-    , stringId : String
+    , idToString : id -> String
     , title : String
     , href : Attribute msg
     , iconName : String
@@ -287,7 +288,7 @@ projectToNavItem project =
             Project.id project
     in
     { id = projectId
-    , stringId = ProjectId.toString projectId
+    , idToString = ProjectId.toString
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
     , iconName = "folder"
@@ -298,7 +299,7 @@ projectToNavItem project =
 labelToNavItem : Label -> NavItemViewModel LabelId msg
 labelToNavItem label =
     { id = Label.id label
-    , stringId = LabelId.toString (Label.id label)
+    , idToString = LabelId.toString
     , title = Label.title label
     , href = Route.href Route.Root
     , iconName = "label"
@@ -309,7 +310,7 @@ labelToNavItem label =
 filterToNavItem : FilterView -> NavItemViewModel String msg
 filterToNavItem { title, hue } =
     { id = title
-    , stringId = title
+    , idToString = identity
     , title = title
     , href = Route.href Route.Root
     , iconName = "filter_list"
@@ -321,7 +322,7 @@ navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
     viewNavItem SA.none
         { id = title
-        , stringId = title
+        , idToString = identity
         , title = title
         , href = href
         , iconName = iconName
