@@ -273,17 +273,17 @@ view model =
         model.isDrawerModalOpen
 
 
+drawerConfig : Drawer.Config Msg
+drawerConfig =
+    { onToggleExpansionPanel = ToggleDrawerExpansionPanel
+    , panelToDragMsg = DrawerPanelDrag
+    , panelToDragCompleteMsg = DrawerPanelDragComplete
+    , onPanelItemMoreMenuClicked = PanelItemMoreMenuClicked
+    }
+
+
 drawerCP : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerCP model =
-    let
-        drawerConfig : Drawer.Config Msg
-        drawerConfig =
-            { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-            , panelToDragMsg = DrawerPanelDrag
-            , panelToDragCompleteMsg = DrawerPanelDragComplete
-            , onPanelItemMoreMenuClicked = PanelItemMoreMenuClicked
-            }
-    in
     Drawer.view drawerConfig
         { projectList = ProjectCollection.sorted model.projectCollection
         , labelList = LabelCollection.sorted model.labelCollection

@@ -288,20 +288,18 @@ viewPanel2 :
 viewPanel2 pc ic title isExpanded drag list =
     let
         ghostItem =
-            {- pc.dragSystem.ghostStyles drag
-               |> Maybe.andThen
-                   (\( idx, styles ) ->
-                       List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
-                   )
-               |> Maybe.map
-                   (\( styles, navItem ) ->
-                       [ viewNavItem (StyleAttrs [ styles ] []) navItem
-                       , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                       ]
-                   )
-               |> Maybe.withDefault
-            -}
-            []
+            pc.dragSystem.ghostStyles drag
+                |> Maybe.andThen
+                    (\( idx, styles ) ->
+                        List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
+                    )
+                |> Maybe.map
+                    (\( styles, item ) ->
+                        [ viewPanelNavItem pc ic drag -1 item
+                        , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                        ]
+                    )
+                |> Maybe.withDefault []
     in
     { content =
         ExpansionPanelUI.view pc.togglePanel
