@@ -19,7 +19,7 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
-import View
+import View exposing (View)
 
 
 port logError : String -> Cmd msg
@@ -311,7 +311,7 @@ drawerCP model =
         model.drawerPanelDrag
 
 
-mainCP : Model -> View.View (Html Msg)
+mainCP : Model -> View (Html Msg)
 mainCP model =
     case model.page of
         NotFound url ->
