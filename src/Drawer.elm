@@ -466,23 +466,6 @@ type alias NavItemViewModel id msg =
     }
 
 
-projectToNavItem : (PanelItemId -> msg) -> Project -> NavItemViewModel ProjectId msg
-projectToNavItem onMoreMenuTriggerClicked project =
-    let
-        projectId =
-            Project.id project
-    in
-    { id = projectId
-    , panelItemId = Just <| ProjectItemId projectId
-    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| ProjectItemId projectId)
-    , idToString = ProjectId.toString
-    , title = Project.title project
-    , href = Route.href (Route.Project projectId)
-    , iconName = "folder"
-    , iconSA = StyleAttrs [ c_ <| Project.cssColor project ] []
-    }
-
-
 labelToNavItem : (PanelItemId -> msg) -> Label -> NavItemViewModel LabelId msg
 labelToNavItem onMoreMenuTriggerClicked label =
     { id = Label.id label
