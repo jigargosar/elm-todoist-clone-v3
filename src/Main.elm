@@ -1,7 +1,8 @@
 port module Main exposing (main)
 
 import Appbar
-import Browser
+import Browser exposing (UrlRequest)
+import Browser.Navigation as Navigation
 import Drag exposing (Drag)
 import Drawer exposing (FilterView, LabelView)
 import Html.Styled exposing (Html, toUnstyled)
@@ -14,6 +15,7 @@ import Return
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
+import Url exposing (Url)
 
 
 port logError : String -> Cmd msg
@@ -46,8 +48,8 @@ type alias Model =
     }
 
 
-init : Flags -> ( Model, Cmd Msg )
-init flags =
+init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Msg )
+init flags url navKey =
     let
         initial : Model
         initial =
@@ -138,6 +140,8 @@ subscriptions model =
 
 type Msg
     = NoOp
+    | OnUrlRequest UrlRequest
+    | OnUrlChange Url
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
@@ -263,9 +267,11 @@ mainView pc lc todoDict =
 
 main : Program Flags Model Msg
 main =
-    Browser.element
+    Browser.application
         { init = init
         , view = view >> toUnstyled
         , update = update
         , subscriptions = subscriptions
+        , onUrlRequest = OnUrlRequest
+        , onUrlChange = OnUrlChange
         }
