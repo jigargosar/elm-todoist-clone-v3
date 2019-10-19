@@ -388,24 +388,8 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId } =
         , case panelItemId of
             Just _ ->
                 i
-                    [ css
-                        [ pv 2
-                        , ph 1
-                        , batch <|
-                            case panelItemId of
-                                Just _ ->
-                                    []
-
-                                Nothing ->
-                                    [ Css.visibility Css.hidden ]
-                        ]
-                    , class <|
-                        case panelItemId of
-                            Just _ ->
-                                "show_on_parent_hover"
-
-                            Nothing ->
-                                ""
+                    [ css [ pv 2, ph 1 ]
+                    , class "show_on_parent_hover"
                     , class "material-icons"
                     ]
                     [ text "more_horiz" ]
