@@ -325,15 +325,18 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
-type NavItem
-    = SimpleNavItem
-    | PanelNavItem
-
-
 type alias SimpleNavItemViewModel =
     { route : Route.Route
     , iconName : String
     , title : String
+    }
+
+
+type alias PanelConfig item msg =
+    { togglePanel : msg
+    , domIdPrefix : String
+    , dragSystem : Drag.System item msg
+    , onMoreClicked : PanelItemId -> msg
     }
 
 
@@ -357,14 +360,6 @@ projectNavItemViewConfig =
     , route = Project.id >> Route.Project
     , iconName = "folder"
     , iconStyle = c_ << Project.cssColor
-    }
-
-
-type alias PanelConfig item msg =
-    { togglePanel : msg
-    , domIdPrefix : String
-    , dragSystem : Drag.System item msg
-    , onMoreClicked : PanelItemId -> msg
     }
 
 
