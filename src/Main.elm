@@ -156,6 +156,12 @@ update message model =
         NoOp ->
             Return.singleton model
 
+        OnUrlRequest urlRequest ->
+            ( model, Cmd.none )
+
+        OnUrlChange url ->
+            ( model, Cmd.none )
+
         ToggleTodoCompleted todoId ->
             let
                 newTodoDict =
