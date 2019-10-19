@@ -237,8 +237,11 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
 
                             styles =
                                 [ Styles.noSelection, dragOverStyles ]
+
+                            rootSA =
+                                StyleAttrs styles (A.id domId :: dragEvents ++ dropEvents)
                         in
-                        viewNavItem (StyleAttrs styles (A.id domId :: dragEvents ++ dropEvents)) navItem
+                        viewNavItem rootSA navItem
                 in
                 list
                     |> dragSystem.rotate drag
