@@ -326,7 +326,7 @@ viewItem attributes styles title iconColor iconName =
             ]
             [ text iconName ]
         , div
-            [ css [ pv 2, ph 1, flex, itemsCenter, mr 3 ]
+            [ css [ pv 2, ph 1, flex, flexGrow1, itemsCenter, mr 3 ]
             ]
             [ text title ]
         ]
