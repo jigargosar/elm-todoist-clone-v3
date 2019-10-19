@@ -24,6 +24,7 @@ import Label exposing (Label)
 import LabelId
 import Project exposing (Project)
 import ProjectId
+import Route
 import Styles exposing (..)
 
 
@@ -198,7 +199,7 @@ viewPanel :
     -> Bool
     -> Drag.System a msg
     -> Drag
-    -> (a -> NavItemViewModel)
+    -> (a -> NavItemViewModel msg)
     -> List a
     -> ContentPortal msg
 viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
@@ -260,38 +261,46 @@ mergeContentPortal =
         { content = [], portal = [] }
 
 
-type alias NavItemViewModel =
+type alias NavItemViewModel msg =
     { id : String
     , title : String
     , iconColor : Css.Color
     , icon : String
+    , href : Attribute msg
     }
 
 
-projectToNavItem : Project -> NavItemViewModel
+projectToNavItem : Project -> NavItemViewModel msg
 projectToNavItem project =
-    { id = ProjectId.toString (Project.id project)
+    let
+        projectId =
+            Project.id project
+    in
+    { id = ProjectId.toString projectId
     , title = Project.title project
     , iconColor = Project.cssColor project
     , icon = "folder"
+    , href = Route.href (Route.Project projectId)
     }
 
 
-labelToNavItem : Label -> NavItemViewModel
+labelToNavItem : Label -> NavItemViewModel msg
 labelToNavItem label =
     { id = LabelId.toString (Label.id label)
     , title = Label.title label
     , iconColor = Css.hsl (Label.hue label |> toFloat) 0.7 0.5
     , icon = "label"
+    , href = Route.href Route.Root
     }
 
 
-filterToNavItem : FilterView -> NavItemViewModel
+filterToNavItem : FilterView -> NavItemViewModel msg
 filterToNavItem { title, hue } =
     { id = title
     , title = title
     , iconColor = Css.hsl hue 0.7 0.5
     , icon = "filter_list"
+    , href = Route.href Route.Root
     }
 
 
@@ -299,7 +308,7 @@ navTitleIconItem title icon =
     viewItem [] [] title Css.inherit icon
 
 
-viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel -> Html msg
+viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel msg -> Html msg
 viewNavItem attrs styles { title, iconColor, icon } =
     viewItem attrs styles title iconColor icon
 
@@ -325,7 +334,7 @@ viewItem attributes styles title iconColor iconName =
             , class "material-icons"
             ]
             [ text iconName ]
-        , div
+        , a
             [ css [ pv 2, ph 1, flex, flexGrow1, itemsCenter, mr 3 ]
             ]
             [ text title ]
