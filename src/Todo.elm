@@ -7,7 +7,7 @@ import Json.Decode as JD exposing (Decoder)
 import Json.Encode as JE
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
-import ProjectRef
+import ProjectRef exposing (ProjectRef)
 import Set
 import Timestamp exposing (Timestamp)
 import TodoId exposing (TodoId)
@@ -55,6 +55,11 @@ decoder =
 maybeProjectIdDecoder : Decoder (Maybe ProjectId)
 maybeProjectIdDecoder =
     JD.oneOf [ JD.null Nothing, JD.map Just ProjectId.decoder ]
+
+
+projectRefDecoder : Decoder ProjectRef
+projectRefDecoder =
+    JD.oneOf [ JD.null ProjectRef.inbox, JD.map ProjectRef.fromId ProjectId.decoder ]
 
 
 title : Todo -> String
