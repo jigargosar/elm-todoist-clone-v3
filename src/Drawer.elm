@@ -270,6 +270,7 @@ mergeContentPortal =
 type alias NavItemViewModel msg =
     { id : String
     , title : String
+    , iconName : String
     , icon : IconView msg
     , href : Attribute msg
     }
@@ -283,6 +284,7 @@ projectToNavItem project =
     in
     { id = ProjectId.toString projectId
     , title = Project.title project
+    , iconName = "folder"
     , icon = IconView "folder" [ c_ <| Project.cssColor project ] []
     , href = Route.href (Route.Project projectId)
     }
@@ -292,6 +294,7 @@ labelToNavItem : Label -> NavItemViewModel msg
 labelToNavItem label =
     { id = LabelId.toString (Label.id label)
     , title = Label.title label
+    , iconName = "label"
     , icon = IconView "label" [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
@@ -301,6 +304,7 @@ filterToNavItem : FilterView -> NavItemViewModel msg
 filterToNavItem { title, hue } =
     { id = title
     , title = title
+    , iconName = "filter_list"
     , icon = IconView "filter_list" [ c_ <| Css.hsl hue 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
