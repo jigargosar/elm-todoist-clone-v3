@@ -159,13 +159,13 @@ view config panelLists expansionPanels panelsDragState =
                 , navTitleIconItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        panelToConfig panel =
+        toPanelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             }
 
         projectsCP =
-            viewPanel (panelToConfig Projects)
+            viewPanel (toPanelConfig Projects)
                 "Projects"
                 expansionPanels.projectsExpanded
                 panelsDragState.projectsDrag
@@ -173,7 +173,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.projectList
 
         labelsCP =
-            viewPanel (panelToConfig Labels)
+            viewPanel (toPanelConfig Labels)
                 "Labels"
                 expansionPanels.labelsExpanded
                 panelsDragState.labelsDrag
@@ -181,7 +181,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.labelList
 
         filtersCP =
-            viewPanel (panelToConfig Filters)
+            viewPanel (toPanelConfig Filters)
                 "Filters"
                 expansionPanels.filtersExpanded
                 panelsDragState.filtersDrag
