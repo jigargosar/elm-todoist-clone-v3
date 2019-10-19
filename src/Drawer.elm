@@ -319,6 +319,11 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
     viewItem rootSA href title iconName iconSA
 
 
+concatStyleAttributes : StyleAttrs msg -> StyleAttrs msg -> StyleAttrs msg
+concatStyleAttributes sa1 sa2 =
+    StyleAttrs (sa1.styles ++ sa2.styles) (sa1.attrs ++ sa2.attrs)
+
+
 type alias ColorCompatible x =
     { x | value : String, color : Css.Compatible }
 
