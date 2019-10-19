@@ -213,9 +213,11 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                     )
                 |> Maybe.map
                     (\( styles, navItem ) ->
-                        viewNavItem (StyleAttrs [ styles ] []) navItem
+                        [ viewNavItem (StyleAttrs [ styles ] []) navItem
+                        , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                        ]
                     )
-                |> Maybe.withDefault (text "")
+                |> Maybe.withDefault []
     in
     { content =
         ExpansionPanelUI.view togglePanel
@@ -253,7 +255,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                     |> List.indexedMap viewDnDNavItem
             )
             isExpanded
-    , portal = [ ghostItem ]
+    , portal = ghostItem
     }
 
 
