@@ -271,7 +271,7 @@ type alias NavItemViewModel msg =
     { id : String
     , title : String
     , iconName : String
-    , icon : IconView msg
+    , iconSA : StyleAttrs msg
     , href : Attribute msg
     }
 
@@ -285,7 +285,7 @@ projectToNavItem project =
     { id = ProjectId.toString projectId
     , title = Project.title project
     , iconName = "folder"
-    , icon = IconView "folder" [ c_ <| Project.cssColor project ] []
+    , iconSA = StyleAttrs [ c_ <| Project.cssColor project ] []
     , href = Route.href (Route.Project projectId)
     }
 
@@ -295,7 +295,7 @@ labelToNavItem label =
     { id = LabelId.toString (Label.id label)
     , title = Label.title label
     , iconName = "label"
-    , icon = IconView "label" [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
+    , iconSA = StyleAttrs [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
 
@@ -305,18 +305,18 @@ filterToNavItem { title, hue } =
     { id = title
     , title = title
     , iconName = "filter_list"
-    , icon = IconView "filter_list" [ c_ <| Css.hsl hue 0.7 0.5 ] []
+    , iconSA = StyleAttrs [ c_ <| Css.hsl hue 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
 
 
 navTitleIconItem href title iconName =
-    viewItem (StyleAttrs [] []) href title (IconView iconName [ c_inherit ] [])
+    viewItem (StyleAttrs [] []) href title iconName (StyleAttrs [ c_inherit ] [])
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
-viewNavItem rootSA { title, icon, href } =
-    viewItem rootSA href title icon
+viewNavItem rootSA { title, iconName, iconSA, href } =
+    viewItem rootSA href title iconName iconSA
 
 
 type alias ColorCompatible x =
@@ -334,8 +334,8 @@ type alias IconView msg =
     }
 
 
-viewItem : StyleAttrs msg -> Attribute msg -> String -> IconView msg -> Html msg
-viewItem rootSA href title icon =
+viewItem : StyleAttrs msg -> Attribute msg -> String -> String -> StyleAttrs msg -> Html msg
+viewItem rootSA href title iconName iconSA =
     div
         (css
             [ ph 1
@@ -348,12 +348,12 @@ viewItem rootSA href title icon =
             :: rootSA.attrs
         )
         [ i
-            ([ css [ pv 2, ph 1, flex, itemsCenter, batch icon.styles ]
+            ([ css [ pv 2, ph 1, flex, itemsCenter, batch iconSA.styles ]
              , class "material-icons"
              ]
-                ++ icon.attrs
+                ++ iconSA.attrs
             )
-            [ text icon.name ]
+            [ text iconName ]
         , a
             [ css
                 [ Css.textDecoration Css.none
