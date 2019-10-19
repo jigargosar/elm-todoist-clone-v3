@@ -318,11 +318,6 @@ navTitleIconItem href title iconName =
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel msg -> Html msg
 viewNavItem rootSA { title, iconName, iconSA, href } =
-    viewItem rootSA href title iconName iconSA
-
-
-viewItem : StyleAttrs msg -> Attribute msg -> String -> String -> StyleAttrs msg -> Html msg
-viewItem rootSA href title iconName iconSA =
     div
         (SA.toAttrsWithBase
             [ ph 1
