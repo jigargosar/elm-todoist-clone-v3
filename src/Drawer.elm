@@ -160,7 +160,7 @@ view config panelLists expansionPanels panelsDragState =
                 ]
 
         projectsCP =
-            viewPanel (config.onToggleExpansionPanel Projects)
+            viewPanel { togglePanel = config.onToggleExpansionPanel Projects }
                 "Projects"
                 expansionPanels.projectsExpanded
                 (Drag.system (config.panelToDragMsg Projects) (config.panelToDragCompleteMsg Projects))
@@ -169,7 +169,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.projectList
 
         labelsCP =
-            viewPanel (config.onToggleExpansionPanel Labels)
+            viewPanel { togglePanel = config.onToggleExpansionPanel Labels }
                 "Labels"
                 expansionPanels.labelsExpanded
                 (Drag.system (config.panelToDragMsg Labels) (config.panelToDragCompleteMsg Labels))
@@ -178,7 +178,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.labelList
 
         filtersCP =
-            viewPanel (config.onToggleExpansionPanel Filters)
+            viewPanel { togglePanel = config.onToggleExpansionPanel Filters }
                 "Filters"
                 expansionPanels.filtersExpanded
                 (Drag.system (config.panelToDragMsg Filters) (config.panelToDragCompleteMsg Filters))
@@ -195,7 +195,7 @@ type alias ContentPortal msg =
 
 
 viewPanel :
-    msg
+    { togglePanel : msg }
     -> String
     -> Bool
     -> Drag.System a msg
@@ -203,7 +203,7 @@ viewPanel :
     -> (a -> NavItemViewModel id msg)
     -> List a
     -> ContentPortal msg
-viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
+viewPanel { togglePanel } title isExpanded dragSystem drag toNavItem list =
     let
         ghostItem =
             dragSystem.ghostStyles drag
