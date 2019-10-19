@@ -264,8 +264,7 @@ mergeContentPortal =
 type alias NavItemViewModel msg =
     { id : String
     , title : String
-    , iconColor : Css.Color
-    , icon : String
+    , icon : IconView msg
     , href : Attribute msg
     }
 
@@ -278,8 +277,7 @@ projectToNavItem project =
     in
     { id = ProjectId.toString projectId
     , title = Project.title project
-    , iconColor = Project.cssColor project
-    , icon = "folder"
+    , icon = IconView "folder" [ c_ <| Project.cssColor project ] []
     , href = Route.href (Route.Project projectId)
     }
 
@@ -288,8 +286,7 @@ labelToNavItem : Label -> NavItemViewModel msg
 labelToNavItem label =
     { id = LabelId.toString (Label.id label)
     , title = Label.title label
-    , iconColor = Css.hsl (Label.hue label |> toFloat) 0.7 0.5
-    , icon = "label"
+    , icon = IconView "label" [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
 
@@ -298,8 +295,7 @@ filterToNavItem : FilterView -> NavItemViewModel msg
 filterToNavItem { title, hue } =
     { id = title
     , title = title
-    , iconColor = Css.hsl hue 0.7 0.5
-    , icon = "filter_list"
+    , icon = IconView "filter_list" [ c_ <| Css.hsl hue 0.7 0.5 ] []
     , href = Route.href Route.Root
     }
 
@@ -309,8 +305,8 @@ navTitleIconItem href title iconName =
 
 
 viewNavItem : List (Attribute msg) -> List Style -> NavItemViewModel msg -> Html msg
-viewNavItem attrs styles { title, iconColor, icon, href } =
-    viewItem attrs styles href title (IconView icon [ c_ iconColor ] [])
+viewNavItem attrs styles { title, icon, href } =
+    viewItem attrs styles href title icon
 
 
 type alias ColorCompatible x =
