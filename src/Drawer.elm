@@ -227,7 +227,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                     viewDnDNavItem idx navItem =
                         let
                             domId =
-                                String.toLower title ++ "-panel-drag-item__" ++ navItem.id
+                                String.toLower title ++ "-panel-drag-item__" ++ navItem.stringId
 
                             dragEvents =
                                 dragSystem.dragEvents idx domId drag
@@ -271,7 +271,7 @@ mergeContentPortal =
 
 
 type alias NavItemViewModel msg =
-    { id : String
+    { stringId : String
     , title : String
     , href : Attribute msg
     , iconName : String
@@ -285,7 +285,7 @@ projectToNavItem project =
         projectId =
             Project.id project
     in
-    { id = ProjectId.toString projectId
+    { stringId = ProjectId.toString projectId
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
     , iconName = "folder"
@@ -295,7 +295,7 @@ projectToNavItem project =
 
 labelToNavItem : Label -> NavItemViewModel msg
 labelToNavItem label =
-    { id = LabelId.toString (Label.id label)
+    { stringId = LabelId.toString (Label.id label)
     , title = Label.title label
     , href = Route.href Route.Root
     , iconName = "label"
@@ -305,7 +305,7 @@ labelToNavItem label =
 
 filterToNavItem : FilterView -> NavItemViewModel msg
 filterToNavItem { title, hue } =
-    { id = title
+    { stringId = title
     , title = title
     , href = Route.href Route.Root
     , iconName = "filter_list"
@@ -316,7 +316,7 @@ filterToNavItem { title, hue } =
 navTitleIconItem : Attribute msg -> String -> String -> Html msg
 navTitleIconItem href title iconName =
     viewNavItem SA.none
-        { id = title
+        { stringId = title
         , title = title
         , href = href
         , iconName = iconName
