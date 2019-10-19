@@ -331,6 +331,7 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
             , flex
             , c_grayL 0.3
             , hover [ bgGrayL 0.9 ]
+            , noSelection
             ]
             []
             rootSA
