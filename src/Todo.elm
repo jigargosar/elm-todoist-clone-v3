@@ -1,4 +1,4 @@
-module Todo exposing (Todo, decoder, id, idx, isCompleted, labelIdList, mapCompleted, maybeProjectId, projectRef, title, toggle, viewList)
+module Todo exposing (Todo, decoder, id, idx, isCompleted, labelIdList, mapCompleted, projectRef, title, toggle, viewList)
 
 import Emoji
 import Html.Styled as Html exposing (..)
