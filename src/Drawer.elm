@@ -173,7 +173,7 @@ view config panelLists expansionPanels panelsDragState =
                 "Projects"
                 expansionPanels.projectsExpanded
                 panelsDragState.projectsDrag
-                projectToNavItem
+                (projectToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.projectList
 
         labelsCP =
@@ -181,7 +181,7 @@ view config panelLists expansionPanels panelsDragState =
                 "Labels"
                 expansionPanels.labelsExpanded
                 panelsDragState.labelsDrag
-                labelToNavItem
+                (labelToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.labelList
 
         filtersCP =
@@ -189,7 +189,7 @@ view config panelLists expansionPanels panelsDragState =
                 "Filters"
                 expansionPanels.filtersExpanded
                 panelsDragState.filtersDrag
-                filterToNavItem
+                (filterToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.filterList
     in
     [ prefixCP, projectsCP, labelsCP, filtersCP ]
@@ -198,12 +198,6 @@ view config panelLists expansionPanels panelsDragState =
 
 type alias ContentPortal msg =
     { content : List (Html msg), portal : List (Html msg) }
-
-
-type PanelItem
-    = ProjectItem Project
-    | LabelItem Label
-    | FilterItem FilterView
 
 
 type PanelItemId
@@ -300,15 +294,15 @@ type alias NavItemViewModel id msg =
     }
 
 
-projectToNavItem : Project -> NavItemViewModel ProjectId msg
-projectToNavItem project =
+projectToNavItem : (PanelItemId -> msg) -> Project -> NavItemViewModel ProjectId msg
+projectToNavItem onMoreMenuTriggerClicked project =
     let
         projectId =
             Project.id project
     in
     { id = projectId
     , panelItemId = Just <| ProjectItemId projectId
-    , onMoreMenuTriggerClicked = Nothing
+    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| ProjectItemId projectId)
     , idToString = ProjectId.toString
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
@@ -317,11 +311,11 @@ projectToNavItem project =
     }
 
 
-labelToNavItem : Label -> NavItemViewModel LabelId msg
-labelToNavItem label =
+labelToNavItem : (PanelItemId -> msg) -> Label -> NavItemViewModel LabelId msg
+labelToNavItem onMoreMenuTriggerClicked label =
     { id = Label.id label
     , panelItemId = Just <| LabelItemId (Label.id label)
-    , onMoreMenuTriggerClicked = Nothing
+    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| LabelItemId (Label.id label))
     , idToString = LabelId.toString
     , title = Label.title label
     , href = Route.href Route.Root
@@ -330,11 +324,11 @@ labelToNavItem label =
     }
 
 
-filterToNavItem : FilterView -> NavItemViewModel String msg
-filterToNavItem { title, hue } =
+filterToNavItem : (PanelItemId -> msg) -> FilterView -> NavItemViewModel String msg
+filterToNavItem onMoreMenuTriggerClicked { title, hue } =
     { id = title
     , panelItemId = Just <| FilterItemId title
-    , onMoreMenuTriggerClicked = Nothing
+    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| FilterItemId title)
     , idToString = identity
     , title = title
     , href = Route.href Route.Root
