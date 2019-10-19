@@ -243,8 +243,11 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
 
                             iconSA =
                                 StyleAttrs [] dragEvents
+
+                            newNavItem =
+                                { navItem | iconSA = concatStyleAttributes navItem.iconSA iconSA }
                         in
-                        viewNavItem rootSA navItem
+                        viewNavItem rootSA newNavItem
                 in
                 list
                     |> dragSystem.rotate drag
