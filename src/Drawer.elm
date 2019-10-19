@@ -317,6 +317,13 @@ type alias ColorCompatible x =
     { x | value : String, color : Css.Compatible }
 
 
+type alias IconView msg =
+    { name : String
+    , styles : List Style
+    , attrs : List (Html msg)
+    }
+
+
 viewItem : List (Attribute msg) -> List Css.Style -> Attribute msg -> String -> ColorCompatible x -> String -> Html msg
 viewItem attributes styles href title iconColor iconName =
     div
