@@ -296,7 +296,7 @@ type alias SimpleNavItemViewModel =
 type alias PanelNavItemViewConfig id item =
     { id : item -> id
     , idToString : id -> String
-    , panelItemId : PanelItemId
+    , panelItemId : id -> PanelItemId
     , title : item -> String
     , route : item -> Route.Route
     , iconName : String
@@ -304,18 +304,91 @@ type alias PanelNavItemViewConfig id item =
     }
 
 
-type alias PanelConfig =
+type alias PanelConfig item msg =
     { domIdPrefix : String
+    , dragSystem : Drag.System item msg
+    , onMoreClicked : PanelItemId -> msg
     }
 
 
-viewPanelNavItem : PanelConfig -> PanelNavItemViewConfig id item -> item -> Html msg
-viewPanelNavItem pc ic item =
+viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
+viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } ic drag idx item =
     let
+        id =
+            ic.id item
+
         domId =
-            pc.domIdPrefix ++ "_" ++ ic.idToString (ic.id item)
+            domIdPrefix ++ "_" ++ ic.idToString id
+
+        dragEvents =
+            dragSystem.dragEvents idx domId drag
+
+        dropEvents =
+            dragSystem.dropEvents idx drag
+
+        dragOverStyle =
+            Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+
+        rootSA =
+            StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
+
+        iconSA =
+            StyleAttrs [ Css.cursor Css.move ] dragEvents
+
+        iconName =
+            ic.iconName
+
+        route =
+            ic.route item
+
+        title =
+            ic.title item
+
+        panelItemId =
+            ic.panelItemId id
     in
-    div [] []
+    div
+        (SA.toAttrsWithBase
+            [ ph 1
+            , pointer
+            , flex
+            , c_grayL 0.3
+            , hover [ bgGrayL 0.9 ]
+            , noSelection
+            ]
+            [ class "hover_parent" ]
+            rootSA
+        )
+        [ i
+            (SA.toAttrsWithBase
+                [ pv 2, ph 1, flex, itemsCenter ]
+                [ class "material-icons" ]
+                iconSA
+            )
+            [ text iconName ]
+        , a
+            [ css
+                [ Css.textDecoration Css.none
+                , Css.visited [ Css.color Css.inherit ]
+                , Css.color Css.inherit
+                , pv 2
+                , ph 1
+                , flex
+                , flexGrow1
+                , itemsCenter
+                ]
+            , Route.href route
+            ]
+            [ text title ]
+        , i
+            [ css [ pv 2, ph 1 ]
+            , class "show_on_parent_hover"
+            , class "material-icons"
+            , onClick (onMoreClicked panelItemId)
+            ]
+            [ text "more_horiz" ]
+        , div [ css [ mr 3 ] ] []
+        ]
 
 
 type alias NavItemViewModel id msg =
