@@ -25,6 +25,7 @@ import LabelId
 import Project exposing (Project)
 import ProjectId
 import Route
+import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
 
 
@@ -245,7 +246,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                                 StyleAttrs [] dragEvents
 
                             newNavItem =
-                                { navItem | iconSA = concatStyleAttributes navItem.iconSA iconSA }
+                                { navItem | iconSA = SA.concat navItem.iconSA iconSA }
                         in
                         viewNavItem rootSA newNavItem
                 in
@@ -322,17 +323,8 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
     viewItem rootSA href title iconName iconSA
 
 
-concatStyleAttributes : StyleAttrs msg -> StyleAttrs msg -> StyleAttrs msg
-concatStyleAttributes sa1 sa2 =
-    StyleAttrs (sa1.styles ++ sa2.styles) (sa1.attrs ++ sa2.attrs)
-
-
 type alias ColorCompatible x =
     { x | value : String, color : Css.Compatible }
-
-
-type alias StyleAttrs msg =
-    { styles : List Style, attrs : List (Attribute msg) }
 
 
 type alias IconView msg =
