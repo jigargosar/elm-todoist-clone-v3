@@ -347,10 +347,13 @@ viewItem rootSA href title iconName iconSA =
             rootSA
         )
         [ i
-            ([ css [ pv 2, ph 1, flex, itemsCenter, batch iconSA.styles ]
-             , class "material-icons"
-             ]
-                ++ iconSA.attrs
+            (SA.concat
+                (StyleAttrs [ pv 2, ph 1, flex, itemsCenter, batch iconSA.styles ]
+                    [ class "material-icons"
+                    ]
+                )
+                iconSA
+                |> SA.toAttrs
             )
             [ text iconName ]
         , a
