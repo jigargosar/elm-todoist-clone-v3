@@ -293,7 +293,7 @@ type alias SimpleNavItemViewModel =
     }
 
 
-type alias PanelNavItemViewModel id item =
+type alias PanelNavItemViewConfig id item =
     { id : item -> id
     , idToString : id -> String
     , panelItemId : PanelItemId
@@ -302,6 +302,20 @@ type alias PanelNavItemViewModel id item =
     , iconName : String
     , iconStyle : item -> Style
     }
+
+
+type alias PanelConfig =
+    { domIdPrefix : String
+    }
+
+
+viewPanelNavItem : PanelConfig -> PanelNavItemViewConfig id item -> item -> Html msg
+viewPanelNavItem pc ic item =
+    let
+        domId =
+            pc.domIdPrefix ++ "_" ++ ic.idToString (ic.id item)
+    in
+    div [] []
 
 
 type alias NavItemViewModel id msg =
