@@ -269,14 +269,14 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = drawerView model
+        , drawer = drawerCP model
         , main = mainCP model
         }
         model.isDrawerModalOpen
 
 
-drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
-drawerView model =
+drawerCP : Model -> { content : List (Html Msg), portal : List (Html Msg) }
+drawerCP model =
     let
         drawerConfig : Drawer.Config Msg
         drawerConfig =
