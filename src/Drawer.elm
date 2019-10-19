@@ -165,7 +165,6 @@ view config panelLists expansionPanels panelsDragState =
         panelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
-            , onItemMoreMenuClicked = config.onPanelItemMoreMenuClicked
             }
 
         projectsCP =
@@ -207,7 +206,7 @@ type PanelItemId
 
 
 viewPanel :
-    { togglePanel : msg, dragSystem : Drag.System a msg, onItemMoreMenuClicked : PanelItemId -> msg }
+    { togglePanel : msg, dragSystem : Drag.System a msg }
     -> String
     -> Bool
     -> Drag
