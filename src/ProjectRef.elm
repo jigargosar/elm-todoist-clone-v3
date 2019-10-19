@@ -1,4 +1,4 @@
-module ProjectRef exposing (ProjectRef, fromId, inbox)
+module ProjectRef exposing (ProjectRef, fromId, id, inbox)
 
 import ProjectId
 
@@ -16,3 +16,13 @@ inbox =
 fromId : ProjectId.ProjectId -> ProjectRef
 fromId =
     ProjectId
+
+
+id : ProjectRef -> Maybe ProjectId.ProjectId
+id model =
+    case model of
+        Inbox ->
+            Nothing
+
+        ProjectId projectId ->
+            Just projectId

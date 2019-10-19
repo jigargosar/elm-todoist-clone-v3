@@ -11,7 +11,7 @@ import ProjectCollection exposing (ProjectCollection)
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
-import TodoProject
+import TodoProject exposing (TodoProject)
 
 
 type alias Config msg =

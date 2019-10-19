@@ -1,21 +1,21 @@
 module TodoProject exposing
     ( TodoProject
-    , fromMaybeProjectId
     , fromProject
+    , fromProjectRef
     , fromTodo
     , inbox
+    , notFound
     )
 
-import Basics.More exposing (flip)
 import Color exposing (Color)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
-import ProjectId exposing (ProjectId)
+import ProjectRef exposing (ProjectRef)
 import Todo
 
 
 type alias TodoProject =
-    { id : Maybe ProjectId
+    { ref : Maybe ProjectRef
     , title : String
     , color : Color
     }
@@ -23,25 +23,37 @@ type alias TodoProject =
 
 fromProject : Project -> TodoProject
 fromProject project =
-    TodoProject (Just (Project.id project))
+    TodoProject (Just <| ProjectRef.fromId (Project.id project))
         (Project.title project)
         (Color.fromHSL ( toFloat <| Project.hue project, 70, 50 ))
 
 
 inbox : TodoProject
 inbox =
-    TodoProject Nothing
+    TodoProject (Just ProjectRef.inbox)
         "Inbox"
         (Color.fromHSL ( 123, 70, 50 ))
 
 
-fromMaybeProjectId : ProjectCollection -> Maybe ProjectId -> TodoProject
-fromMaybeProjectId projectCollection =
-    Maybe.andThen (flip ProjectCollection.byId projectCollection)
-        >> Maybe.map fromProject
-        >> Maybe.withDefault inbox
+notFound : TodoProject
+notFound =
+    TodoProject Nothing
+        "not-found"
+        (Color.fromHSL ( 0, 70, 50 ))
+
+
+fromProjectRef : ProjectCollection -> ProjectRef -> TodoProject
+fromProjectRef pc ref =
+    case ProjectRef.id ref of
+        Just projectId ->
+            ProjectCollection.byId projectId pc
+                |> Maybe.map fromProject
+                |> Maybe.withDefault notFound
+
+        Nothing ->
+            inbox
 
 
 fromTodo : ProjectCollection -> Todo.Todo -> TodoProject
 fromTodo projectCollection =
-    Todo.maybeProjectId >> fromMaybeProjectId projectCollection
+    Todo.projectRef >> fromProjectRef projectCollection
