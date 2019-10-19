@@ -10,11 +10,11 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import Layout
+import Page exposing (Page)
 import Page.NotFound
 import ProjectCollection exposing (ProjectCollection)
 import ProjectRef exposing (ProjectRef)
 import Return
-import Route
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -54,35 +54,12 @@ type alias Model =
     }
 
 
-type Page
-    = TodoListByProjectRef ProjectRef
-    | NotFound Url
-
-
-pageFromRoute : Route.Route -> Page
-pageFromRoute route =
-    case route of
-        Route.Root ->
-            TodoListByProjectRef ProjectRef.inbox
-
-        Route.Inbox ->
-            TodoListByProjectRef ProjectRef.inbox
-
-        Route.Project projectId ->
-            TodoListByProjectRef <| ProjectRef.fromId projectId
-
-
-pageFromUrl : Url -> Page
-pageFromUrl url =
-    Route.fromUrl url |> Maybe.map pageFromRoute |> Maybe.withDefault (NotFound url)
-
-
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
     let
         initial : Model
         initial =
-            { page = pageFromUrl url
+            { page = Page.pageFromUrl url
             , navKey = navKey
             , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
@@ -269,7 +246,7 @@ onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
     let
         page =
-            pageFromUrl url
+            Page.pageFromUrl url
     in
     if page /= model.page then
         ( { model | page = page }, Cmd.none )
@@ -314,10 +291,10 @@ drawerCP model =
 mainCP : Model -> View (Html Msg)
 mainCP model =
     case model.page of
-        NotFound url ->
+        Page.NotFound url ->
             Page.NotFound.view url
 
-        TodoListByProjectRef projectRef ->
+        Page.TodoListByProjectRef projectRef ->
             View.content <| mainView projectRef model.projectCollection model.labelCollection model.todoDict
 
 
