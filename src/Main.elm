@@ -157,6 +157,7 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
+    | PanelItemMoreMenuClicked Drawer.PanelItemId
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -241,6 +242,9 @@ update message model =
                     , Cmd.none
                     )
 
+        PanelItemMoreMenuClicked panelItemId ->
+            ( model, Cmd.none )
+
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
@@ -277,6 +281,7 @@ drawerCP model =
             { onToggleExpansionPanel = ToggleDrawerExpansionPanel
             , panelToDragMsg = DrawerPanelDrag
             , panelToDragCompleteMsg = DrawerPanelDragComplete
+            , onPanelItemMoreMenuClicked = PanelItemMoreMenuClicked
             }
     in
     Drawer.view drawerConfig

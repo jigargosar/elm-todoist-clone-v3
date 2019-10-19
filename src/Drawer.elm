@@ -4,6 +4,7 @@ module Drawer exposing
     , FilterView
     , LabelView
     , Panel(..)
+    , PanelItemId(..)
     , PanelLists
     , PanelsDragState
     , filterList
@@ -84,6 +85,7 @@ type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
     , panelToDragMsg : Panel -> Drag.Msg -> msg
     , panelToDragCompleteMsg : Panel -> Drag.Info -> msg
+    , onPanelItemMoreMenuClicked : PanelItemId -> msg
     }
 
 
