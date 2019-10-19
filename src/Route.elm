@@ -1,4 +1,4 @@
-module Routes exposing (Route(..), fromUrl, href, replaceUrl)
+module Route exposing (Route(..), fromUrl, href, replaceUrl)
 
 import Browser.Navigation as Nav
 import Html.Styled exposing (Attribute)

@@ -12,6 +12,7 @@ import LabelCollection exposing (LabelCollection)
 import Layout
 import ProjectCollection exposing (ProjectCollection)
 import Return
+import Route
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -38,7 +39,8 @@ type alias Flags =
 
 
 type alias Model =
-    { todoDict : TodoDict
+    { page : Page
+    , todoDict : TodoDict
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
     , filterList : List FilterView
@@ -48,12 +50,18 @@ type alias Model =
     }
 
 
+type Page
+    = Route Route.Route
+    | NotFound Url
+
+
 init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Msg )
 init flags url navKey =
     let
         initial : Model
         initial =
-            { todoDict = TodoDict.initial
+            { page = Route.fromUrl url |> Maybe.map Route |> Maybe.withDefault (NotFound url)
+            , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , labelCollection = LabelCollection.initial
             , filterList = Drawer.filterList
