@@ -20,6 +20,7 @@ module.exports = (_, config) => {
       ],
     },
     devServer: {
+      publicPath:'/',
       contentBase: 'public',
       watchContentBase: true,
       historyApiFallback: true,
