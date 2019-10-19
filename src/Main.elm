@@ -309,7 +309,7 @@ mainCP model =
                 Route.Inbox ->
                     View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
-                Route.Project projectId ->
+                Route.Project _ ->
                     View.content <| mainView model.projectCollection model.labelCollection model.todoDict
 
 
