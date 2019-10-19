@@ -233,11 +233,11 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                             dropEvents =
                                 dragSystem.dropEvents idx drag
 
-                            dragOverStyles =
+                            dragOverStyle =
                                 Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
                             rootSA =
-                                StyleAttrs [ dragOverStyles ] (A.id domId :: dropEvents)
+                                StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
 
                             iconSA =
                                 StyleAttrs [] dragEvents
