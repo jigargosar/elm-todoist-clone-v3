@@ -66,3 +66,13 @@ html {
     margin-left: var(--sidebar-width);
   }
 }
+
+
+.hover_parent .parent_hovered{
+  visibility: hidden;
+}
+
+.hover_parent:hover .parent_hovered{
+  visibility: visible;
+}
+
