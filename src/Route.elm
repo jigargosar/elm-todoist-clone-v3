@@ -13,7 +13,7 @@ import Url.Parser exposing ((</>), (<?>), Parser, int, map, parse, s, string, to
 type Route
     = Root
     | Inbox
-    | ProjectTodoList ProjectId
+    | Project ProjectId
 
 
 parser : Parser (Route -> c) c
@@ -21,7 +21,7 @@ parser =
     Url.Parser.oneOf
         [ map Root top
         , map Inbox (s "inbox")
-        , map ProjectTodoList (s "project" </> parseProjectId)
+        , map Project (s "project" </> parseProjectId)
         ]
 
 
@@ -59,7 +59,7 @@ routeToString route =
                 Inbox ->
                     [ "inbox" ]
 
-                ProjectTodoList projectId ->
+                Project projectId ->
                     [ "project", ProjectId.toString projectId ]
     in
     Url.Builder.absolute pathSegments []
