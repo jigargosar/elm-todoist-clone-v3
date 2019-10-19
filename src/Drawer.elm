@@ -323,17 +323,6 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
     viewItem rootSA href title iconName iconSA
 
 
-type alias ColorCompatible x =
-    { x | value : String, color : Css.Compatible }
-
-
-type alias IconView msg =
-    { name : String
-    , styles : List Style
-    , attrs : List (Attribute msg)
-    }
-
-
 viewItem : StyleAttrs msg -> Attribute msg -> String -> String -> StyleAttrs msg -> Html msg
 viewItem rootSA href title iconName iconSA =
     div
