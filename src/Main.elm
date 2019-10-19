@@ -10,6 +10,7 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import Layout
+import Page.NotFound
 import ProjectCollection exposing (ProjectCollection)
 import Return
 import Route
@@ -295,10 +296,29 @@ drawerCP model =
 
 
 mainCP model =
-    { content =
-        mainView model.projectCollection model.labelCollection model.todoDict
-    , portal = []
-    }
+    case model.page of
+        NotFound url ->
+            Page.NotFound.view url
+
+        Route route ->
+            case route of
+                Route.Root ->
+                    { content =
+                        mainView model.projectCollection model.labelCollection model.todoDict
+                    , portal = []
+                    }
+
+                Route.Inbox ->
+                    { content =
+                        mainView model.projectCollection model.labelCollection model.todoDict
+                    , portal = []
+                    }
+
+                Route.Project projectId ->
+                    { content =
+                        mainView model.projectCollection model.labelCollection model.todoDict
+                    , portal = []
+                    }
 
 
 mainView : ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
