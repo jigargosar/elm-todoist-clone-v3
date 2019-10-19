@@ -351,7 +351,7 @@ navTitleIconItem href title iconName =
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg
-viewNavItem rootSA { title, iconName, iconSA, href } =
+viewNavItem rootSA { title, iconName, iconSA, href, panelItemId } =
     div
         (SA.toAttrsWithBase
             [ ph 1
@@ -386,7 +386,17 @@ viewNavItem rootSA { title, iconName, iconSA, href } =
             ]
             [ text title ]
         , i
-            [ css [ pv 2, ph 1, mr 3 ]
+            [ css
+                [ pv 2
+                , ph 1
+                , mr 3
+                , case panelItemId of
+                    Just _ ->
+                        batch []
+
+                    Nothing ->
+                        batch [ Css.visibility Css.hidden ]
+                ]
             , class "show_on_parent_hover"
             , class "material-icons"
             ]
