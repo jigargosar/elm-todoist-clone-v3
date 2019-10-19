@@ -385,27 +385,32 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId } =
             , href
             ]
             [ text title ]
-        , i
-            [ css
-                [ pv 2
-                , ph 1
-                , mr 3
-                , batch <|
-                    case panelItemId of
-                        Just _ ->
-                            []
+        , case panelItemId of
+            Just _ ->
+                i
+                    [ css
+                        [ pv 2
+                        , ph 1
+                        , batch <|
+                            case panelItemId of
+                                Just _ ->
+                                    []
 
-                        Nothing ->
-                            [ Css.visibility Css.hidden ]
-                ]
-            , class <|
-                case panelItemId of
-                    Just _ ->
-                        "show_on_parent_hover"
+                                Nothing ->
+                                    [ Css.visibility Css.hidden ]
+                        ]
+                    , class <|
+                        case panelItemId of
+                            Just _ ->
+                                "show_on_parent_hover"
 
-                    Nothing ->
-                        ""
-            , class "material-icons"
-            ]
-            [ text "more_horiz" ]
+                            Nothing ->
+                                ""
+                    , class "material-icons"
+                    ]
+                    [ text "more_horiz" ]
+
+            Nothing ->
+                text ""
+        , div [ css [ mr 3 ] ] []
         ]
