@@ -164,6 +164,7 @@ view config panelLists expansionPanels panelsDragState =
         panelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
+            , onItemMoreMenuClicked = config.onPanelItemMoreMenuClicked
             }
 
         projectsCP =
@@ -211,7 +212,7 @@ type PanelItemId
 
 
 viewPanel :
-    { togglePanel : msg, dragSystem : Drag.System a msg }
+    { togglePanel : msg, dragSystem : Drag.System a msg, onItemMoreMenuClicked : PanelItemId -> msg }
     -> String
     -> Bool
     -> Drag
@@ -289,6 +290,7 @@ mergeContentPortal =
 type alias NavItemViewModel id msg =
     { id : id
     , panelItemId : Maybe PanelItemId
+    , onMoreMenuTriggerClicked : Maybe msg
     , idToString : id -> String
     , title : String
     , href : Attribute msg
@@ -305,6 +307,7 @@ projectToNavItem project =
     in
     { id = projectId
     , panelItemId = Just <| ProjectItemId projectId
+    , onMoreMenuTriggerClicked = Nothing
     , idToString = ProjectId.toString
     , title = Project.title project
     , href = Route.href (Route.Project projectId)
@@ -317,6 +320,7 @@ labelToNavItem : Label -> NavItemViewModel LabelId msg
 labelToNavItem label =
     { id = Label.id label
     , panelItemId = Just <| LabelItemId (Label.id label)
+    , onMoreMenuTriggerClicked = Nothing
     , idToString = LabelId.toString
     , title = Label.title label
     , href = Route.href Route.Root
@@ -329,6 +333,7 @@ filterToNavItem : FilterView -> NavItemViewModel String msg
 filterToNavItem { title, hue } =
     { id = title
     , panelItemId = Just <| FilterItemId title
+    , onMoreMenuTriggerClicked = Nothing
     , idToString = identity
     , title = title
     , href = Route.href Route.Root
@@ -342,6 +347,7 @@ navTitleIconItem href title iconName =
     viewNavItem SA.none
         { id = title
         , panelItemId = Nothing
+        , onMoreMenuTriggerClicked = Nothing
         , idToString = identity
         , title = title
         , href = href
