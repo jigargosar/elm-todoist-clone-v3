@@ -68,6 +68,7 @@ viewTitle todo =
 viewProject : ProjectCollection -> Todo -> Html msg
 viewProject pc todo =
     let
+        todoProject : TodoProject
         todoProject =
             TodoProject.fromTodo pc todo
     in
