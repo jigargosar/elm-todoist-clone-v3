@@ -240,7 +240,7 @@ viewPanel togglePanel title isExpanded dragSystem drag toNavItem list =
                                 StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
 
                             iconSA =
-                                StyleAttrs [] dragEvents
+                                StyleAttrs [ Css.cursor Css.move ] dragEvents
 
                             newNavItem =
                                 { navItem | iconSA = SA.concat navItem.iconSA iconSA }
