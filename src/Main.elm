@@ -179,7 +179,7 @@ update message model =
                     )
 
         OnUrlChange url ->
-            ( model, Cmd.none )
+            onUrlChange url model
 
         ToggleTodoCompleted todoId ->
             let
@@ -241,6 +241,11 @@ update message model =
                     ( { model | filterList = rotate model.filterList }
                     , Cmd.none
                     )
+
+
+onUrlChange : Url -> Model -> ( Model, Cmd Msg )
+onUrlChange url model =
+    ( model, Cmd.none )
 
 
 
