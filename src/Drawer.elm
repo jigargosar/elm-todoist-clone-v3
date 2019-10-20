@@ -365,13 +365,13 @@ projectNavItemViewConfig =
 
 
 viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
-viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } ic drag idx item =
+viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } itemConfig drag idx item =
     let
         id =
-            ic.id item
+            itemConfig.id item
 
         domId =
-            domIdPrefix ++ "_" ++ ic.idToString id
+            domIdPrefix ++ "_" ++ itemConfig.idToString id
 
         dragEvents =
             dragSystem.dragEvents idx domId drag
@@ -386,19 +386,19 @@ viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } ic drag idx item =
             StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
 
         iconSA =
-            StyleAttrs [ Css.cursor Css.move, ic.iconStyle item ] dragEvents
+            StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
 
         iconName =
-            ic.iconName
+            itemConfig.iconName
 
         route =
-            ic.route item
+            itemConfig.route item
 
         title =
-            ic.title item
+            itemConfig.title item
 
         panelItemId =
-            ic.panelItemId id
+            itemConfig.panelItemId id
     in
     div
         (SA.toAttrsWithBase
