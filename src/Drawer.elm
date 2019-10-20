@@ -185,11 +185,11 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.projectList
 
         labelsCP =
-            viewPanel (panelConfig Labels)
+            viewPanel2 (panelConfig2 Labels)
+                labelNavItemViewConfig
                 "Labels"
                 expansionPanels.labelsExpanded
                 panelsDragState.labelsDrag
-                (labelToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.labelList
 
         filtersCP =
