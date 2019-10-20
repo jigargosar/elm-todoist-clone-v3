@@ -558,11 +558,10 @@ viewPanelNavItem__ rootSA icon linkContent moreSA =
         |> DI.render
 
 
-viewGhostPanelNavItem__ rootSA icon linkContent moreSA =
+viewPanelNavItemGhost__ rootSA icon title =
     DI.init rootSA
-        |> DI.withDraggablePrimaryIcon icon.name icon.sa
-        |> DI.withLinkContent linkContent.title linkContent.sa
-        |> DI.withSecondaryMoreAction moreSA
+        |> DI.withPrimaryIcon icon.name icon.sa
+        |> DI.withContentText title
         |> DI.render
 
 
