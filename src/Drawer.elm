@@ -21,7 +21,7 @@ import Drag exposing (Drag)
 import DrawerItem as DI
 import ExpansionPanelUI
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as A exposing (class, css)
+import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
 import Label exposing (Label)
 import LabelId exposing (LabelId)
@@ -167,17 +167,12 @@ view config panelLists expansionPanels panelsDragState =
         panelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
-            }
-
-        panelConfig2 panel =
-            { togglePanel = config.onToggleExpansionPanel panel
-            , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
             }
 
         projectsCP =
-            viewPanel2 (panelConfig2 Projects)
+            viewPanel (panelConfig Projects)
                 projectNavItemViewConfig
                 "Projects"
                 expansionPanels.projectsExpanded
@@ -185,7 +180,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.projectList
 
         labelsCP =
-            viewPanel2 (panelConfig2 Labels)
+            viewPanel (panelConfig Labels)
                 labelNavItemViewConfig
                 "Labels"
                 expansionPanels.labelsExpanded
@@ -193,7 +188,7 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.labelList
 
         filtersCP =
-            viewPanel2 (panelConfig2 Filters)
+            viewPanel (panelConfig Filters)
                 filterNavItemViewConfig
                 "Filters"
                 expansionPanels.filtersExpanded
@@ -214,71 +209,6 @@ type PanelItemId
 
 
 viewPanel :
-    { togglePanel : msg, dragSystem : Drag.System a msg }
-    -> String
-    -> Bool
-    -> Drag
-    -> (a -> NavItemViewModel id msg)
-    -> List a
-    -> ContentPortal msg
-viewPanel { togglePanel, dragSystem } title isExpanded drag toNavItem list =
-    let
-        ghostItem =
-            dragSystem.ghostStyles drag
-                |> Maybe.andThen
-                    (\( idx, styles ) ->
-                        List.drop idx list |> List.head |> Maybe.map (toNavItem >> Tuple.pair styles)
-                    )
-                |> Maybe.map
-                    (\( styles, navItem ) ->
-                        [ viewNavItem (StyleAttrs [ styles ] []) navItem
-                        , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                        ]
-                    )
-                |> Maybe.withDefault []
-    in
-    { content =
-        ExpansionPanelUI.view togglePanel
-            title
-            (\_ ->
-                let
-                    viewDnDNavItem : Int -> NavItemViewModel id msg -> Html msg
-                    viewDnDNavItem idx navItem =
-                        let
-                            domId =
-                                String.toLower title ++ "-panel-drag-item__" ++ navItem.idToString navItem.id
-
-                            dragEvents =
-                                dragSystem.dragEvents idx domId drag
-
-                            dropEvents =
-                                dragSystem.dropEvents idx drag
-
-                            dragOverStyle =
-                                Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
-
-                            rootSA =
-                                StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
-
-                            iconSA =
-                                StyleAttrs [ Css.cursor Css.move ] dragEvents
-
-                            newNavItem =
-                                { navItem | iconSA = SA.concat navItem.iconSA iconSA }
-                        in
-                        viewNavItem rootSA newNavItem
-                in
-                list
-                    |> dragSystem.rotate drag
-                    |> List.map toNavItem
-                    |> List.indexedMap viewDnDNavItem
-            )
-            isExpanded
-    , portal = ghostItem
-    }
-
-
-viewPanel2 :
     PanelConfig item msg
     -> PanelNavItemViewConfig id item
     -> String
@@ -286,7 +216,7 @@ viewPanel2 :
     -> Drag
     -> List item
     -> ContentPortal msg
-viewPanel2 pc ic title isExpanded drag list =
+viewPanel pc ic title isExpanded drag list =
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
@@ -433,86 +363,9 @@ type alias NavItemViewModel id msg =
     }
 
 
-labelToNavItem : (PanelItemId -> msg) -> Label -> NavItemViewModel LabelId msg
-labelToNavItem onMoreMenuTriggerClicked label =
-    { id = Label.id label
-    , panelItemId = Just <| LabelItemId (Label.id label)
-    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| LabelItemId (Label.id label))
-    , idToString = LabelId.toString
-    , title = Label.title label
-    , href = Route.href Route.Root
-    , iconName = "label"
-    , iconSA = StyleAttrs [ c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5 ] []
-    }
-
-
-filterToNavItem : (PanelItemId -> msg) -> FilterView -> NavItemViewModel String msg
-filterToNavItem onMoreMenuTriggerClicked { title, hue } =
-    { id = title
-    , panelItemId = Just <| FilterItemId title
-    , onMoreMenuTriggerClicked = Just (onMoreMenuTriggerClicked <| FilterItemId title)
-    , idToString = identity
-    , title = title
-    , href = Route.href Route.Root
-    , iconName = "filter_list"
-    , iconSA = StyleAttrs [ c_ <| Css.hsl hue 0.7 0.5 ] []
-    }
-
-
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
 viewSimpleNavItem href title iconName =
     viewSimpleNavItemHelp (StyleAttrs [] [ href ]) { name = iconName, sa = SA.none } title
-
-
-viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg
-viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTriggerClicked } =
-    div
-        (SA.toAttrsWithBase
-            [ ph 1
-            , pointer
-            , flex
-            , c_grayL 0.3
-            , hover [ bgGrayL 0.9 ]
-            , noSelection
-            ]
-            [ class "hover_parent" ]
-            rootSA
-        )
-        [ i
-            (SA.toAttrsWithBase
-                [ pv 2, ph 1, flex, itemsCenter ]
-                [ class "material-icons" ]
-                iconSA
-            )
-            [ text iconName ]
-        , a
-            [ css
-                [ Css.textDecoration Css.none
-                , Css.visited [ Css.color Css.inherit ]
-                , Css.color Css.inherit
-                , pv 2
-                , ph 1
-                , flex
-                , flexGrow1
-                , itemsCenter
-                ]
-            , href
-            ]
-            [ text title ]
-        , case onMoreMenuTriggerClicked of
-            Just msg ->
-                i
-                    [ css [ pv 2, ph 1 ]
-                    , class "show_on_parent_hover"
-                    , class "material-icons"
-                    , onClick msg
-                    ]
-                    [ text "more_horiz" ]
-
-            Nothing ->
-                text ""
-        , div [ css [ mr 3 ] ] []
-        ]
 
 
 viewPanelNavItemHelp :
