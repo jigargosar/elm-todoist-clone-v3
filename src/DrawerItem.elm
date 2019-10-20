@@ -1,4 +1,4 @@
-module DrawerItem exposing (DrawerItem, init, initLink, render, withContentText, withLinkContent, withPrimaryIcon, withSecondaryMoreAction)
+module DrawerItem exposing (DrawerItem, init, initLink, render, withContentAsLink, withContentText, withPrimaryIcon, withSecondaryMoreAction)
 
 import Css
 import Html.Styled exposing (..)
@@ -41,25 +41,56 @@ withContentText title model =
     { model | content = Just <| contentText title }
 
 
+setContent content model =
+    { model | content = Just content }
+
+
+setSecondary secondary model =
+    { model | secondary = Just secondary }
+
+
 contentText : String -> Html msg
 contentText title =
     div [ css [ flexGrow1, pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
 
 
-withLinkContent : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
-withLinkContent =
-    todo
+withContentAsLink : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
+withContentAsLink title sa =
+    setContent
+        (a
+            (SA.toAttrsWithBase
+                [ Css.textDecoration Css.none
+                , Css.visited [ Css.color Css.inherit ]
+                , Css.color Css.inherit
+                , pv 2
+                , ph 1
+                , flex
+                , flexGrow1
+                , itemsCenter
+                ]
+                []
+                sa
+            )
+            [ text title ]
+        )
 
 
 withSecondaryMoreAction : StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
-withSecondaryMoreAction =
-    todo
+withSecondaryMoreAction sa =
+    setSecondary
+        (i
+            (SA.toAttrsWithBase [ pv 2, ph 1 ]
+                [ class "material-icons", class "show_on_parent_hover" ]
+                sa
+            )
+            [ text "more_horiz" ]
+        )
 
 
 render : DrawerItem msg -> Html msg
 render { tag, sa, primary, content, secondary } =
     node tag
-        (SA.toAttrsWithBase [ ph 1, flex ] [] sa)
+        (SA.toAttrsWithBase [ ph 1, flex ] [ class "hover_parent" ] sa)
         (List.filterMap identity [ primary, content, secondary, Just drawerScrollFix ])
 
 
