@@ -1,14 +1,10 @@
 module Drawer exposing
     ( Config
-    , ExpansionPanels
     , Panel(..)
     , PanelItemId(..)
     , PanelLists
     , PanelState
-    , PanelsDragState
-    , initialExpansionPanels
     , initialPanelState
-    , initialPanelsDragState
     , panelSubscriptions
     , toggleExpansionPanel
     , updatePanelDrag
