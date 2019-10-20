@@ -70,6 +70,19 @@ getSubState panel subState =
             subState.filters
 
 
+setSubState : Panel -> a -> SubState a -> SubState a
+setSubState panel a subState =
+    case panel of
+        Projects ->
+            { subState | projects = a }
+
+        Labels ->
+            { subState | labels = a }
+
+        Filters ->
+            { subState | filters = a }
+
+
 type alias ExpansionPanels =
     { projectsExpanded : Bool
     , labelsExpanded : Bool
