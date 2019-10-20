@@ -1,4 +1,4 @@
-module View exposing (View, concat, content, portal, singleton)
+module View exposing (View, concat, content, none, portal, singleton)
 
 
 type alias View a =
@@ -25,3 +25,8 @@ concat =
     List.foldl
         (\cp acc -> { acc | content = acc.content ++ cp.content, portal = acc.portal ++ cp.portal })
         { content = [], portal = [] }
+
+
+none : View a
+none =
+    content []

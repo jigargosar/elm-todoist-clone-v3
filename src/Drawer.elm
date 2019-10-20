@@ -306,14 +306,15 @@ viewPanel2 pc ic title isExpanded drag list =
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
-        , View.content <|
-            if isExpanded then
-                list
+        , if isExpanded then
+            View.content
+                (list
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc ic drag)
+                )
 
-            else
-                []
+          else
+            View.none
         , View.portal ghostItem
         ]
 
