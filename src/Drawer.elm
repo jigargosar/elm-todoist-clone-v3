@@ -303,14 +303,15 @@ viewPanel2 pc ic title isExpanded drag list =
                 |> Maybe.withDefault []
     in
     { content =
-        ExpansionPanelUI.view pc.togglePanel
-            title
-            (\_ ->
-                list
-                    |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (viewPanelNavItem pc ic drag)
-            )
-            isExpanded
+        ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded
+            :: (if isExpanded then
+                    list
+                        |> pc.dragSystem.rotate drag
+                        |> List.indexedMap (viewPanelNavItem pc ic drag)
+
+                else
+                    []
+               )
     , portal = ghostItem
     }
 
