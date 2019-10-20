@@ -9,4 +9,4 @@ view =
 
 
 rootStyle =
-    batch [ ph 1 ]
+    batch [ ph 1, flex ]
