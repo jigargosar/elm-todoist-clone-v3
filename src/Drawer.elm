@@ -112,10 +112,6 @@ toggleExpansionPanel panel =
     mapExpanded (mapSubState panel not)
 
 
-type alias PanelsDragState =
-    SubState Drag
-
-
 updatePanelDrag :
     (Panel -> Drag.Msg -> msg)
     -> (Panel -> Drag.Info -> msg)
@@ -132,7 +128,7 @@ updatePanelDrag toMsg onComplete panel msg panelState =
         |> Tuple.mapFirst (\newDrag -> panelState |> mapDrag (mapSubState panel (always newDrag)))
 
 
-panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
+panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> SubState Drag -> Sub msg
 panelDragSubscriptions toMsg dragSubState =
     let
         dragSubscription panel =
