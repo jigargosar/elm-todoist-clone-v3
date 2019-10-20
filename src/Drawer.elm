@@ -193,11 +193,11 @@ view config panelLists expansionPanels panelsDragState =
                 panelLists.labelList
 
         filtersCP =
-            viewPanel (panelConfig Filters)
+            viewPanel2 (panelConfig2 Filters)
+                filterNavItemViewConfig
                 "Filters"
                 expansionPanels.filtersExpanded
                 panelsDragState.filtersDrag
-                (filterToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.filterList
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
