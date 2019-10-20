@@ -1,13 +1,10 @@
 module Drawer exposing
     ( Config
     , ExpansionPanels
-    , FilterView
-    , LabelView
     , Panel(..)
     , PanelItemId(..)
     , PanelLists
     , PanelsDragState
-    , filterList
     , initialExpansionPanels
     , initialPanelsDragState
     , panelDragSubscriptions
@@ -60,30 +57,10 @@ toggleExpansionPanel panel model =
             { model | filtersExpanded = not model.filtersExpanded }
 
 
-filterList : List FilterView
-filterList =
-    [ FilterView "Assigned to me" 933
-    , FilterView "Assigned to others" 9354
-    , FilterView "Priority 1" 93344
-    , FilterView "Priority 2" 932323
-    , FilterView "Priority 3" 932323
-    , FilterView "View all" 932325
-    , FilterView "No due date" 93555
-    ]
-
-
 type Panel
     = Projects
     | Labels
     | Filters
-
-
-type alias LabelView =
-    { title : String, hue : Float }
-
-
-type alias FilterView =
-    { title : String, hue : Float }
 
 
 type alias Config msg =

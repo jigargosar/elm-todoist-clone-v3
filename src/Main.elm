@@ -4,7 +4,7 @@ import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
-import Drawer exposing (FilterView, LabelView)
+import Drawer
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, toUnstyled)
@@ -16,6 +16,7 @@ import Layout
 import Page exposing (Page)
 import Page.NotFound
 import ProjectCollection exposing (ProjectCollection)
+import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Return
 import TodoDict exposing (TodoDict)
@@ -373,3 +374,9 @@ main =
 
 
 -- PLAYGROUND
+
+
+type Popup
+    = ProjectPopup ProjectId
+    | LabelPopup LabelId
+    | FilterPopup FilterId
