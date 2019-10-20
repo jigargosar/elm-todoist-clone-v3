@@ -69,8 +69,8 @@ initSubState a =
     SubState a a a
 
 
-getPanelSubState : Panel -> SubState a -> a
-getPanelSubState panel subState =
+getSubState : Panel -> SubState a -> a
+getSubState panel subState =
     case panel of
         Projects ->
             subState.projects
@@ -82,8 +82,8 @@ getPanelSubState panel subState =
             subState.filters
 
 
-setPanelSubState : Panel -> a -> SubState a -> SubState a
-setPanelSubState panel a subState =
+setSubState : Panel -> a -> SubState a -> SubState a
+setSubState panel a subState =
     case panel of
         Projects ->
             { subState | projects = a }
@@ -99,10 +99,10 @@ mapSubState : Panel -> (a -> a) -> SubState a -> SubState a
 mapSubState panel func subState =
     let
         get =
-            getPanelSubState panel
+            getSubState panel
 
         set a =
-            setPanelSubState panel a subState
+            setSubState panel a subState
     in
     get subState |> func |> set
 
@@ -130,7 +130,7 @@ updatePanelDrag :
 updatePanelDrag toMsg onComplete panel msg panelState =
     let
         drag =
-            getPanelSubState panel panelState.drag
+            getSubState panel panelState.drag
     in
     Drag.update (toMsg panel) (onComplete panel) msg drag
         |> Tuple.mapFirst (\newDrag -> panelState |> mapDrag (mapSubState panel (always newDrag)))
@@ -140,7 +140,7 @@ panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub ms
 panelDragSubscriptions toMsg dragSubState =
     let
         dragSubscription panel =
-            Drag.subscriptions (toMsg panel) (getPanelSubState panel dragSubState)
+            Drag.subscriptions (toMsg panel) (getSubState panel dragSubState)
     in
     Sub.batch (List.map dragSubscription panelTypes)
 
@@ -185,8 +185,8 @@ view config panelLists panelState =
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
-            , isExpanded = .expanded >> getPanelSubState panel
-            , drag = .drag >> getPanelSubState panel
+            , isExpanded = .expanded >> getSubState panel
+            , drag = .drag >> getSubState panel
             }
 
         projectsCP =
