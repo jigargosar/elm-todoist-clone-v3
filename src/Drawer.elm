@@ -1,9 +1,11 @@
 module Drawer exposing
     ( Config
     , Panel(..)
+    , PanelDragSystems
     , PanelItemId(..)
     , PanelLists
     , PanelState
+    , createPanelDragSystem
     , initialPanelState
     , panelSubscriptions
     , toggleExpansionPanel
@@ -56,6 +58,20 @@ type alias PanelDragSystems msg =
     , labels : Drag.System LabelId msg
     , filters : Drag.System Filter msg
     }
+
+
+createPanelDragSystem : (Panel -> Drag.Msg -> msg) -> (Panel -> Drag.Info -> msg) -> PanelDragSystems msg
+createPanelDragSystem toMsg onCompleteMsg =
+    let
+        dragSystem panel =
+            Drag.system (toMsg panel) (onCompleteMsg panel)
+    in
+    PanelDragSystems (dragSystem Projects) (dragSystem Labels) (dragSystem Filters)
+
+
+uncurry3 : (a -> b -> c -> d) -> ( a, b, c ) -> d
+uncurry3 func ( a, b, c ) =
+    func a b c
 
 
 mapExpanded func panelState =
@@ -151,8 +167,7 @@ panelSubscriptions toMsg panelState =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
-    , panelToDragMsg : Panel -> Drag.Msg -> msg
-    , panelToDragCompleteMsg : Panel -> Drag.Info -> msg
+    , panelDragSystem : PanelDragSystems msg
     , onPanelItemMoreMenuClicked : PanelItemId -> msg
     }
 
