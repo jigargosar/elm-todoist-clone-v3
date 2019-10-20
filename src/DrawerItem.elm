@@ -21,4 +21,14 @@ baseRootStyles =
 
 icon : String -> SA.StyleAttrs msg -> Html msg
 icon name sa =
-    i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text name ]
+    i
+        (SA.toAttrsWithBase
+            baseIconRootStyles
+            [ class "material-icons" ]
+            sa
+        )
+        [ text name ]
+
+
+baseIconRootStyles =
+    [ ph 2, pv 1 ]
