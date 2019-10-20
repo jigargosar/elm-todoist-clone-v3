@@ -288,21 +288,6 @@ viewPanel2 :
     -> List item
     -> ContentPortal msg
 viewPanel2 pc ic title isExpanded drag list =
-    let
-        ghostItem =
-            pc.dragSystem.ghostStyles drag
-                |> Maybe.andThen
-                    (\( idx, styles ) ->
-                        List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
-                    )
-                |> Maybe.map
-                    (\( styles, item ) ->
-                        [ viewPanelNavItem pc ic drag -1 item
-                        , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                        ]
-                    )
-                |> Maybe.withDefault []
-    in
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
@@ -311,7 +296,18 @@ viewPanel2 pc ic title isExpanded drag list =
                 ( list
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc ic drag)
-                , ghostItem
+                , pc.dragSystem.ghostStyles drag
+                    |> Maybe.andThen
+                        (\( idx, styles ) ->
+                            List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
+                        )
+                    |> Maybe.map
+                        (\( styles, item ) ->
+                            [ viewPanelNavItem pc ic drag -1 item
+                            , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                            ]
+                        )
+                    |> Maybe.withDefault []
                 )
 
           else
