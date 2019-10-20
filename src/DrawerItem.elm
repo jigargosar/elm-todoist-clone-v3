@@ -8,7 +8,11 @@ import Styles exposing (..)
 
 view rootSA children =
     div (SA.toAttrsWithBase baseRootStyles [] rootSA)
-        (children ++ [ div [ css [ mr 3 ] ] [] ])
+        (children ++ [ rightScrollMarginFixEl ])
+
+
+rightScrollMarginFixEl =
+    div [ css [ mr 3 ] ] []
 
 
 baseRootStyles =
