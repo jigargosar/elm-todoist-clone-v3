@@ -310,7 +310,7 @@ viewPanel2 pc ic title isExpanded drag list =
                                 rootSA =
                                     StyleAttrs [ ghostStyle ] []
                             in
-                            [ viewPanelNavItemGhost__ rootSA { name = ic.iconName, sa = iconSA } (ic.title item)
+                            [ viewPanelNavItemGhost rootSA { name = ic.iconName, sa = iconSA } (ic.title item)
                             , node "style" [] [ text "body *{ cursor:move!important; }" ]
                             ]
                         )
@@ -565,8 +565,8 @@ viewPanelNavItem__ rootSA icon linkContent moreSA =
         |> DI.render
 
 
-viewPanelNavItemGhost__ : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
-viewPanelNavItemGhost__ rootSA icon title =
+viewPanelNavItemGhost : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
+viewPanelNavItemGhost rootSA icon title =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
