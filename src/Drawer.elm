@@ -30,6 +30,7 @@ import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
+import View
 
 
 type alias ExpansionPanels =
@@ -302,18 +303,19 @@ viewPanel2 pc ic title isExpanded drag list =
                     )
                 |> Maybe.withDefault []
     in
-    { content =
-        ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded
-            :: (if isExpanded then
-                    list
-                        |> pc.dragSystem.rotate drag
-                        |> List.indexedMap (viewPanelNavItem pc ic drag)
+    View.concat
+        [ View.content <|
+            ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded
+                :: (if isExpanded then
+                        list
+                            |> pc.dragSystem.rotate drag
+                            |> List.indexedMap (viewPanelNavItem pc ic drag)
 
-                else
-                    []
-               )
-    , portal = ghostItem
-    }
+                    else
+                        []
+                   )
+        , View.portal ghostItem
+        ]
 
 
 onlyContent content =
