@@ -383,12 +383,6 @@ viewPanelNavItem config itemConfig drag idx item =
         domId =
             domIdPrefix ++ "_" ++ itemConfig.idToString id
 
-        dragEvents =
-            dragSystem.dragEvents idx domId drag
-
-        dropEvents =
-            dragSystem.dropEvents idx drag
-
         dragOverStyle =
             Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
@@ -398,75 +392,27 @@ viewPanelNavItem config itemConfig drag idx item =
                 , noSelection
                 , dragOverStyle
                 ]
-                (A.id domId :: dropEvents)
+                (A.id domId :: dragSystem.dropEvents idx drag)
 
-        iconSA =
-            StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
+        primaryIcon : { name : String, sa : StyleAttrs msg }
+        primaryIcon =
+            let
+                dragEvents =
+                    dragSystem.dragEvents idx domId drag
+            in
+            { name = itemConfig.iconName
+            , sa = StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
+            }
 
-        iconName =
-            itemConfig.iconName
+        link : { title : String, sa : StyleAttrs msg }
+        link =
+            { title = itemConfig.title item, sa = StyleAttrs [] [ Route.href <| itemConfig.route item ] }
 
-        route =
-            itemConfig.route item
-
-        title =
-            itemConfig.title item
-
-        panelItemId =
-            itemConfig.panelItemId id
-
-        v2 : Html msg
-        v2 =
-            viewPanelNavItem__ rootSA
-                { name = iconName, sa = iconSA }
-                { title = title, sa = StyleAttrs [] [ Route.href route ] }
-                (StyleAttrs [] [ onClick (onMoreClicked panelItemId) ])
-
-        v1 =
-            div
-                (SA.toAttrsWithBase
-                    [ ph 1
-                    , pointer
-                    , flex
-                    , c_grayL 0.3
-                    , hover [ bgGrayL 0.9 ]
-                    , noSelection
-                    ]
-                    [ class "hover_parent" ]
-                    rootSA
-                )
-                [ i
-                    (SA.toAttrsWithBase
-                        [ pv 2, ph 1, flex, itemsCenter ]
-                        [ class "material-icons" ]
-                        iconSA
-                    )
-                    [ text iconName ]
-                , a
-                    [ css
-                        [ Css.textDecoration Css.none
-                        , Css.visited [ Css.color Css.inherit ]
-                        , Css.color Css.inherit
-                        , pv 2
-                        , ph 1
-                        , flex
-                        , flexGrow1
-                        , itemsCenter
-                        ]
-                    , Route.href route
-                    ]
-                    [ text title ]
-                , i
-                    [ css [ pv 2, ph 1 ]
-                    , class "show_on_parent_hover"
-                    , class "material-icons"
-                    , onClick (onMoreClicked panelItemId)
-                    ]
-                    [ text "more_horiz" ]
-                , div [ css [ mr 3 ] ] []
-                ]
+        moreSA : StyleAttrs msg
+        moreSA =
+            StyleAttrs [] [ onClick (onMoreClicked <| itemConfig.panelItemId id) ]
     in
-    v2
+    viewPanelNavItem__ rootSA primaryIcon link moreSA
 
 
 type alias NavItemViewModel id msg =
