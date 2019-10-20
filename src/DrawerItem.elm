@@ -1,4 +1,4 @@
-module DrawerItem exposing (DrawerItem, init, initLink, render, withContentText, withDraggablePrimaryIcon, withLinkContent, withPrimaryIcon, withSecondaryMoreAction)
+module DrawerItem exposing (DrawerItem, init, initLink, render, withContentText, withLinkContent, withPrimaryIcon, withSecondaryMoreAction)
 
 import Css
 import Html.Styled exposing (..)
@@ -34,11 +34,6 @@ withPrimaryIcon iconName sa model =
 primaryIcon : String -> StyleAttrs msg -> Html msg
 primaryIcon iconName sa =
     i (SA.toAttrsWithBase [ pv 2, ph 1 ] [ class "material-icons" ] sa) [ text iconName ]
-
-
-withDraggablePrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
-withDraggablePrimaryIcon =
-    todo
 
 
 withContentText : String -> DrawerItem msg -> DrawerItem msg
