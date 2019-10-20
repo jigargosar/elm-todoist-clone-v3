@@ -316,9 +316,9 @@ drawerConfig =
 drawerCP : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerCP model =
     Drawer.view drawerConfig
-        { projectList = ProjectCollection.sorted model.projectCollection
-        , labelList = LabelCollection.sorted model.labelCollection
-        , filterList = FilterCollection.sorted model.filterCollection
+        { projects = ProjectCollection.sorted model.projectCollection
+        , labels = LabelCollection.sorted model.labelCollection
+        , filters = FilterCollection.sorted model.filterCollection
         }
         model.drawerPanelState
 

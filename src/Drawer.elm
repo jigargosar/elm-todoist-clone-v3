@@ -173,9 +173,9 @@ type alias Config msg =
 
 
 type alias PanelLists =
-    { projectList : List Project
-    , labelList : List Label
-    , filterList : List Filter
+    { projects : List Project
+    , labels : List Label
+    , filters : List Filter
     }
 
 
@@ -208,7 +208,7 @@ view config panelLists panelState =
                 config.panelDragSystem.projects
                 "Projects"
                 panelState
-                panelLists.projectList
+                panelLists.projects
 
         labelsCP =
             viewPanel (panelConfig Labels)
@@ -216,7 +216,7 @@ view config panelLists panelState =
                 config.panelDragSystem.labels
                 "Labels"
                 panelState
-                panelLists.labelList
+                panelLists.labels
 
         filtersCP =
             viewPanel (panelConfig Filters)
@@ -224,7 +224,7 @@ view config panelLists panelState =
                 config.panelDragSystem.filters
                 "Filters"
                 panelState
-                panelLists.filterList
+                panelLists.filters
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
