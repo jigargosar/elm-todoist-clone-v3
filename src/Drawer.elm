@@ -302,8 +302,15 @@ viewPanel2 pc ic title isExpanded drag list =
                             List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
                         )
                     |> Maybe.map
-                        (\( styles, item ) ->
-                            [ viewPanelNavItem pc ic drag -1 item
+                        (\( ghostStyle, item ) ->
+                            let
+                                iconSA =
+                                    StyleAttrs [ ic.iconStyle item ] []
+
+                                rootSA =
+                                    StyleAttrs [ ghostStyle ] []
+                            in
+                            [ viewPanelNavItemGhost__ rootSA { name = ic.iconName, sa = iconSA } (ic.title item)
                             , node "style" [] [ text "body *{ cursor:move!important; }" ]
                             ]
                         )
