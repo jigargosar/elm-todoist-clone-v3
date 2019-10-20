@@ -386,7 +386,16 @@ viewPanelNavItem config itemConfig drag maybeIdx item =
             Styles.styleIf (maybeIdx |> Maybe.map (\idx -> dragSystem.eqDragOverIdx idx drag) |> Maybe.withDefault False) [ Css.opacity <| Css.zero ]
 
         rootSA =
-            StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
+            StyleAttrs [ dragOverStyle ]
+                ((case maybeIdx of
+                    Just _ ->
+                        [ A.id domId ]
+
+                    Nothing ->
+                        []
+                 )
+                    ++ dropEvents
+                )
 
         iconSA =
             StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
