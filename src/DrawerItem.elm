@@ -1,4 +1,4 @@
-module DrawerItem exposing (icon, titleAsLink, view)
+module DrawerItem exposing (contentAsTextLink, icon, view)
 
 import Css
 import Html.Styled exposing (..)
@@ -35,8 +35,8 @@ baseIconRootStyles =
     [ ph 2, pv 1 ]
 
 
-titleAsLink : StyleAttrs msg -> String -> Html msg
-titleAsLink sa title =
+contentAsTextLink : StyleAttrs msg -> String -> Html msg
+contentAsTextLink sa title =
     a
         (SA.toAttrsWithBase
             baseTextLinkStyles
