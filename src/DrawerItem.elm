@@ -6,8 +6,8 @@ import Styles exposing (..)
 
 
 view rootSA =
-    div (SA.toAttrsWithBase baseRootStyle [] rootSA) []
+    div (SA.toAttrsWithBase baseRootStyles [] rootSA) []
 
 
-baseRootStyle =
+baseRootStyles =
     [ ph 1, flex ]
