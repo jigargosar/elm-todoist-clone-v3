@@ -167,8 +167,8 @@ panelSubscriptions toMsg panelState =
 
 type alias Config msg =
     { onToggleExpansionPanel : Panel -> msg
-    , panelDragSystem : PanelDragSystems msg
     , onPanelItemMoreMenuClicked : PanelItemId -> msg
+    , panelDragSystem : PanelDragSystems msg
     }
 
 
