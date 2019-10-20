@@ -158,7 +158,7 @@ view :
 view config panelLists expansionPanels panelsDragState =
     let
         prefixCP =
-            onlyContent
+            View.content
                 [ navTitleIconItem (Route.href Route.Inbox) "Inbox" "inbox"
                 , navTitleIconItem (Route.href Route.Inbox) "Today" "calendar_today"
                 , navTitleIconItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
@@ -200,8 +200,7 @@ view config panelLists expansionPanels panelsDragState =
                 (filterToNavItem config.onPanelItemMoreMenuClicked)
                 panelLists.filterList
     in
-    [ prefixCP, projectsCP, labelsCP, filtersCP ]
-        |> mergeContentPortal
+    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
 type alias ContentPortal msg =
@@ -320,24 +319,6 @@ viewPanel2 pc ic title isExpanded drag list =
           else
             View.none
         ]
-
-
-onlyContent content =
-    { content = content, portal = [] }
-
-
-mergeContentPortal : List { content : List x, portal : List x } -> { content : List x, portal : List x }
-mergeContentPortal =
-    List.foldl
-        (\cp acc -> { acc | content = acc.content ++ cp.content, portal = acc.portal ++ cp.portal })
-        { content = [], portal = [] }
-
-
-type alias SimpleNavItemViewModel =
-    { route : Route.Route
-    , iconName : String
-    , title : String
-    }
 
 
 type alias PanelConfig item msg =
