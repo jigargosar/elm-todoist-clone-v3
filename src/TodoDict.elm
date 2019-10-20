@@ -1,4 +1,12 @@
-module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toggleCompleted, withLabelId, withProjectRef)
+module TodoDict exposing
+    ( TodoDict
+    , fromEncodedList
+    , initial
+    , sortedByIdx
+    , toggleCompleted
+    , withLabelId
+    , withProjectRef
+    )
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
