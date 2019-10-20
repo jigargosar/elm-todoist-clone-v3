@@ -170,8 +170,8 @@ view config panelLists panelState =
                 , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        panelConfig : List item -> Panel -> PanelConfig item msg
-        panelConfig items panel =
+        panelConfig : PanelNavItemViewConfig id item -> List item -> Panel -> PanelConfig id item msg
+        panelConfig itemConfig items panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
@@ -179,23 +179,21 @@ view config panelLists panelState =
             , drag = .drag >> getSubState panel
             , dragSystem = Drag.system (config.panelDragConfig.toMsg panel) (config.panelDragConfig.onComplete panel)
             , items = items
+            , itemConfig = itemConfig
             }
 
         projectsCP =
-            viewPanel (panelConfig panelLists.projects Projects)
-                projectNavItemViewConfig
+            viewPanel (panelConfig projectNavItemViewConfig panelLists.projects Projects)
                 "Projects"
                 panelState
 
         labelsCP =
-            viewPanel (panelConfig panelLists.labels Labels)
-                labelNavItemViewConfig
+            viewPanel (panelConfig labelNavItemViewConfig panelLists.labels Labels)
                 "Labels"
                 panelState
 
         filtersCP =
-            viewPanel (panelConfig panelLists.filters Filters)
-                filterNavItemViewConfig
+            viewPanel (panelConfig filterNavItemViewConfig panelLists.filters Filters)
                 "Filters"
                 panelState
     in
@@ -209,12 +207,11 @@ type PanelItemId
 
 
 viewPanel :
-    PanelConfig item msg
-    -> PanelNavItemViewConfig id item
+    PanelConfig id item msg
     -> String
     -> PanelState
     -> View (Html msg)
-viewPanel pc ic title panelState =
+viewPanel pc title panelState =
     let
         isExpanded : Bool
         isExpanded =
@@ -231,7 +228,7 @@ viewPanel pc ic title panelState =
             View.fromTuple
                 ( pc.items
                     |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (viewPanelNavItem pc ic pc.dragSystem drag)
+                    |> List.indexedMap (viewPanelNavItem pc pc.itemConfig pc.dragSystem drag)
                 , pc.dragSystem.ghostStyles drag
                     |> Maybe.andThen
                         (\( idx, styles ) ->
@@ -241,12 +238,12 @@ viewPanel pc ic title panelState =
                         (\( ghostStyle, item ) ->
                             let
                                 iconSA =
-                                    StyleAttrs [ ic.iconStyle item ] []
+                                    StyleAttrs [ pc.itemConfig.iconStyle item ] []
 
                                 rootSA =
                                     StyleAttrs [ ghostStyle ] []
                             in
-                            [ viewPanelNavItemGhost rootSA { name = ic.iconName, sa = iconSA } (ic.title item)
+                            [ viewPanelNavItemGhost rootSA { name = pc.itemConfig.iconName, sa = iconSA } (pc.itemConfig.title item)
                             , node "style" [] [ text "body *{ cursor:move!important; }" ]
                             ]
                         )
@@ -258,7 +255,7 @@ viewPanel pc ic title panelState =
         ]
 
 
-type alias PanelConfig item msg =
+type alias PanelConfig id item msg =
     { togglePanel : msg
     , domIdPrefix : String
     , onMoreClicked : PanelItemId -> msg
@@ -266,6 +263,7 @@ type alias PanelConfig item msg =
     , drag : PanelState -> Drag
     , dragSystem : Drag.System item msg
     , items : List item
+    , itemConfig : PanelNavItemViewConfig id item
     }
 
 
@@ -317,7 +315,7 @@ filterNavItemViewConfig =
 
 
 viewPanelNavItem :
-    PanelConfig item msg
+    PanelConfig id item msg
     -> PanelNavItemViewConfig id item
     -> Drag.System item msg
     -> Drag
