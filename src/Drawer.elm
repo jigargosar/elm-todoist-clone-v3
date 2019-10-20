@@ -32,6 +32,16 @@ import Styles exposing (..)
 import View exposing (View)
 
 
+type Panel
+    = Projects
+    | Labels
+    | Filters
+
+
+panelTypes =
+    [ Projects, Labels, Filters ]
+
+
 type alias PanelState =
     { expanded : SubStateExpanded, drag : SubStateDrag }
 
@@ -57,8 +67,13 @@ type alias SubStateDrag =
     }
 
 
-getSubState : Panel -> SubState a -> a
-getSubState panel subState =
+initSubState : a -> SubState a
+initSubState a =
+    SubState a a a
+
+
+getPanelSubState : Panel -> SubState a -> a
+getPanelSubState panel subState =
     case panel of
         Projects ->
             subState.projects
@@ -70,8 +85,8 @@ getSubState panel subState =
             subState.filters
 
 
-setSubState : Panel -> a -> SubState a -> SubState a
-setSubState panel a subState =
+setPanelSubState : Panel -> a -> SubState a -> SubState a
+setPanelSubState panel a subState =
     case panel of
         Projects ->
             { subState | projects = a }
@@ -83,35 +98,64 @@ setSubState panel a subState =
             { subState | filters = a }
 
 
+mapSubState : Panel -> (a -> a) -> SubState a -> SubState a
+mapSubState panel func subState =
+    let
+        get =
+            getPanelSubState panel
+
+        set a =
+            setPanelSubState panel a subState
+    in
+    get subState |> func |> set
+
+
 type alias ExpansionPanels =
-    { projectsExpanded : Bool
-    , labelsExpanded : Bool
-    , filtersExpanded : Bool
-    }
+    SubState Bool
 
 
 initialExpansionPanels : ExpansionPanels
 initialExpansionPanels =
-    ExpansionPanels True True True
+    initSubState True
 
 
 toggleExpansionPanel : Panel -> ExpansionPanels -> ExpansionPanels
-toggleExpansionPanel panel model =
-    case panel of
-        Projects ->
-            { model | projectsExpanded = not model.projectsExpanded }
-
-        Labels ->
-            { model | labelsExpanded = not model.labelsExpanded }
-
-        Filters ->
-            { model | filtersExpanded = not model.filtersExpanded }
+toggleExpansionPanel panel =
+    mapSubState panel not
 
 
-type Panel
-    = Projects
-    | Labels
-    | Filters
+type alias PanelsDragState =
+    SubState Drag
+
+
+initialPanelsDragState : PanelsDragState
+initialPanelsDragState =
+    initSubState Drag.initial
+
+
+updatePanelDrag :
+    (Panel -> Drag.Msg -> msg)
+    -> (Panel -> Drag.Info -> msg)
+    -> Panel
+    -> Drag.Msg
+    -> PanelsDragState
+    -> ( PanelsDragState, Cmd msg )
+updatePanelDrag toMsg onComplete panel msg dragSubState =
+    let
+        drag =
+            getPanelSubState panel dragSubState
+    in
+    Drag.update (toMsg panel) (onComplete panel) msg drag
+        |> Tuple.mapFirst (\newDrag -> setPanelSubState panel newDrag dragSubState)
+
+
+panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
+panelDragSubscriptions toMsg dragSubState =
+    let
+        dragSubscription panel =
+            Drag.subscriptions (toMsg panel) (getPanelSubState panel dragSubState)
+    in
+    Sub.batch (List.map dragSubscription panelTypes)
 
 
 type alias Config msg =
@@ -129,63 +173,12 @@ type alias PanelLists =
     }
 
 
-type alias PanelsDragState =
-    { projectsDrag : Drag
-    , labelsDrag : Drag
-    , filtersDrag : Drag
-    }
-
-
-initialPanelsDragState : PanelsDragState
-initialPanelsDragState =
-    { projectsDrag = Drag.initial
-    , labelsDrag = Drag.initial
-    , filtersDrag = Drag.initial
-    }
-
-
-updatePanelDrag :
-    (Panel -> Drag.Msg -> msg)
-    -> (Panel -> Drag.Info -> msg)
-    -> Panel
-    -> Drag.Msg
-    -> PanelsDragState
-    -> ( PanelsDragState, Cmd msg )
-updatePanelDrag toMsg onComplete panel msg model =
-    let
-        updateHelp =
-            Drag.update (toMsg panel) (onComplete panel) msg
-    in
-    case panel of
-        Projects ->
-            updateHelp model.projectsDrag
-                |> Tuple.mapFirst (\drag -> { model | projectsDrag = drag })
-
-        Labels ->
-            updateHelp model.labelsDrag
-                |> Tuple.mapFirst (\drag -> { model | labelsDrag = drag })
-
-        Filters ->
-            updateHelp model.filtersDrag
-                |> Tuple.mapFirst (\drag -> { model | filtersDrag = drag })
-
-
-panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
-panelDragSubscriptions toMsg model =
-    Sub.batch
-        [ Drag.subscriptions (toMsg Projects) model.projectsDrag
-        , Drag.subscriptions (toMsg Labels) model.labelsDrag
-        , Drag.subscriptions (toMsg Filters) model.filtersDrag
-        ]
-
-
 view :
     Config msg
     -> PanelLists
-    -> ExpansionPanels
-    -> PanelsDragState
+    -> PanelState
     -> View (Html msg)
-view config panelLists expansionPanels panelsDragState =
+view config panelLists panelState =
     let
         prefixCP =
             View.content
@@ -194,35 +187,35 @@ view config panelLists expansionPanels panelsDragState =
                 , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
+        panelConfig : Panel -> PanelConfig item msg
         panelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
+            , isExpanded = .expanded >> getPanelSubState panel
+            , drag = .drag >> getPanelSubState panel
             }
 
         projectsCP =
             viewPanel (panelConfig Projects)
                 projectNavItemViewConfig
                 "Projects"
-                expansionPanels.projectsExpanded
-                panelsDragState.projectsDrag
+                panelState
                 panelLists.projectList
 
         labelsCP =
             viewPanel (panelConfig Labels)
                 labelNavItemViewConfig
                 "Labels"
-                expansionPanels.labelsExpanded
-                panelsDragState.labelsDrag
+                panelState
                 panelLists.labelList
 
         filtersCP =
             viewPanel (panelConfig Filters)
                 filterNavItemViewConfig
                 "Filters"
-                expansionPanels.filtersExpanded
-                panelsDragState.filtersDrag
+                panelState
                 panelLists.filterList
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
@@ -238,11 +231,17 @@ viewPanel :
     PanelConfig item msg
     -> PanelNavItemViewConfig id item
     -> String
-    -> Bool
-    -> Drag
+    -> PanelState
     -> List item
     -> View (Html msg)
-viewPanel pc ic title isExpanded drag list =
+viewPanel pc ic title panelState list =
+    let
+        isExpanded =
+            pc.isExpanded panelState
+
+        drag =
+            pc.drag panelState
+    in
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
@@ -282,6 +281,8 @@ type alias PanelConfig item msg =
     , domIdPrefix : String
     , dragSystem : Drag.System item msg
     , onMoreClicked : PanelItemId -> msg
+    , isExpanded : PanelState -> Bool
+    , drag : PanelState -> Drag
     }
 
 
