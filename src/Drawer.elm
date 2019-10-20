@@ -30,7 +30,7 @@ import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
-import View
+import View exposing (View)
 
 
 type alias ExpansionPanels =
@@ -154,7 +154,7 @@ view :
     -> PanelLists
     -> ExpansionPanels
     -> PanelsDragState
-    -> ContentPortal msg
+    -> View (Html msg)
 view config panelLists expansionPanels panelsDragState =
     let
         prefixCP =
@@ -198,10 +198,6 @@ view config panelLists expansionPanels panelsDragState =
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
-type alias ContentPortal msg =
-    { content : List (Html msg), portal : List (Html msg) }
-
-
 type PanelItemId
     = ProjectItemId ProjectId
     | LabelItemId LabelId
@@ -215,7 +211,7 @@ viewPanel :
     -> Bool
     -> Drag
     -> List item
-    -> ContentPortal msg
+    -> View (Html msg)
 viewPanel pc ic title isExpanded drag list =
     View.concat
         [ View.content
