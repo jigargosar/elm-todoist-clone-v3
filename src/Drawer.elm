@@ -360,7 +360,7 @@ labelNavItemViewConfig =
     , title = Label.title
     , route = Label.id >> Route.Label
     , iconName = "folder"
-    , iconStyle = \label -> c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5
+    , iconStyle = c_ << Label.cssColor
     }
 
 

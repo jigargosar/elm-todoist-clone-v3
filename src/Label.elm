@@ -1,5 +1,6 @@
-module Label exposing (Label, decoder, hue, id, idx, setIdx, title)
+module Label exposing (Label, cssColor, decoder, hue, id, idx, setIdx, title)
 
+import Css
 import Json.Decode as JD exposing (Decoder)
 import LabelId exposing (LabelId)
 import Timestamp exposing (Timestamp)
@@ -48,6 +49,11 @@ title =
 hue : Label -> Int
 hue =
     unwrap >> .hue
+
+
+cssColor : Label -> Css.Color
+cssColor label =
+    Css.hsl (toFloat (hue label)) 0.7 0.5
 
 
 unwrap (Label t) =
