@@ -1,4 +1,4 @@
-module DrawerItem exposing (DrawerItem, init, initLink, withContent, withContentText, withDraggablePrimaryIcon, withLinkContent, withPrimaryAction, withPrimaryIcon, withSA, withSecondaryAction, withSecondaryMoreAction)
+module DrawerItem exposing (DrawerItem, init, initLink, render, withContentText, withDraggablePrimaryIcon, withLinkContent, withPrimaryIcon, withSecondaryMoreAction)
 
 import Css
 import Html.Styled exposing (..)
@@ -25,16 +25,6 @@ initLink =
     todo
 
 
-withSA : StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
-withSA =
-    todo
-
-
-withPrimaryAction : HtmlItem msg -> DrawerItem msg -> DrawerItem msg
-withPrimaryAction =
-    todo
-
-
 withPrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
 withPrimaryIcon =
     todo
@@ -55,18 +45,13 @@ withLinkContent =
     todo
 
 
-withContent : HtmlItem msg -> DrawerItem msg -> DrawerItem msg
-withContent =
-    todo
-
-
-withSecondaryAction : HtmlItem msg -> DrawerItem msg -> DrawerItem msg
-withSecondaryAction =
-    todo
-
-
 withSecondaryMoreAction : StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
 withSecondaryMoreAction =
+    todo
+
+
+render : DrawerItem msg -> Html msg
+render =
     todo
 
 
