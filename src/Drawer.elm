@@ -365,8 +365,11 @@ projectNavItemViewConfig =
 
 
 viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
-viewPanelNavItem { dragSystem, domIdPrefix, onMoreClicked } itemConfig drag idx item =
+viewPanelNavItem config itemConfig drag idx item =
     let
+        { dragSystem, domIdPrefix, onMoreClicked } =
+            config
+
         id =
             itemConfig.id item
 
