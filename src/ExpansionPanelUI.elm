@@ -1,4 +1,4 @@
-module ExpansionPanelUI exposing (view, viewHeader)
+module ExpansionPanelUI exposing (viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
@@ -36,14 +36,3 @@ viewHeader toggle title isExpanded =
             ]
         , button [ css [ iBtnStyle, mr 3 ] ] [ i [ class "material-icons" ] [ text "add" ] ]
         ]
-
-
-view : msg -> String -> (() -> List (Html msg)) -> Bool -> List (Html msg)
-view toggle title lazyContent isExpanded =
-    viewHeader toggle title isExpanded
-        :: (if isExpanded then
-                lazyContent ()
-
-            else
-                []
-           )
