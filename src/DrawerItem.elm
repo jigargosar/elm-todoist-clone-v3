@@ -8,7 +8,12 @@ import Styles exposing (..)
 
 
 type alias DrawerItem msg =
-    { tag : String, sa : StyleAttrs msg, children : List (Html msg) }
+    { tag : String
+    , sa : StyleAttrs msg
+    , primary : Maybe (HtmlItem msg)
+    , content : Maybe (HtmlItem msg)
+    , secondary : Maybe (HtmlItem msg)
+    }
 
 
 type alias HtmlItem msg =
@@ -16,8 +21,8 @@ type alias HtmlItem msg =
 
 
 init : StyleAttrs msg -> DrawerItem msg
-init =
-    todo
+init sa =
+    DrawerItem "div" sa Nothing Nothing Nothing
 
 
 initLink : StyleAttrs msg -> DrawerItem msg
