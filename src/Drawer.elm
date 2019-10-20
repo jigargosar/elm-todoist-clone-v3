@@ -159,9 +159,9 @@ view config panelLists expansionPanels panelsDragState =
     let
         prefixCP =
             View.content
-                [ navTitleIconItem (Route.href Route.Inbox) "Inbox" "inbox"
-                , navTitleIconItem (Route.href Route.Inbox) "Today" "calendar_today"
-                , navTitleIconItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+                [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+                , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+                , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
         panelConfig panel =
@@ -435,18 +435,9 @@ filterToNavItem onMoreMenuTriggerClicked { title, hue } =
     }
 
 
-navTitleIconItem : Attribute msg -> String -> String -> Html msg
-navTitleIconItem href title iconName =
-    viewNavItem SA.none
-        { id = title
-        , panelItemId = Nothing
-        , onMoreMenuTriggerClicked = Nothing
-        , idToString = identity
-        , title = title
-        , href = href
-        , iconName = iconName
-        , iconSA = StyleAttrs [ c_inherit ] []
-        }
+viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
+viewSimpleNavItem href title iconName =
+    viewSimpleNavItem__ (StyleAttrs [] [ href ]) { name = iconName, sa = SA.none } title
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg

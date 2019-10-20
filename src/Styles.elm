@@ -401,6 +401,14 @@ btnReset =
     batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
 
 
+linkReset =
+    batch
+        [ Css.textDecoration Css.none
+        , Css.visited [ Css.color Css.inherit ]
+        , Css.color Css.inherit
+        ]
+
+
 hidden =
     Css.visibility Css.hidden
 

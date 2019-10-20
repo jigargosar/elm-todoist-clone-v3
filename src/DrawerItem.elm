@@ -22,8 +22,8 @@ init sa =
 
 
 initLink : StyleAttrs msg -> DrawerItem msg
-initLink =
-    todo
+initLink sa =
+    DrawerItem "a" (SA.concat (StyleAttrs [ linkReset ] []) sa) Nothing Nothing Nothing
 
 
 withPrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
@@ -59,13 +59,11 @@ withContentAsLink title sa =
     setContent
         (a
             (SA.toAttrsWithBase
-                [ Css.textDecoration Css.none
-                , Css.visited [ Css.color Css.inherit ]
-                , Css.color Css.inherit
+                [ linkReset
                 , pv 2
                 , ph 1
-                , flex
                 , flexGrow1
+                , flex
                 , itemsCenter
                 ]
                 []
