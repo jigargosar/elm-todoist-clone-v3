@@ -18,6 +18,7 @@ module Drawer exposing
 
 import Css
 import Drag exposing (Drag)
+import DrawerItem as DI
 import ExpansionPanelUI
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
@@ -544,3 +545,11 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
                 text ""
         , div [ css [ mr 3 ] ] []
         ]
+
+
+viewNavItemDI rootSA priAct secAct cont =
+    DI.init
+        |> DI.withSA rootSA
+        |> DI.withPrimaryAction priAct
+        |> DI.withSecondaryAction secAct
+        |> DI.withContent cont
