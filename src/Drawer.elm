@@ -51,6 +51,13 @@ type alias PanelState =
     { expanded : SubState Bool, drag : SubState Drag }
 
 
+type alias PanelDragSystems msg =
+    { projects : Drag.System Project msg
+    , labels : Drag.System LabelId msg
+    , filters : Drag.System Filter msg
+    }
+
+
 mapExpanded func panelState =
     { panelState | expanded = func panelState.expanded }
 
