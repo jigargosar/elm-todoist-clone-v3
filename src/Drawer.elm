@@ -304,16 +304,16 @@ viewPanel2 pc ic title isExpanded drag list =
                 |> Maybe.withDefault []
     in
     View.concat
-        [ View.content <|
-            ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded
-                :: (if isExpanded then
-                        list
-                            |> pc.dragSystem.rotate drag
-                            |> List.indexedMap (viewPanelNavItem pc ic drag)
+        [ View.content
+            [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
+        , View.content <|
+            if isExpanded then
+                list
+                    |> pc.dragSystem.rotate drag
+                    |> List.indexedMap (viewPanelNavItem pc ic drag)
 
-                    else
-                        []
-                   )
+            else
+                []
         , View.portal ghostItem
         ]
 
