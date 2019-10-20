@@ -1,4 +1,4 @@
-module View exposing (View, concat, content, singleton)
+module View exposing (View, concat, content, portal, singleton)
 
 
 type alias View a =
@@ -13,6 +13,11 @@ singleton el =
 content : List a -> View a
 content c =
     View c []
+
+
+portal : List a -> View a
+portal p =
+    View [] p
 
 
 concat : List (View a) -> View a
