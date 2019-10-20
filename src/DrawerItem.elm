@@ -46,8 +46,9 @@ withContentText title model =
     { model | content = Just <| contentText title }
 
 
+contentText : String -> Html msg
 contentText title =
-    div [ css [ flexGrow1, pv 2, ph 1 ] ] [ text title ]
+    div [ css [ flexGrow1, pv 2, ph 1, flex, itemsCenter ] ] [ text title ]
 
 
 withLinkContent : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
