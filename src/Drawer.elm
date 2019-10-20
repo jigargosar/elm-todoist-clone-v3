@@ -393,7 +393,12 @@ viewPanelNavItem config itemConfig drag idx item =
             Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
         rootSA =
-            StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
+            StyleAttrs
+                [ hover [ bgGrayL 0.9 ]
+                , noSelection
+                , dragOverStyle
+                ]
+                (A.id domId :: dropEvents)
 
         iconSA =
             StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
@@ -409,49 +414,59 @@ viewPanelNavItem config itemConfig drag idx item =
 
         panelItemId =
             itemConfig.panelItemId id
-    in
-    div
-        (SA.toAttrsWithBase
-            [ ph 1
-            , pointer
-            , flex
-            , c_grayL 0.3
-            , hover [ bgGrayL 0.9 ]
-            , noSelection
-            ]
-            [ class "hover_parent" ]
-            rootSA
-        )
-        [ i
-            (SA.toAttrsWithBase
-                [ pv 2, ph 1, flex, itemsCenter ]
-                [ class "material-icons" ]
-                iconSA
-            )
-            [ text iconName ]
-        , a
-            [ css
-                [ Css.textDecoration Css.none
-                , Css.visited [ Css.color Css.inherit ]
-                , Css.color Css.inherit
-                , pv 2
-                , ph 1
-                , flex
-                , flexGrow1
-                , itemsCenter
+
+        v2 : Html msg
+        v2 =
+            viewPanelNavItem__ rootSA
+                { name = iconName, sa = iconSA }
+                { title = title, sa = StyleAttrs [] [ Route.href route ] }
+                (StyleAttrs [] [ onClick (onMoreClicked panelItemId) ])
+
+        v1 =
+            div
+                (SA.toAttrsWithBase
+                    [ ph 1
+                    , pointer
+                    , flex
+                    , c_grayL 0.3
+                    , hover [ bgGrayL 0.9 ]
+                    , noSelection
+                    ]
+                    [ class "hover_parent" ]
+                    rootSA
+                )
+                [ i
+                    (SA.toAttrsWithBase
+                        [ pv 2, ph 1, flex, itemsCenter ]
+                        [ class "material-icons" ]
+                        iconSA
+                    )
+                    [ text iconName ]
+                , a
+                    [ css
+                        [ Css.textDecoration Css.none
+                        , Css.visited [ Css.color Css.inherit ]
+                        , Css.color Css.inherit
+                        , pv 2
+                        , ph 1
+                        , flex
+                        , flexGrow1
+                        , itemsCenter
+                        ]
+                    , Route.href route
+                    ]
+                    [ text title ]
+                , i
+                    [ css [ pv 2, ph 1 ]
+                    , class "show_on_parent_hover"
+                    , class "material-icons"
+                    , onClick (onMoreClicked panelItemId)
+                    ]
+                    [ text "more_horiz" ]
+                , div [ css [ mr 3 ] ] []
                 ]
-            , Route.href route
-            ]
-            [ text title ]
-        , i
-            [ css [ pv 2, ph 1 ]
-            , class "show_on_parent_hover"
-            , class "material-icons"
-            , onClick (onMoreClicked panelItemId)
-            ]
-            [ text "more_horiz" ]
-        , div [ css [ mr 3 ] ] []
-        ]
+    in
+    v2
 
 
 type alias NavItemViewModel id msg =
@@ -557,6 +572,12 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
         ]
 
 
+viewPanelNavItem__ :
+    StyleAttrs msg
+    -> { a | name : String, sa : StyleAttrs msg }
+    -> { b | title : String, sa : StyleAttrs msg }
+    -> StyleAttrs msg
+    -> Html msg
 viewPanelNavItem__ rootSA icon linkContent moreSA =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa

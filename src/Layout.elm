@@ -17,7 +17,7 @@ type alias Parts msg =
 view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
 view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
-        [ bgBody, h_100 ]
+        [ bgBody, h_100, c_grayL 0.3 ]
         [ class "sans-serif" ]
         ([ styledAppbar [] appbar
          , styled div

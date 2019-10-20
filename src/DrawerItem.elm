@@ -79,7 +79,7 @@ withSecondaryMoreAction : StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
 withSecondaryMoreAction sa =
     setSecondary
         (i
-            (SA.toAttrsWithBase [ pv 2, ph 1 ]
+            (SA.toAttrsWithBase [ pv 2, ph 1, pointer ]
                 [ class "material-icons", class "show_on_parent_hover" ]
                 sa
             )
