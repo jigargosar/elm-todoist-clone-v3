@@ -558,6 +558,7 @@ viewPanelNavItem__ rootSA icon linkContent moreSA =
         |> DI.render
 
 
+viewPanelNavItemGhost__ : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
 viewPanelNavItemGhost__ rootSA icon title =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
