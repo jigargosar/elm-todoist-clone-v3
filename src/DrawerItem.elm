@@ -42,8 +42,12 @@ withDraggablePrimaryIcon =
 
 
 withContentText : String -> DrawerItem msg -> DrawerItem msg
-withContentText =
-    todo
+withContentText title model =
+    { model | primary = Just <| contentText title }
+
+
+contentText title =
+    div [] [ text title ]
 
 
 withLinkContent : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
@@ -57,8 +61,14 @@ withSecondaryMoreAction =
 
 
 render : DrawerItem msg -> Html msg
-render =
-    todo
+render { tag, sa, primary, content, secondary } =
+    node tag
+        (SA.toAttrsWithBase [] [] sa)
+        (List.filterMap identity [ primary, content, secondary, Just drawerScrollFix ])
+
+
+drawerScrollFix =
+    div [ css [ mr 3 ] ] []
 
 
 todo =
