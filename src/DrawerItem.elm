@@ -1,12 +1,13 @@
 module DrawerItem exposing (..)
 
 import Html.Styled exposing (div)
+import StyleAttrs as SA
 import Styles exposing (..)
 
 
-view =
-    div [] []
+view rootSA =
+    div (SA.toAttrsWithBase baseRootStyle [] rootSA) []
 
 
-rootStyle =
-    batch [ ph 1, flex ]
+baseRootStyle =
+    [ ph 1, flex ]
