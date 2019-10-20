@@ -55,7 +55,7 @@ type alias PanelState =
 
 type alias PanelDragSystems msg =
     { projects : Drag.System Project msg
-    , labels : Drag.System LabelId msg
+    , labels : Drag.System Label msg
     , filters : Drag.System Filter msg
     }
 
@@ -193,10 +193,9 @@ view config panelLists panelState =
                 , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        panelConfig : Panel -> PanelConfig item msg
+        panelConfig : Panel -> PanelConfig msg
         panelConfig panel =
             { togglePanel = config.onToggleExpansionPanel panel
-            , dragSystem = Drag.system (config.panelToDragMsg panel) (config.panelToDragCompleteMsg panel)
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
             , isExpanded = .expanded >> getSubState panel
@@ -206,6 +205,7 @@ view config panelLists panelState =
         projectsCP =
             viewPanel (panelConfig Projects)
                 projectNavItemViewConfig
+                config.panelDragSystem.projects
                 "Projects"
                 panelState
                 panelLists.projectList
@@ -213,6 +213,7 @@ view config panelLists panelState =
         labelsCP =
             viewPanel (panelConfig Labels)
                 labelNavItemViewConfig
+                config.panelDragSystem.labels
                 "Labels"
                 panelState
                 panelLists.labelList
@@ -220,6 +221,7 @@ view config panelLists panelState =
         filtersCP =
             viewPanel (panelConfig Filters)
                 filterNavItemViewConfig
+                config.panelDragSystem.filters
                 "Filters"
                 panelState
                 panelLists.filterList
@@ -234,13 +236,14 @@ type PanelItemId
 
 
 viewPanel :
-    PanelConfig item msg
+    PanelConfig msg
     -> PanelNavItemViewConfig id item
+    -> Drag.System item msg
     -> String
     -> PanelState
     -> List item
     -> View (Html msg)
-viewPanel pc ic title panelState list =
+viewPanel pc ic dragSystem title panelState list =
     let
         isExpanded =
             pc.isExpanded panelState
@@ -254,9 +257,9 @@ viewPanel pc ic title panelState list =
         , if isExpanded then
             View.fromTuple
                 ( list
-                    |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (viewPanelNavItem pc ic drag)
-                , pc.dragSystem.ghostStyles drag
+                    |> dragSystem.rotate drag
+                    |> List.indexedMap (viewPanelNavItem pc ic dragSystem drag)
+                , dragSystem.ghostStyles drag
                     |> Maybe.andThen
                         (\( idx, styles ) ->
                             List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
@@ -282,10 +285,9 @@ viewPanel pc ic title panelState list =
         ]
 
 
-type alias PanelConfig item msg =
+type alias PanelConfig msg =
     { togglePanel : msg
     , domIdPrefix : String
-    , dragSystem : Drag.System item msg
     , onMoreClicked : PanelItemId -> msg
     , isExpanded : PanelState -> Bool
     , drag : PanelState -> Drag
@@ -339,10 +341,17 @@ filterNavItemViewConfig =
     }
 
 
-viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
-viewPanelNavItem config itemConfig drag idx item =
+viewPanelNavItem :
+    PanelConfig msg
+    -> PanelNavItemViewConfig id item
+    -> Drag.System item msg
+    -> Drag
+    -> Int
+    -> item
+    -> Html msg
+viewPanelNavItem config itemConfig dragSystem drag idx item =
     let
-        { dragSystem, domIdPrefix, onMoreClicked } =
+        { domIdPrefix, onMoreClicked } =
             config
 
         id =
