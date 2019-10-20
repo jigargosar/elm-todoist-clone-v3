@@ -32,7 +32,7 @@ icon name sa =
 
 
 baseIconRootStyles =
-    [ ph 2, pv 1 ]
+    [ ph 2, pv 1, c_inherit ]
 
 
 contentAsTextLink : StyleAttrs msg -> String -> Html msg
