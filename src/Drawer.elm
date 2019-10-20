@@ -296,7 +296,7 @@ viewPanel2 pc ic title isExpanded drag list =
                     )
                 |> Maybe.map
                     (\( styles, item ) ->
-                        [ viewPanelNavItem pc ic drag Nothing item
+                        [ viewPanelNavItem pc ic drag -1 item
                         , node "style" [] [ text "body *{ cursor:move!important; }" ]
                         ]
                     )
@@ -308,7 +308,7 @@ viewPanel2 pc ic title isExpanded drag list =
             (\_ ->
                 list
                     |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (Just >> viewPanelNavItem pc ic drag)
+                    |> List.indexedMap (viewPanelNavItem pc ic drag)
             )
             isExpanded
     , portal = ghostItem
@@ -364,8 +364,8 @@ projectNavItemViewConfig =
     }
 
 
-viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Maybe Int -> item -> Html msg
-viewPanelNavItem config itemConfig drag maybeIdx item =
+viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
+viewPanelNavItem config itemConfig drag idx item =
     let
         { dragSystem, domIdPrefix, onMoreClicked } =
             config
@@ -377,25 +377,16 @@ viewPanelNavItem config itemConfig drag maybeIdx item =
             domIdPrefix ++ "_" ++ itemConfig.idToString id
 
         dragEvents =
-            maybeIdx |> Maybe.map (\idx -> dragSystem.dragEvents idx domId drag) |> Maybe.withDefault []
+            dragSystem.dragEvents idx domId drag
 
         dropEvents =
-            maybeIdx |> Maybe.map (\idx -> dragSystem.dropEvents idx drag) |> Maybe.withDefault []
+            dragSystem.dropEvents idx drag
 
         dragOverStyle =
-            Styles.styleIf (maybeIdx |> Maybe.map (\idx -> dragSystem.eqDragOverIdx idx drag) |> Maybe.withDefault False) [ Css.opacity <| Css.zero ]
+            Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
 
         rootSA =
-            StyleAttrs [ dragOverStyle ]
-                ((case maybeIdx of
-                    Just _ ->
-                        [ A.id domId ]
-
-                    Nothing ->
-                        []
-                 )
-                    ++ dropEvents
-                )
+            StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
 
         iconSA =
             StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
