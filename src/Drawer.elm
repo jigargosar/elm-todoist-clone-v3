@@ -513,6 +513,7 @@ viewPanelNavItemGhost rootSA icon title =
         |> DI.render
 
 
+viewSimpleNavItemHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
 viewSimpleNavItemHelp rootSA icon title =
     DI.initLink rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
