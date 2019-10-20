@@ -10,14 +10,10 @@ import Styles exposing (..)
 type alias DrawerItem msg =
     { tag : String
     , sa : StyleAttrs msg
-    , primary : Maybe (HtmlItem msg)
-    , content : Maybe (HtmlItem msg)
-    , secondary : Maybe (HtmlItem msg)
+    , primary : Maybe (Html msg)
+    , content : Maybe (Html msg)
+    , secondary : Maybe (Html msg)
     }
-
-
-type alias HtmlItem msg =
-    { tag : String, sa : StyleAttrs msg, children : List (Html msg) }
 
 
 init : StyleAttrs msg -> DrawerItem msg
@@ -31,8 +27,13 @@ initLink =
 
 
 withPrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
-withPrimaryIcon =
-    todo
+withPrimaryIcon iconName sa model =
+    { model | primary = Just <| primaryIcon iconName sa }
+
+
+primaryIcon : String -> StyleAttrs msg -> Html msg
+primaryIcon iconName sa =
+    i (SA.toAttrsWithBase [] [] sa) [ text iconName ]
 
 
 withDraggablePrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
