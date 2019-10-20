@@ -35,6 +35,7 @@ baseIconRootStyles =
     [ ph 2, pv 1 ]
 
 
+titleAsLink : SA.StyleAttrs msg -> String -> Html msg
 titleAsLink sa title =
     a
         (SA.toAttrsWithBase
