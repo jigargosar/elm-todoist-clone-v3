@@ -548,15 +548,13 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
 
 
 viewPanelNavItem__ rootSA icon linkContent moreSA =
-    DI.init
-        |> DI.withSA rootSA
+    DI.init rootSA
         |> DI.withDraggablePrimaryIcon icon.name icon.sa
         |> DI.withLinkContent linkContent.title linkContent.sa
         |> DI.withSecondaryMoreAction moreSA
 
 
 viewSimpleNavItem__ rootSA icon title =
-    DI.initLink
-        |> DI.withSA rootSA
+    DI.initLink rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title

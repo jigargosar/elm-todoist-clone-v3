@@ -15,12 +15,12 @@ type alias HtmlItem msg =
     { tag : String, sa : StyleAttrs msg, children : List (Html msg) }
 
 
-init : DrawerItem msg
+init : StyleAttrs msg -> DrawerItem msg
 init =
     todo
 
 
-initLink : DrawerItem msg
+initLink : StyleAttrs msg -> DrawerItem msg
 initLink =
     todo
 
