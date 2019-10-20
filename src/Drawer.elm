@@ -296,7 +296,7 @@ viewPanel2 pc ic title isExpanded drag list =
                     )
                 |> Maybe.map
                     (\( styles, item ) ->
-                        [ viewPanelNavItem pc ic drag -1 item
+                        [ viewPanelNavItem pc ic drag Nothing item
                         , node "style" [] [ text "body *{ cursor:move!important; }" ]
                         ]
                     )
@@ -308,7 +308,7 @@ viewPanel2 pc ic title isExpanded drag list =
             (\_ ->
                 list
                     |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (viewPanelNavItem pc ic drag)
+                    |> List.indexedMap (Just >> viewPanelNavItem pc ic drag)
             )
             isExpanded
     , portal = ghostItem
@@ -364,8 +364,8 @@ projectNavItemViewConfig =
     }
 
 
-viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
-viewPanelNavItem config itemConfig drag idx item =
+viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Maybe Int -> item -> Html msg
+viewPanelNavItem config itemConfig drag maybeIdx item =
     let
         { dragSystem, domIdPrefix, onMoreClicked } =
             config
@@ -377,13 +377,13 @@ viewPanelNavItem config itemConfig drag idx item =
             domIdPrefix ++ "_" ++ itemConfig.idToString id
 
         dragEvents =
-            dragSystem.dragEvents idx domId drag
+            maybeIdx |> Maybe.map (\idx -> dragSystem.dragEvents idx domId drag) |> Maybe.withDefault []
 
         dropEvents =
-            dragSystem.dropEvents idx drag
+            maybeIdx |> Maybe.map (\idx -> dragSystem.dropEvents idx drag) |> Maybe.withDefault []
 
         dragOverStyle =
-            Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+            Styles.styleIf (maybeIdx |> Maybe.map (\idx -> dragSystem.eqDragOverIdx idx drag) |> Maybe.withDefault False) [ Css.opacity <| Css.zero ]
 
         rootSA =
             StyleAttrs [ dragOverStyle ] (A.id domId :: dropEvents)
@@ -551,6 +551,14 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
 
 
 viewPanelNavItem__ rootSA icon linkContent moreSA =
+    DI.init rootSA
+        |> DI.withDraggablePrimaryIcon icon.name icon.sa
+        |> DI.withLinkContent linkContent.title linkContent.sa
+        |> DI.withSecondaryMoreAction moreSA
+        |> DI.render
+
+
+viewGhostPanelNavItem__ rootSA icon linkContent moreSA =
     DI.init rootSA
         |> DI.withDraggablePrimaryIcon icon.name icon.sa
         |> DI.withLinkContent linkContent.title linkContent.sa
