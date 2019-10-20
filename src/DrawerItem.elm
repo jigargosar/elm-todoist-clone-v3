@@ -33,7 +33,7 @@ withPrimaryIcon iconName sa model =
 
 primaryIcon : String -> StyleAttrs msg -> Html msg
 primaryIcon iconName sa =
-    i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text iconName ]
+    i (SA.toAttrsWithBase [ pv 2, ph 1 ] [ class "material-icons" ] sa) [ text iconName ]
 
 
 withDraggablePrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
@@ -47,7 +47,7 @@ withContentText title model =
 
 
 contentText title =
-    div [] [ text title ]
+    div [ css [ flexGrow1, pv 2, ph 1 ] ] [ text title ]
 
 
 withLinkContent : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
@@ -63,7 +63,7 @@ withSecondaryMoreAction =
 render : DrawerItem msg -> Html msg
 render { tag, sa, primary, content, secondary } =
     node tag
-        (SA.toAttrsWithBase [] [] sa)
+        (SA.toAttrsWithBase [ ph 1, flex ] [] sa)
         (List.filterMap identity [ primary, content, secondary, Just drawerScrollFix ])
 
 
