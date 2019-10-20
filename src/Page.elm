@@ -1,5 +1,6 @@
 module Page exposing (..)
 
+import FilterId exposing (FilterId)
 import LabelId exposing (LabelId)
 import ProjectRef exposing (ProjectRef)
 import Route
@@ -9,6 +10,7 @@ import Url exposing (Url)
 type Page
     = TodoListByProjectRef ProjectRef
     | TodoListByLabelId LabelId
+    | TodoListByFilterId FilterId
     | NotFound Url
 
 
@@ -26,6 +28,9 @@ pageFromRoute route =
 
         Route.Label labelId ->
             TodoListByLabelId labelId
+
+        Route.Filter filterId ->
+            TodoListByFilterId filterId
 
 
 pageFromUrl : Url -> Page

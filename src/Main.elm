@@ -5,6 +5,8 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer exposing (FilterView, LabelView)
+import FilterCollection exposing (FilterCollection)
+import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -48,7 +50,7 @@ type alias Model =
     , todoDict : TodoDict
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
-    , filterList : List FilterView
+    , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
     , drawerExpansionPanels : Drawer.ExpansionPanels
     , drawerPanelDrag : Drawer.PanelsDragState
@@ -65,7 +67,7 @@ init flags url navKey =
             , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , labelCollection = LabelCollection.initial
-            , filterList = Drawer.filterList
+            , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , drawerExpansionPanels = Drawer.initialExpansionPanels
             , drawerPanelDrag = Drawer.initialPanelsDragState
@@ -77,6 +79,7 @@ init flags url navKey =
                 [ initTodoDict flags.todoList
                 , initProjectCollection flags.projectList
                 , initLabelCollection flags.labelList
+                , initFilterCollection flags.filterList
                 , onUrlChanged url
                 ]
             )
@@ -114,6 +117,23 @@ initLabelCollection encodedLabelList model =
                     ( model.labelCollection, logError <| JD.errorToString e )
     in
     ( { model | labelCollection = newLabelCollection }, cmd )
+
+
+initFilterCollection :
+    JD.Value
+    -> { a | filterCollection : FilterCollection }
+    -> ( { a | filterCollection : FilterCollection }, Cmd msg )
+initFilterCollection encodedFilterList model =
+    let
+        ( newFilterCollection, cmd ) =
+            case FilterCollection.fromEncodedList encodedFilterList of
+                Ok new ->
+                    ( new, Cmd.none )
+
+                Err e ->
+                    ( model.filterCollection, logError <| JD.errorToString e )
+    in
+    ( { model | filterCollection = newFilterCollection }, cmd )
 
 
 initTodoDict :
@@ -239,11 +259,18 @@ update message model =
                     )
 
                 Drawer.Filters ->
-                    ( { model | filterList = rotate model.filterList }
+                    let
+                        filterList =
+                            FilterCollection.sorted model.filterCollection
+                    in
+                    ( { model
+                        | filterCollection =
+                            FilterCollection.updateSortOrder (rotate filterList) model.filterCollection
+                      }
                     , Cmd.none
                     )
 
-        PanelItemMoreMenuClicked panelItemId ->
+        PanelItemMoreMenuClicked _ ->
             ( model, Cmd.none )
 
 
@@ -288,7 +315,7 @@ drawerCP model =
     Drawer.view drawerConfig
         { projectList = ProjectCollection.sorted model.projectCollection
         , labelList = LabelCollection.sorted model.labelCollection
-        , filterList = model.filterList
+        , filterList = FilterCollection.sorted model.filterCollection
         }
         model.drawerExpansionPanels
         model.drawerPanelDrag
@@ -306,6 +333,9 @@ mainCP model =
         Page.TodoListByLabelId labelId ->
             View.content <| todoListByLabelIdView labelId model.projectCollection model.labelCollection model.todoDict
 
+        Page.TodoListByFilterId filterId ->
+            View.content <| todoListByFilterIdView filterId model.projectCollection model.labelCollection model.todoDict
+
 
 mainView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 mainView ref pc lc todoDict =
@@ -316,6 +346,12 @@ mainView ref pc lc todoDict =
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 todoListByLabelIdView labelId pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withLabelId labelId todoDict)
+    ]
+
+
+todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
+todoListByFilterIdView filterId pc lc todoDict =
+    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.sortedByIdx todoDict)
     ]
 
 

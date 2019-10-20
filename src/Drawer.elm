@@ -20,6 +20,8 @@ import Css
 import Drag exposing (Drag)
 import DrawerItem as DI
 import ExpansionPanelUI
+import Filter exposing (Filter)
+import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events exposing (onClick)
@@ -95,7 +97,7 @@ type alias Config msg =
 type alias PanelLists =
     { projectList : List Project
     , labelList : List Label
-    , filterList : List FilterView
+    , filterList : List Filter
     }
 
 
@@ -201,7 +203,7 @@ view config panelLists expansionPanels panelsDragState =
 type PanelItemId
     = ProjectItemId ProjectId
     | LabelItemId LabelId
-    | FilterItemId String
+    | FilterItemId FilterId
 
 
 viewPanel :
@@ -290,15 +292,15 @@ labelNavItemViewConfig =
     }
 
 
-filterNavItemViewConfig : PanelNavItemViewConfig String FilterView
+filterNavItemViewConfig : PanelNavItemViewConfig FilterId Filter
 filterNavItemViewConfig =
-    { id = .title
-    , idToString = identity
+    { id = Filter.id
+    , idToString = FilterId.toString
     , panelItemId = FilterItemId
-    , title = .title
-    , route = always Route.Inbox
-    , iconName = "filter_list"
-    , iconStyle = .hue >> (\hue -> c_ <| Css.hsl hue 0.7 0.5)
+    , title = Filter.title
+    , route = Filter.id >> Route.Filter
+    , iconName = "folder"
+    , iconStyle = c_ << Filter.cssColor
     }
 
 

@@ -1,6 +1,7 @@
 module Route exposing (Route(..), fromUrl, href, replaceUrl)
 
 import Browser.Navigation as Nav
+import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
@@ -17,6 +18,7 @@ type Route
     | Inbox
     | Project ProjectId
     | Label LabelId
+    | Filter FilterId
 
 
 parser : Parser (Route -> c) c
@@ -26,6 +28,7 @@ parser =
         , map Inbox (s "inbox")
         , map Project (s "project" </> parseProjectId)
         , map Label (s "label" </> parseLabelId)
+        , map Filter (s "filter" </> parseFilterId)
         ]
 
 
@@ -48,6 +51,15 @@ parseLabelId =
     Url.Parser.custom "LABEL_ID" <|
         (JE.string
             >> JD.decodeValue LabelId.decoder
+            >> Result.toMaybe
+        )
+
+
+parseFilterId : Parser (FilterId -> b) b
+parseFilterId =
+    Url.Parser.custom "FILTER_ID" <|
+        (JE.string
+            >> JD.decodeValue FilterId.decoder
             >> Result.toMaybe
         )
 
@@ -78,5 +90,8 @@ routeToString route =
 
                 Label labelId ->
                     [ "label", LabelId.toString labelId ]
+
+                Filter filterId ->
+                    [ "filter", FilterId.toString filterId ]
     in
     Url.Builder.absolute pathSegments []
