@@ -1,4 +1,4 @@
-module View exposing (View, concat, content, none, portal, singleton)
+module View exposing (View, concat, content, fromTuple, maybePortal, none, portal, singleton)
 
 
 type alias View a =
@@ -18,6 +18,16 @@ content c =
 portal : List a -> View a
 portal p =
     View [] p
+
+
+maybePortal : Maybe (List a) -> View a
+maybePortal =
+    Maybe.map portal >> Maybe.withDefault none
+
+
+fromTuple : ( List a, List a ) -> View a
+fromTuple ( c, p ) =
+    View c p
 
 
 concat : List (View a) -> View a
