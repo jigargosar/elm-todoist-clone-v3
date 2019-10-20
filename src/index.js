@@ -11,6 +11,11 @@ const mockTodoList = [
   'Remember to call',
   'Do Stuff!',
   'And More',
+  'Read Chapter 1',
+  'fry toast',
+  'cook food',
+  'take dog for a walk',
+  'workout',
 ].map((title, idx) => ({
   id: `TodoId-${nanoid()}`,
   title,
@@ -25,7 +30,8 @@ const mockTodoList = [
 const mockProjectList = [
   'Clone This',
   'Finish That',
-  'Read GGG',
+  'Read GOT',
+
   'Complete All Foo',
 ].map((title, idx) => ({
   id: `ProjectId-${nanoid()}`,
