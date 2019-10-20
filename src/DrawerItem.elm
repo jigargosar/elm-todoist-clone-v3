@@ -1,4 +1,4 @@
-module DrawerItem exposing (view)
+module DrawerItem exposing (icon, view)
 
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -19,5 +19,6 @@ baseRootStyles =
     [ ph 1, flex ]
 
 
+icon : String -> SA.StyleAttrs msg -> Html msg
 icon name sa =
     i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text name ]
