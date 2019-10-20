@@ -1,6 +1,7 @@
 module Todo exposing
     ( Todo
     , decoder
+    , hasLabel
     , id
     , idx
     , isCompleted
@@ -90,6 +91,11 @@ idx =
 projectRef : Todo -> ProjectRef.ProjectRef
 projectRef =
     unwrap >> .projectRef
+
+
+hasLabel : LabelId -> Todo -> Bool
+hasLabel labelId =
+    labelIdList >> List.filter ((==) labelId) >> List.isEmpty >> not
 
 
 labelIdList : Todo -> List LabelId

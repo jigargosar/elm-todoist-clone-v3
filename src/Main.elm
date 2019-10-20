@@ -9,6 +9,7 @@ import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
+import LabelId exposing (LabelId)
 import Layout
 import Page exposing (Page)
 import Page.NotFound
@@ -302,10 +303,19 @@ mainCP model =
         Page.TodoListByProjectRef projectRef ->
             View.content <| mainView projectRef model.projectCollection model.labelCollection model.todoDict
 
+        Page.TodoListByLabelId labelId ->
+            View.content <| todoListByLabelIdView labelId model.projectCollection model.labelCollection model.todoDict
+
 
 mainView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 mainView ref pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withProjectRef ref todoDict)
+    ]
+
+
+todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
+todoListByLabelIdView labelId pc lc todoDict =
+    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withLabelId labelId todoDict)
     ]
 
 

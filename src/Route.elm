@@ -5,6 +5,7 @@ import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import Json.Encode as JE
+import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Url exposing (Url)
 import Url.Builder
@@ -15,6 +16,7 @@ type Route
     = Root
     | Inbox
     | Project ProjectId
+    | Label LabelId
 
 
 parser : Parser (Route -> c) c
@@ -23,6 +25,7 @@ parser =
         [ map Root top
         , map Inbox (s "inbox")
         , map Project (s "project" </> parseProjectId)
+        , map Label (s "label" </> parseLabelId)
         ]
 
 
@@ -36,6 +39,15 @@ parseProjectId =
     Url.Parser.custom "PROJECT_ID" <|
         (JE.string
             >> JD.decodeValue ProjectId.decoder
+            >> Result.toMaybe
+        )
+
+
+parseLabelId : Parser (LabelId -> b) b
+parseLabelId =
+    Url.Parser.custom "LABEL_ID" <|
+        (JE.string
+            >> JD.decodeValue LabelId.decoder
             >> Result.toMaybe
         )
 
@@ -63,5 +75,8 @@ routeToString route =
 
                 Project projectId ->
                     [ "project", ProjectId.toString projectId ]
+
+                Label labelId ->
+                    [ "label", LabelId.toString labelId ]
     in
     Url.Builder.absolute pathSegments []

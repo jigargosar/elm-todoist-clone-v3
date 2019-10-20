@@ -1,8 +1,9 @@
-module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toggleCompleted, withProjectRef)
+module TodoDict exposing (TodoDict, fromEncodedList, initial, sortedByIdx, toggleCompleted, withLabelId, withProjectRef)
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
+import LabelId exposing (LabelId)
 import ProjectRef exposing (ProjectRef)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
@@ -52,6 +53,11 @@ unwrap (TodoDict internal) =
 withProjectRef : ProjectRef -> TodoDict -> List Todo
 withProjectRef ref =
     toList >> List.filter (Todo.projectRef >> (==) ref)
+
+
+withLabelId : LabelId -> TodoDict -> List Todo
+withLabelId labelId =
+    toList >> List.filter (Todo.hasLabel labelId)
 
 
 

@@ -352,6 +352,18 @@ projectNavItemViewConfig =
     }
 
 
+labelNavItemViewConfig : PanelNavItemViewConfig LabelId Label
+labelNavItemViewConfig =
+    { id = Label.id
+    , idToString = LabelId.toString
+    , panelItemId = LabelItemId
+    , title = Label.title
+    , route = Label.id >> Route.Label
+    , iconName = "folder"
+    , iconStyle = \label -> c_ <| Css.hsl (Label.hue label |> toFloat) 0.7 0.5
+    }
+
+
 viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
 viewPanelNavItem config itemConfig drag idx item =
     let

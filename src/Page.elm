@@ -1,5 +1,6 @@
 module Page exposing (..)
 
+import LabelId exposing (LabelId)
 import ProjectRef exposing (ProjectRef)
 import Route
 import Url exposing (Url)
@@ -7,6 +8,7 @@ import Url exposing (Url)
 
 type Page
     = TodoListByProjectRef ProjectRef
+    | TodoListByLabelId LabelId
     | NotFound Url
 
 
@@ -21,6 +23,9 @@ pageFromRoute route =
 
         Route.Project projectId ->
             TodoListByProjectRef <| ProjectRef.fromId projectId
+
+        Route.Label labelId ->
+            TodoListByLabelId labelId
 
 
 pageFromUrl : Url -> Page
