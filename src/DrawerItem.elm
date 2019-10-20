@@ -17,7 +17,7 @@ rightScrollMarginFixEl =
 
 
 baseRootStyles =
-    [ ph 1, flex ]
+    [ c_grayL 0.3, ph 1, flex ]
 
 
 icon : String -> SA.StyleAttrs msg -> Html msg
