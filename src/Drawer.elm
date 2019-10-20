@@ -359,8 +359,20 @@ labelNavItemViewConfig =
     , panelItemId = LabelItemId
     , title = Label.title
     , route = Label.id >> Route.Label
-    , iconName = "folder"
+    , iconName = "label"
     , iconStyle = c_ << Label.cssColor
+    }
+
+
+filterNavItemViewConfig : PanelNavItemViewConfig String FilterView
+filterNavItemViewConfig =
+    { id = .title
+    , idToString = identity
+    , panelItemId = FilterItemId
+    , title = .title
+    , route = always Route.Inbox
+    , iconName = "filter_list"
+    , iconStyle = .hue >> (\hue -> c_ <| Css.hsl hue 0.7 0.5)
     }
 
 
