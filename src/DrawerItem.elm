@@ -33,7 +33,7 @@ withPrimaryIcon iconName sa model =
 
 primaryIcon : String -> StyleAttrs msg -> Html msg
 primaryIcon iconName sa =
-    i (SA.toAttrsWithBase [] [] sa) [ text iconName ]
+    i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text iconName ]
 
 
 withDraggablePrimaryIcon : String -> StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
