@@ -383,10 +383,11 @@ viewPanelNavItem config itemConfig drag idx item =
         domId =
             domIdPrefix ++ "_" ++ itemConfig.idToString id
 
-        dragOverStyle =
-            Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
-
         rootSA =
+            let
+                dragOverStyle =
+                    Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+            in
             StyleAttrs
                 [ hover [ bgGrayL 0.9 ]
                 , noSelection
