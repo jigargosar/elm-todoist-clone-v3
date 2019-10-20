@@ -40,8 +40,15 @@ panelTypes =
     [ Projects, Labels, Filters ]
 
 
+type alias SubState a =
+    { projects : a
+    , labels : a
+    , filters : a
+    }
+
+
 type alias PanelState =
-    { expanded : SubStateExpanded, drag : SubStateDrag }
+    { expanded : SubState Bool, drag : SubState Drag }
 
 
 mapExpanded func panelState =
@@ -55,27 +62,6 @@ mapDrag func panelState =
 initialPanelState : PanelState
 initialPanelState =
     PanelState (initSubState True) (initSubState Drag.initial)
-
-
-type alias SubState a =
-    { projects : a
-    , labels : a
-    , filters : a
-    }
-
-
-type alias SubStateExpanded =
-    { projects : Bool
-    , labels : Bool
-    , filters : Bool
-    }
-
-
-type alias SubStateDrag =
-    { projects : Drag
-    , labels : Drag
-    , filters : Drag
-    }
 
 
 initSubState : a -> SubState a
