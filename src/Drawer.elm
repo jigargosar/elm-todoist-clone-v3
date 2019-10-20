@@ -351,21 +351,17 @@ viewPanelNavItem config itemConfig drag idx item =
     viewPanelNavItemHelp rootSA primaryIcon link moreSA
 
 
-type alias NavItemViewModel id msg =
-    { id : id
-    , panelItemId : Maybe PanelItemId
-    , onMoreMenuTriggerClicked : Maybe msg
-    , idToString : id -> String
-    , title : String
-    , href : Attribute msg
-    , iconName : String
-    , iconSA : StyleAttrs msg
-    }
-
-
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
 viewSimpleNavItem href title iconName =
     viewSimpleNavItemHelp (StyleAttrs [] [ href ]) { name = iconName, sa = SA.none } title
+
+
+viewSimpleNavItemHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
+viewSimpleNavItemHelp rootSA icon title =
+    DI.initLink rootSA
+        |> DI.withPrimaryIcon icon.name icon.sa
+        |> DI.withContentText title
+        |> DI.render
 
 
 viewPanelNavItemHelp :
@@ -385,14 +381,6 @@ viewPanelNavItemHelp rootSA icon linkContent moreSA =
 viewPanelNavItemGhost : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
 viewPanelNavItemGhost rootSA icon title =
     DI.init rootSA
-        |> DI.withPrimaryIcon icon.name icon.sa
-        |> DI.withContentText title
-        |> DI.render
-
-
-viewSimpleNavItemHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
-viewSimpleNavItemHelp rootSA icon title =
-    DI.initLink rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
         |> DI.render
