@@ -299,7 +299,7 @@ filterNavItemViewConfig =
     , panelItemId = FilterItemId
     , title = Filter.title
     , route = Filter.id >> Route.Filter
-    , iconName = "folder"
+    , iconName = "filter_list"
     , iconStyle = c_ << Filter.cssColor
     }
 
