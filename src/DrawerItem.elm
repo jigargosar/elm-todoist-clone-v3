@@ -20,6 +20,11 @@ init =
     todo
 
 
+initLink : DrawerItem msg
+initLink =
+    todo
+
+
 withSA : StyleAttrs msg -> DrawerItem msg -> DrawerItem msg
 withSA =
     todo
