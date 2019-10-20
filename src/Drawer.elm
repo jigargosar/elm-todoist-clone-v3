@@ -30,7 +30,7 @@ import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
-import View
+import View exposing (View)
 
 
 type alias ExpansionPanels =
@@ -297,17 +297,18 @@ viewPanel2 pc ic title isExpanded drag list =
                     )
                 |> Maybe.map
                     (\( styles, item ) ->
-                        [ viewPanelNavItem pc ic drag -1 item
-                        , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                        ]
+                        View.concat
+                            [ viewPanelNavItem pc ic drag -1 item
+                            , View.singleton <| node "style" [] [ text "body *{ cursor:move!important; }" ]
+                            ]
                     )
-                |> Maybe.withDefault []
+                |> Maybe.withDefault View.none
     in
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
         , if isExpanded then
-            View.content
+            View.concat
                 (list
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc ic drag)
@@ -315,7 +316,7 @@ viewPanel2 pc ic title isExpanded drag list =
 
           else
             View.none
-        , View.portal ghostItem
+        , ghostItem
         ]
 
 
@@ -368,7 +369,7 @@ projectNavItemViewConfig =
     }
 
 
-viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> Html msg
+viewPanelNavItem : PanelConfig item msg -> PanelNavItemViewConfig id item -> Drag -> Int -> item -> View (Html msg)
 viewPanelNavItem config itemConfig drag idx item =
     let
         { dragSystem, domIdPrefix, onMoreClicked } =
@@ -407,48 +408,49 @@ viewPanelNavItem config itemConfig drag idx item =
         panelItemId =
             itemConfig.panelItemId id
     in
-    div
-        (SA.toAttrsWithBase
-            [ ph 1
-            , pointer
-            , flex
-            , c_grayL 0.3
-            , hover [ bgGrayL 0.9 ]
-            , noSelection
-            ]
-            [ class "hover_parent" ]
-            rootSA
-        )
-        [ i
+    View.singleton <|
+        div
             (SA.toAttrsWithBase
-                [ pv 2, ph 1, flex, itemsCenter ]
-                [ class "material-icons" ]
-                iconSA
-            )
-            [ text iconName ]
-        , a
-            [ css
-                [ Css.textDecoration Css.none
-                , Css.visited [ Css.color Css.inherit ]
-                , Css.color Css.inherit
-                , pv 2
-                , ph 1
+                [ ph 1
+                , pointer
                 , flex
-                , flexGrow1
-                , itemsCenter
+                , c_grayL 0.3
+                , hover [ bgGrayL 0.9 ]
+                , noSelection
                 ]
-            , Route.href route
+                [ class "hover_parent" ]
+                rootSA
+            )
+            [ i
+                (SA.toAttrsWithBase
+                    [ pv 2, ph 1, flex, itemsCenter ]
+                    [ class "material-icons" ]
+                    iconSA
+                )
+                [ text iconName ]
+            , a
+                [ css
+                    [ Css.textDecoration Css.none
+                    , Css.visited [ Css.color Css.inherit ]
+                    , Css.color Css.inherit
+                    , pv 2
+                    , ph 1
+                    , flex
+                    , flexGrow1
+                    , itemsCenter
+                    ]
+                , Route.href route
+                ]
+                [ text title ]
+            , i
+                [ css [ pv 2, ph 1 ]
+                , class "show_on_parent_hover"
+                , class "material-icons"
+                , onClick (onMoreClicked panelItemId)
+                ]
+                [ text "more_horiz" ]
+            , div [ css [ mr 3 ] ] []
             ]
-            [ text title ]
-        , i
-            [ css [ pv 2, ph 1 ]
-            , class "show_on_parent_hover"
-            , class "material-icons"
-            , onClick (onMoreClicked panelItemId)
-            ]
-            [ text "more_horiz" ]
-        , div [ css [ mr 3 ] ] []
-        ]
 
 
 type alias NavItemViewModel id msg =
