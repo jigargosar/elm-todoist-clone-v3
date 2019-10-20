@@ -4,10 +4,12 @@ module Drawer exposing
     , Panel(..)
     , PanelItemId(..)
     , PanelLists
+    , PanelState
     , PanelsDragState
     , initialExpansionPanels
+    , initialPanelState
     , initialPanelsDragState
-    , panelDragSubscriptions
+    , panelSubscriptions
     , toggleExpansionPanel
     , updatePanelDrag
     , view
@@ -44,6 +46,19 @@ panelTypes =
 
 type alias PanelState =
     { expanded : SubStateExpanded, drag : SubStateDrag }
+
+
+mapExpanded func panelState =
+    { panelState | expanded = func panelState.expanded }
+
+
+mapDrag func panelState =
+    { panelState | drag = func panelState.drag }
+
+
+initialPanelState : PanelState
+initialPanelState =
+    PanelState initialExpansionPanels initialPanelsDragState
 
 
 type alias SubState a =
@@ -119,9 +134,9 @@ initialExpansionPanels =
     initSubState True
 
 
-toggleExpansionPanel : Panel -> ExpansionPanels -> ExpansionPanels
+toggleExpansionPanel : Panel -> PanelState -> PanelState
 toggleExpansionPanel panel =
-    mapSubState panel not
+    mapExpanded (mapSubState panel not)
 
 
 type alias PanelsDragState =
@@ -138,15 +153,15 @@ updatePanelDrag :
     -> (Panel -> Drag.Info -> msg)
     -> Panel
     -> Drag.Msg
-    -> PanelsDragState
-    -> ( PanelsDragState, Cmd msg )
-updatePanelDrag toMsg onComplete panel msg dragSubState =
+    -> PanelState
+    -> ( PanelState, Cmd msg )
+updatePanelDrag toMsg onComplete panel msg panelState =
     let
         drag =
-            getPanelSubState panel dragSubState
+            getPanelSubState panel panelState.drag
     in
     Drag.update (toMsg panel) (onComplete panel) msg drag
-        |> Tuple.mapFirst (\newDrag -> setPanelSubState panel newDrag dragSubState)
+        |> Tuple.mapFirst (\newDrag -> { panelState | drag = setPanelSubState panel newDrag panelState.drag })
 
 
 panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
@@ -156,6 +171,11 @@ panelDragSubscriptions toMsg dragSubState =
             Drag.subscriptions (toMsg panel) (getPanelSubState panel dragSubState)
     in
     Sub.batch (List.map dragSubscription panelTypes)
+
+
+panelSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelState -> Sub msg
+panelSubscriptions toMsg panelState =
+    panelDragSubscriptions toMsg panelState.drag
 
 
 type alias Config msg =

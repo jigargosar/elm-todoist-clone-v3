@@ -53,8 +53,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , drawerExpansionPanels : Drawer.ExpansionPanels
-    , drawerPanelDrag : Drawer.PanelsDragState
+    , drawerPanelState : Drawer.PanelState
     }
 
 
@@ -70,8 +69,7 @@ init flags url navKey =
             , labelCollection = LabelCollection.initial
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
-            , drawerExpansionPanels = Drawer.initialExpansionPanels
-            , drawerPanelDrag = Drawer.initialPanelsDragState
+            , drawerPanelState = Drawer.initialPanelState
             }
     in
     Return.singleton initial
@@ -161,7 +159,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelDragSubscriptions DrawerPanelDrag model.drawerPanelDrag
+        [ Drawer.panelSubscriptions DrawerPanelDrag model.drawerPanelState
         ]
 
 
@@ -218,16 +216,16 @@ update message model =
 
         ToggleDrawerExpansionPanel panel ->
             ( { model
-                | drawerExpansionPanels =
-                    Drawer.toggleExpansionPanel panel model.drawerExpansionPanels
+                | drawerPanelState =
+                    Drawer.toggleExpansionPanel panel model.drawerPanelState
               }
             , Cmd.none
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragComplete panel msg model.drawerPanelDrag
+            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragComplete panel msg model.drawerPanelState
                 |> Tuple.mapFirst
-                    (\drawerPanelDrag -> { model | drawerPanelDrag = drawerPanelDrag })
+                    (\drawerPanelState -> { model | drawerPanelState = drawerPanelState })
 
         DrawerPanelDragComplete panel info ->
             let
@@ -318,8 +316,7 @@ drawerCP model =
         , labelList = LabelCollection.sorted model.labelCollection
         , filterList = FilterCollection.sorted model.filterCollection
         }
-        model.drawerExpansionPanels
-        model.drawerPanelDrag
+        model.drawerPanelState
 
 
 mainCP : Model -> View (Html Msg)
