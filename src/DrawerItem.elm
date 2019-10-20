@@ -43,7 +43,7 @@ withDraggablePrimaryIcon =
 
 withContentText : String -> DrawerItem msg -> DrawerItem msg
 withContentText title model =
-    { model | primary = Just <| contentText title }
+    { model | content = Just <| contentText title }
 
 
 contentText title =
