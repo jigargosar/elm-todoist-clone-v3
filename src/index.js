@@ -87,7 +87,7 @@ function assignRandomLabelsToRandomTodo() {
   randomTodo.labelIdList.push(randomLabel.id)
 }
 
-times(moveRandomTodoToRandomProject, 3)
+times(moveRandomTodoToRandomProject, 5)
 times(assignRandomLabelsToRandomTodo, 7)
 
 const app = Module.Elm.Main.init({
