@@ -413,7 +413,7 @@ viewPanelNavItem config itemConfig drag idx item =
         moreSA =
             StyleAttrs [] [ onClick (onMoreClicked <| itemConfig.panelItemId id) ]
     in
-    viewPanelNavItem__ rootSA primaryIcon link moreSA
+    viewPanelNavItemHelp rootSA primaryIcon link moreSA
 
 
 type alias NavItemViewModel id msg =
@@ -519,13 +519,13 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
         ]
 
 
-viewPanelNavItem__ :
+viewPanelNavItemHelp :
     StyleAttrs msg
     -> { a | name : String, sa : StyleAttrs msg }
     -> { b | title : String, sa : StyleAttrs msg }
     -> StyleAttrs msg
     -> Html msg
-viewPanelNavItem__ rootSA icon linkContent moreSA =
+viewPanelNavItemHelp rootSA icon linkContent moreSA =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentAsLink linkContent.title linkContent.sa
