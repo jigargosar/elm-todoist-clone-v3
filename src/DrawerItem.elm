@@ -1,4 +1,4 @@
-module DrawerItem exposing (..)
+module DrawerItem exposing (view)
 
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -11,13 +11,13 @@ view sa children =
         (children ++ [ rightScrollMarginFixEl ])
 
 
-icon name sa =
-    i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text name ]
-
-
 rightScrollMarginFixEl =
     div [ css [ mr 3 ] ] []
 
 
 baseRootStyles =
     [ ph 1, flex ]
+
+
+icon name sa =
+    i (SA.toAttrsWithBase [] [ class "material-icons" ] sa) [ text name ]
