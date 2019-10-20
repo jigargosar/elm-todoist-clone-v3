@@ -170,36 +170,34 @@ view config panelLists panelState =
                 , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        panelConfig : Panel -> PanelConfig item msg
-        panelConfig panel =
+        panelConfig : List item -> Panel -> PanelConfig item msg
+        panelConfig items panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , domIdPrefix = "panel-nav-item__"
             , onMoreClicked = config.onPanelItemMoreMenuClicked
             , isExpanded = .expanded >> getSubState panel
             , drag = .drag >> getSubState panel
             , dragSystem = Drag.system (config.panelDragConfig.toMsg panel) (config.panelDragConfig.onComplete panel)
+            , items = items
             }
 
         projectsCP =
-            viewPanel (panelConfig Projects)
+            viewPanel (panelConfig panelLists.projects Projects)
                 projectNavItemViewConfig
                 "Projects"
                 panelState
-                panelLists.projects
 
         labelsCP =
-            viewPanel (panelConfig Labels)
+            viewPanel (panelConfig panelLists.labels Labels)
                 labelNavItemViewConfig
                 "Labels"
                 panelState
-                panelLists.labels
 
         filtersCP =
-            viewPanel (panelConfig Filters)
+            viewPanel (panelConfig panelLists.filters Filters)
                 filterNavItemViewConfig
                 "Filters"
                 panelState
-                panelLists.filters
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
@@ -215,9 +213,8 @@ viewPanel :
     -> PanelNavItemViewConfig id item
     -> String
     -> PanelState
-    -> List item
     -> View (Html msg)
-viewPanel pc ic title panelState list =
+viewPanel pc ic title panelState =
     let
         isExpanded : Bool
         isExpanded =
@@ -232,13 +229,13 @@ viewPanel pc ic title panelState list =
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
         , if isExpanded then
             View.fromTuple
-                ( list
+                ( pc.items
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc ic pc.dragSystem drag)
                 , pc.dragSystem.ghostStyles drag
                     |> Maybe.andThen
                         (\( idx, styles ) ->
-                            List.drop idx list |> List.head |> Maybe.map (Tuple.pair styles)
+                            List.drop idx pc.items |> List.head |> Maybe.map (Tuple.pair styles)
                         )
                     |> Maybe.map
                         (\( ghostStyle, item ) ->
@@ -268,6 +265,7 @@ type alias PanelConfig item msg =
     , isExpanded : PanelState -> Bool
     , drag : PanelState -> Drag
     , dragSystem : Drag.System item msg
+    , items : List item
     }
 
 
