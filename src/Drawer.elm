@@ -161,7 +161,7 @@ updatePanelDrag toMsg onComplete panel msg panelState =
             getPanelSubState panel panelState.drag
     in
     Drag.update (toMsg panel) (onComplete panel) msg drag
-        |> Tuple.mapFirst (\newDrag -> { panelState | drag = setPanelSubState panel newDrag panelState.drag })
+        |> Tuple.mapFirst (\newDrag -> panelState |> mapDrag (mapSubState panel (always newDrag)))
 
 
 panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsDragState -> Sub msg
