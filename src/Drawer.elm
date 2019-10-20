@@ -107,10 +107,6 @@ mapSubState panel func subState =
     get subState |> func |> set
 
 
-type alias ExpansionPanels =
-    SubState Bool
-
-
 toggleExpansionPanel : Panel -> PanelState -> PanelState
 toggleExpansionPanel panel =
     mapExpanded (mapSubState panel not)
