@@ -54,7 +54,7 @@ mapDrag func panelState =
 
 initialPanelState : PanelState
 initialPanelState =
-    PanelState initialExpansionPanels initialPanelsDragState
+    PanelState (initSubState True) (initSubState Drag.initial)
 
 
 type alias SubState a =
@@ -125,11 +125,6 @@ type alias ExpansionPanels =
     SubState Bool
 
 
-initialExpansionPanels : ExpansionPanels
-initialExpansionPanels =
-    initSubState True
-
-
 toggleExpansionPanel : Panel -> PanelState -> PanelState
 toggleExpansionPanel panel =
     mapExpanded (mapSubState panel not)
@@ -137,11 +132,6 @@ toggleExpansionPanel panel =
 
 type alias PanelsDragState =
     SubState Drag
-
-
-initialPanelsDragState : PanelsDragState
-initialPanelsDragState =
-    initSubState Drag.initial
 
 
 updatePanelDrag :
