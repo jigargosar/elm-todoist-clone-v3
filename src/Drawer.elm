@@ -547,10 +547,10 @@ viewNavItem rootSA { title, iconName, iconSA, href, panelItemId, onMoreMenuTrigg
         ]
 
 
-viewPanelNavItem__ rootSA pri cont moreSA =
+viewPanelNavItem__ rootSA icon cont moreSA =
     DI.init
         |> DI.withSA rootSA
-        |> DI.withDraggablePrimaryIcon pri.iconName pri.sa
+        |> DI.withDraggablePrimaryIcon icon.name icon.sa
         |> DI.withLinkContent cont.title cont.sa
         |> DI.withSecondaryMoreAction moreSA
 
