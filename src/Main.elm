@@ -300,15 +300,10 @@ view model =
         model.isDrawerModalOpen
 
 
-panelDragSystem : Drawer.PanelDragSystems Msg
-panelDragSystem =
-    Drawer.createPanelDragSystem DrawerPanelDrag DrawerPanelDragComplete
-
-
 drawerConfig : Drawer.Config Msg
 drawerConfig =
     { onToggleExpansionPanel = ToggleDrawerExpansionPanel
-    , panelDragSystem = panelDragSystem
+    , panelDragConfig = { toMsg = DrawerPanelDrag, onComplete = DrawerPanelDragComplete }
     , onPanelItemMoreMenuClicked = PanelItemMoreMenuClicked
     }
 
