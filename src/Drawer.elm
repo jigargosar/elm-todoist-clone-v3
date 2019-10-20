@@ -32,6 +32,44 @@ import Styles exposing (..)
 import View exposing (View)
 
 
+type alias PanelState =
+    { expanded : SubStateExpanded, drag : SubStateDrag }
+
+
+type alias SubState a =
+    { projects : a
+    , labels : a
+    , filters : a
+    }
+
+
+type alias SubStateExpanded =
+    { projects : Bool
+    , labels : Bool
+    , filters : Bool
+    }
+
+
+type alias SubStateDrag =
+    { projects : Drag
+    , labels : Drag
+    , filters : Drag
+    }
+
+
+getSubState : Panel -> SubState a -> a
+getSubState panel subState =
+    case panel of
+        Projects ->
+            subState.projects
+
+        Labels ->
+            subState.labels
+
+        Filters ->
+            subState.filters
+
+
 type alias ExpansionPanels =
     { projectsExpanded : Bool
     , labelsExpanded : Bool
