@@ -1,5 +1,6 @@
 module DrawerItem exposing (icon, view)
 
+import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import StyleAttrs as SA
@@ -32,3 +33,25 @@ icon name sa =
 
 baseIconRootStyles =
     [ ph 2, pv 1 ]
+
+
+titleAsLink sa title =
+    a
+        (SA.toAttrsWithBase
+            baseTextLinkStyles
+            []
+            sa
+        )
+        [ text title ]
+
+
+baseTextLinkStyles =
+    [ Css.textDecoration Css.none
+    , Css.visited [ Css.color Css.inherit ]
+    , Css.color Css.inherit
+    , ph 2
+    , pv 1
+    , flex
+    , flexGrow1
+    , itemsCenter
+    ]
