@@ -437,7 +437,7 @@ filterToNavItem onMoreMenuTriggerClicked { title, hue } =
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
 viewSimpleNavItem href title iconName =
-    viewSimpleNavItem__ (StyleAttrs [] [ href ]) { name = iconName, sa = SA.none } title
+    viewSimpleNavItemHelp (StyleAttrs [] [ href ]) { name = iconName, sa = SA.none } title
 
 
 viewNavItem : StyleAttrs msg -> NavItemViewModel id msg -> Html msg
@@ -513,7 +513,7 @@ viewPanelNavItemGhost rootSA icon title =
         |> DI.render
 
 
-viewSimpleNavItem__ rootSA icon title =
+viewSimpleNavItemHelp rootSA icon title =
     DI.initLink rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
