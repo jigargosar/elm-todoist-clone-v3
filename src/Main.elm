@@ -211,7 +211,7 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | OpenPopup PopupKind XY String
+    | PopupTrigerred PopupKind XY String
     | OpenPopupWithAnchorElAnchorEl PopupKind XY String Element
     | GotPopupEl Element
     | GotPopupAnchorEl Element
@@ -272,7 +272,7 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        OpenPopup kind xy anchorId ->
+        PopupTrigerred kind xy anchorId ->
             ( model
             , getElement anchorId
                 |> Task.attempt
@@ -426,7 +426,7 @@ moreClickedDecoder panelItemId anchorId id =
             DrawerPanelItemPopup (panelItemId id)
 
         msg xy =
-            OpenPopup kind xy anchorId
+            PopupTrigerred kind xy anchorId
     in
     JD.map msg XY.pageXYDecoder
 
