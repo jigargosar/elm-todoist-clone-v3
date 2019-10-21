@@ -61,7 +61,7 @@ type alias PanelsState =
 
 initialPanelState : PanelState
 initialPanelState =
-    PanelState False Drag.initial
+    PanelState True Drag.initial
 
 
 initialPanelsState : PanelsState
@@ -180,15 +180,15 @@ view allPanelConfig panelLists panelState =
 
         labelsCP =
             viewPanel2 allPanelConfig.labels
-                { isPanelExpanded = panelState.projects.isExpanded
-                , drag = panelState.projects.drag
+                { isPanelExpanded = panelState.labels.isExpanded
+                , drag = panelState.labels.drag
                 , items = panelLists.labels
                 }
 
         filtersCP =
             viewPanel2 allPanelConfig.filters
-                { isPanelExpanded = panelState.projects.isExpanded
-                , drag = panelState.projects.drag
+                { isPanelExpanded = panelState.filters.isExpanded
+                , drag = panelState.labels.drag
                 , items = panelLists.filters
                 }
     in
