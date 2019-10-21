@@ -282,7 +282,7 @@ viewPanelItem config drag idx item =
 
         moreSA : StyleAttrs msg
         moreSA =
-            StyleAttrs [] [ E.on "click" (config.moreClicked moreDomId id) ]
+            StyleAttrs [] [ A.id moreDomId, E.on "click" (config.moreClicked moreDomId id) ]
     in
     viewPanelItemHelp rootSA primaryIcon link moreSA
 
