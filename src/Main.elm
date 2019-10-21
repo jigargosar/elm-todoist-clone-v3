@@ -476,18 +476,18 @@ popupView model =
             case kind of
                 DrawerPanelItemPopup panelItemId ->
                     let
-                        mockView =
-                            PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } popper
+                        mockView content =
+                            PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } content popper
                     in
                     case panelItemId of
                         Drawer.ProjectItemId projectId ->
-                            mockView
+                            mockView PopupView.projectContent
 
                         Drawer.LabelItemId labelId ->
-                            mockView
+                            mockView PopupView.projectContent
 
                         Drawer.FilterItemId filterId ->
-                            mockView
+                            mockView PopupView.projectContent
 
 
 

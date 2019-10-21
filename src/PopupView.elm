@@ -10,8 +10,8 @@ import Styles
 import View exposing (View)
 
 
-mockPopupView : { onClose : msg, noOp : msg } -> Popper -> View (Html msg)
-mockPopupView config popper =
+mockPopupView : { onClose : msg, noOp : msg } -> List (Html msg) -> Popper -> View (Html msg)
+mockPopupView config content popper =
     View.portal
         [ div
             [ css
@@ -42,8 +42,13 @@ mockPopupView config popper =
                 , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
                 , A.class "shadow-1"
                 ]
-                [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
-                , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
-                ]
+                content
             ]
         ]
+
+
+projectContent : List (Html msg)
+projectContent =
+    [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
+    , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
+    ]
