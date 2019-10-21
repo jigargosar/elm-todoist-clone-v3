@@ -237,7 +237,7 @@ viewPanel pc title panelState =
                                     StyleAttrs [ pc.itemConfig.iconStyle item ] []
 
                                 rootSA =
-                                    StyleAttrs ghostStyles []
+                                    SA.styles ghostStyles
                             in
                             [ viewPanelNavItemGhost rootSA { name = pc.itemConfig.iconName, sa = iconSA } (pc.itemConfig.title item)
                             , node "style" [] [ text "body *{ cursor:move!important; }" ]

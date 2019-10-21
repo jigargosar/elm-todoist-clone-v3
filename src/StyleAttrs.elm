@@ -1,4 +1,4 @@
-module StyleAttrs exposing (StyleAttrs, concat, none, toAttrs, toAttrsWithBase)
+module StyleAttrs exposing (StyleAttrs, concat, none, styles, toAttrs, toAttrsWithBase)
 
 import Css exposing (Style)
 import Html.Styled exposing (Attribute)
@@ -15,8 +15,8 @@ concat sa1 sa2 =
 
 
 toAttrs : StyleAttrs msg -> List (Attribute msg)
-toAttrs { styles, attrs } =
-    css styles :: attrs
+toAttrs model =
+    css model.styles :: model.attrs
 
 
 toAttrsWithBase : List Style -> List (Attribute msg) -> StyleAttrs msg -> List (Attribute msg)
@@ -28,3 +28,8 @@ toAttrsWithBase baseStyles baseAttrs model =
 none : StyleAttrs msg
 none =
     StyleAttrs [] []
+
+
+styles : List Style -> StyleAttrs msg
+styles styles_ =
+    StyleAttrs styles_ []
