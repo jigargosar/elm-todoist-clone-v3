@@ -39,13 +39,6 @@ type Panel
     | Filters
 
 
-type alias SubState a =
-    { projects : a
-    , labels : a
-    , filters : a
-    }
-
-
 type alias PanelState =
     { isExpanded : Bool
     , drag : Drag
