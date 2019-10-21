@@ -1,12 +1,12 @@
 module Drawer exposing
-    ( Panel(..)
+    ( AllPanelsState
+    , Panel(..)
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
     , PanelModel
     , PanelsConfig
-    , PanelsState
     , initialPanelsState
     , panelsSubscriptions
     , toggleExpansionPanel
@@ -52,7 +52,7 @@ type alias PanelState =
     }
 
 
-type alias PanelsState =
+type alias AllPanelsState =
     { projects : PanelState
     , labels : PanelState
     , filters : PanelState
@@ -64,9 +64,9 @@ initialPanelState =
     PanelState True Drag.initial
 
 
-initialPanelsState : PanelsState
+initialPanelsState : AllPanelsState
 initialPanelsState =
-    PanelsState initialPanelState initialPanelState initialPanelState
+    AllPanelsState initialPanelState initialPanelState initialPanelState
 
 
 panelGetter : Panel -> { a | projects : c, labels : c, filters : c } -> c
@@ -115,7 +115,7 @@ panelMapper panel func big =
     get big |> func |> set
 
 
-toggleExpansionPanel : Panel -> PanelsState -> PanelsState
+toggleExpansionPanel : Panel -> AllPanelsState -> AllPanelsState
 toggleExpansionPanel panel =
     panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
 
@@ -125,8 +125,8 @@ updatePanelDrag :
     -> (Panel -> Drag.Info -> msg)
     -> Panel
     -> Drag.Msg
-    -> PanelsState
-    -> ( PanelsState, Cmd msg )
+    -> AllPanelsState
+    -> ( AllPanelsState, Cmd msg )
 updatePanelDrag toMsg onComplete panel msg model =
     let
         drag =
@@ -136,7 +136,7 @@ updatePanelDrag toMsg onComplete panel msg model =
         |> Tuple.mapFirst (\newDrag -> panelMapper panel (\s -> { s | drag = newDrag }) model)
 
 
-panelsSubscriptions : PanelsConfig msg -> PanelsState -> Sub msg
+panelsSubscriptions : PanelsConfig msg -> AllPanelsState -> Sub msg
 panelsSubscriptions c panelState =
     Sub.batch
         [ c.projects.dragSystem.subscriptions panelState.projects.drag
@@ -160,7 +160,7 @@ type alias PanelsConfig msg =
 view :
     PanelsConfig msg
     -> PanelLists
-    -> PanelsState
+    -> AllPanelsState
     -> View (Html msg)
 view allPanelConfig panelLists panelState =
     let

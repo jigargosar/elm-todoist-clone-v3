@@ -58,7 +58,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , drawerPanelState : Drawer.PanelsState
+    , drawerPanelState : Drawer.AllPanelsState
     }
 
 
