@@ -1,4 +1,4 @@
-port module Popper exposing (Msg, Popper, close, initial, styles, subscriptions, update)
+port module Popper exposing (Msg, Popper, close, initial, open, styles, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events
@@ -42,6 +42,11 @@ type Msg
 close : Msg
 close =
     Close
+
+
+open : XY -> String -> String -> Msg
+open =
+    Open
 
 
 subscriptions : (Msg -> msg) -> Popper -> Sub msg
