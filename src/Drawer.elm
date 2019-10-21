@@ -248,28 +248,6 @@ viewPanelItems config items drag =
             (viewPanelItem config drag)
 
 
-viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
-viewPanelItemGhost config items drag =
-    config.dragSystem.ghostItemWithStyles items drag
-        |> Maybe.map
-            (\( ghostStyles, item ) ->
-                let
-                    icon =
-                        { name = config.iconName, sa = SA.styles [ config.iconStyle item ] }
-
-                    rootSA =
-                        SA.styles ghostStyles
-
-                    title =
-                        config.title item
-                in
-                [ viewPanelItemGhostHelp rootSA icon title
-                , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                ]
-            )
-        |> Maybe.withDefault []
-
-
 viewPanelItem :
     PanelItemConfig id item msg
     -> Drag
@@ -318,6 +296,28 @@ viewPanelItem config drag idx item =
             StyleAttrs [] [ onClick (config.moreClicked <| id) ]
     in
     viewPanelItemHelp rootSA primaryIcon link moreSA
+
+
+viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItemGhost config items drag =
+    config.dragSystem.ghostItemWithStyles items drag
+        |> Maybe.map
+            (\( ghostStyles, item ) ->
+                let
+                    icon =
+                        { name = config.iconName, sa = SA.styles [ config.iconStyle item ] }
+
+                    rootSA =
+                        SA.styles ghostStyles
+
+                    title =
+                        config.title item
+                in
+                [ viewPanelItemGhostHelp rootSA icon title
+                , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                ]
+            )
+        |> Maybe.withDefault []
 
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
