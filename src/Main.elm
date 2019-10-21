@@ -252,6 +252,7 @@ onUrlChanged url model =
         ( model, Cmd.none )
 
 
+onDrawerPanelDragComplete : Drawer.Panel -> Drag.Info -> Model -> ( Model, Cmd Msg )
 onDrawerPanelDragComplete panel info model =
     let
         rotate =
