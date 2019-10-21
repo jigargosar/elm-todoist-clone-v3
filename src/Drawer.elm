@@ -6,7 +6,6 @@ module Drawer exposing
     , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
-    , PanelModel
     , initialPanelsState
     , panelsSubscriptions
     , toggleExpansionPanel
@@ -206,13 +205,6 @@ type alias PanelItemConfig id item =
     , route : item -> Route.Route
     , iconName : String
     , iconStyle : item -> Style
-    }
-
-
-type alias PanelModel item =
-    { isPanelExpanded : Bool
-    , drag : Drag
-    , items : List item
     }
 
 
