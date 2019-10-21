@@ -227,17 +227,12 @@ viewPanel config items state =
 viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> View (Html msg)
 viewPanelItems config items drag =
     View.fromTuple
-        ( viewPanelContent config items drag
+        ( items
+            |> config.dragSystem.rotate drag
+            |> List.indexedMap
+                (viewPanelItem config drag)
         , viewPanelItemGhost config items drag
         )
-
-
-viewPanelContent : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
-viewPanelContent config items drag =
-    items
-        |> config.dragSystem.rotate drag
-        |> List.indexedMap
-            (viewPanelItem config drag)
 
 
 viewPanelItem :
