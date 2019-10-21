@@ -169,11 +169,10 @@ type alias PanelsConfig msg =
 
 view :
     PanelsConfig msg
-    -> Config msg
     -> PanelLists
     -> PanelsState
     -> View (Html msg)
-view allPanelConfig config panelLists panelState =
+view allPanelConfig panelLists panelState =
     let
         prefixCP =
             View.content
