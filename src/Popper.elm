@@ -1,4 +1,4 @@
-module Popper exposing (Msg, Popper, initial, subscriptions, update)
+module Popper exposing (Msg, Popper, initial, styles, subscriptions, update)
 
 import Browser.Dom exposing (Element)
 import Browser.Events
