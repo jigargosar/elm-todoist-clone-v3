@@ -1,6 +1,6 @@
 module Drawer exposing
     ( Panel(..)
-    , PanelConfig2
+    , PanelConfig
     , PanelItemId(..)
     , PanelLists
     , PanelModel
@@ -153,9 +153,9 @@ type alias PanelLists =
 
 
 type alias PanelsConfig msg =
-    { projects : PanelConfig2 ProjectId Project msg
-    , labels : PanelConfig2 LabelId Label msg
-    , filters : PanelConfig2 FilterId Filter msg
+    { projects : PanelConfig ProjectId Project msg
+    , labels : PanelConfig LabelId Label msg
+    , filters : PanelConfig FilterId Filter msg
     }
 
 
@@ -203,13 +203,24 @@ type PanelItemId
     | FilterItemId FilterId
 
 
-type alias PanelConfig2 id item msg =
+type alias PanelConfig id item msg =
     { onTogglePanelClicked : msg
     , onPanelItemMoreClicked : id -> msg
     , dragSystem : Drag.System item msg
     , panelTitle : String
     , panelItemDomIdPrefix : String
     , itemConfig : PanelNavItemConfig id item
+    }
+
+
+type alias PanelNavItemConfig id item =
+    { id : item -> id
+    , idToString : id -> String
+    , panelItemId : id -> PanelItemId
+    , title : item -> String
+    , route : item -> Route.Route
+    , iconName : String
+    , iconStyle : item -> Style
     }
 
 
@@ -220,7 +231,7 @@ type alias PanelModel item =
     }
 
 
-viewPanel2 : PanelConfig2 id item msg -> PanelModel item -> View (Html msg)
+viewPanel2 : PanelConfig id item msg -> PanelModel item -> View (Html msg)
 viewPanel2 config model =
     let
         dragSystem =
@@ -276,17 +287,6 @@ viewPanelNavItemGhost dragSystem itemConfig drag items =
                 ]
             )
         |> Maybe.withDefault []
-
-
-type alias PanelNavItemConfig id item =
-    { id : item -> id
-    , idToString : id -> String
-    , panelItemId : id -> PanelItemId
-    , title : item -> String
-    , route : item -> Route.Route
-    , iconName : String
-    , iconStyle : item -> Style
-    }
 
 
 viewPanelNavItem :

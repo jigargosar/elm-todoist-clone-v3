@@ -305,7 +305,7 @@ view model =
         model.isDrawerModalOpen
 
 
-projectPanelConfig : Drawer.PanelConfig2 ProjectId Project Msg
+projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
     { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Projects
     , onPanelItemMoreClicked = Drawer.ProjectItemId >> PanelItemMoreMenuClicked
@@ -324,7 +324,7 @@ projectPanelConfig =
     }
 
 
-labelPanelConfig : Drawer.PanelConfig2 LabelId Label Msg
+labelPanelConfig : Drawer.PanelConfig LabelId Label Msg
 labelPanelConfig =
     { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Labels
     , onPanelItemMoreClicked = Drawer.LabelItemId >> PanelItemMoreMenuClicked
@@ -343,7 +343,7 @@ labelPanelConfig =
     }
 
 
-filterPanelConfig : Drawer.PanelConfig2 FilterId Filter Msg
+filterPanelConfig : Drawer.PanelConfig FilterId Filter Msg
 filterPanelConfig =
     { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Filters
     , onPanelItemMoreClicked = Drawer.FilterItemId >> PanelItemMoreMenuClicked
