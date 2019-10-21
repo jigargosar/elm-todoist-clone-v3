@@ -1,6 +1,5 @@
 module Drawer exposing
-    ( Config
-    , Panel(..)
+    ( Panel(..)
     , PanelConfig2
     , PanelItemId(..)
     , PanelLists
@@ -146,13 +145,6 @@ panelSubscriptions toMsg panelState =
     panelDragSubscriptions toMsg panelState.drag
 
 
-type alias Config msg =
-    { onToggleExpansionPanel : Panel -> msg
-    , onPanelItemMoreMenuClicked : PanelItemId -> msg
-    , panelDragConfig : { toMsg : Panel -> Drag.Msg -> msg, onComplete : Panel -> Drag.Info -> msg }
-    }
-
-
 type alias PanelLists =
     { projects : List Project
     , labels : List Label
@@ -264,57 +256,6 @@ viewPanel2 config model =
         ]
 
 
-viewPanel :
-    PanelConfig id item msg
-    -> String
-    -> PanelsState
-    -> View (Html msg)
-viewPanel pc title panelState =
-    let
-        isExpanded : Bool
-        isExpanded =
-            pc.isExpanded panelState
-
-        drag : Drag
-        drag =
-            pc.drag panelState
-
-        dragSystem =
-            pc.dragSystem
-
-        domIdPrefix =
-            pc.domIdPrefix
-
-        onMoreClicked =
-            pc.onMoreClicked
-
-        itemConfig =
-            pc.itemConfig
-
-        items =
-            pc.items
-    in
-    View.concat
-        [ View.content
-            [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
-        , if isExpanded then
-            View.fromTuple
-                ( items
-                    |> dragSystem.rotate drag
-                    |> List.indexedMap
-                        (viewPanelNavItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
-                            dragSystem
-                            itemConfig
-                            drag
-                        )
-                , viewPanelNavItemGhost dragSystem itemConfig drag items
-                )
-
-          else
-            View.none
-        ]
-
-
 viewPanelNavItemGhost : Drag.System item msg -> PanelNavItemViewConfig id item -> Drag -> List item -> List (Html msg)
 viewPanelNavItemGhost dragSystem itemConfig drag items =
     dragSystem.ghostItemWithStyles items drag
@@ -357,42 +298,6 @@ type alias PanelNavItemViewConfig id item =
     , route : item -> Route.Route
     , iconName : String
     , iconStyle : item -> Style
-    }
-
-
-projectNavItemViewConfig : PanelNavItemViewConfig ProjectId Project
-projectNavItemViewConfig =
-    { id = Project.id
-    , idToString = ProjectId.toString
-    , panelItemId = ProjectItemId
-    , title = Project.title
-    , route = Project.id >> Route.Project
-    , iconName = "folder"
-    , iconStyle = c_ << Project.cssColor
-    }
-
-
-labelNavItemViewConfig : PanelNavItemViewConfig LabelId Label
-labelNavItemViewConfig =
-    { id = Label.id
-    , idToString = LabelId.toString
-    , panelItemId = LabelItemId
-    , title = Label.title
-    , route = Label.id >> Route.Label
-    , iconName = "label"
-    , iconStyle = c_ << Label.cssColor
-    }
-
-
-filterNavItemViewConfig : PanelNavItemViewConfig FilterId Filter
-filterNavItemViewConfig =
-    { id = Filter.id
-    , idToString = FilterId.toString
-    , panelItemId = FilterItemId
-    , title = Filter.title
-    , route = Filter.id >> Route.Filter
-    , iconName = "filter_list"
-    , iconStyle = c_ << Filter.cssColor
     }
 
 
