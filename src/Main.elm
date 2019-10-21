@@ -272,12 +272,11 @@ update message model =
                     ( model, Cmd.none )
 
         PopupTriggered kind xy anchorId ->
-            Popper.update Popper (Popper.open xy anchorId "rootPopup") Popper.initial
+            Popper.init Popper xy anchorId "rootPopup"
                 |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
         ClosePopup ->
-            update (Popper Popper.close) model
-                |> Tuple.mapFirst (\m -> { m | popup = Nothing })
+            ( { model | popup = Nothing }, Cmd.none )
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )

@@ -1,4 +1,4 @@
-module Popper exposing (Msg, Popper, close, initial, open, styles, subscriptions, update)
+module Popper exposing (Msg, Popper, init, styles, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events
@@ -45,6 +45,11 @@ close =
 open : XY -> String -> String -> Msg
 open =
     Open
+
+
+init : (Msg -> msg) -> XY -> String -> String -> ( Popper, Cmd msg )
+init toMsg xy anchorId popupId =
+    update toMsg (open xy anchorId popupId) initial
 
 
 subscriptions : (Msg -> msg) -> Popper -> Sub msg
