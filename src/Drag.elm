@@ -58,14 +58,14 @@ system toMsg onComplete =
 
 
 type alias Info =
-    { drag : Int, dragOver : Int }
+    { dragIdx : Int, dragOverIdx : Int }
 
 
 info : Drag -> Maybe Info
 info (Drag internal) =
     internal
         |> Maybe.map
-            (\state -> { drag = state.drag, dragOver = state.dragOver })
+            (\state -> { dragIdx = state.drag, dragOverIdx = state.dragOver })
 
 
 type Drag
@@ -73,10 +73,10 @@ type Drag
 
 
 rotateFromInfo : Info -> List a -> List a
-rotateFromInfo { drag, dragOver } list =
+rotateFromInfo { dragIdx, dragOverIdx } list =
     SelectList.fromList list
-        |> Maybe.andThen (SelectList.selectBy drag)
-        |> Maybe.map (SelectList.moveBy (dragOver - drag) >> SelectList.toList)
+        |> Maybe.andThen (SelectList.selectBy dragIdx)
+        |> Maybe.map (SelectList.moveBy (dragOverIdx - dragIdx) >> SelectList.toList)
         |> Maybe.withDefault list
 
 
@@ -84,8 +84,8 @@ eqDragOverIdx : Int -> Drag -> Bool
 eqDragOverIdx idx =
     info
         >> Maybe.map
-            (\{ drag, dragOver } ->
-                idx == dragOver
+            (\{ dragIdx, dragOverIdx } ->
+                idx == dragOverIdx
             )
         >> Maybe.withDefault False
 
