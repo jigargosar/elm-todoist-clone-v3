@@ -222,7 +222,7 @@ update message model =
         ToggleDrawerExpansionPanel panel ->
             ( { model
                 | drawerPanelState =
-                    Drawer.toggleExpansionPanel panel model.drawerPanelState
+                    Drawer.togglePanelExpansion panel model.drawerPanelState
               }
             , Cmd.none
             )

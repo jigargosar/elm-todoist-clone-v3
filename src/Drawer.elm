@@ -8,7 +8,7 @@ module Drawer exposing
     , PanelLists
     , initialPanelsState
     , panelsSubscriptions
-    , toggleExpansionPanel
+    , togglePanelExpansion
     , updatePanelDrag
     , view
     )
@@ -107,8 +107,8 @@ panelMapper panel func big =
     get big |> func |> set
 
 
-toggleExpansionPanel : Panel -> AllPanelsState -> AllPanelsState
-toggleExpansionPanel panel =
+togglePanelExpansion : Panel -> AllPanelsState -> AllPanelsState
+togglePanelExpansion panel =
     panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
 
 
