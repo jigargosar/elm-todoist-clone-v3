@@ -211,8 +211,8 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | PopupTrigerred PopupKind XY String
-    | PopupTrigerredWithAnchorEl PopupKind XY String Element
+    | PopupTriggered PopupKind XY String
+    | PopupTriggeredWithAnchorEl PopupKind XY String Element
     | GotPopupEl Element
     | GotPopupAnchorEl Element
     | ClosePopup
@@ -272,7 +272,7 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PopupTrigerred kind xy anchorId ->
+        PopupTriggered kind xy anchorId ->
             ( model
             , getElement anchorId
                 |> Task.attempt
@@ -282,11 +282,11 @@ update message model =
                                 LogError ("open popup failed, anchorId not found: " ++ id)
 
                             Ok anchorEl ->
-                                PopupTrigerredWithAnchorEl kind xy anchorId anchorEl
+                                PopupTriggeredWithAnchorEl kind xy anchorId anchorEl
                     )
             )
 
-        PopupTrigerredWithAnchorEl popupKind xy anchorId anchorEl ->
+        PopupTriggeredWithAnchorEl popupKind xy anchorId anchorEl ->
             ( { model | popup = PopupModel popupKind xy anchorId anchorEl Nothing |> Popup }
             , getEl "rootPopup"
                 "reposition popup failed, popupId not found"
@@ -426,7 +426,7 @@ moreClickedDecoder panelItemId anchorId id =
             DrawerPanelItemPopup (panelItemId id)
 
         msg xy =
-            PopupTrigerred kind xy anchorId
+            PopupTriggered kind xy anchorId
     in
     JD.map msg XY.pageXYDecoder
 
