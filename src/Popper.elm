@@ -73,7 +73,11 @@ update toMsg message ((Popper internal) as model) =
             )
 
         OpenWithAnchorEl xy anchorId popupId anchorEl ->
-            ( model, Cmd.none )
+            ( State xy anchorId popupId anchorEl Nothing
+                |> Just
+                |> Popper
+            , Cmd.none
+            )
 
         GotPopupEl popupEl ->
             ( model, Cmd.none )
