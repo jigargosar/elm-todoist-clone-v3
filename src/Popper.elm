@@ -84,7 +84,7 @@ update toMsg message ((Popper internal) as model) =
             ( State xy anchorId popupId anchorEl Nothing
                 |> Just
                 |> Popper
-            , Cmd.none
+            , getElement popupId GotPopupEl
             )
 
         GotPopupEl popupEl ->
@@ -172,7 +172,7 @@ styles ((Popper internal) as model) =
                         ]
 
                 Nothing ->
-                    Styles.batch []
+                    Styles.batch [ Styles.hidden ]
             ]
 
         Nothing ->
