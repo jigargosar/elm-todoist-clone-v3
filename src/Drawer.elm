@@ -132,7 +132,9 @@ updatePanelDrag toMsg onComplete panel msg model =
 panelsSubscriptions : AllPanelsConfig msg -> AllPanelsState -> Sub msg
 panelsSubscriptions c panelState =
     Sub.batch
-        [ c.projects.dragSystem.subscriptions panelState.projects.drag
+        [ c.projects.itemConfig.dragSystem.subscriptions panelState.projects.drag
+        , c.labels.itemConfig.dragSystem.subscriptions panelState.labels.drag
+        , c.filters.itemConfig.dragSystem.subscriptions panelState.filters.drag
         ]
 
 
@@ -190,10 +192,7 @@ type PanelItemId
 
 type alias PanelConfig id item msg =
     { toggleExpansionClicked : msg
-    , itemMoreClicked : id -> msg
-    , dragSystem : Drag.System item msg
     , panelTitle : String
-    , panelItemDomIdPrefix : String
     , itemConfig : PanelItemConfig id item msg
     }
 

@@ -332,10 +332,7 @@ moreClickedDecoder =
 projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
-    , itemMoreClicked = Drawer.ProjectItemId >> PanelItemMoreMenuClicked
-    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Projects) (DrawerPanelDragComplete Drawer.Projects)
     , panelTitle = "Projects"
-    , panelItemDomIdPrefix = "drawer-project-panel-item__"
     , itemConfig =
         { moreClicked = Drawer.ProjectItemId >> moreClickedDecoder
         , dragSystem = Drag.system (DrawerPanelDrag Drawer.Projects) (DrawerPanelDragComplete Drawer.Projects)
@@ -353,10 +350,7 @@ projectPanelConfig =
 labelPanelConfig : Drawer.PanelConfig LabelId Label Msg
 labelPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Labels
-    , itemMoreClicked = Drawer.LabelItemId >> PanelItemMoreMenuClicked
-    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Labels) (DrawerPanelDragComplete Drawer.Labels)
     , panelTitle = "Labels"
-    , panelItemDomIdPrefix = "drawer-label-panel-item__"
     , itemConfig =
         { moreClicked = Drawer.LabelItemId >> moreClickedDecoder
         , dragSystem = Drag.system (DrawerPanelDrag Drawer.Labels) (DrawerPanelDragComplete Drawer.Labels)
@@ -374,10 +368,7 @@ labelPanelConfig =
 filterPanelConfig : Drawer.PanelConfig FilterId Filter Msg
 filterPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Filters
-    , itemMoreClicked = Drawer.FilterItemId >> PanelItemMoreMenuClicked
-    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Filters) (DrawerPanelDragComplete Drawer.Filters)
     , panelTitle = "Filters"
-    , panelItemDomIdPrefix = "drawer-filter-panel-item__"
     , itemConfig =
         { moreClicked = Drawer.FilterItemId >> moreClickedDecoder
         , dragSystem = Drag.system (DrawerPanelDrag Drawer.Filters) (DrawerPanelDragComplete Drawer.Filters)
