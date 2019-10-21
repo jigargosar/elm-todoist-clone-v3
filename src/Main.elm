@@ -552,8 +552,24 @@ mockPopupView popupModel =
                     , Css.top <| Css.px xy.y
                     , Css.left <| Css.px xy.x
                     , case popupModel.popupEl of
-                        Just el ->
-                            Styles.batch []
+                        Just e ->
+                            let
+                                maxTop =
+                                    e.scene.height - e.element.height
+
+                                currentTop =
+                                    e.element.y
+
+                                finalTop =
+                                    min maxTop currentTop
+
+                                topDiff =
+                                    currentTop - finalTop
+                            in
+                            Styles.batch
+                                [ Css.transform (Css.translateY <| Css.px topDiff)
+                                , Styles.commonTransitions
+                                ]
 
                         Nothing ->
                             Styles.batch []
