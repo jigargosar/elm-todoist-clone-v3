@@ -22,6 +22,7 @@ import LabelId exposing (LabelId)
 import Layout
 import Page exposing (Page)
 import Page.NotFound
+import Popper exposing (Popper)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
