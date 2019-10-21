@@ -566,30 +566,32 @@ mockPopupView popupModel =
             , E.onClick ClosePopup
             ]
             [ div
-                [ css
+                [ let
+                    atLeastZero =
+                        max 0
+
+                    currentTop =
+                        atLeastZero xy.y
+
+                    currentLeft =
+                        atLeastZero xy.x
+                  in
+                  css
                     [ Styles.bgWhite
                     , Styles.pa 3
                     , Styles.bor 3
                     , Styles.absolute
-                    , Css.top <| Css.px xy.y
-                    , Css.left <| Css.px xy.x
+                    , Css.top <| Css.px currentTop
+                    , Css.left <| Css.px currentLeft
+                    , Css.minWidth <| Css.px 150
                     , case popupModel.popupEl of
                         Just e ->
                             let
-                                atLeastZero =
-                                    max 0
-
                                 maxTop =
                                     atLeastZero (e.viewport.height - e.element.height)
 
                                 maxLeft =
                                     atLeastZero (e.viewport.width - e.element.width)
-
-                                currentTop =
-                                    atLeastZero xy.y
-
-                                currentLeft =
-                                    atLeastZero xy.x
 
                                 finalTop =
                                     min maxTop currentTop
