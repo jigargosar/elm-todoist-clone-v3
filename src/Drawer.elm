@@ -166,24 +166,18 @@ view allPanelConfig panelLists panelState =
 
         projectsCP =
             viewPanel2 allPanelConfig.projects
-                { isPanelExpanded = panelState.projects.isExpanded
-                , drag = panelState.projects.drag
-                , items = panelLists.projects
-                }
+                panelState.projects
+                panelLists.projects
 
         labelsCP =
             viewPanel2 allPanelConfig.labels
-                { isPanelExpanded = panelState.labels.isExpanded
-                , drag = panelState.labels.drag
-                , items = panelLists.labels
-                }
+                panelState.labels
+                panelLists.labels
 
         filtersCP =
             viewPanel2 allPanelConfig.filters
-                { isPanelExpanded = panelState.filters.isExpanded
-                , drag = panelState.labels.drag
-                , items = panelLists.filters
-                }
+                panelState.labels
+                panelLists.filters
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
@@ -222,8 +216,8 @@ type alias PanelModel item =
     }
 
 
-viewPanel2 : PanelConfig id item msg -> PanelModel item -> View (Html msg)
-viewPanel2 config model =
+viewPanel2 : PanelConfig id item msg -> PanelState -> List item -> View (Html msg)
+viewPanel2 config panelState items =
     let
         dragSystem =
             config.dragSystem
@@ -239,18 +233,18 @@ viewPanel2 config model =
     in
     View.concat
         [ View.content
-            [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle model.isPanelExpanded ]
-        , if model.isPanelExpanded then
+            [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle panelState.isExpanded ]
+        , if panelState.isExpanded then
             View.fromTuple
-                ( model.items
-                    |> dragSystem.rotate model.drag
+                ( items
+                    |> dragSystem.rotate panelState.drag
                     |> List.indexedMap
                         (viewPanelNavItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
                             dragSystem
                             itemConfig
-                            model.drag
+                            panelState.drag
                         )
-                , viewPanelNavItemGhost dragSystem itemConfig model.drag model.items
+                , viewPanelNavItemGhost dragSystem itemConfig panelState.drag items
                 )
 
           else
