@@ -200,7 +200,7 @@ type alias PanelConfig id item msg =
 type alias PanelItemConfig id item msg =
     { moreClicked : id -> msg
     , dragSystem : Drag.System item msg
-    , panelItemDomIdPrefix : String
+    , domIdPrefix : String
     , id : item -> id
     , idToString : id -> String
     , panelItemId : id -> PanelItemId
