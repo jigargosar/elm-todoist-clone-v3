@@ -182,24 +182,7 @@ view allPanelConfig config panelLists panelState =
                 , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        panelConfig : PanelNavItemViewConfig id item -> List item -> Panel -> PanelConfig id item msg
-        panelConfig itemConfig items panel =
-            { togglePanel = config.onToggleExpansionPanel panel
-            , domIdPrefix = "panel-nav-item__"
-            , onMoreClicked = \_ -> config.onToggleExpansionPanel panel
-            , isExpanded = .expanded >> getSubState panel
-            , drag = .drag >> getSubState panel
-            , dragSystem = Drag.system (config.panelDragConfig.toMsg panel) (config.panelDragConfig.onComplete panel)
-            , items = items
-            , itemConfig = itemConfig
-            }
-
         projectsCP =
-            viewPanel (panelConfig projectNavItemViewConfig panelLists.projects Projects)
-                "Projects"
-                panelState
-
-        projectsCP2 =
             viewPanel2 allPanelConfig.projects
                 { isPanelExpanded = panelState.expanded.projects
                 , drag = panelState.drag.projects
@@ -207,11 +190,6 @@ view allPanelConfig config panelLists panelState =
                 }
 
         labelsCP =
-            viewPanel (panelConfig labelNavItemViewConfig panelLists.labels Labels)
-                "Labels"
-                panelState
-
-        labelsCP2 =
             viewPanel2 allPanelConfig.labels
                 { isPanelExpanded = panelState.expanded.labels
                 , drag = panelState.drag.labels
@@ -219,18 +197,13 @@ view allPanelConfig config panelLists panelState =
                 }
 
         filtersCP =
-            viewPanel (panelConfig filterNavItemViewConfig panelLists.filters Filters)
-                "Filters"
-                panelState
-
-        filtersCP2 =
             viewPanel2 allPanelConfig.filters
                 { isPanelExpanded = panelState.expanded.filters
                 , drag = panelState.drag.filters
                 , items = panelLists.filters
                 }
     in
-    View.concat [ prefixCP, projectsCP2, labelsCP2, filtersCP2 ]
+    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
 type PanelItemId
