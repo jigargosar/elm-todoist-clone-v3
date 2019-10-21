@@ -24,7 +24,7 @@ html {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  /*min-height: 100vh;*/
+  min-height: 100vh;
   height: 100%;
 }
 
