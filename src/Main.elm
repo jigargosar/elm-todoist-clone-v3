@@ -571,14 +571,19 @@ mockPopupView popupModel =
                     , Styles.pa 3
                     , Styles.bor 3
                     , Styles.absolute
+                    , Css.top <| Css.px xy.y
+                    , Css.left <| Css.px xy.x
                     , case popupModel.popupEl of
                         Just e ->
                             let
+                                atLeastZero =
+                                    max 0
+
                                 maxTop =
-                                    max 0 (e.viewport.height - e.element.height)
+                                    atLeastZero (e.viewport.height - e.element.height)
 
                                 currentTop =
-                                    max 0 e.element.y
+                                    atLeastZero xy.y
 
                                 finalTop =
                                     min maxTop currentTop
@@ -589,15 +594,10 @@ mockPopupView popupModel =
                             Styles.batch
                                 [ Css.transform (Css.translateY <| Css.px topDiff)
                                 , Styles.commonTransitions
-                                , Css.top <| Css.px currentTop
-                                , Css.left <| Css.px xy.x
                                 ]
 
                         Nothing ->
-                            Styles.batch
-                                [ Css.top <| Css.px xy.y
-                                , Css.left <| Css.px xy.x
-                                ]
+                            Styles.batch []
                     ]
                 , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
