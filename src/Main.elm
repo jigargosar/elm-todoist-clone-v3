@@ -313,7 +313,8 @@ projectPanelConfig =
     , panelTitle = "Projects"
     , panelItemDomIdPrefix = "drawer-project-panel-item__"
     , itemConfig =
-        { id = Project.id
+        { moreClicked = Drawer.ProjectItemId >> PanelItemMoreMenuClicked
+        , id = Project.id
         , idToString = ProjectId.toString
         , panelItemId = Drawer.ProjectItemId
         , title = Project.title
@@ -332,7 +333,8 @@ labelPanelConfig =
     , panelTitle = "Labels"
     , panelItemDomIdPrefix = "drawer-label-panel-item__"
     , itemConfig =
-        { id = Label.id
+        { moreClicked = Drawer.LabelItemId >> PanelItemMoreMenuClicked
+        , id = Label.id
         , idToString = LabelId.toString
         , panelItemId = Drawer.LabelItemId
         , title = Label.title
@@ -351,7 +353,8 @@ filterPanelConfig =
     , panelTitle = "Filters"
     , panelItemDomIdPrefix = "drawer-filter-panel-item__"
     , itemConfig =
-        { id = Filter.id
+        { moreClicked = Drawer.FilterItemId >> PanelItemMoreMenuClicked
+        , id = Filter.id
         , idToString = FilterId.toString
         , panelItemId = Drawer.FilterItemId
         , title = Filter.title
@@ -409,7 +412,7 @@ todoListByLabelIdView labelId pc lc todoDict =
 
 
 todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-todoListByFilterIdView filterId pc lc todoDict =
+todoListByFilterIdView _ pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.sortedByIdx todoDict)
     ]
 
@@ -428,13 +431,3 @@ main =
         , onUrlRequest = OnUrlRequest
         , onUrlChange = OnUrlChange
         }
-
-
-
--- PLAYGROUND
-
-
-type Popup
-    = ProjectPopup ProjectId
-    | LabelPopup LabelId
-    | FilterPopup FilterId

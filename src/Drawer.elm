@@ -193,12 +193,13 @@ type alias PanelConfig id item msg =
     , dragSystem : Drag.System item msg
     , panelTitle : String
     , panelItemDomIdPrefix : String
-    , itemConfig : PanelItemConfig id item
+    , itemConfig : PanelItemConfig id item msg
     }
 
 
-type alias PanelItemConfig id item =
-    { id : item -> id
+type alias PanelItemConfig id item msg =
+    { moreClicked : id -> msg
+    , id : item -> id
     , idToString : id -> String
     , panelItemId : id -> PanelItemId
     , title : item -> String
@@ -244,7 +245,7 @@ viewPanel config items state =
         ]
 
 
-viewPanelItemGhost : Drag.System item msg -> PanelItemConfig id item -> Drag -> List item -> List (Html msg)
+viewPanelItemGhost : Drag.System item msg -> PanelItemConfig id item msg -> Drag -> List item -> List (Html msg)
 viewPanelItemGhost dragSystem itemConfig drag items =
     dragSystem.ghostItemWithStyles items drag
         |> Maybe.map
@@ -269,7 +270,7 @@ viewPanelItemGhost dragSystem itemConfig drag items =
 viewPanelItem :
     { domIdPrefix : String, onMoreClicked : id -> msg }
     -> Drag.System item msg
-    -> PanelItemConfig id item
+    -> PanelItemConfig id item msg
     -> Drag
     -> Int
     -> item
