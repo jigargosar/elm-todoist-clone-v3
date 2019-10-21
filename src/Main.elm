@@ -48,6 +48,7 @@ type alias PopupModel =
     { kind : PopupKind
     , startXY : XY
     , anchorEl : Element
+    , popupEl : Maybe Element
     }
 
 
@@ -209,6 +210,7 @@ type Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | OpenPopup PopupKind XY String
     | GotPopupAnchorEl PopupKind XY Element
+    | GotPopupEl Element
     | ClosePopup
 
 
@@ -280,10 +282,31 @@ update message model =
             )
 
         GotPopupAnchorEl popupKind xy anchorEl ->
-            ( { model | popup = PopupModel popupKind xy anchorEl |> Popup }, Cmd.none )
+            ( { model | popup = PopupModel popupKind xy anchorEl Nothing |> Popup }
+            , getElement "rootPopup"
+                |> Task.attempt
+                    (\elResult ->
+                        case elResult of
+                            Err (Dom.NotFound id) ->
+                                LogError ("reposition popup failed, popupId not found: " ++ id)
+
+                            Ok popupEl ->
+                                GotPopupEl popupEl
+                    )
+            )
 
         ClosePopup ->
             ( { model | popup = NoPopup }, Cmd.none )
+
+        GotPopupEl popupEl ->
+            case model.popup of
+                Popup popupModel ->
+                    ( { model | popup = Popup { popupModel | popupEl = Just popupEl } }
+                    , Cmd.none
+                    )
+
+                NoPopup ->
+                    ( model, Cmd.none )
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
