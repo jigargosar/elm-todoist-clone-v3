@@ -19,12 +19,14 @@ view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
         [ bgBody
         , c_grayL 0.3
-        , h_100
         ]
         [ class "sans-serif" ]
         ([ styledAppbar [] appbar
          , styled div
-            [ center, w_100, max_w_app, h_100 ]
+            [ center
+            , w_100
+            , max_w_app
+            ]
             []
             [ styledPermanentDrawer
                 -- TEST OVERFLOW SCROLL
