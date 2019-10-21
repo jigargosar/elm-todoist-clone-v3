@@ -483,6 +483,9 @@ mockPopupView xy =
                     [ Styles.bgWhite
                     , Styles.pa 3
                     , Styles.bor 3
+                    , Styles.absolute
+                    , Css.top <| Css.px xy.y
+                    , Css.left <| Css.px xy.x
                     ]
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
                 , A.class "shadow-1"
