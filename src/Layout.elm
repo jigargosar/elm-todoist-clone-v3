@@ -18,11 +18,8 @@ view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
 view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
         [ bgBody
-        , min_h_100
-        , h_100
         , c_grayL 0.3
-        , Css.width <| Css.vw 100
-        , Css.overflowX Css.hidden
+        , h_100
         ]
         [ class "sans-serif" ]
         ([ styledAppbar [] appbar
