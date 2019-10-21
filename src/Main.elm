@@ -546,10 +546,6 @@ popupView model =
 
 mockPopupView : PopupModel -> View (Html Msg)
 mockPopupView popupModel =
-    let
-        xy =
-            popupModel.startXY
-    in
     View.portal
         [ div
             [ css
@@ -569,6 +565,10 @@ mockPopupView popupModel =
                 [ let
                     atLeastZero =
                         max 0
+
+                    xy =
+                        -- popupModel.startXY
+                        popupModel.anchorEl.element
 
                     currentTop =
                         atLeastZero xy.y
