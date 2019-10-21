@@ -317,7 +317,7 @@ update message model =
                 NoPopup ->
                     Cmd.none
 
-                Popup _ ->
+                Popup popupModel ->
                     getElement "rootPopup"
                         |> Task.attempt
                             (\elResult ->
