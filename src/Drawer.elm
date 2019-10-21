@@ -239,7 +239,7 @@ viewPanel config items state =
                             itemConfig
                             state.drag
                         )
-                , viewPanelItemGhost dragSystem itemConfig state.drag items
+                , viewPanelItemGhost itemConfig items state.drag
                 )
 
           else
@@ -247,20 +247,20 @@ viewPanel config items state =
         ]
 
 
-viewPanelItemGhost : Drag.System item msg -> PanelItemConfig id item msg -> Drag -> List item -> List (Html msg)
-viewPanelItemGhost dragSystem itemConfig drag items =
-    dragSystem.ghostItemWithStyles items drag
+viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItemGhost config items drag =
+    config.dragSystem.ghostItemWithStyles items drag
         |> Maybe.map
             (\( ghostStyles, item ) ->
                 let
                     icon =
-                        { name = itemConfig.iconName, sa = SA.styles [ itemConfig.iconStyle item ] }
+                        { name = config.iconName, sa = SA.styles [ config.iconStyle item ] }
 
                     rootSA =
                         SA.styles ghostStyles
 
                     title =
-                        itemConfig.title item
+                        config.title item
                 in
                 [ viewPanelItemGhostHelp rootSA icon title
                 , node "style" [] [ text "body *{ cursor:move!important; }" ]
