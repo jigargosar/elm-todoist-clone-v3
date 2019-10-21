@@ -5,20 +5,25 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer
+import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
+import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import Layout
 import Page exposing (Page)
 import Page.NotFound
+import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Return
+import Route
+import Styles
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -53,7 +58,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , drawerPanelState : Drawer.PanelState
+    , drawerPanelState : Drawer.PanelsState
     }
 
 
@@ -305,6 +310,63 @@ drawerConfig =
     { onToggleExpansionPanel = ToggleDrawerExpansionPanel
     , panelDragConfig = { toMsg = DrawerPanelDrag, onComplete = DrawerPanelDragComplete }
     , onPanelItemMoreMenuClicked = PanelItemMoreMenuClicked
+    }
+
+
+projectPanelConfig : Drawer.PanelConfig2 ProjectId Project Msg
+projectPanelConfig =
+    { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Projects
+    , onPanelItemMoreClicked = Drawer.ProjectItemId >> PanelItemMoreMenuClicked
+    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Projects) (DrawerPanelDragComplete Drawer.Projects)
+    , panelTitle = "Projects"
+    , panelItemDomIdPrefix = "drawer-project-panel-item__"
+    , itemConfig =
+        { id = Project.id
+        , idToString = ProjectId.toString
+        , panelItemId = Drawer.ProjectItemId
+        , title = Project.title
+        , route = Project.id >> Route.Project
+        , iconName = "project"
+        , iconStyle = Styles.c_ << Project.cssColor
+        }
+    }
+
+
+labelPanelConfig : Drawer.PanelConfig2 LabelId Label Msg
+labelPanelConfig =
+    { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Labels
+    , onPanelItemMoreClicked = Drawer.LabelItemId >> PanelItemMoreMenuClicked
+    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Labels) (DrawerPanelDragComplete Drawer.Labels)
+    , panelTitle = "Labels"
+    , panelItemDomIdPrefix = "drawer-label-panel-item__"
+    , itemConfig =
+        { id = Label.id
+        , idToString = LabelId.toString
+        , panelItemId = Drawer.LabelItemId
+        , title = Label.title
+        , route = Label.id >> Route.Label
+        , iconName = "label"
+        , iconStyle = Styles.c_ << Label.cssColor
+        }
+    }
+
+
+filterPanelConfig : Drawer.PanelConfig2 FilterId Filter Msg
+filterPanelConfig =
+    { onTogglePanelClicked = ToggleDrawerExpansionPanel Drawer.Filters
+    , onPanelItemMoreClicked = Drawer.FilterItemId >> PanelItemMoreMenuClicked
+    , dragSystem = Drag.system (DrawerPanelDrag Drawer.Filters) (DrawerPanelDragComplete Drawer.Filters)
+    , panelTitle = "Filters"
+    , panelItemDomIdPrefix = "drawer-filter-panel-item__"
+    , itemConfig =
+        { id = Filter.id
+        , idToString = FilterId.toString
+        , panelItemId = Drawer.FilterItemId
+        , title = Filter.title
+        , route = Filter.id >> Route.Filter
+        , iconName = "filter"
+        , iconStyle = Styles.c_ << Filter.cssColor
+        }
     }
 
 

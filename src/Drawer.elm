@@ -1,9 +1,11 @@
 module Drawer exposing
     ( Config
     , Panel(..)
+    , PanelConfig2
     , PanelItemId(..)
     , PanelLists
-    , PanelState
+    , PanelNavItemViewConfig
+    , PanelsState
     , initialPanelState
     , panelSubscriptions
     , toggleExpansionPanel
@@ -47,7 +49,7 @@ type alias SubState a =
     }
 
 
-type alias PanelState =
+type alias PanelsState =
     { expanded : SubState Bool, drag : SubState Drag }
 
 
@@ -59,9 +61,9 @@ mapDrag func panelState =
     { panelState | drag = func panelState.drag }
 
 
-initialPanelState : PanelState
+initialPanelState : PanelsState
 initialPanelState =
-    PanelState (initSubState True) (initSubState Drag.initial)
+    PanelsState (initSubState True) (initSubState Drag.initial)
 
 
 initSubState : a -> SubState a
@@ -107,7 +109,7 @@ mapSubState panel func subState =
     get subState |> func |> set
 
 
-toggleExpansionPanel : Panel -> PanelState -> PanelState
+toggleExpansionPanel : Panel -> PanelsState -> PanelsState
 toggleExpansionPanel panel =
     mapExpanded (mapSubState panel not)
 
@@ -117,8 +119,8 @@ updatePanelDrag :
     -> (Panel -> Drag.Info -> msg)
     -> Panel
     -> Drag.Msg
-    -> PanelState
-    -> ( PanelState, Cmd msg )
+    -> PanelsState
+    -> ( PanelsState, Cmd msg )
 updatePanelDrag toMsg onComplete panel msg panelState =
     let
         drag =
@@ -137,7 +139,7 @@ panelDragSubscriptions toMsg dragSubState =
     Sub.batch (List.map dragSubscription panelTypes)
 
 
-panelSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelState -> Sub msg
+panelSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsState -> Sub msg
 panelSubscriptions toMsg panelState =
     panelDragSubscriptions toMsg panelState.drag
 
@@ -159,7 +161,7 @@ type alias PanelLists =
 view :
     Config msg
     -> PanelLists
-    -> PanelState
+    -> PanelsState
     -> View (Html msg)
 view config panelLists panelState =
     let
@@ -206,10 +208,32 @@ type PanelItemId
     | FilterItemId FilterId
 
 
+type alias PanelConfig2 id item msg =
+    { onTogglePanelClicked : msg
+    , onPanelItemMoreClicked : id -> msg
+    , dragSystem : Drag.System item msg
+    , panelTitle : String
+    , panelItemDomIdPrefix : String
+    , itemConfig : PanelNavItemViewConfig id item
+    }
+
+
+type alias LabelPanelModel item =
+    { isPanelExpanded : Bool
+    , drag : Drag
+    , items : List item
+    }
+
+
+viewLabelPanel : PanelConfig2 id item msg -> LabelPanelModel item -> View (Html msg)
+viewLabelPanel config model =
+    Debug.todo "impl"
+
+
 viewPanel :
     PanelConfig id item msg
     -> String
-    -> PanelState
+    -> PanelsState
     -> View (Html msg)
 viewPanel pc title panelState =
     let
@@ -283,8 +307,8 @@ type alias PanelConfig id item msg =
     { togglePanel : msg
     , domIdPrefix : String
     , onMoreClicked : PanelItemId -> msg
-    , isExpanded : PanelState -> Bool
-    , drag : PanelState -> Drag
+    , isExpanded : PanelsState -> Bool
+    , drag : PanelsState -> Drag
     , dragSystem : Drag.System item msg
     , items : List item
     , itemConfig : PanelNavItemViewConfig id item
