@@ -217,18 +217,23 @@ viewPanel config items state =
         [ View.content
             [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
         , if state.isExpanded then
-            View.fromTuple
-                ( viewPanelItems config.itemConfig items state.drag
-                , viewPanelItemGhost config.itemConfig items state.drag
-                )
+            viewPanelItems config.itemConfig items state.drag
 
           else
             View.none
         ]
 
 
-viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> View (Html msg)
 viewPanelItems config items drag =
+    View.fromTuple
+        ( viewPanelContent config items drag
+        , viewPanelItemGhost config items drag
+        )
+
+
+viewPanelContent : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelContent config items drag =
     items
         |> config.dragSystem.rotate drag
         |> List.indexedMap
