@@ -48,6 +48,7 @@ type PopupKind
 type alias PopupModel =
     { kind : PopupKind
     , startXY : XY
+    , anchorId : String
     , anchorEl : Element
     , popupEl : Maybe Element
     }
@@ -211,7 +212,7 @@ type Msg
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | OpenPopup PopupKind XY String
-    | GotPopupAnchorEl PopupKind XY Element
+    | GotPopupAnchorEl PopupKind XY String Element
     | GotPopupEl Element
     | ClosePopup
     | BrowserResized Int Int
@@ -280,12 +281,12 @@ update message model =
                                 LogError ("open popup failed, anchorId not found: " ++ id)
 
                             Ok anchorEl ->
-                                GotPopupAnchorEl kind xy anchorEl
+                                GotPopupAnchorEl kind xy anchorId anchorEl
                     )
             )
 
-        GotPopupAnchorEl popupKind xy anchorEl ->
-            ( { model | popup = PopupModel popupKind xy anchorEl Nothing |> Popup }
+        GotPopupAnchorEl popupKind xy anchorId anchorEl ->
+            ( { model | popup = PopupModel popupKind xy anchorId anchorEl Nothing |> Popup }
             , getElement "rootPopup"
                 |> Task.attempt
                     (\elResult ->
