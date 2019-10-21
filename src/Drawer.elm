@@ -204,8 +204,8 @@ type PanelItemId
 
 
 type alias PanelConfig id item msg =
-    { onTogglePanelClicked : msg
-    , onPanelItemMoreClicked : id -> msg
+    { toggleExpansionClicked : msg
+    , itemMoreClicked : id -> msg
     , dragSystem : Drag.System item msg
     , panelTitle : String
     , panelItemDomIdPrefix : String
@@ -241,14 +241,14 @@ viewPanel2 config model =
             config.panelItemDomIdPrefix
 
         onMoreClicked =
-            config.onPanelItemMoreClicked
+            config.itemMoreClicked
 
         itemConfig =
             config.itemConfig
     in
     View.concat
         [ View.content
-            [ ExpansionPanelUI.viewHeader config.onTogglePanelClicked config.panelTitle model.isPanelExpanded ]
+            [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle model.isPanelExpanded ]
         , if model.isPanelExpanded then
             View.fromTuple
                 ( model.items
