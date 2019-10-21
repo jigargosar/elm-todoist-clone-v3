@@ -203,7 +203,6 @@ type alias PanelItemConfig id item msg =
     , domIdPrefix : String
     , id : item -> id
     , idToString : id -> String
-    , panelItemId : id -> PanelItemId
     , title : item -> String
     , route : item -> Route.Route
     , iconName : String
