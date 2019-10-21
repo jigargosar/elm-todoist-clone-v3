@@ -2,6 +2,8 @@ module Popper exposing (Msg, Popper, initial, subscriptions, update)
 
 import Browser.Dom exposing (Element)
 import Browser.Events
+import Css exposing (Style)
+import Styles
 import XY exposing (XY)
 
 
@@ -63,3 +65,13 @@ update toMsg message ((Popper internal) as model) =
 
         BrowserResized _ _ ->
             ( model, Cmd.none )
+
+
+styles : Popper -> List Style
+styles ((Popper internal) as model) =
+    case internal of
+        Just state ->
+            []
+
+        Nothing ->
+            []
