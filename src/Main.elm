@@ -460,7 +460,7 @@ mockPopupView =
     View.portal
         [ div
             [ css
-                [ Styles.absolute
+                [ Styles.fixed
                 , Styles.absFill
                 , Styles.flex
                 , Styles.itemsCenter
