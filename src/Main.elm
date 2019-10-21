@@ -34,6 +34,11 @@ import View exposing (View)
 port logError : String -> Cmd msg
 
 
+type Popup
+    = DrawerPanelItemPopup Drawer.PanelItemId
+    | NoPopup
+
+
 
 -- Flags
 
@@ -59,6 +64,7 @@ type alias Model =
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
     , drawerPanelsState : Drawer.AllPanelsState
+    , popup : Popup
     }
 
 
@@ -75,6 +81,7 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , drawerPanelsState = Drawer.initialPanelsState
+            , popup = NoPopup
             }
     in
     Return.singleton initial
@@ -235,8 +242,8 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PanelItemMoreMenuClicked _ ->
-            ( model, Cmd.none )
+        PanelItemMoreMenuClicked panelItemId ->
+            ( { model | popup = DrawerPanelItemPopup panelItemId }, Cmd.none )
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
