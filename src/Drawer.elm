@@ -1,12 +1,12 @@
 module Drawer exposing
-    ( AllPanelsState
+    ( AllPanelsConfig
+    , AllPanelsState
     , Panel(..)
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
     , PanelModel
-    , PanelsConfig
     , initialPanelsState
     , panelsSubscriptions
     , toggleExpansionPanel
@@ -136,7 +136,7 @@ updatePanelDrag toMsg onComplete panel msg model =
         |> Tuple.mapFirst (\newDrag -> panelMapper panel (\s -> { s | drag = newDrag }) model)
 
 
-panelsSubscriptions : PanelsConfig msg -> AllPanelsState -> Sub msg
+panelsSubscriptions : AllPanelsConfig msg -> AllPanelsState -> Sub msg
 panelsSubscriptions c panelState =
     Sub.batch
         [ c.projects.dragSystem.subscriptions panelState.projects.drag
@@ -150,7 +150,7 @@ type alias PanelLists =
     }
 
 
-type alias PanelsConfig msg =
+type alias AllPanelsConfig msg =
     { projects : PanelConfig ProjectId Project msg
     , labels : PanelConfig LabelId Label msg
     , filters : PanelConfig FilterId Filter msg
@@ -158,7 +158,7 @@ type alias PanelsConfig msg =
 
 
 view :
-    PanelsConfig msg
+    AllPanelsConfig msg
     -> PanelLists
     -> AllPanelsState
     -> View (Html msg)

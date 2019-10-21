@@ -362,7 +362,7 @@ filterPanelConfig =
     }
 
 
-panelsConfig : Drawer.PanelsConfig Msg
+panelsConfig : Drawer.AllPanelsConfig Msg
 panelsConfig =
     { projects = projectPanelConfig
     , labels = labelPanelConfig
