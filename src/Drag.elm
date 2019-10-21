@@ -16,7 +16,7 @@ module Drag exposing
     , update
     )
 
-import Basics.More exposing (flip)
+import Basics.More exposing (flip, memberAt, swap)
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events as BE
 import Css
@@ -40,6 +40,7 @@ type alias System a msg =
     , info : Drag -> Maybe Info
     , rotate : Drag -> List a -> List a
     , ghostStylesWithDragIdx : Drag -> Maybe ( Int, List Css.Style )
+    , ghostItemWithStyles : List a -> Drag -> Maybe ( List Css.Style, a )
     }
 
 
@@ -54,6 +55,7 @@ system toMsg onComplete =
     , info = info
     , rotate = rotate
     , ghostStylesWithDragIdx = ghostStylesWithDragIdx
+    , ghostItemWithStyles = ghostItemWithStyles
     }
 
 
@@ -243,6 +245,12 @@ update toMsg onComplete message ((Drag internal) as model) =
             ( Drag Nothing
             , Cmd.none
             )
+
+
+ghostItemWithStyles : List item -> Drag -> Maybe ( List Css.Style, item )
+ghostItemWithStyles list =
+    ghostStylesWithDragIdx
+        >> Maybe.andThen (\( idx, styles ) -> memberAt idx list |> Maybe.map (Tuple.pair styles))
 
 
 ghostStylesWithDragIdx : Drag -> Maybe ( Int, List Css.Style )
