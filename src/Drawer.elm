@@ -229,7 +229,7 @@ viewPanel pc title panelState =
                 ( pc.items
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc pc.itemConfig pc.dragSystem drag)
-                , pc.dragSystem.ghostStyles drag
+                , pc.dragSystem.ghostStylesWithDragIdx drag
                     |> Maybe.andThen
                         (\( idx, styles ) ->
                             List.drop idx pc.items |> List.head |> Maybe.map (Tuple.pair styles)
