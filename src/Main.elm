@@ -3,6 +3,7 @@ port module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom exposing (Element, getElement)
+import Browser.Events
 import Browser.Navigation as Nav
 import Css
 import Drag exposing (Drag)
@@ -190,6 +191,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelsState
+        , Browser.Events.onResize BrowserResized
         ]
 
 
@@ -212,6 +214,7 @@ type Msg
     | GotPopupAnchorEl PopupKind XY Element
     | GotPopupEl Element
     | ClosePopup
+    | BrowserResized Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -307,6 +310,25 @@ update message model =
 
                 NoPopup ->
                     ( model, Cmd.none )
+
+        BrowserResized _ _ ->
+            ( model
+            , case model.popup of
+                NoPopup ->
+                    Cmd.none
+
+                Popup _ ->
+                    getElement "rootPopup"
+                        |> Task.attempt
+                            (\elResult ->
+                                case elResult of
+                                    Err (Dom.NotFound id) ->
+                                        LogError ("reposition popup failed, popupId not found: " ++ id)
+
+                                    Ok popupEl ->
+                                        GotPopupEl popupEl
+                            )
+            )
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
