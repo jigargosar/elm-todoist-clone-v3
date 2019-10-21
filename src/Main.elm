@@ -39,7 +39,7 @@ port logError : String -> Cmd msg
 
 
 type Popup
-    = DrawerPanelItemPopup Drawer.PanelItemId
+    = DrawerPanelItemPopup XY Drawer.PanelItemId
     | NoPopup
 
 
@@ -247,8 +247,8 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PanelItemMoreMenuClicked _ panelItemId ->
-            ( { model | popup = DrawerPanelItemPopup panelItemId }, Cmd.none )
+        PanelItemMoreMenuClicked xy panelItemId ->
+            ( { model | popup = DrawerPanelItemPopup xy panelItemId }, Cmd.none )
 
         ClosePopup ->
             ( { model | popup = NoPopup }, Cmd.none )
@@ -447,22 +447,22 @@ todoListByFilterIdView _ pc lc todoDict =
 
 popupView model =
     case model.popup of
-        DrawerPanelItemPopup panelItemId ->
+        DrawerPanelItemPopup xy panelItemId ->
             case panelItemId of
                 Drawer.ProjectItemId projectId ->
-                    mockPopupView
+                    mockPopupView xy
 
                 Drawer.LabelItemId labelId ->
-                    mockPopupView
+                    mockPopupView xy
 
                 Drawer.FilterItemId filterId ->
-                    mockPopupView
+                    mockPopupView xy
 
         NoPopup ->
             View.none
 
 
-mockPopupView =
+mockPopupView xy =
     View.portal
         [ div
             [ css
