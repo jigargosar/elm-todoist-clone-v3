@@ -32,6 +32,7 @@ import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
 import View exposing (View)
+import XY exposing (XY)
 
 
 port logError : String -> Cmd msg
@@ -192,7 +193,7 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | PanelItemMoreMenuClicked Drawer.PanelItemId
+    | PanelItemMoreMenuClicked XY Drawer.PanelItemId
     | ClosePopup
 
 
@@ -246,7 +247,7 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PanelItemMoreMenuClicked panelItemId ->
+        PanelItemMoreMenuClicked _ panelItemId ->
             ( { model | popup = DrawerPanelItemPopup panelItemId }, Cmd.none )
 
         ClosePopup ->
@@ -327,10 +328,10 @@ view model =
 moreClickedDecoder : Drawer.PanelItemId -> JD.Decoder Msg
 moreClickedDecoder panelItemId =
     let
-        msg =
-            PanelItemMoreMenuClicked panelItemId
+        msg xy =
+            PanelItemMoreMenuClicked xy panelItemId
     in
-    JD.succeed msg
+    JD.map msg XY.pageXYDecoder
 
 
 panelDragSystem : Drawer.Panel -> Drag.System a Msg
