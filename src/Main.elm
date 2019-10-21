@@ -212,8 +212,9 @@ type Msg
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | OpenPopup PopupKind XY String
-    | GotPopupAnchorEl PopupKind XY String Element
+    | OpenPopupWithAnchorElAnchorEl PopupKind XY String Element
     | GotPopupEl Element
+    | GotPopupAnchorEl Element
     | ClosePopup
     | BrowserResized Int Int
 
@@ -281,11 +282,11 @@ update message model =
                                 LogError ("open popup failed, anchorId not found: " ++ id)
 
                             Ok anchorEl ->
-                                GotPopupAnchorEl kind xy anchorId anchorEl
+                                OpenPopupWithAnchorElAnchorEl kind xy anchorId anchorEl
                     )
             )
 
-        GotPopupAnchorEl popupKind xy anchorId anchorEl ->
+        OpenPopupWithAnchorElAnchorEl popupKind xy anchorId anchorEl ->
             ( { model | popup = PopupModel popupKind xy anchorId anchorEl Nothing |> Popup }
             , getElement "rootPopup"
                 |> Task.attempt
@@ -312,6 +313,16 @@ update message model =
                 NoPopup ->
                     ( model, Cmd.none )
 
+        GotPopupAnchorEl anchorEl ->
+            case model.popup of
+                Popup popupModel ->
+                    ( { model | popup = Popup { popupModel | anchorEl = anchorEl } }
+                    , Cmd.none
+                    )
+
+                NoPopup ->
+                    ( model, Cmd.none )
+
         BrowserResized _ _ ->
             ( model
             , case model.popup of
@@ -319,16 +330,28 @@ update message model =
                     Cmd.none
 
                 Popup popupModel ->
-                    getElement "rootPopup"
-                        |> Task.attempt
-                            (\elResult ->
-                                case elResult of
-                                    Err (Dom.NotFound id) ->
-                                        LogError ("reposition popup failed, popupId not found: " ++ id)
+                    Cmd.batch
+                        [ getElement "rootPopup"
+                            |> Task.attempt
+                                (\elResult ->
+                                    case elResult of
+                                        Err (Dom.NotFound id) ->
+                                            LogError ("reposition popup failed, popupId not found: " ++ id)
 
-                                    Ok popupEl ->
-                                        GotPopupEl popupEl
-                            )
+                                        Ok popupEl ->
+                                            GotPopupEl popupEl
+                                )
+                        , getElement popupModel.anchorId
+                            |> Task.attempt
+                                (\elResult ->
+                                    case elResult of
+                                        Err (Dom.NotFound id) ->
+                                            LogError ("reposition popup failed, anchorId not found: " ++ id)
+
+                                        Ok el ->
+                                            GotPopupAnchorEl el
+                                )
+                        ]
             )
 
 
