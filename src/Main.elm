@@ -571,8 +571,6 @@ mockPopupView popupModel =
                     , Styles.pa 3
                     , Styles.bor 3
                     , Styles.absolute
-                    , Css.top <| Css.px xy.y
-                    , Css.left <| Css.px xy.x
                     , case popupModel.popupEl of
                         Just e ->
                             let
@@ -591,10 +589,15 @@ mockPopupView popupModel =
                             Styles.batch
                                 [ Css.transform (Css.translateY <| Css.px topDiff)
                                 , Styles.commonTransitions
+                                , Css.top <| Css.px currentTop
+                                , Css.left <| Css.px xy.x
                                 ]
 
                         Nothing ->
-                            Styles.batch []
+                            Styles.batch
+                                [ Css.top <| Css.px xy.y
+                                , Css.left <| Css.px xy.x
+                                ]
                     ]
                 , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
