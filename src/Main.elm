@@ -355,6 +355,20 @@ update message model =
             )
 
 
+getEl : String -> String -> (Element -> Msg) -> Cmd Msg
+getEl domId errMsg onSuccess =
+    getElement domId
+        |> Task.attempt
+            (\elResult ->
+                case elResult of
+                    Err (Dom.NotFound id) ->
+                        LogError (errMsg ++ id)
+
+                    Ok el ->
+                        onSuccess el
+            )
+
+
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
     let
