@@ -199,6 +199,13 @@ view allPanelConfig config panelLists panelState =
                 "Projects"
                 panelState
 
+        projectsCP2 =
+            viewPanel2 allPanelConfig.projects
+                { isPanelExpanded = panelState.expanded.projects
+                , drag = panelState.drag.projects
+                , items = panelLists.projects
+                }
+
         labelsCP =
             viewPanel (panelConfig labelNavItemViewConfig panelLists.labels Labels)
                 "Labels"
