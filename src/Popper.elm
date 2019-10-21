@@ -99,7 +99,17 @@ update toMsg message ((Popper internal) as model) =
             ( Popper Nothing, Cmd.none )
 
         BrowserResized _ _ ->
-            ( model, Cmd.none )
+            case internal of
+                Just state ->
+                    ( model
+                    , Cmd.batch
+                        [ getElement state.anchorId GotAnchorEl
+                        , getElement state.popupId GotPopupEl
+                        ]
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         GotDomError (Dom.NotFound id) ->
             ( model, logError <| "Dom.NotFound " ++ id )
