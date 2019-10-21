@@ -46,20 +46,6 @@ type PopupKind
     = DrawerPanelItemPopup Drawer.PanelItemId
 
 
-type alias PopupModel =
-    { kind : PopupKind
-    , startXY : XY
-    , anchorId : String
-    , anchorEl : Element
-    , popupEl : Maybe Element
-    }
-
-
-type Popup
-    = Popup PopupModel
-    | NoPopup
-
-
 
 -- Flags
 
@@ -85,7 +71,7 @@ type alias Model =
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
     , drawerPanelsState : Drawer.AllPanelsState
-    , popup : Popup
+    , popup : Maybe ( PopupKind, Popper )
     }
 
 
@@ -102,7 +88,7 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , drawerPanelsState = Drawer.initialPanelsState
-            , popup = NoPopup
+            , popup = Nothing
             }
     in
     Return.singleton initial
@@ -193,7 +179,12 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelsState
-        , Browser.Events.onResize BrowserResized
+        , case model.popup of
+            Just ( _, popper ) ->
+                Popper.subscriptions Popper popper
+
+            Nothing ->
+                Sub.none
         ]
 
 
@@ -213,11 +204,8 @@ type Msg
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PopupTriggered PopupKind XY String
-    | PopupTriggeredWithAnchorEl PopupKind XY String Element
-    | GotPopupEl Element
-    | GotPopupAnchorEl Element
+    | Popper Popper.Msg
     | ClosePopup
-    | BrowserResized Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -273,80 +261,24 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
+        Popper msg ->
+            case model.popup of
+                Just ( kind, popper ) ->
+                    let
+                        ( newPopper, cmd ) =
+                            Popper.update Popper msg popper
+                    in
+                    ( { model | popup = Just ( kind, newPopper ) }, cmd )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
         PopupTriggered kind xy anchorId ->
-            ( model
-            , getElement anchorId
-                |> Task.attempt
-                    (\elResult ->
-                        case elResult of
-                            Err (Dom.NotFound id) ->
-                                LogError ("open popup failed, anchorId not found: " ++ id)
-
-                            Ok anchorEl ->
-                                PopupTriggeredWithAnchorEl kind xy anchorId anchorEl
-                    )
-            )
-
-        PopupTriggeredWithAnchorEl popupKind xy anchorId anchorEl ->
-            ( { model | popup = PopupModel popupKind xy anchorId anchorEl Nothing |> Popup }
-            , getEl "rootPopup"
-                "reposition popup failed, popupId not found"
-                GotPopupEl
-            )
+            Popper.update Popper (Popper.open xy anchorId "rootPopup") Popper.initial
+                |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
         ClosePopup ->
-            ( { model | popup = NoPopup }, Cmd.none )
-
-        GotPopupEl popupEl ->
-            case model.popup of
-                Popup popupModel ->
-                    ( { model | popup = Popup { popupModel | popupEl = Just popupEl } }
-                    , Cmd.none
-                    )
-
-                NoPopup ->
-                    ( model, Cmd.none )
-
-        GotPopupAnchorEl anchorEl ->
-            case model.popup of
-                Popup popupModel ->
-                    ( { model | popup = Popup { popupModel | anchorEl = anchorEl } }
-                    , Cmd.none
-                    )
-
-                NoPopup ->
-                    ( model, Cmd.none )
-
-        BrowserResized _ _ ->
-            ( model
-            , case model.popup of
-                NoPopup ->
-                    Cmd.none
-
-                Popup popupModel ->
-                    Cmd.batch
-                        [ getEl "rootPopup"
-                            "reposition popup failed, popupId not found"
-                            GotPopupEl
-                        , getEl popupModel.anchorId
-                            "reposition popup failed, anchorId not found"
-                            GotPopupAnchorEl
-                        ]
-            )
-
-
-getEl : String -> String -> (Element -> Msg) -> Cmd Msg
-getEl domId errMsg onSuccess =
-    getElement domId
-        |> Task.attempt
-            (\elResult ->
-                case elResult of
-                    Err (Dom.NotFound id) ->
-                        LogError (errMsg ++ id)
-
-                    Ok el ->
-                        onSuccess el
-            )
+            update (Popper Popper.close) model
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
@@ -545,25 +477,25 @@ todoListByFilterIdView _ pc lc todoDict =
 
 popupView model =
     case model.popup of
-        NoPopup ->
+        Nothing ->
             View.none
 
-        Popup popupModel ->
-            case popupModel.kind of
+        Just ( kind, popper ) ->
+            case kind of
                 DrawerPanelItemPopup panelItemId ->
                     case panelItemId of
                         Drawer.ProjectItemId projectId ->
-                            mockPopupView popupModel
+                            mockPopupView popper
 
                         Drawer.LabelItemId labelId ->
-                            mockPopupView popupModel
+                            mockPopupView popper
 
                         Drawer.FilterItemId filterId ->
-                            mockPopupView popupModel
+                            mockPopupView popper
 
 
-mockPopupView : PopupModel -> View (Html Msg)
-mockPopupView popupModel =
+mockPopupView : Popper -> View (Html Msg)
+mockPopupView popper =
     View.portal
         [ div
             [ css
@@ -581,55 +513,15 @@ mockPopupView popupModel =
             ]
             [ div
                 [ let
-                    atLeastZero =
-                        max 0
-
-                    xy =
-                        -- popupModel.startXY
-                        popupModel.anchorEl.element
-
-                    currentTop =
-                        atLeastZero xy.y
-
-                    currentLeft =
-                        atLeastZero xy.x
+                    popperStyles =
+                        Popper.styles popper
                   in
                   css
                     [ Styles.bgWhite
                     , Styles.pa 3
                     , Styles.bor 3
                     , Styles.absolute
-                    , Css.top <| Css.px currentTop
-                    , Css.left <| Css.px currentLeft
-                    , Css.minWidth <| Css.px 150
-                    , case popupModel.popupEl of
-                        Just e ->
-                            let
-                                maxTop =
-                                    atLeastZero (e.viewport.height - e.element.height)
-
-                                maxLeft =
-                                    atLeastZero (e.viewport.width - e.element.width)
-
-                                finalTop =
-                                    min maxTop currentTop
-
-                                finalLeft =
-                                    min maxLeft currentLeft
-
-                                topDiff =
-                                    finalTop - currentTop
-
-                                leftDiff =
-                                    finalLeft - currentLeft
-                            in
-                            Styles.batch
-                                [ Css.transform (Css.translate2 (Css.px leftDiff) (Css.px topDiff))
-                                , Styles.commonTransitions
-                                ]
-
-                        Nothing ->
-                            Styles.batch []
+                    , Styles.batch popperStyles
                     ]
                 , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
