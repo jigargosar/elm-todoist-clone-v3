@@ -1,10 +1,10 @@
 module Drawer exposing
     ( Panel(..)
     , PanelConfig
+    , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
     , PanelModel
-    , PanelNavItemConfig
     , PanelsConfig
     , PanelsState
     , initialPanelState
@@ -209,11 +209,11 @@ type alias PanelConfig id item msg =
     , dragSystem : Drag.System item msg
     , panelTitle : String
     , panelItemDomIdPrefix : String
-    , itemConfig : PanelNavItemConfig id item
+    , itemConfig : PanelItemConfig id item
     }
 
 
-type alias PanelNavItemConfig id item =
+type alias PanelItemConfig id item =
     { id : item -> id
     , idToString : id -> String
     , panelItemId : id -> PanelItemId
@@ -267,7 +267,7 @@ viewPanel2 config model =
         ]
 
 
-viewPanelNavItemGhost : Drag.System item msg -> PanelNavItemConfig id item -> Drag -> List item -> List (Html msg)
+viewPanelNavItemGhost : Drag.System item msg -> PanelItemConfig id item -> Drag -> List item -> List (Html msg)
 viewPanelNavItemGhost dragSystem itemConfig drag items =
     dragSystem.ghostItemWithStyles items drag
         |> Maybe.map
@@ -292,7 +292,7 @@ viewPanelNavItemGhost dragSystem itemConfig drag items =
 viewPanelNavItem :
     { domIdPrefix : String, onMoreClicked : id -> msg }
     -> Drag.System item msg
-    -> PanelNavItemConfig id item
+    -> PanelItemConfig id item
     -> Drag
     -> Int
     -> item
