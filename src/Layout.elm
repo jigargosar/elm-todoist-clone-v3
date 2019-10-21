@@ -17,7 +17,13 @@ type alias Parts msg =
 view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
 view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
-        [ bgBody, min_h_100, c_grayL 0.3 ]
+        [ bgBody
+        , min_h_100
+        , h_100
+        , c_grayL 0.3
+        , Css.width <| Css.vw 100
+        , Css.overflowX Css.hidden
+        ]
         [ class "sans-serif" ]
         ([ styledAppbar [] appbar
          , styled div
@@ -63,7 +69,13 @@ styledAppbar appbarAttrs appbarContent =
 styledMain contentAttrs content =
     styled div
         [ commonTransitions
-        , batch [ ns [ ml_ sidebarWidthPx ] ]
+        , batch
+            [ ns
+                [ ml_ sidebarWidthPx
+                , Css.maxWidth <| Css.calc (Css.vw 100) Css.minus (Css.px sidebarWidthPx)
+                , Css.width <| Css.px mainWidthPx
+                ]
+            ]
         , pt_fix_for_header
         , h_100
         , bgWhite
@@ -71,7 +83,7 @@ styledMain contentAttrs content =
         , flex
         ]
         []
-        [ styled main_ [ flexGrow1 ] contentAttrs content ]
+        [ styled main_ [ flexGrow1, w_100 ] contentAttrs content ]
 
 
 styledPermanentDrawer drawer =
@@ -159,6 +171,10 @@ maxAppWidthPx =
 
 sidebarWidthPx =
     266
+
+
+mainWidthPx =
+    maxAppWidthPx - sidebarWidthPx
 
 
 w_sidebar =
