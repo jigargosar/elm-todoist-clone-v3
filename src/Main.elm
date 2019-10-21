@@ -519,7 +519,6 @@ mockPopupView popper =
                     [ Styles.bgWhite
                     , Styles.pa 3
                     , Styles.bor 3
-                    , Styles.absolute
                     , Styles.batch popperStyles
                     ]
                 , A.id "rootPopup"

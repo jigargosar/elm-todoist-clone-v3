@@ -141,10 +141,7 @@ styles ((Popper internal) as model) =
                 currentLeft =
                     atLeastZero xy.x
             in
-            [ Styles.bgWhite
-            , Styles.pa 3
-            , Styles.bor 3
-            , Styles.absolute
+            [ Styles.absolute
             , Css.top <| Css.px currentTop
             , Css.left <| Css.px currentLeft
             , Css.minWidth <| Css.px 150
@@ -179,4 +176,4 @@ styles ((Popper internal) as model) =
             ]
 
         Nothing ->
-            []
+            [ Styles.hidden ]
