@@ -236,7 +236,7 @@ viewPanel config items panelState =
                             itemConfig
                             panelState.drag
                         )
-                , viewPanelNavItemGhost dragSystem itemConfig panelState.drag items
+                , viewPanelItemGhost dragSystem itemConfig panelState.drag items
                 )
 
           else
@@ -244,8 +244,8 @@ viewPanel config items panelState =
         ]
 
 
-viewPanelNavItemGhost : Drag.System item msg -> PanelItemConfig id item -> Drag -> List item -> List (Html msg)
-viewPanelNavItemGhost dragSystem itemConfig drag items =
+viewPanelItemGhost : Drag.System item msg -> PanelItemConfig id item -> Drag -> List item -> List (Html msg)
+viewPanelItemGhost dragSystem itemConfig drag items =
     dragSystem.ghostItemWithStyles items drag
         |> Maybe.map
             (\( ghostStyles, item ) ->
