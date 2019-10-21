@@ -220,16 +220,36 @@ viewPanel pc title panelState =
         drag : Drag
         drag =
             pc.drag panelState
+
+        dragSystem =
+            pc.dragSystem
+
+        domIdPrefix =
+            pc.domIdPrefix
+
+        onMoreClicked =
+            pc.onMoreClicked
+
+        itemConfig =
+            pc.itemConfig
+
+        items =
+            pc.items
     in
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader pc.togglePanel title isExpanded ]
         , if isExpanded then
             View.fromTuple
-                ( pc.items
-                    |> pc.dragSystem.rotate drag
-                    |> List.indexedMap (viewPanelNavItem pc pc.itemConfig pc.dragSystem drag)
-                , viewPanelNavItemGhost pc.dragSystem pc.itemConfig drag pc.items
+                ( items
+                    |> dragSystem.rotate drag
+                    |> List.indexedMap
+                        (viewPanelNavItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
+                            dragSystem
+                            itemConfig
+                            drag
+                        )
+                , viewPanelNavItemGhost dragSystem itemConfig drag items
                 )
 
           else
@@ -319,14 +339,14 @@ filterNavItemViewConfig =
 
 
 viewPanelNavItem :
-    PanelConfig id item msg
-    -> PanelNavItemViewConfig id item
+    { domIdPrefix : String, onMoreClicked : PanelItemId -> msg }
     -> Drag.System item msg
+    -> PanelNavItemViewConfig id item
     -> Drag
     -> Int
     -> item
     -> Html msg
-viewPanelNavItem config itemConfig dragSystem drag idx item =
+viewPanelNavItem config dragSystem itemConfig drag idx item =
     let
         { domIdPrefix, onMoreClicked } =
             config
