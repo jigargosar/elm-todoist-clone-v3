@@ -3,12 +3,14 @@ port module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Css
 import Drag exposing (Drag)
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled exposing (Html, toUnstyled)
+import Html.Styled exposing (Html, div, toUnstyled)
+import Html.Styled.Attributes exposing (css)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -450,7 +452,19 @@ popupView model =
 
 
 mockPopupView =
-    View.portal []
+    View.portal
+        [ div
+            [ css
+                [ Styles.absolute
+                , Styles.absFill
+                , Styles.flex
+                , Styles.itemsCenter
+                , Styles.justifyCenter
+                , Styles.bg (Css.hsla 0 0 0 0.2)
+                ]
+            ]
+            []
+        ]
 
 
 

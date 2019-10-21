@@ -254,6 +254,10 @@ itemsCenter =
     Css.alignItems Css.center
 
 
+justifyCenter =
+    Css.justifyContent Css.center
+
+
 flexGrow1 : Css.Style
 flexGrow1 =
     Css.flexGrow (Css.num 1)
