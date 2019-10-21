@@ -69,23 +69,24 @@ initialPanelsState =
     PanelsState initialPanelState initialPanelState initialPanelState
 
 
-panelGetter panel =
+panelGetter : Panel -> { a | projects : c, labels : c, filters : c } -> c
+panelGetter panel m =
     case panel of
         Projects ->
-            .projects
+            m.projects
 
         Labels ->
-            .labels
+            m.labels
 
         Filters ->
-            .filters
+            m.filters
 
 
 panelSetter :
     Panel
-    -> small
-    -> { c | projects : small, labels : small, filters : small }
-    -> { c | projects : small, labels : small, filters : small }
+    -> b
+    -> { c | projects : b, labels : b, filters : b }
+    -> { c | projects : b, labels : b, filters : b }
 panelSetter panel small big =
     case panel of
         Projects ->
@@ -98,6 +99,11 @@ panelSetter panel small big =
             { big | filters = small }
 
 
+panelMapper :
+    Panel
+    -> (a -> a)
+    -> { c | projects : a, labels : a, filters : a }
+    -> { c | projects : a, labels : a, filters : a }
 panelMapper panel func big =
     let
         get =
