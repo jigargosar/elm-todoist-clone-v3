@@ -552,6 +552,7 @@ mockPopupView popupModel =
                     , Css.top <| Css.px xy.y
                     , Css.left <| Css.px xy.x
                     ]
+                , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
                 , A.class "shadow-1"
                 ]
