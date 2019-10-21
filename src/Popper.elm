@@ -1,14 +1,12 @@
-port module Popper exposing (Msg, Popper, close, initial, open, styles, subscriptions, update)
+module Popper exposing (Msg, Popper, close, initial, open, styles, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events
 import Css exposing (Style)
+import Log exposing (logError)
 import Styles
 import Task
 import XY exposing (XY)
-
-
-port logError : String -> Cmd msg
 
 
 type Popper

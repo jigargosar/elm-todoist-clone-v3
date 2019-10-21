@@ -1,4 +1,4 @@
-port module Main exposing (main)
+module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
@@ -20,6 +20,7 @@ import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import Layout
+import Log exposing (logError)
 import Page exposing (Page)
 import Page.NotFound
 import Popper exposing (Popper)
@@ -37,9 +38,6 @@ import TodoView
 import Url exposing (Url)
 import View exposing (View)
 import XY exposing (XY)
-
-
-port logError : String -> Cmd msg
 
 
 type PopupKind
