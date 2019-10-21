@@ -325,8 +325,12 @@ view model =
 
 
 moreClickedDecoder : Drawer.PanelItemId -> JD.Decoder Msg
-moreClickedDecoder =
-    PanelItemMoreMenuClicked >> JD.succeed
+moreClickedDecoder panelItemId =
+    let
+        msg =
+            PanelItemMoreMenuClicked panelItemId
+    in
+    JD.succeed msg
 
 
 panelDragSystem : Drawer.Panel -> Drag.System a Msg
