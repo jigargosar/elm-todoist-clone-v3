@@ -233,46 +233,7 @@ update message model =
                     (\drawerPanelState -> { model | drawerPanelsState = drawerPanelState })
 
         DrawerPanelDragComplete panel info ->
-            let
-                rotate =
-                    Drag.rotateFromInfo info
-            in
-            case panel of
-                Drawer.Projects ->
-                    let
-                        projectList =
-                            ProjectCollection.sorted model.projectCollection
-                    in
-                    ( { model
-                        | projectCollection =
-                            ProjectCollection.updateSortOrder (rotate projectList) model.projectCollection
-                      }
-                    , Cmd.none
-                    )
-
-                Drawer.Labels ->
-                    let
-                        labelList =
-                            LabelCollection.sorted model.labelCollection
-                    in
-                    ( { model
-                        | labelCollection =
-                            LabelCollection.updateSortOrder (rotate labelList) model.labelCollection
-                      }
-                    , Cmd.none
-                    )
-
-                Drawer.Filters ->
-                    let
-                        filterList =
-                            FilterCollection.sorted model.filterCollection
-                    in
-                    ( { model
-                        | filterCollection =
-                            FilterCollection.updateSortOrder (rotate filterList) model.filterCollection
-                      }
-                    , Cmd.none
-                    )
+            onDrawerPanelDragComplete panel info model
 
         PanelItemMoreMenuClicked _ ->
             ( model, Cmd.none )
@@ -289,6 +250,49 @@ onUrlChanged url model =
 
     else
         ( model, Cmd.none )
+
+
+onDrawerPanelDragComplete panel info model =
+    let
+        rotate =
+            Drag.rotateFromInfo info
+    in
+    case panel of
+        Drawer.Projects ->
+            let
+                projectList =
+                    ProjectCollection.sorted model.projectCollection
+            in
+            ( { model
+                | projectCollection =
+                    ProjectCollection.updateSortOrder (rotate projectList) model.projectCollection
+              }
+            , Cmd.none
+            )
+
+        Drawer.Labels ->
+            let
+                labelList =
+                    LabelCollection.sorted model.labelCollection
+            in
+            ( { model
+                | labelCollection =
+                    LabelCollection.updateSortOrder (rotate labelList) model.labelCollection
+              }
+            , Cmd.none
+            )
+
+        Drawer.Filters ->
+            let
+                filterList =
+                    FilterCollection.sorted model.filterCollection
+            in
+            ( { model
+                | filterCollection =
+                    FilterCollection.updateSortOrder (rotate filterList) model.filterCollection
+              }
+            , Cmd.none
+            )
 
 
 
