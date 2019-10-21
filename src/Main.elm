@@ -469,7 +469,7 @@ mockPopupView =
                 ]
             , E.onClick ClosePopup
             ]
-            [ div [ css [ Styles.bgWhite, Styles.pa 3, Styles.bor 3 ] ]
+            [ div [ css [ Styles.bgWhite, Styles.pa 3, Styles.bor 3 ], E.stopPropagationOn "click" ( JD.succeed NoOp, True ) ]
                 [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
                 , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
                 ]
