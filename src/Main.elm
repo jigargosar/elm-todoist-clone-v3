@@ -204,7 +204,7 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | PanelItemMoreMenuClicked XY Drawer.PanelItemId
+    | PanelItemMoreMenuClicked PopupKind XY String
     | ClosePopup
 
 
@@ -258,8 +258,8 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PanelItemMoreMenuClicked xy panelItemId ->
-            ( { model | popup = Popup <| PopupModel (DrawerPanelItemPopup panelItemId) xy "" }, Cmd.none )
+        PanelItemMoreMenuClicked kind xy anchorId ->
+            ( { model | popup = Popup <| PopupModel kind xy anchorId }, Cmd.none )
 
         ClosePopup ->
             ( { model | popup = NoPopup }, Cmd.none )
@@ -339,8 +339,11 @@ view model =
 moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Msg
 moreClickedDecoder panelItemId anchorId id =
     let
+        kind =
+            DrawerPanelItemPopup (panelItemId id)
+
         msg xy =
-            PanelItemMoreMenuClicked xy (panelItemId id)
+            PanelItemMoreMenuClicked kind xy anchorId
     in
     JD.map msg XY.pageXYDecoder
 
