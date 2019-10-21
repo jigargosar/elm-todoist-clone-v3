@@ -71,7 +71,56 @@ styles : Popper -> List Style
 styles ((Popper internal) as model) =
     case internal of
         Just state ->
-            []
+            let
+                atLeastZero =
+                    max 0
+
+                xy =
+                    -- popupModel.startXY
+                    state.anchorEl.element
+
+                currentTop =
+                    atLeastZero xy.y
+
+                currentLeft =
+                    atLeastZero xy.x
+            in
+            [ Styles.bgWhite
+            , Styles.pa 3
+            , Styles.bor 3
+            , Styles.absolute
+            , Css.top <| Css.px currentTop
+            , Css.left <| Css.px currentLeft
+            , Css.minWidth <| Css.px 150
+            , case state.popupEl of
+                Just e ->
+                    let
+                        maxTop =
+                            atLeastZero (e.viewport.height - e.element.height)
+
+                        maxLeft =
+                            atLeastZero (e.viewport.width - e.element.width)
+
+                        finalTop =
+                            min maxTop currentTop
+
+                        finalLeft =
+                            min maxLeft currentLeft
+
+                        topDiff =
+                            finalTop - currentTop
+
+                        leftDiff =
+                            finalLeft - currentLeft
+                    in
+                    Styles.batch
+                        [ Css.transform (Css.translate2 (Css.px leftDiff) (Css.px topDiff))
+                        , Styles.commonTransitions
+                        ]
+
+                Nothing ->
+                    Styles.batch []
+            ]
 
         Nothing ->
             []
