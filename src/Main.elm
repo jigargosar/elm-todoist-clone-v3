@@ -575,10 +575,10 @@ mockPopupView popupModel =
                         Just e ->
                             let
                                 maxTop =
-                                    min 0 (e.viewport.height - e.element.height)
+                                    max 0 (e.viewport.height - e.element.height)
 
                                 currentTop =
-                                    e.element.y
+                                    max 0 e.element.y
 
                                 finalTop =
                                     min maxTop currentTop
