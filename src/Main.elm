@@ -331,16 +331,9 @@ update message model =
 
                 Popup popupModel ->
                     Cmd.batch
-                        [ getElement "rootPopup"
-                            |> Task.attempt
-                                (\elResult ->
-                                    case elResult of
-                                        Err (Dom.NotFound id) ->
-                                            LogError ("reposition popup failed, popupId not found: " ++ id)
-
-                                        Ok popupEl ->
-                                            GotPopupEl popupEl
-                                )
+                        [ getEl "rootPopup"
+                            "reposition popup failed, popupId not found"
+                            GotPopupEl
                         , getEl popupModel.anchorId
                             "reposition popup failed, anchorId not found"
                             GotPopupAnchorEl
