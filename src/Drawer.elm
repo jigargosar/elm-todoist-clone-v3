@@ -231,7 +231,7 @@ viewPanel config items panelState =
                 ( items
                     |> dragSystem.rotate panelState.drag
                     |> List.indexedMap
-                        (viewPanelNavItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
+                        (viewPanelItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
                             dragSystem
                             itemConfig
                             panelState.drag
@@ -266,7 +266,7 @@ viewPanelNavItemGhost dragSystem itemConfig drag items =
         |> Maybe.withDefault []
 
 
-viewPanelNavItem :
+viewPanelItem :
     { domIdPrefix : String, onMoreClicked : id -> msg }
     -> Drag.System item msg
     -> PanelItemConfig id item
@@ -274,7 +274,7 @@ viewPanelNavItem :
     -> Int
     -> item
     -> Html msg
-viewPanelNavItem config dragSystem itemConfig drag idx item =
+viewPanelItem config dragSystem itemConfig drag idx item =
     let
         { domIdPrefix, onMoreClicked } =
             config
@@ -283,7 +283,7 @@ viewPanelNavItem config dragSystem itemConfig drag idx item =
             itemConfig.id item
 
         domId =
-            domIdPrefix ++ "_" ++ itemConfig.idToString id
+            domIdPrefix ++ itemConfig.idToString id
 
         rootSA =
             let
