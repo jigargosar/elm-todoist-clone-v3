@@ -212,7 +212,7 @@ type Msg
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PopupTrigerred PopupKind XY String
-    | OpenPopupWithAnchorElAnchorEl PopupKind XY String Element
+    | OpenPopupWithAnchorEl PopupKind XY String Element
     | GotPopupEl Element
     | GotPopupAnchorEl Element
     | ClosePopup
@@ -282,11 +282,11 @@ update message model =
                                 LogError ("open popup failed, anchorId not found: " ++ id)
 
                             Ok anchorEl ->
-                                OpenPopupWithAnchorElAnchorEl kind xy anchorId anchorEl
+                                OpenPopupWithAnchorEl kind xy anchorId anchorEl
                     )
             )
 
-        OpenPopupWithAnchorElAnchorEl popupKind xy anchorId anchorEl ->
+        OpenPopupWithAnchorEl popupKind xy anchorId anchorEl ->
             ( { model | popup = PopupModel popupKind xy anchorId anchorEl Nothing |> Popup }
             , getEl "rootPopup"
                 "reposition popup failed, popupId not found"
