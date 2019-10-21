@@ -19,6 +19,8 @@ view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
     styled div
         [ bgBody
         , c_grayL 0.3
+        , min_h_100
+        , flex
         ]
         [ class "sans-serif" ]
         ([ styledAppbar [] appbar
@@ -26,6 +28,7 @@ view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
             [ center
             , w_100
             , max_w_app
+            , flexGrow1
             ]
             []
             [ styledPermanentDrawer
