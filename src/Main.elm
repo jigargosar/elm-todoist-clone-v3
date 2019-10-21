@@ -311,7 +311,7 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = drawerView model
+        , drawer = View.concat [ drawerView model, popupView model ]
         , main = pageView model
         }
         model.isDrawerModalOpen
@@ -430,6 +430,27 @@ todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> Tod
 todoListByFilterIdView _ pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.sortedByIdx todoDict)
     ]
+
+
+popupView model =
+    case model.popup of
+        DrawerPanelItemPopup panelItemId ->
+            case panelItemId of
+                Drawer.ProjectItemId projectId ->
+                    mockPopupView
+
+                Drawer.LabelItemId labelId ->
+                    mockPopupView
+
+                Drawer.FilterItemId filterId ->
+                    mockPopupView
+
+        NoPopup ->
+            View.none
+
+
+mockPopupView =
+    View.portal []
 
 
 
