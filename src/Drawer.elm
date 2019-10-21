@@ -237,6 +237,7 @@ viewPanel pc title panelState =
         ]
 
 
+viewPanelNavItemGhost : Drag.System item msg -> PanelNavItemViewConfig id item -> Drag -> List item -> List (Html msg)
 viewPanelNavItemGhost dragSystem itemConfig drag items =
     dragSystem.ghostItemWithStyles items drag
         |> Maybe.map
