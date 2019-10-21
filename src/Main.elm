@@ -38,8 +38,19 @@ import XY exposing (XY)
 port logError : String -> Cmd msg
 
 
+type PopupKind
+    = DrawerPanelItemPopup Drawer.PanelItemId
+
+
+type alias PopupModel =
+    { kind : PopupKind
+    , startXY : XY
+    , anchorId : String
+    }
+
+
 type Popup
-    = DrawerPanelItemPopup XY Drawer.PanelItemId
+    = Popup PopupModel
     | NoPopup
 
 
@@ -248,7 +259,7 @@ update message model =
             onDrawerPanelDragComplete panel info model
 
         PanelItemMoreMenuClicked xy panelItemId ->
-            ( { model | popup = DrawerPanelItemPopup xy panelItemId }, Cmd.none )
+            ( { model | popup = Popup <| PopupModel (DrawerPanelItemPopup panelItemId) xy "" }, Cmd.none )
 
         ClosePopup ->
             ( { model | popup = NoPopup }, Cmd.none )
@@ -447,22 +458,29 @@ todoListByFilterIdView _ pc lc todoDict =
 
 popupView model =
     case model.popup of
-        DrawerPanelItemPopup xy panelItemId ->
-            case panelItemId of
-                Drawer.ProjectItemId projectId ->
-                    mockPopupView xy
-
-                Drawer.LabelItemId labelId ->
-                    mockPopupView xy
-
-                Drawer.FilterItemId filterId ->
-                    mockPopupView xy
-
         NoPopup ->
             View.none
 
+        Popup popupModel ->
+            case popupModel.kind of
+                DrawerPanelItemPopup panelItemId ->
+                    case panelItemId of
+                        Drawer.ProjectItemId projectId ->
+                            mockPopupView popupModel
 
-mockPopupView xy =
+                        Drawer.LabelItemId labelId ->
+                            mockPopupView popupModel
+
+                        Drawer.FilterItemId filterId ->
+                            mockPopupView popupModel
+
+
+mockPopupView : PopupModel -> View (Html Msg)
+mockPopupView popupModel =
+    let
+        xy =
+            popupModel.startXY
+    in
     View.portal
         [ div
             [ css
