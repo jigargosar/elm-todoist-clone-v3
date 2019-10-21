@@ -259,7 +259,7 @@ viewPanelNavItemGhost dragSystem itemConfig drag items =
                     title =
                         itemConfig.title item
                 in
-                [ viewPanelNavItemGhostHelp rootSA icon title
+                [ viewPanelItemGhostHelp rootSA icon title
                 , node "style" [] [ text "body *{ cursor:move!important; }" ]
                 ]
             )
@@ -315,7 +315,7 @@ viewPanelItem config dragSystem itemConfig drag idx item =
         moreSA =
             StyleAttrs [] [ onClick (onMoreClicked <| id) ]
     in
-    viewPanelNavItemHelp rootSA primaryIcon link moreSA
+    viewPanelItemHelp rootSA primaryIcon link moreSA
 
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
@@ -331,13 +331,13 @@ viewSimpleNavItemHelp rootSA icon title =
         |> DI.render
 
 
-viewPanelNavItemHelp :
+viewPanelItemHelp :
     StyleAttrs msg
     -> { a | name : String, sa : StyleAttrs msg }
     -> { b | title : String, sa : StyleAttrs msg }
     -> StyleAttrs msg
     -> Html msg
-viewPanelNavItemHelp rootSA icon linkContent moreSA =
+viewPanelItemHelp rootSA icon linkContent moreSA =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentAsLink linkContent.title linkContent.sa
@@ -345,8 +345,8 @@ viewPanelNavItemHelp rootSA icon linkContent moreSA =
         |> DI.render
 
 
-viewPanelNavItemGhostHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
-viewPanelNavItemGhostHelp rootSA icon title =
+viewPanelItemGhostHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
+viewPanelItemGhostHelp rootSA icon title =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
