@@ -564,7 +564,7 @@ mockPopupView popupModel =
                                     min maxTop currentTop
 
                                 topDiff =
-                                    currentTop - finalTop
+                                    finalTop - currentTop
                             in
                             Styles.batch
                                 [ Css.transform (Css.translateY <| Css.px topDiff)
