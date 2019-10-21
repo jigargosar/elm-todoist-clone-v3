@@ -2,6 +2,7 @@ port module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
+import Browser.Dom as Dom exposing (Element, getElement)
 import Browser.Navigation as Nav
 import Css
 import Drag exposing (Drag)
@@ -27,6 +28,7 @@ import ProjectRef exposing (ProjectRef)
 import Return
 import Route
 import Styles
+import Task
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -45,7 +47,7 @@ type PopupKind
 type alias PopupModel =
     { kind : PopupKind
     , startXY : XY
-    , anchorId : String
+    , anchorEl : Element
     }
 
 
@@ -196,6 +198,7 @@ subscriptions model =
 
 type Msg
     = NoOp
+    | LogError String
     | OnUrlRequest UrlRequest
     | OnUrlChange Url
     | ToggleTodoCompleted TodoId
@@ -204,7 +207,8 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | PanelItemMoreMenuClicked PopupKind XY String
+    | OpenPopup PopupKind XY String
+    | GotPopupAnchorEl PopupKind XY Element
     | ClosePopup
 
 
@@ -213,6 +217,9 @@ update message model =
     case message of
         NoOp ->
             Return.singleton model
+
+        LogError error ->
+            ( model, logError error )
 
         OnUrlRequest urlRequest ->
             case urlRequest of
@@ -258,8 +265,22 @@ update message model =
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model
 
-        PanelItemMoreMenuClicked kind xy anchorId ->
-            ( { model | popup = Popup <| PopupModel kind xy anchorId }, Cmd.none )
+        OpenPopup kind xy anchorId ->
+            ( model
+            , getElement anchorId
+                |> Task.attempt
+                    (\elResult ->
+                        case elResult of
+                            Err (Dom.NotFound id) ->
+                                LogError ("open popup failed, anchorId not found: " ++ id)
+
+                            Ok anchorEl ->
+                                GotPopupAnchorEl kind xy anchorEl
+                    )
+            )
+
+        GotPopupAnchorEl popupKind xy anchorEl ->
+            ( { model | popup = PopupModel popupKind xy anchorEl |> Popup }, Cmd.none )
 
         ClosePopup ->
             ( { model | popup = NoPopup }, Cmd.none )
@@ -343,7 +364,7 @@ moreClickedDecoder panelItemId anchorId id =
             DrawerPanelItemPopup (panelItemId id)
 
         msg xy =
-            PanelItemMoreMenuClicked kind xy anchorId
+            OpenPopup kind xy anchorId
     in
     JD.map msg XY.pageXYDecoder
 
