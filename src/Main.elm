@@ -2,18 +2,13 @@ module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
-import Browser.Dom as Dom exposing (Element, getElement)
-import Browser.Events
 import Browser.Navigation as Nav
-import Css
 import Drag exposing (Drag)
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, div, toUnstyled)
-import Html.Styled.Attributes as A exposing (css)
-import Html.Styled.Events as E
+import Html.Styled exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -24,6 +19,7 @@ import Log exposing (logError)
 import Page exposing (Page)
 import Page.NotFound
 import Popper exposing (Popper)
+import PopupView
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
@@ -31,13 +27,11 @@ import ProjectRef exposing (ProjectRef)
 import Return
 import Route
 import Styles
-import Task
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
 import View exposing (View)
-import XY exposing (XY)
 
 
 type PopupKind
@@ -481,54 +475,19 @@ popupView model =
         Just ( kind, popper ) ->
             case kind of
                 DrawerPanelItemPopup panelItemId ->
+                    let
+                        mockView =
+                            PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } popper
+                    in
                     case panelItemId of
                         Drawer.ProjectItemId projectId ->
-                            mockPopupView popper
+                            mockView
 
                         Drawer.LabelItemId labelId ->
-                            mockPopupView popper
+                            mockView
 
                         Drawer.FilterItemId filterId ->
-                            mockPopupView popper
-
-
-mockPopupView : Popper -> View (Html Msg)
-mockPopupView popper =
-    View.portal
-        [ div
-            [ css
-                [ Styles.fixed
-                , Styles.absFill
-                , Styles.flex
-                , Styles.itemsCenter
-                , Styles.justifyCenter
-                , Styles.bg (Css.hsla 0 0 0 0.2)
-
-                --                 , Styles.bg (Css.hsla 0 1 1 0.6)
-                , Styles.z_ 10
-                ]
-            , E.onClick ClosePopup
-            ]
-            [ div
-                [ let
-                    popperStyles =
-                        Popper.styles popper
-                  in
-                  css
-                    [ Styles.bgWhite
-                    , Styles.pa 3
-                    , Styles.bor 3
-                    , Styles.batch popperStyles
-                    ]
-                , A.id "rootPopup"
-                , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
-                , A.class "shadow-1"
-                ]
-                [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
-                , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
-                ]
-            ]
-        ]
+                            mockView
 
 
 
