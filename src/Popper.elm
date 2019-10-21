@@ -80,13 +80,23 @@ update toMsg message ((Popper internal) as model) =
             )
 
         GotPopupEl popupEl ->
-            ( model, Cmd.none )
+            case internal of
+                Just state ->
+                    ( { state | popupEl = Just popupEl } |> Just |> Popper, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         GotAnchorEl anchorEl ->
-            ( model, Cmd.none )
+            case internal of
+                Just state ->
+                    ( { state | anchorEl = anchorEl } |> Just |> Popper, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         Close ->
-            ( model, Cmd.none )
+            ( Popper Nothing, Cmd.none )
 
         BrowserResized _ _ ->
             ( model, Cmd.none )
