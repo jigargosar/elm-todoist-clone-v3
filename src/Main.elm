@@ -551,6 +551,12 @@ mockPopupView popupModel =
                     , Styles.absolute
                     , Css.top <| Css.px xy.y
                     , Css.left <| Css.px xy.x
+                    , case popupModel.popupEl of
+                        Just el ->
+                            Styles.batch []
+
+                        Nothing ->
+                            Styles.batch []
                     ]
                 , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
