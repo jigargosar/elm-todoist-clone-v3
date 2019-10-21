@@ -1,10 +1,14 @@
-module Popper exposing (Msg, Popper, initial, styles, subscriptions, update)
+port module Popper exposing (Msg, Popper, initial, styles, subscriptions, update)
 
-import Browser.Dom exposing (Element)
+import Browser.Dom as Dom exposing (Element)
 import Browser.Events
 import Css exposing (Style)
 import Styles
+import Task
 import XY exposing (XY)
+
+
+port logError : String -> Cmd msg
 
 
 type Popper
@@ -32,6 +36,7 @@ type Msg
     | GotAnchorEl Element
     | Close
     | BrowserResized Int Int
+    | GotDomError Dom.Error
 
 
 subscriptions : (Msg -> msg) -> Popper -> Sub msg
@@ -47,9 +52,25 @@ subscriptions toMsg (Popper internal) =
 
 update : (Msg -> msg) -> Msg -> Popper -> ( Popper, Cmd msg )
 update toMsg message ((Popper internal) as model) =
+    let
+        getElement domId onSuccess =
+            Dom.getElement domId
+                |> Task.attempt
+                    (\res ->
+                        case res of
+                            Err error ->
+                                GotDomError error
+
+                            Ok element ->
+                                onSuccess element
+                    )
+                |> Cmd.map toMsg
+    in
     case message of
         Open xy anchorId popupId ->
-            ( model, Cmd.none )
+            ( model
+            , getElement anchorId (OpenWithAnchorEl xy anchorId popupId)
+            )
 
         OpenWithAnchorEl xy anchorId popupId anchorEl ->
             ( model, Cmd.none )
@@ -65,6 +86,9 @@ update toMsg message ((Popper internal) as model) =
 
         BrowserResized _ _ ->
             ( model, Cmd.none )
+
+        GotDomError (Dom.NotFound id) ->
+            ( model, logError <| "Dom.NotFound " ++ id )
 
 
 styles : Popper -> List Style
