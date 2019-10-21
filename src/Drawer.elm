@@ -4,7 +4,9 @@ module Drawer exposing
     , PanelConfig2
     , PanelItemId(..)
     , PanelLists
+    , PanelModel
     , PanelNavItemViewConfig
+    , PanelsConfig
     , PanelsState
     , initialPanelState
     , panelSubscriptions
@@ -158,12 +160,20 @@ type alias PanelLists =
     }
 
 
+type alias PanelsConfig msg =
+    { projects : PanelConfig2 ProjectId Project msg
+    , labels : PanelConfig2 LabelId Label msg
+    , filters : PanelConfig2 FilterId Filter msg
+    }
+
+
 view :
-    Config msg
+    PanelsConfig msg
+    -> Config msg
     -> PanelLists
     -> PanelsState
     -> View (Html msg)
-view config panelLists panelState =
+view allPanelConfig config panelLists panelState =
     let
         prefixCP =
             View.content
@@ -218,14 +228,14 @@ type alias PanelConfig2 id item msg =
     }
 
 
-type alias LabelPanelModel item =
+type alias PanelModel item =
     { isPanelExpanded : Bool
     , drag : Drag
     , items : List item
     }
 
 
-viewLabelPanel : PanelConfig2 id item msg -> LabelPanelModel item -> View (Html msg)
+viewLabelPanel : PanelConfig2 id item msg -> PanelModel item -> View (Html msg)
 viewLabelPanel config model =
     Debug.todo "impl"
 

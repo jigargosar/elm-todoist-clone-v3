@@ -370,9 +370,18 @@ filterPanelConfig =
     }
 
 
+panelsConfig : Drawer.PanelsConfig Msg
+panelsConfig =
+    { projects = projectPanelConfig
+    , labels = labelPanelConfig
+    , filters = filterPanelConfig
+    }
+
+
 drawerCP : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerCP model =
-    Drawer.view drawerConfig
+    Drawer.view panelsConfig
+        drawerConfig
         { projects = ProjectCollection.sorted model.projectCollection
         , labels = LabelCollection.sorted model.labelCollection
         , filters = FilterCollection.sorted model.filterCollection
