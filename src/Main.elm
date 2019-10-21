@@ -10,7 +10,7 @@ import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled as H exposing (Html, div, toUnstyled)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Json.Encode exposing (Value)
@@ -466,11 +466,21 @@ mockPopupView =
                 , Styles.itemsCenter
                 , Styles.justifyCenter
                 , Styles.bg (Css.hsla 0 0 0 0.2)
+
+                --                 , Styles.bg (Css.hsla 0 1 1 0.6)
                 , Styles.z_ 10
                 ]
             , E.onClick ClosePopup
             ]
-            [ div [ css [ Styles.bgWhite, Styles.pa 3, Styles.bor 3 ], E.stopPropagationOn "click" (JD.succeed ( NoOp, True )) ]
+            [ div
+                [ css
+                    [ Styles.bgWhite
+                    , Styles.pa 3
+                    , Styles.bor 3
+                    ]
+                , E.stopPropagationOn "click" (JD.succeed ( NoOp, True ))
+                , A.class "shadow-1"
+                ]
                 [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
                 , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
                 ]
