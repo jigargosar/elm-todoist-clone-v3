@@ -231,20 +231,21 @@ viewPanel config items state =
             [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
         , if state.isExpanded then
             View.fromTuple
-                ( items
-                    |> dragSystem.rotate state.drag
-                    |> List.indexedMap
-                        (viewPanelItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
-                            dragSystem
-                            itemConfig
-                            state.drag
-                        )
+                ( viewPanelItems itemConfig items state.drag
                 , viewPanelItemGhost itemConfig items state.drag
                 )
 
           else
             View.none
         ]
+
+
+viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItems config items drag =
+    items
+        |> config.dragSystem.rotate drag
+        |> List.indexedMap
+            (viewPanelItem config drag)
 
 
 viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
@@ -270,23 +271,21 @@ viewPanelItemGhost config items drag =
 
 
 viewPanelItem :
-    { domIdPrefix : String, onMoreClicked : id -> msg }
-    -> Drag.System item msg
-    -> PanelItemConfig id item msg
+    PanelItemConfig id item msg
     -> Drag
     -> Int
     -> item
     -> Html msg
-viewPanelItem config dragSystem itemConfig drag idx item =
+viewPanelItem config drag idx item =
     let
-        { domIdPrefix, onMoreClicked } =
-            config
-
         id =
-            itemConfig.id item
+            config.id item
+
+        dragSystem =
+            config.dragSystem
 
         domId =
-            domIdPrefix ++ itemConfig.idToString id
+            config.domIdPrefix ++ config.idToString id
 
         rootSA =
             let
@@ -306,17 +305,17 @@ viewPanelItem config dragSystem itemConfig drag idx item =
                 dragEvents =
                     dragSystem.dragEvents idx domId drag
             in
-            { name = itemConfig.iconName
-            , sa = StyleAttrs [ Css.cursor Css.move, itemConfig.iconStyle item ] dragEvents
+            { name = config.iconName
+            , sa = StyleAttrs [ Css.cursor Css.move, config.iconStyle item ] dragEvents
             }
 
         link : { title : String, sa : StyleAttrs msg }
         link =
-            { title = itemConfig.title item, sa = StyleAttrs [] [ Route.href <| itemConfig.route item ] }
+            { title = config.title item, sa = StyleAttrs [] [ Route.href <| config.route item ] }
 
         moreSA : StyleAttrs msg
         moreSA =
-            StyleAttrs [] [ onClick (onMoreClicked <| id) ]
+            StyleAttrs [] [ onClick (config.moreClicked <| id) ]
     in
     viewPanelItemHelp rootSA primaryIcon link moreSA
 
