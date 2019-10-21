@@ -6,7 +6,7 @@ module Drag exposing
     , dragEvents
     , dropEvents
     , eqDragOverIdx
-    , ghostStyles
+    , ghostStylesWithDragIdx
     , info
     , initial
     , rotate
@@ -53,7 +53,7 @@ system toMsg onComplete =
     , eqDragOverIdx = eqDragOverIdx
     , info = info
     , rotate = rotate
-    , ghostStylesWithDragIdx = ghostStyles
+    , ghostStylesWithDragIdx = ghostStylesWithDragIdx
     }
 
 
@@ -245,8 +245,8 @@ update toMsg onComplete message ((Drag internal) as model) =
             )
 
 
-ghostStyles : Drag -> Maybe ( Int, List Css.Style )
-ghostStyles =
+ghostStylesWithDragIdx : Drag -> Maybe ( Int, List Css.Style )
+ghostStylesWithDragIdx =
     dragElementAndXY
         >> Maybe.map
             (\{ drag, dragElementOffset, mouseMoveDelta } ->
