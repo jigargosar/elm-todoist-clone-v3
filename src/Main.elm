@@ -9,8 +9,9 @@ import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled exposing (Html, div, toUnstyled)
+import Html.Styled as H exposing (Html, div, toUnstyled)
 import Html.Styled.Attributes exposing (css)
+import Html.Styled.Events as E
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -192,6 +193,7 @@ type Msg
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PanelItemMoreMenuClicked Drawer.PanelItemId
+    | ClosePopup
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -246,6 +248,9 @@ update message model =
 
         PanelItemMoreMenuClicked panelItemId ->
             ( { model | popup = DrawerPanelItemPopup panelItemId }, Cmd.none )
+
+        ClosePopup ->
+            ( { model | popup = NoPopup }, Cmd.none )
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
@@ -462,8 +467,13 @@ mockPopupView =
                 , Styles.justifyCenter
                 , Styles.bg (Css.hsla 0 0 0 0.2)
                 ]
+            , E.onClick ClosePopup
             ]
-            []
+            [ div [ css [ Styles.bgWhite, Styles.pa 3, Styles.bor 3 ] ]
+                [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
+                , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
+                ]
+            ]
         ]
 
 
