@@ -14,8 +14,7 @@ type Popper
 
 
 type alias State =
-    { startXY : XY
-    , anchorId : String
+    { anchorId : String
     , popupId : String
     , anchorEl : Element
     , popupEl : Maybe Element
@@ -28,8 +27,8 @@ initial =
 
 
 type Msg
-    = Open XY String String
-    | OpenWithAnchorEl XY String String Element
+    = Open String String
+    | OpenWithAnchorEl String String Element
     | GotPopupEl Element
     | GotAnchorEl Element
     | Close
@@ -37,19 +36,9 @@ type Msg
     | GotDomError Dom.Error
 
 
-close : Msg
-close =
-    Close
-
-
-open : XY -> String -> String -> Msg
-open =
-    Open
-
-
-init : (Msg -> msg) -> XY -> String -> String -> ( Popper, Cmd msg )
-init toMsg xy anchorId popupId =
-    update toMsg (open xy anchorId popupId) initial
+init : (Msg -> msg) -> String -> String -> ( Popper, Cmd msg )
+init toMsg anchorId popupId =
+    update toMsg (Open anchorId popupId) initial
 
 
 subscriptions : (Msg -> msg) -> Popper -> Sub msg
@@ -80,13 +69,13 @@ update toMsg message ((Popper internal) as model) =
                 |> Cmd.map toMsg
     in
     case message of
-        Open xy anchorId popupId ->
+        Open anchorId popupId ->
             ( model
-            , getElement anchorId (OpenWithAnchorEl xy anchorId popupId)
+            , getElement anchorId (OpenWithAnchorEl anchorId popupId)
             )
 
-        OpenWithAnchorEl xy anchorId popupId anchorEl ->
-            ( State xy anchorId popupId anchorEl Nothing
+        OpenWithAnchorEl anchorId popupId anchorEl ->
+            ( State anchorId popupId anchorEl Nothing
                 |> Just
                 |> Popper
             , getElement popupId GotPopupEl
@@ -129,7 +118,7 @@ update toMsg message ((Popper internal) as model) =
 
 
 styles : Popper -> List Style
-styles ((Popper internal) as model) =
+styles (Popper internal) =
     case internal of
         Just state ->
             let

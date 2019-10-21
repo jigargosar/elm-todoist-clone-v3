@@ -272,7 +272,7 @@ update message model =
                     ( model, Cmd.none )
 
         PopupTriggered kind xy anchorId ->
-            Popper.init Popper xy anchorId "rootPopup"
+            Popper.init Popper anchorId "rootPopup"
                 |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
         ClosePopup ->
