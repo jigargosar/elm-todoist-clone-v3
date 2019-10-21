@@ -305,7 +305,7 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerCP model
-        , main = mainCP model
+        , main = pageView model
         }
         model.isDrawerModalOpen
 
@@ -391,8 +391,8 @@ drawerCP model =
         model.drawerPanelsState
 
 
-mainCP : Model -> View (Html Msg)
-mainCP model =
+pageView : Model -> View (Html Msg)
+pageView model =
     case model.page of
         Page.NotFound url ->
             Page.NotFound.view url
