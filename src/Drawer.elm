@@ -235,13 +235,13 @@ viewPanel pc title panelState =
                             List.drop idx pc.items |> List.head |> Maybe.map (Tuple.pair styles)
                         )
                     |> Maybe.map
-                        (\( ghostStyle, item ) ->
+                        (\( ghostStyles, item ) ->
                             let
                                 iconSA =
                                     StyleAttrs [ pc.itemConfig.iconStyle item ] []
 
                                 rootSA =
-                                    StyleAttrs [ ghostStyle ] []
+                                    StyleAttrs ghostStyles []
                             in
                             [ viewPanelNavItemGhost rootSA { name = pc.itemConfig.iconName, sa = iconSA } (pc.itemConfig.title item)
                             , node "style" [] [ text "body *{ cursor:move!important; }" ]

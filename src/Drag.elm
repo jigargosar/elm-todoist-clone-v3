@@ -39,7 +39,7 @@ type alias System a msg =
     , eqDragOverIdx : Int -> Drag -> Bool
     , info : Drag -> Maybe Info
     , rotate : Drag -> List a -> List a
-    , ghostStylesWithDragIdx : Drag -> Maybe ( Int, Css.Style )
+    , ghostStylesWithDragIdx : Drag -> Maybe ( Int, List Css.Style )
     }
 
 
@@ -245,7 +245,7 @@ update toMsg onComplete message ((Drag internal) as model) =
             )
 
 
-ghostStyles : Drag -> Maybe ( Int, Css.Style )
+ghostStyles : Drag -> Maybe ( Int, List Css.Style )
 ghostStyles =
     dragElementAndXY
         >> Maybe.map
@@ -255,12 +255,11 @@ ghostStyles =
                         XY.add (XYDelta.diff mouseMoveDelta) dragElementOffset
                 in
                 ( drag
-                , Css.batch
-                    [ Styles.absolute
-                    , Styles.top_0
-                    , Styles.left_0
-                    , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
-                    , Css.pointerEvents Css.none
-                    ]
+                , [ Styles.absolute
+                  , Styles.top_0
+                  , Styles.left_0
+                  , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
+                  , Css.pointerEvents Css.none
+                  ]
                 )
             )
