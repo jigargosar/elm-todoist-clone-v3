@@ -165,19 +165,19 @@ view allPanelConfig panelLists panelState =
                 ]
 
         projectsCP =
-            viewPanel2 allPanelConfig.projects
-                panelState.projects
+            viewPanel allPanelConfig.projects
                 panelLists.projects
+                panelState.projects
 
         labelsCP =
-            viewPanel2 allPanelConfig.labels
-                panelState.labels
+            viewPanel allPanelConfig.labels
                 panelLists.labels
+                panelState.labels
 
         filtersCP =
-            viewPanel2 allPanelConfig.filters
-                panelState.labels
+            viewPanel allPanelConfig.filters
                 panelLists.filters
+                panelState.labels
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
@@ -216,8 +216,8 @@ type alias PanelModel item =
     }
 
 
-viewPanel2 : PanelConfig id item msg -> PanelState -> List item -> View (Html msg)
-viewPanel2 config panelState items =
+viewPanel : PanelConfig id item msg -> List item -> PanelState -> View (Html msg)
+viewPanel config items panelState =
     let
         dragSystem =
             config.dragSystem
