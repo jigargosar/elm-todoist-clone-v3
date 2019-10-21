@@ -277,6 +277,7 @@ update message model =
 
         ClosePopup ->
             update (Popper Popper.close) model
+                |> Tuple.mapFirst (\m -> { m | popup = Nothing })
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
