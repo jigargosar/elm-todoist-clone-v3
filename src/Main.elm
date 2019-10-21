@@ -329,13 +329,18 @@ moreClickedDecoder =
     PanelItemMoreMenuClicked >> JD.succeed
 
 
+panelDragSystem : Drawer.Panel -> Drag.System a Msg
+panelDragSystem panel =
+    Drag.system (DrawerPanelDrag panel) (DrawerPanelDragComplete panel)
+
+
 projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
     , panelTitle = "Projects"
     , itemConfig =
         { moreClicked = Drawer.ProjectItemId >> moreClickedDecoder
-        , dragSystem = Drag.system (DrawerPanelDrag Drawer.Projects) (DrawerPanelDragComplete Drawer.Projects)
+        , dragSystem = panelDragSystem Drawer.Projects
         , domIdPrefix = "drawer-project-panel-item__"
         , id = Project.id
         , idToString = ProjectId.toString
@@ -353,7 +358,7 @@ labelPanelConfig =
     , panelTitle = "Labels"
     , itemConfig =
         { moreClicked = Drawer.LabelItemId >> moreClickedDecoder
-        , dragSystem = Drag.system (DrawerPanelDrag Drawer.Labels) (DrawerPanelDragComplete Drawer.Labels)
+        , dragSystem = panelDragSystem Drawer.Labels
         , domIdPrefix = "drawer-label-panel-item__"
         , id = Label.id
         , idToString = LabelId.toString
@@ -371,7 +376,7 @@ filterPanelConfig =
     , panelTitle = "Filters"
     , itemConfig =
         { moreClicked = Drawer.FilterItemId >> moreClickedDecoder
-        , dragSystem = Drag.system (DrawerPanelDrag Drawer.Filters) (DrawerPanelDragComplete Drawer.Filters)
+        , dragSystem = panelDragSystem Drawer.Filters
         , domIdPrefix = "drawer-filter-panel-item__"
         , id = Filter.id
         , idToString = FilterId.toString
