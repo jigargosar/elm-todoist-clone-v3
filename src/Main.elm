@@ -74,7 +74,7 @@ init flags url navKey =
             , labelCollection = LabelCollection.initial
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
-            , drawerPanelState = Drawer.initialPanelState
+            , drawerPanelState = Drawer.initialPanelsState
             }
     in
     Return.singleton initial
@@ -164,7 +164,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelSubscriptions DrawerPanelDrag model.drawerPanelState
+        [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelState
         ]
 
 

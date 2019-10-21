@@ -7,8 +7,8 @@ module Drawer exposing
     , PanelModel
     , PanelsConfig
     , PanelsState
-    , initialPanelState
-    , panelSubscriptions
+    , initialPanelsState
+    , panelsSubscriptions
     , toggleExpansionPanel
     , updatePanelDrag
     , view
@@ -39,10 +39,6 @@ type Panel
     | Filters
 
 
-panelTypes =
-    [ Projects, Labels, Filters ]
-
-
 type alias SubState a =
     { projects : a
     , labels : a
@@ -50,69 +46,72 @@ type alias SubState a =
     }
 
 
+type alias PanelState =
+    { isExpanded : Bool
+    , drag : Drag
+    }
+
+
 type alias PanelsState =
-    { expanded : SubState Bool, drag : SubState Drag }
+    { projects : PanelState
+    , labels : PanelState
+    , filters : PanelState
+    }
 
 
-mapExpanded func panelState =
-    { panelState | expanded = func panelState.expanded }
-
-
-mapDrag func panelState =
-    { panelState | drag = func panelState.drag }
-
-
-initialPanelState : PanelsState
+initialPanelState : PanelState
 initialPanelState =
-    PanelsState (initSubState True) (initSubState Drag.initial)
+    PanelState False Drag.initial
 
 
-initSubState : a -> SubState a
-initSubState a =
-    SubState a a a
+initialPanelsState : PanelsState
+initialPanelsState =
+    PanelsState initialPanelState initialPanelState initialPanelState
 
 
-getSubState : Panel -> SubState a -> a
-getSubState panel subState =
+panelGetter panel =
     case panel of
         Projects ->
-            subState.projects
+            .projects
 
         Labels ->
-            subState.labels
+            .labels
 
         Filters ->
-            subState.filters
+            .filters
 
 
-setSubState : Panel -> a -> SubState a -> SubState a
-setSubState panel a subState =
+panelSetter :
+    Panel
+    -> small
+    -> { c | projects : small, labels : small, filters : small }
+    -> { c | projects : small, labels : small, filters : small }
+panelSetter panel small big =
     case panel of
         Projects ->
-            { subState | projects = a }
+            { big | projects = small }
 
         Labels ->
-            { subState | labels = a }
+            { big | labels = small }
 
         Filters ->
-            { subState | filters = a }
+            { big | filters = small }
 
 
-mapSubState : Panel -> (a -> a) -> SubState a -> SubState a
-mapSubState panel func subState =
+panelMapper panel func big =
     let
         get =
-            getSubState panel
+            panelGetter panel
 
         set a =
-            setSubState panel a subState
+            panelSetter panel a big
     in
-    get subState |> func |> set
+    get big |> func |> set
 
 
 toggleExpansionPanel : Panel -> PanelsState -> PanelsState
 toggleExpansionPanel panel =
-    mapExpanded (mapSubState panel not)
+    panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
 
 
 updatePanelDrag :
@@ -122,27 +121,20 @@ updatePanelDrag :
     -> Drag.Msg
     -> PanelsState
     -> ( PanelsState, Cmd msg )
-updatePanelDrag toMsg onComplete panel msg panelState =
+updatePanelDrag toMsg onComplete panel msg model =
     let
         drag =
-            getSubState panel panelState.drag
+            (panelGetter panel model).drag
     in
     Drag.update (toMsg panel) (onComplete panel) msg drag
-        |> Tuple.mapFirst (\newDrag -> panelState |> mapDrag (mapSubState panel (always newDrag)))
+        |> Tuple.mapFirst (\newDrag -> panelMapper panel (\s -> { s | drag = newDrag }) model)
 
 
-panelDragSubscriptions : (Panel -> Drag.Msg -> msg) -> SubState Drag -> Sub msg
-panelDragSubscriptions toMsg dragSubState =
-    let
-        dragSubscription panel =
-            Drag.subscriptions (toMsg panel) (getSubState panel dragSubState)
-    in
-    Sub.batch (List.map dragSubscription panelTypes)
-
-
-panelSubscriptions : (Panel -> Drag.Msg -> msg) -> PanelsState -> Sub msg
-panelSubscriptions toMsg panelState =
-    panelDragSubscriptions toMsg panelState.drag
+panelsSubscriptions : PanelsConfig msg -> PanelsState -> Sub msg
+panelsSubscriptions c panelState =
+    Sub.batch
+        [ c.projects.dragSystem.subscriptions panelState.projects.drag
+        ]
 
 
 type alias PanelLists =
@@ -175,22 +167,22 @@ view allPanelConfig panelLists panelState =
 
         projectsCP =
             viewPanel2 allPanelConfig.projects
-                { isPanelExpanded = panelState.expanded.projects
-                , drag = panelState.drag.projects
+                { isPanelExpanded = panelState.projects.isExpanded
+                , drag = panelState.projects.drag
                 , items = panelLists.projects
                 }
 
         labelsCP =
             viewPanel2 allPanelConfig.labels
-                { isPanelExpanded = panelState.expanded.labels
-                , drag = panelState.drag.labels
+                { isPanelExpanded = panelState.projects.isExpanded
+                , drag = panelState.projects.drag
                 , items = panelLists.labels
                 }
 
         filtersCP =
             viewPanel2 allPanelConfig.filters
-                { isPanelExpanded = panelState.expanded.filters
-                , drag = panelState.drag.filters
+                { isPanelExpanded = panelState.projects.isExpanded
+                , drag = panelState.projects.drag
                 , items = panelLists.filters
                 }
     in
