@@ -229,26 +229,33 @@ viewPanel pc title panelState =
                 ( pc.items
                     |> pc.dragSystem.rotate drag
                     |> List.indexedMap (viewPanelNavItem pc pc.itemConfig pc.dragSystem drag)
-                , pc.dragSystem.ghostItemWithStyles pc.items drag
-                    |> Maybe.map
-                        (\( ghostStyles, item ) ->
-                            let
-                                iconSA =
-                                    StyleAttrs [ pc.itemConfig.iconStyle item ] []
-
-                                rootSA =
-                                    SA.styles ghostStyles
-                            in
-                            [ viewPanelNavItemGhost rootSA { name = pc.itemConfig.iconName, sa = iconSA } (pc.itemConfig.title item)
-                            , node "style" [] [ text "body *{ cursor:move!important; }" ]
-                            ]
-                        )
-                    |> Maybe.withDefault []
+                , viewPanelNavItemGhost pc.dragSystem pc.itemConfig drag pc.items
                 )
 
           else
             View.none
         ]
+
+
+viewPanelNavItemGhost dragSystem itemConfig drag items =
+    dragSystem.ghostItemWithStyles items drag
+        |> Maybe.map
+            (\( ghostStyles, item ) ->
+                let
+                    icon =
+                        { name = itemConfig.iconName, sa = SA.styles [ itemConfig.iconStyle item ] }
+
+                    rootSA =
+                        SA.styles ghostStyles
+
+                    title =
+                        itemConfig.title item
+                in
+                [ viewPanelNavItemGhostHelp rootSA icon title
+                , node "style" [] [ text "body *{ cursor:move!important; }" ]
+                ]
+            )
+        |> Maybe.withDefault []
 
 
 type alias PanelConfig id item msg =
@@ -389,8 +396,8 @@ viewPanelNavItemHelp rootSA icon linkContent moreSA =
         |> DI.render
 
 
-viewPanelNavItemGhost : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
-viewPanelNavItemGhost rootSA icon title =
+viewPanelNavItemGhostHelp : StyleAttrs msg -> { a | name : String, sa : StyleAttrs msg } -> String -> Html msg
+viewPanelNavItemGhostHelp rootSA icon title =
     DI.init rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
