@@ -326,7 +326,7 @@ projectPanelConfig =
         , panelItemId = Drawer.ProjectItemId
         , title = Project.title
         , route = Project.id >> Route.Project
-        , iconName = "project"
+        , iconName = "folder"
         , iconStyle = Styles.c_ << Project.cssColor
         }
     }
@@ -364,7 +364,7 @@ filterPanelConfig =
         , panelItemId = Drawer.FilterItemId
         , title = Filter.title
         , route = Filter.id >> Route.Filter
-        , iconName = "filter"
+        , iconName = "filter_list"
         , iconStyle = Styles.c_ << Filter.cssColor
         }
     }

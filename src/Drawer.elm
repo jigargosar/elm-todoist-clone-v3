@@ -186,7 +186,7 @@ view allPanelConfig config panelLists panelState =
         panelConfig itemConfig items panel =
             { togglePanel = config.onToggleExpansionPanel panel
             , domIdPrefix = "panel-nav-item__"
-            , onMoreClicked = config.onPanelItemMoreMenuClicked
+            , onMoreClicked = \_ -> config.onToggleExpansionPanel panel
             , isExpanded = .expanded >> getSubState panel
             , drag = .drag >> getSubState panel
             , dragSystem = Drag.system (config.panelDragConfig.toMsg panel) (config.panelDragConfig.onComplete panel)
@@ -216,7 +216,7 @@ view allPanelConfig config panelLists panelState =
                 "Filters"
                 panelState
     in
-    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
+    View.concat [ prefixCP, projectsCP, projectsCP2, labelsCP, filtersCP ]
 
 
 type PanelItemId
@@ -244,7 +244,38 @@ type alias PanelModel item =
 
 viewPanel2 : PanelConfig2 id item msg -> PanelModel item -> View (Html msg)
 viewPanel2 config model =
-    Debug.todo "impl"
+    let
+        dragSystem =
+            config.dragSystem
+
+        domIdPrefix =
+            config.panelItemDomIdPrefix
+
+        onMoreClicked =
+            config.onPanelItemMoreClicked
+
+        itemConfig =
+            config.itemConfig
+    in
+    View.concat
+        [ View.content
+            [ ExpansionPanelUI.viewHeader config.onTogglePanelClicked config.panelTitle model.isPanelExpanded ]
+        , if model.isPanelExpanded then
+            View.fromTuple
+                ( model.items
+                    |> dragSystem.rotate model.drag
+                    |> List.indexedMap
+                        (viewPanelNavItem { domIdPrefix = domIdPrefix, onMoreClicked = onMoreClicked }
+                            dragSystem
+                            itemConfig
+                            model.drag
+                        )
+                , viewPanelNavItemGhost dragSystem itemConfig model.drag model.items
+                )
+
+          else
+            View.none
+        ]
 
 
 viewPanel :
@@ -323,7 +354,7 @@ viewPanelNavItemGhost dragSystem itemConfig drag items =
 type alias PanelConfig id item msg =
     { togglePanel : msg
     , domIdPrefix : String
-    , onMoreClicked : PanelItemId -> msg
+    , onMoreClicked : id -> msg
     , isExpanded : PanelsState -> Bool
     , drag : PanelsState -> Drag
     , dragSystem : Drag.System item msg
@@ -380,7 +411,7 @@ filterNavItemViewConfig =
 
 
 viewPanelNavItem :
-    { domIdPrefix : String, onMoreClicked : PanelItemId -> msg }
+    { domIdPrefix : String, onMoreClicked : id -> msg }
     -> Drag.System item msg
     -> PanelNavItemViewConfig id item
     -> Drag
@@ -426,7 +457,7 @@ viewPanelNavItem config dragSystem itemConfig drag idx item =
 
         moreSA : StyleAttrs msg
         moreSA =
-            StyleAttrs [] [ onClick (onMoreClicked <| itemConfig.panelItemId id) ]
+            StyleAttrs [] [ onClick (onMoreClicked <| id) ]
     in
     viewPanelNavItemHelp rootSA primaryIcon link moreSA
 
