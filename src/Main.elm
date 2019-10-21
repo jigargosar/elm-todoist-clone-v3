@@ -304,7 +304,7 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = drawerCP model
+        , drawer = drawerView model
         , main = pageView model
         }
         model.isDrawerModalOpen
@@ -381,8 +381,8 @@ panelsConfig =
     }
 
 
-drawerCP : Model -> { content : List (Html Msg), portal : List (Html Msg) }
-drawerCP model =
+drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
+drawerView model =
     Drawer.view panelsConfig
         { projects = ProjectCollection.sorted model.projectCollection
         , labels = LabelCollection.sorted model.labelCollection
