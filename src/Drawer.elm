@@ -213,26 +213,13 @@ type alias PanelItemConfig id item msg =
 
 viewPanel : PanelConfig id item msg -> List item -> PanelState -> View (Html msg)
 viewPanel config items state =
-    let
-        dragSystem =
-            config.dragSystem
-
-        domIdPrefix =
-            config.panelItemDomIdPrefix
-
-        onMoreClicked =
-            config.itemMoreClicked
-
-        itemConfig =
-            config.itemConfig
-    in
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
         , if state.isExpanded then
             View.fromTuple
-                ( viewPanelItems itemConfig items state.drag
-                , viewPanelItemGhost itemConfig items state.drag
+                ( viewPanelItems config.itemConfig items state.drag
+                , viewPanelItemGhost config.itemConfig items state.drag
                 )
 
           else
