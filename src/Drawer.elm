@@ -235,8 +235,8 @@ type alias PanelModel item =
     }
 
 
-viewLabelPanel : PanelConfig2 id item msg -> PanelModel item -> View (Html msg)
-viewLabelPanel config model =
+viewPanel2 : PanelConfig2 id item msg -> PanelModel item -> View (Html msg)
+viewPanel2 config model =
     Debug.todo "impl"
 
 
