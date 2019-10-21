@@ -58,7 +58,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , drawerPanelState : Drawer.AllPanelsState
+    , drawerPanelsState : Drawer.AllPanelsState
     }
 
 
@@ -74,7 +74,7 @@ init flags url navKey =
             , labelCollection = LabelCollection.initial
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
-            , drawerPanelState = Drawer.initialPanelsState
+            , drawerPanelsState = Drawer.initialPanelsState
             }
     in
     Return.singleton initial
@@ -164,7 +164,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelState
+        [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelsState
         ]
 
 
@@ -221,16 +221,16 @@ update message model =
 
         ToggleDrawerExpansionPanel panel ->
             ( { model
-                | drawerPanelState =
-                    Drawer.togglePanelExpansion panel model.drawerPanelState
+                | drawerPanelsState =
+                    Drawer.togglePanelExpansion panel model.drawerPanelsState
               }
             , Cmd.none
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragComplete panel msg model.drawerPanelState
+            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragComplete panel msg model.drawerPanelsState
                 |> Tuple.mapFirst
-                    (\drawerPanelState -> { model | drawerPanelState = drawerPanelState })
+                    (\drawerPanelState -> { model | drawerPanelsState = drawerPanelState })
 
         DrawerPanelDragComplete panel info ->
             let
@@ -386,7 +386,7 @@ drawerCP model =
         , labels = LabelCollection.sorted model.labelCollection
         , filters = FilterCollection.sorted model.filterCollection
         }
-        model.drawerPanelState
+        model.drawerPanelsState
 
 
 mainCP : Model -> View (Html Msg)
