@@ -201,7 +201,7 @@ type Msg
     | ToggleDrawerExpansionPanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
-    | PopupTriggered PopupKind XY String
+    | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
 
@@ -271,7 +271,7 @@ update message model =
                 Nothing ->
                     ( model, Cmd.none )
 
-        PopupTriggered kind xy anchorId ->
+        PopupTriggered kind anchorId ->
             Popper.init Popper anchorId "rootPopup"
                 |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
@@ -356,10 +356,10 @@ moreClickedDecoder panelItemId anchorId id =
         kind =
             DrawerPanelItemPopup (panelItemId id)
 
-        msg xy =
-            PopupTriggered kind xy anchorId
+        msg =
+            PopupTriggered kind anchorId
     in
-    JD.map msg XY.pageXYDecoder
+    JD.succeed msg
 
 
 panelDragSystem : Drawer.Panel -> Drag.System a Msg
