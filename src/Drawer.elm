@@ -198,7 +198,7 @@ type alias PanelConfig id item msg =
 
 
 type alias PanelItemConfig id item msg =
-    { moreClicked : id -> JD.Decoder msg
+    { moreClicked : String -> id -> JD.Decoder msg
     , dragSystem : Drag.System item msg
     , domIdPrefix : String
     , id : item -> id
@@ -277,9 +277,12 @@ viewPanelItem config drag idx item =
         link =
             { title = config.title item, sa = StyleAttrs [] [ Route.href <| config.route item ] }
 
+        moreDomId =
+            config.domIdPrefix ++ "more-anchor__" ++ config.idToString id
+
         moreSA : StyleAttrs msg
         moreSA =
-            StyleAttrs [] [ E.on "click" (config.moreClicked <| id) ]
+            StyleAttrs [] [ E.on "click" (config.moreClicked moreDomId id) ]
     in
     viewPanelItemHelp rootSA primaryIcon link moreSA
 

@@ -336,11 +336,11 @@ view model =
         model.isDrawerModalOpen
 
 
-moreClickedDecoder : Drawer.PanelItemId -> JD.Decoder Msg
-moreClickedDecoder panelItemId =
+moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Msg
+moreClickedDecoder panelItemId anchorId id =
     let
         msg xy =
-            PanelItemMoreMenuClicked xy panelItemId
+            PanelItemMoreMenuClicked xy (panelItemId id)
     in
     JD.map msg XY.pageXYDecoder
 
@@ -355,7 +355,7 @@ projectPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
     , panelTitle = "Projects"
     , itemConfig =
-        { moreClicked = Drawer.ProjectItemId >> moreClickedDecoder
+        { moreClicked = moreClickedDecoder Drawer.ProjectItemId
         , dragSystem = panelDragSystem Drawer.Projects
         , domIdPrefix = "drawer-project-panel-item__"
         , id = Project.id
@@ -373,7 +373,7 @@ labelPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Labels
     , panelTitle = "Labels"
     , itemConfig =
-        { moreClicked = Drawer.LabelItemId >> moreClickedDecoder
+        { moreClicked = moreClickedDecoder Drawer.LabelItemId
         , dragSystem = panelDragSystem Drawer.Labels
         , domIdPrefix = "drawer-label-panel-item__"
         , id = Label.id
@@ -391,7 +391,7 @@ filterPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Filters
     , panelTitle = "Filters"
     , itemConfig =
-        { moreClicked = Drawer.FilterItemId >> moreClickedDecoder
+        { moreClicked = moreClickedDecoder Drawer.FilterItemId
         , dragSystem = panelDragSystem Drawer.Filters
         , domIdPrefix = "drawer-filter-panel-item__"
         , id = Filter.id
