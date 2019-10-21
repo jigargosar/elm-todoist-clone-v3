@@ -582,17 +582,29 @@ mockPopupView popupModel =
                                 maxTop =
                                     atLeastZero (e.viewport.height - e.element.height)
 
+                                maxLeft =
+                                    atLeastZero (e.viewport.width - e.element.width)
+
                                 currentTop =
                                     atLeastZero xy.y
+
+                                currentLeft =
+                                    atLeastZero xy.x
 
                                 finalTop =
                                     min maxTop currentTop
 
+                                finalLeft =
+                                    min maxLeft currentLeft
+
                                 topDiff =
                                     finalTop - currentTop
+
+                                leftDiff =
+                                    finalLeft - currentLeft
                             in
                             Styles.batch
-                                [ Css.transform (Css.translateY <| Css.px topDiff)
+                                [ Css.transform (Css.translate2 (Css.px leftDiff) (Css.px topDiff))
                                 , Styles.commonTransitions
                                 ]
 
