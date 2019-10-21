@@ -211,12 +211,26 @@ view allPanelConfig config panelLists panelState =
                 "Labels"
                 panelState
 
+        labelsCP2 =
+            viewPanel2 allPanelConfig.labels
+                { isPanelExpanded = panelState.expanded.labels
+                , drag = panelState.drag.labels
+                , items = panelLists.labels
+                }
+
         filtersCP =
             viewPanel (panelConfig filterNavItemViewConfig panelLists.filters Filters)
                 "Filters"
                 panelState
+
+        filtersCP2 =
+            viewPanel2 allPanelConfig.filters
+                { isPanelExpanded = panelState.expanded.filters
+                , drag = panelState.drag.filters
+                , items = panelLists.filters
+                }
     in
-    View.concat [ prefixCP, projectsCP, projectsCP2, labelsCP, filtersCP ]
+    View.concat [ prefixCP, projectsCP2, labelsCP2, filtersCP2 ]
 
 
 type PanelItemId
