@@ -173,6 +173,12 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelsState
+        , case model.panelDrag of
+            Just ( panel, drag ) ->
+                Drag.subscriptions (DrawerPanelDrag panel) drag
+
+            Nothing ->
+                Sub.none
         , case model.popup of
             Just ( _, popper ) ->
                 Popper.subscriptions Popper popper
