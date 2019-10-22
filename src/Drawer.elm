@@ -200,7 +200,7 @@ type alias PanelConfig id item msg =
 type alias PanelItemConfig id item msg =
     { moreClicked : String -> id -> JD.Decoder msg
     , dragSystem : Drag.System item msg
-    , domIdPrefix : String
+    , panelId : String
     , id : item -> id
     , idToString : id -> String
     , title : item -> String
@@ -234,6 +234,11 @@ viewPanelItems config items drag =
         )
 
 
+panelItemDomId : PanelItemConfig id item msg -> id -> String
+panelItemDomId config id =
+    "drawer-panel__ " ++ config.panelId ++ "__item__" ++ config.idToString id
+
+
 viewPanelItem :
     PanelItemConfig id item msg
     -> Drag
@@ -249,7 +254,7 @@ viewPanelItem config drag idx item =
             config.dragSystem
 
         domId =
-            config.domIdPrefix ++ config.idToString id
+            panelItemDomId config id
 
         rootSA =
             let
@@ -278,7 +283,7 @@ viewPanelItem config drag idx item =
             { title = config.title item, sa = StyleAttrs [] [ Route.href <| config.route item ] }
 
         moreDomId =
-            config.domIdPrefix ++ "more-anchor__" ++ config.idToString id
+            config.panelId ++ "more-anchor__" ++ config.idToString id
 
         moreSA : StyleAttrs msg
         moreSA =
