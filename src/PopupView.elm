@@ -68,6 +68,15 @@ projectContent =
     [ viewProjectMenuItem AddProjectAbove
     , viewProjectMenuItem AddProjectBelow
     , viewDivider
+    , viewProjectMenuItem EditProject
+    , viewProjectMenuItem ShareProject
+    , viewProjectMenuItem AddToFavorites
+    , viewDivider
+    , viewProjectMenuItem EmailTasksToThisProject
+    , viewProjectMenuItem ProjectCalendarFeed
+    , viewDivider
+    , viewProjectMenuItem ArchiveProject
+    , viewProjectMenuItem DeleteProject
     ]
 
 
