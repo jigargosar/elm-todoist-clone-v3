@@ -1,11 +1,8 @@
 module Drawer exposing
-    ( AllPanelsState
-    , Panel(..)
+    ( Panel(..)
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
-    , initialPanelsState
-    , togglePanelExpansion
     , viewPanelItems
     , viewSimpleNavItem
     )
@@ -30,79 +27,6 @@ type Panel
     = Projects
     | Labels
     | Filters
-
-
-type alias PanelState =
-    { isExpanded : Bool
-    }
-
-
-type alias AllPanelsState =
-    { projects : PanelState
-    , labels : PanelState
-    , filters : PanelState
-    }
-
-
-initialPanelState : PanelState
-initialPanelState =
-    PanelState True
-
-
-initialPanelsState : AllPanelsState
-initialPanelsState =
-    AllPanelsState initialPanelState initialPanelState initialPanelState
-
-
-panelGetter : Panel -> { a | projects : c, labels : c, filters : c } -> c
-panelGetter panel m =
-    case panel of
-        Projects ->
-            m.projects
-
-        Labels ->
-            m.labels
-
-        Filters ->
-            m.filters
-
-
-panelSetter :
-    Panel
-    -> b
-    -> { c | projects : b, labels : b, filters : b }
-    -> { c | projects : b, labels : b, filters : b }
-panelSetter panel small big =
-    case panel of
-        Projects ->
-            { big | projects = small }
-
-        Labels ->
-            { big | labels = small }
-
-        Filters ->
-            { big | filters = small }
-
-
-panelMapper :
-    Panel
-    -> (a -> a)
-    -> { c | projects : a, labels : a, filters : a }
-    -> { c | projects : a, labels : a, filters : a }
-panelMapper panel func big =
-    let
-        get =
-            panelGetter panel
-
-        set a =
-            panelSetter panel a big
-    in
-    get big |> func |> set
-
-
-togglePanelExpansion : Panel -> AllPanelsState -> AllPanelsState
-togglePanelExpansion panel =
-    panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
 
 
 type PanelItemId
