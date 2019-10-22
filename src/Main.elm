@@ -260,7 +260,7 @@ update message model =
                 (DrawerPanelDrag panel)
                 (DrawerPanelDragComplete panel)
                 msg
-                (Drawer.getDragForPanel panel model.panelDrag)
+                (getDragForPanel panel model.panelDrag)
                 |> Tuple.mapFirst
                     (\newDrag -> { model | panelDrag = Just ( panel, newDrag ) })
 
@@ -294,6 +294,20 @@ update message model =
 
         FilterMoreMenu _ ->
             ( { model | popup = Nothing }, Cmd.none )
+
+
+getDragForPanel : a -> Maybe ( a, Drag ) -> Drag
+getDragForPanel panel panelDrag =
+    case panelDrag of
+        Nothing ->
+            Drag.initial
+
+        Just ( panel_, drag ) ->
+            if panel_ == panel then
+                drag
+
+            else
+                Drag.initial
 
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
@@ -469,19 +483,19 @@ drawerView model =
                     Drawer.viewPanel allPanelConfig.projects
                         (ProjectCollection.sorted model.projectCollection)
                         state.projects
-                        (Drawer.getDragForPanel Drawer.Projects panelDrag)
+                        (getDragForPanel Drawer.Projects panelDrag)
 
                 labelsCP =
                     Drawer.viewPanel allPanelConfig.labels
                         (LabelCollection.sorted model.labelCollection)
                         state.labels
-                        (Drawer.getDragForPanel Drawer.Labels panelDrag)
+                        (getDragForPanel Drawer.Labels panelDrag)
 
                 filtersCP =
                     Drawer.viewPanel allPanelConfig.filters
                         (FilterCollection.sorted model.filterCollection)
                         state.filters
-                        (Drawer.getDragForPanel Drawer.Filters panelDrag)
+                        (getDragForPanel Drawer.Filters panelDrag)
             in
             View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
     in

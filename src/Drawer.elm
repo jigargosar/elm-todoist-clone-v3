@@ -6,7 +6,6 @@ module Drawer exposing
     , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
-    , getDragForPanel
     , initialPanelsState
     , togglePanelExpansion
     , viewPanel
@@ -124,57 +123,6 @@ type alias AllPanelsConfig msg =
     , labels : PanelConfig LabelId Label msg
     , filters : PanelConfig FilterId Filter msg
     }
-
-
-getDragForPanel : a -> Maybe ( a, Drag ) -> Drag
-getDragForPanel panel panelDrag =
-    case panelDrag of
-        Nothing ->
-            Drag.initial
-
-        Just ( panel_, drag ) ->
-            if panel_ == panel then
-                drag
-
-            else
-                Drag.initial
-
-
-
---view :
---    AllPanelsConfig msg
---    -> PanelLists
---    -> AllPanelsState
---    -> Maybe ( Panel, Drag )
---    -> View (Html msg)
---view allPanelConfig panelLists state panelDrag =
---    let
---        prefixCP =
---            View.content
---                [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
---                , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
---                , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
---                ]
---
---        projectsCP =
---            viewPanel allPanelConfig.projects
---                panelLists.projects
---                (projectsPanelState state)
---                (getDragForPanel Projects panelDrag)
---
---        labelsCP =
---            viewPanel allPanelConfig.labels
---                panelLists.labels
---                (labelsPanelState state)
---                (getDragForPanel Labels panelDrag)
---
---        filtersCP =
---            viewPanel allPanelConfig.filters
---                panelLists.filters
---                (filtersPanelState state)
---                (getDragForPanel Filters panelDrag)
---    in
---    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
 type PanelItemId
