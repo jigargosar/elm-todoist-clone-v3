@@ -39,8 +39,12 @@ type PopupKind
     = DrawerPanelItemPopup Drawer.PanelItemId
 
 
+todo =
+    Debug.todo "impl"
+
+
 type alias PopupState =
-    { kind : PopupKind
+    { panelItemId : Drawer.PanelItemId
     , anchorId : String
     , popupId : String
     , anchorEl : Dom.Element
@@ -48,8 +52,18 @@ type alias PopupState =
     }
 
 
+initPopupState : Drawer.PanelItemId -> String -> String -> PopupState
+initPopupState =
+    todo
+
+
 type alias Popup =
     Maybe PopupState
+
+
+initPopup : Drawer.PanelItemId -> String -> String -> Popup
+initPopup =
+    todo
 
 
 
