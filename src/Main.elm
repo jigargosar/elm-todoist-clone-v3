@@ -64,6 +64,7 @@ type alias Model =
     , isDrawerModalOpen : Bool
     , drawerPanelsState : Drawer.AllPanelsState
     , popup : Maybe ( PopupKind, Popper )
+    , panelDrag : Maybe ( Drawer.Panel, Drag )
     }
 
 
@@ -81,6 +82,7 @@ init flags url navKey =
             , isDrawerModalOpen = False
             , drawerPanelsState = Drawer.initialPanelsState
             , popup = Nothing
+            , panelDrag = Nothing
             }
     in
     Return.singleton initial
