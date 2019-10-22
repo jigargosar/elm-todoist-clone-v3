@@ -38,6 +38,17 @@ type PopupKind
     = DrawerPanelItemPopup Drawer.PanelItemId
 
 
+type alias PopupState =
+    { kind : PopupKind
+    , anchorId : String
+    , popupId : String
+    }
+
+
+type alias Popup =
+    Maybe PopupState
+
+
 
 -- Flags
 
@@ -467,6 +478,7 @@ todoListByFilterIdView _ pc lc todoDict =
     ]
 
 
+popupView : Model -> View (Html Msg)
 popupView model =
     case model.popup of
         Nothing ->
