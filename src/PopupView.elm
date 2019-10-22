@@ -1,8 +1,8 @@
 module PopupView exposing (..)
 
 import Css
-import Html.Styled as H exposing (Html, div)
-import Html.Styled.Attributes as A exposing (css)
+import Html.Styled as H exposing (Html, div, text)
+import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Popper exposing (Popper)
@@ -88,7 +88,14 @@ viewProjectMenuItem item =
         { iconName, title } =
             projectMenuItemConfig item
     in
-    div [ css [ pv 2, ph 3 ] ] [ H.text title ]
+    div [ css [ flex, ph 2 ] ]
+        [ H.i
+            [ css [ pv 1, ph 1, pointer ]
+            , class "material-icons"
+            ]
+            [ text iconName ]
+        , div [ css [ pv 1, ph 2, flex, flexGrow1, itemsCenter ] ] [ H.text title ]
+        ]
 
 
 projectMenuItemConfig item =
@@ -118,4 +125,4 @@ projectMenuItemConfig item =
             ProjectMenuItemConfig "archive" "Archive"
 
         DeleteProject ->
-            ProjectMenuItemConfig "trash" "Delete project"
+            ProjectMenuItemConfig "delete" "Delete project"
