@@ -473,13 +473,6 @@ filterPanelConfig =
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
-        navItemsView =
-            View.content
-                [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-                , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-                , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
-                ]
-
         viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         viewPanel config panel items =
             let
@@ -517,6 +510,15 @@ drawerView model =
         , viewPanel filterPanelConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
+        ]
+
+
+navItemsView : View (Html msg)
+navItemsView =
+    View.content
+        [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
         ]
 
 
