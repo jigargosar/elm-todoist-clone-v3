@@ -44,25 +44,6 @@ type alias PanelState =
     }
 
 
-type TaggedPanelState id
-    = TaggedPanelState PanelState
-
-
-projectsPanelState : AllPanelsState -> TaggedPanelState ProjectId
-projectsPanelState =
-    .projects >> TaggedPanelState
-
-
-labelsPanelState : AllPanelsState -> TaggedPanelState LabelId
-labelsPanelState =
-    .labels >> TaggedPanelState
-
-
-filtersPanelState : AllPanelsState -> TaggedPanelState FilterId
-filtersPanelState =
-    .filters >> TaggedPanelState
-
-
 type alias AllPanelsState =
     { projects : PanelState
     , labels : PanelState
