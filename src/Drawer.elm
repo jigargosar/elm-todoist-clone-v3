@@ -45,21 +45,21 @@ type alias PanelState =
     }
 
 
-type TaggedPanelState id item
+type TaggedPanelState id
     = TaggedPanelState PanelState
 
 
-projectsPanelState : AllPanelsState -> TaggedPanelState ProjectId Project
+projectsPanelState : AllPanelsState -> TaggedPanelState ProjectId
 projectsPanelState =
     .projects >> TaggedPanelState
 
 
-labelsPanelState : AllPanelsState -> TaggedPanelState LabelId Label
+labelsPanelState : AllPanelsState -> TaggedPanelState LabelId
 labelsPanelState =
     .labels >> TaggedPanelState
 
 
-filtersPanelState : AllPanelsState -> TaggedPanelState FilterId Filter
+filtersPanelState : AllPanelsState -> TaggedPanelState FilterId
 filtersPanelState =
     .filters >> TaggedPanelState
 
@@ -229,7 +229,7 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id item -> View (Html msg)
+viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> View (Html msg)
 viewPanel config items (TaggedPanelState state) =
     View.concat
         [ View.content
