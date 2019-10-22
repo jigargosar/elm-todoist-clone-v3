@@ -470,7 +470,7 @@ filterPanelConfig =
     }
 
 
-drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
+drawerView : Model -> View (Html Msg)
 drawerView model =
     let
         panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
