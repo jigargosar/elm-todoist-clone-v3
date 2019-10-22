@@ -80,37 +80,9 @@ projectContent =
     ]
 
 
-viewDivider =
-    div
-        [ css
-            [ bo_b
-            , boc <| grayL 0.9
-            , Css.marginTop <| Css.px 8
-            , Css.marginBottom <| Css.px 8
-            ]
-        ]
-        []
-
-
 viewProjectMenuItem : ProjectMenuItem -> Html ProjectMenuItem
 viewProjectMenuItem item =
     viewMenuItem (projectMenuItemConfig item)
-
-
-viewMenuItem : MenuItemConfig msg -> Html msg
-viewMenuItem item =
-    let
-        { iconName, title, action } =
-            item
-    in
-    div [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ] ]
-        [ H.i
-            [ css [ pv 1, ph 1, pointer ]
-            , class "material-icons"
-            ]
-            [ text iconName ]
-        , div [ css [ pv 1, ph 2, flex, flexGrow1, itemsCenter ] ] [ H.text title ]
-        ]
 
 
 projectMenuItemConfig : ProjectMenuItem -> MenuItemConfig ProjectMenuItem
@@ -146,3 +118,31 @@ projectMenuItemConfig action =
 
         DeleteProject ->
             createHelp "delete" "Delete project"
+
+
+viewMenuItem : MenuItemConfig msg -> Html msg
+viewMenuItem item =
+    let
+        { iconName, title, action } =
+            item
+    in
+    div [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ] ]
+        [ H.i
+            [ css [ pv 1, ph 1, pointer ]
+            , class "material-icons"
+            ]
+            [ text iconName ]
+        , div [ css [ pv 1, ph 2, flex, flexGrow1, itemsCenter ] ] [ H.text title ]
+        ]
+
+
+viewDivider =
+    div
+        [ css
+            [ bo_b
+            , boc <| grayL 0.9
+            , Css.marginTop <| Css.px 8
+            , Css.marginBottom <| Css.px 8
+            ]
+        ]
+        []
