@@ -209,7 +209,6 @@ type alias PanelConfig id item msg =
 
 type alias PanelItemConfig id item msg =
     { moreClicked : String -> id -> JD.Decoder msg
-    , dragSystem : Drag.System item msg
     , dragMsg : Drag.Msg -> msg
     , panelId : String
     , id : item -> id
@@ -242,7 +241,7 @@ viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> View (Html 
 viewPanelItems config items drag =
     View.fromTuple
         ( items
-            |> config.dragSystem.rotate drag
+            |> Drag.rotate drag
             |> List.indexedMap
                 (viewPanelItem config drag)
         , viewPanelItemGhost config items drag
@@ -270,29 +269,26 @@ viewPanelItem config drag idx item =
         id =
             config.id item
 
-        dragSystem =
-            config.dragSystem
-
         domId =
             panelItemDomId config id
 
         rootSA =
             let
                 dragOverStyle =
-                    Styles.styleIf (dragSystem.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
+                    Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
             in
             StyleAttrs
                 [ hover [ bgGrayL 0.9 ]
                 , noSelection
                 , dragOverStyle
                 ]
-                (A.id domId :: dragSystem.dropEvents idx drag)
+                (A.id domId :: Drag.dropEvents config.dragMsg idx drag)
 
         primaryIcon : { name : String, sa : StyleAttrs msg }
         primaryIcon =
             let
                 dragEvents =
-                    dragSystem.dragEvents idx domId drag
+                    Drag.dragEvents config.dragMsg idx domId drag
             in
             { name = config.iconName
             , sa = StyleAttrs [ Css.cursor Css.move, config.iconStyle item ] dragEvents
@@ -314,7 +310,7 @@ viewPanelItem config drag idx item =
 
 viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
 viewPanelItemGhost config items drag =
-    config.dragSystem.ghostItemWithStyles items drag
+    Drag.ghostItemWithStyles items drag
         |> Maybe.map
             (\( ghostStyles, item ) ->
                 let

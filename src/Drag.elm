@@ -6,6 +6,7 @@ module Drag exposing
     , dragEvents
     , dropEvents
     , eqDragOverIdx
+    , ghostItemWithStyles
     , ghostStylesWithDragIdx
     , info
     , initial
