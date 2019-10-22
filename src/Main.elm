@@ -455,7 +455,37 @@ panelsConfig =
 
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
-    Drawer.view panelsConfig
+    let
+        viewHelp allPanelConfig panelLists state panelDrag =
+            let
+                prefixCP =
+                    View.content
+                        [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+                        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+                        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+                        ]
+
+                projectsCP =
+                    Drawer.viewPanel allPanelConfig.projects
+                        panelLists.projects
+                        state.projects
+                        (Drawer.getDragForPanel Drawer.Projects panelDrag)
+
+                labelsCP =
+                    Drawer.viewPanel allPanelConfig.labels
+                        panelLists.labels
+                        state.labels
+                        (Drawer.getDragForPanel Drawer.Labels panelDrag)
+
+                filtersCP =
+                    Drawer.viewPanel allPanelConfig.filters
+                        panelLists.filters
+                        state.filters
+                        (Drawer.getDragForPanel Drawer.Filters panelDrag)
+            in
+            View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
+    in
+    viewHelp panelsConfig
         { projects = ProjectCollection.sorted model.projectCollection
         , labels = LabelCollection.sorted model.labelCollection
         , filters = FilterCollection.sorted model.filterCollection

@@ -9,7 +9,8 @@ module Drawer exposing
     , getDragForPanel
     , initialPanelsState
     , togglePanelExpansion
-    , view
+    , viewPanel
+    , viewSimpleNavItem
     )
 
 import Css
@@ -158,40 +159,41 @@ getDragForPanel panel panelDrag =
                 Drag.initial
 
 
-view :
-    AllPanelsConfig msg
-    -> PanelLists
-    -> AllPanelsState
-    -> Maybe ( Panel, Drag )
-    -> View (Html msg)
-view allPanelConfig panelLists state panelDrag =
-    let
-        prefixCP =
-            View.content
-                [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-                , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-                , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
-                ]
 
-        projectsCP =
-            viewPanel allPanelConfig.projects
-                panelLists.projects
-                (projectsPanelState state)
-                (getDragForPanel Projects panelDrag)
-
-        labelsCP =
-            viewPanel allPanelConfig.labels
-                panelLists.labels
-                (labelsPanelState state)
-                (getDragForPanel Labels panelDrag)
-
-        filtersCP =
-            viewPanel allPanelConfig.filters
-                panelLists.filters
-                (filtersPanelState state)
-                (getDragForPanel Filters panelDrag)
-    in
-    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
+--view :
+--    AllPanelsConfig msg
+--    -> PanelLists
+--    -> AllPanelsState
+--    -> Maybe ( Panel, Drag )
+--    -> View (Html msg)
+--view allPanelConfig panelLists state panelDrag =
+--    let
+--        prefixCP =
+--            View.content
+--                [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+--                , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+--                , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+--                ]
+--
+--        projectsCP =
+--            viewPanel allPanelConfig.projects
+--                panelLists.projects
+--                (projectsPanelState state)
+--                (getDragForPanel Projects panelDrag)
+--
+--        labelsCP =
+--            viewPanel allPanelConfig.labels
+--                panelLists.labels
+--                (labelsPanelState state)
+--                (getDragForPanel Labels panelDrag)
+--
+--        filtersCP =
+--            viewPanel allPanelConfig.filters
+--                panelLists.filters
+--                (filtersPanelState state)
+--                (getDragForPanel Filters panelDrag)
+--    in
+--    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
 type PanelItemId
@@ -220,8 +222,8 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> Drag -> View (Html msg)
-viewPanel config items (TaggedPanelState state) drag =
+viewPanel : PanelConfig id item msg -> List item -> PanelState -> Drag -> View (Html msg)
+viewPanel config items state drag =
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader
