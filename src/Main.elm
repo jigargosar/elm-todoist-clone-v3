@@ -381,7 +381,8 @@ moreClickedDecoder panelItemId anchorId id =
 
 projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
+    { panel = Drawer.Projects
+    , toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
     , panelTitle = "Projects"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.ProjectItemId
@@ -399,7 +400,8 @@ projectPanelConfig =
 
 labelPanelConfig : Drawer.PanelConfig LabelId Label Msg
 labelPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Labels
+    { panel = Drawer.Labels
+    , toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Labels
     , panelTitle = "Labels"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.LabelItemId
@@ -417,7 +419,8 @@ labelPanelConfig =
 
 filterPanelConfig : Drawer.PanelConfig FilterId Filter Msg
 filterPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Filters
+    { panel = Drawer.Filters
+    , toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Filters
     , panelTitle = "Filters"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.FilterItemId
