@@ -459,18 +459,10 @@ filterPanelConfig =
     }
 
 
-panelsConfig : Drawer.AllPanelsConfig Msg
-panelsConfig =
-    { projects = projectPanelConfig
-    , labels = labelPanelConfig
-    , filters = filterPanelConfig
-    }
-
-
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
-        viewHelp allPanelConfig panelsState panelDrag =
+        viewHelp panelsState panelDrag =
             let
                 prefixCP =
                     View.content
@@ -480,26 +472,26 @@ drawerView model =
                         ]
 
                 projectsCP =
-                    Drawer.viewPanel allPanelConfig.projects
+                    Drawer.viewPanel projectPanelConfig
                         (ProjectCollection.sorted model.projectCollection)
                         panelsState.projects
                         (getDragForPanel Drawer.Projects panelDrag)
 
                 labelsCP =
-                    Drawer.viewPanel allPanelConfig.labels
+                    Drawer.viewPanel labelPanelConfig
                         (LabelCollection.sorted model.labelCollection)
                         panelsState.labels
                         (getDragForPanel Drawer.Labels panelDrag)
 
                 filtersCP =
-                    Drawer.viewPanel allPanelConfig.filters
+                    Drawer.viewPanel filterPanelConfig
                         (FilterCollection.sorted model.filterCollection)
                         panelsState.filters
                         (getDragForPanel Drawer.Filters panelDrag)
             in
             View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
     in
-    viewHelp panelsConfig model.drawerPanelsState model.panelDrag
+    viewHelp model.drawerPanelsState model.panelDrag
 
 
 pageView : Model -> View (Html Msg)
