@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
+import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer
@@ -42,6 +43,8 @@ type alias PopupState =
     { kind : PopupKind
     , anchorId : String
     , popupId : String
+    , anchorEl : Dom.Element
+    , popupEl : Maybe Dom.Element
     }
 
 
