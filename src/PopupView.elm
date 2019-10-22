@@ -47,8 +47,8 @@ mockPopupView config content popper =
         ]
 
 
-type alias ProjectMenuItemConfig =
-    { iconName : String, title : String }
+type alias MenuItemConfig msg =
+    { iconName : String, title : String, action : msg }
 
 
 type ProjectMenuItem
@@ -107,31 +107,36 @@ viewProjectMenuItem item =
         ]
 
 
-projectMenuItemConfig item =
-    case item of
+projectMenuItemConfig : ProjectMenuItem -> MenuItemConfig ProjectMenuItem
+projectMenuItemConfig action =
+    let
+        createHelp iconName title =
+            MenuItemConfig iconName title action
+    in
+    case action of
         AddProjectAbove ->
-            ProjectMenuItemConfig "arrow_upward" "Add Project above"
+            createHelp "arrow_upward" "Add Project above"
 
         AddProjectBelow ->
-            ProjectMenuItemConfig "arrow_downward" "Add Project below"
+            createHelp "arrow_downward" "Add Project below"
 
         EditProject ->
-            ProjectMenuItemConfig "edit" "Edit project"
+            createHelp "edit" "Edit project"
 
         ShareProject ->
-            ProjectMenuItemConfig "person_add" "Share project"
+            createHelp "person_add" "Share project"
 
         AddToFavorites ->
-            ProjectMenuItemConfig "favorite" "Add to favorites"
+            createHelp "favorite" "Add to favorites"
 
         EmailTasksToThisProject ->
-            ProjectMenuItemConfig "email" "Email tasks to this project"
+            createHelp "email" "Email tasks to this project"
 
         ProjectCalendarFeed ->
-            ProjectMenuItemConfig "list" "Project calendar feed"
+            createHelp "list" "Project calendar feed"
 
         ArchiveProject ->
-            ProjectMenuItemConfig "archive" "Archive"
+            createHelp "archive" "Archive"
 
         DeleteProject ->
-            ProjectMenuItemConfig "delete" "Delete project"
+            createHelp "delete" "Delete project"
