@@ -36,6 +36,7 @@ mockPopupView config content popper =
                     [ Styles.bgWhite
                     , Styles.bor 3
                     , Styles.batch popperStyles
+                    , pv 2
                     ]
                 , A.id "rootPopup"
                 , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
@@ -80,7 +81,15 @@ projectContent =
 
 
 viewDivider =
-    div [ css [ Css.height <| Css.px 4, bo_b, boc <| grayL 0.9 ] ] []
+    div
+        [ css
+            [ bo_b
+            , boc <| grayL 0.9
+            , Css.marginTop <| Css.px 8
+            , Css.marginBottom <| Css.px 8
+            ]
+        ]
+        []
 
 
 viewProjectMenuItem item =
@@ -101,10 +110,10 @@ viewProjectMenuItem item =
 projectMenuItemConfig item =
     case item of
         AddProjectAbove ->
-            ProjectMenuItemConfig "arrow_up" "Add Project above"
+            ProjectMenuItemConfig "arrow_upward" "Add Project above"
 
         AddProjectBelow ->
-            ProjectMenuItemConfig "arrow_down" "Add Project below"
+            ProjectMenuItemConfig "arrow_downward" "Add Project below"
 
         EditProject ->
             ProjectMenuItemConfig "edit" "Edit project"
