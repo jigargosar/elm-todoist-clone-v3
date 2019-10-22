@@ -39,31 +39,6 @@ type PopupKind
     = DrawerPanelItemPopup Drawer.PanelItemId
 
 
-todo =
-    Debug.todo "impl"
-
-
-type alias PopupState =
-    { panelItemId : Drawer.PanelItemId
-    , anchorEl : Dom.Element
-    , popupEl : Maybe Dom.Element
-    }
-
-
-initPopupState : Drawer.PanelItemId -> PopupState
-initPopupState =
-    todo
-
-
-type alias Popup =
-    Maybe PopupState
-
-
-initPopup : Drawer.PanelItemId -> Popup
-initPopup =
-    todo
-
-
 
 -- Flags
 
