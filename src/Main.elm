@@ -499,7 +499,7 @@ drawerView model =
                 [ View.content
                     [ ExpansionPanelUI.viewHeader
                         (TogglePanel panel)
-                        config.panelTitle
+                        (Drawer.panelTitle panel)
                         isExpanded
                     ]
                 , if isExpanded then

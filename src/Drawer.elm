@@ -3,6 +3,7 @@ module Drawer exposing
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
+    , panelTitle
     , viewPanelItems
     , viewSimpleNavItem
     )
@@ -27,6 +28,19 @@ type Panel
     = Projects
     | Labels
     | Filters
+
+
+panelTitle : Panel -> String
+panelTitle panel =
+    case panel of
+        Projects ->
+            "Projects"
+
+        Labels ->
+            "Labels"
+
+        Filters ->
+            "Filters"
 
 
 type PanelItemId
