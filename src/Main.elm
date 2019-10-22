@@ -200,6 +200,8 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | ProjectMoreMenu PopupView.ProjectMenuItem
+    | LabelMoreMenu PopupView.ProjectMenuItem
+    | FilterMoreMenu PopupView.ProjectMenuItem
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -275,6 +277,12 @@ update message model =
             ( { model | popup = Nothing }, Cmd.none )
 
         ProjectMoreMenu _ ->
+            ( { model | popup = Nothing }, Cmd.none )
+
+        LabelMoreMenu _ ->
+            ( { model | popup = Nothing }, Cmd.none )
+
+        FilterMoreMenu _ ->
             ( { model | popup = Nothing }, Cmd.none )
 
 
