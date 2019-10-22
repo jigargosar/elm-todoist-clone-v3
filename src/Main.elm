@@ -416,66 +416,57 @@ moreClickedDecoder panelItemId anchorId id =
     JD.succeed msg
 
 
-projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
+projectPanelConfig : Drawer.PanelItemConfig ProjectId Project Msg
 projectPanelConfig =
     let
         panel =
             Drawer.Projects
     in
-    { panelTitle = "Projects"
-    , itemConfig =
-        { moreClicked = moreClickedDecoder Drawer.ProjectItemId
-        , dragMsg = DrawerPanelDrag panel
-        , panelId = "project"
-        , iconName = "folder"
-        , id = Project.id
-        , idToString = ProjectId.toString
-        , title = Project.title
-        , route = Project.id >> Route.Project
-        , iconStyle = Styles.c_ << Project.cssColor
-        }
+    { moreClicked = moreClickedDecoder Drawer.ProjectItemId
+    , dragMsg = DrawerPanelDrag panel
+    , panelId = "project"
+    , iconName = "folder"
+    , id = Project.id
+    , idToString = ProjectId.toString
+    , title = Project.title
+    , route = Project.id >> Route.Project
+    , iconStyle = Styles.c_ << Project.cssColor
     }
 
 
-labelPanelConfig : Drawer.PanelConfig LabelId Label Msg
+labelPanelConfig : Drawer.PanelItemConfig LabelId Label Msg
 labelPanelConfig =
     let
         panel =
             Drawer.Labels
     in
-    { panelTitle = "Labels"
-    , itemConfig =
-        { moreClicked = moreClickedDecoder Drawer.LabelItemId
-        , dragMsg = DrawerPanelDrag panel
-        , panelId = "label"
-        , id = Label.id
-        , idToString = LabelId.toString
-        , title = Label.title
-        , route = Label.id >> Route.Label
-        , iconName = "label"
-        , iconStyle = Styles.c_ << Label.cssColor
-        }
+    { moreClicked = moreClickedDecoder Drawer.LabelItemId
+    , dragMsg = DrawerPanelDrag panel
+    , panelId = "label"
+    , id = Label.id
+    , idToString = LabelId.toString
+    , title = Label.title
+    , route = Label.id >> Route.Label
+    , iconName = "label"
+    , iconStyle = Styles.c_ << Label.cssColor
     }
 
 
-filterPanelConfig : Drawer.PanelConfig FilterId Filter Msg
+filterPanelConfig : Drawer.PanelItemConfig FilterId Filter Msg
 filterPanelConfig =
     let
         panel =
             Drawer.Filters
     in
-    { panelTitle = "Filters"
-    , itemConfig =
-        { moreClicked = moreClickedDecoder Drawer.FilterItemId
-        , dragMsg = DrawerPanelDrag panel
-        , panelId = "filter"
-        , id = Filter.id
-        , idToString = FilterId.toString
-        , title = Filter.title
-        , route = Filter.id >> Route.Filter
-        , iconName = "filter_list"
-        , iconStyle = Styles.c_ << Filter.cssColor
-        }
+    { moreClicked = moreClickedDecoder Drawer.FilterItemId
+    , dragMsg = DrawerPanelDrag panel
+    , panelId = "filter"
+    , id = Filter.id
+    , idToString = FilterId.toString
+    , title = Filter.title
+    , route = Filter.id >> Route.Filter
+    , iconName = "filter_list"
+    , iconStyle = Styles.c_ << Filter.cssColor
     }
 
 
@@ -489,7 +480,7 @@ drawerView model =
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        viewPanel : Drawer.PanelConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         viewPanel config panel items =
             let
                 isExpanded =
@@ -503,7 +494,7 @@ drawerView model =
                         isExpanded
                     ]
                 , if isExpanded then
-                    Drawer.viewPanelItems config.itemConfig items (dragFor panel)
+                    Drawer.viewPanelItems config items (dragFor panel)
 
                   else
                     View.none
