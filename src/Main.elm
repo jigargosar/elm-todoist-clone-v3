@@ -469,6 +469,9 @@ drawerView model =
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
+        dragFor panel =
+            getDragForPanel panel model.panelDrag
+
         projectsCP =
             Drawer.viewPanel projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
@@ -486,9 +489,6 @@ drawerView model =
                 (FilterCollection.sorted model.filterCollection)
                 model.drawerPanelsState.filters
                 (dragFor Drawer.Filters)
-
-        dragFor panel =
-            getDragForPanel Drawer.Filters model.panelDrag
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
