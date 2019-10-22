@@ -39,15 +39,6 @@ type PopupKind
     = DrawerPanelItemPopup Drawer.PanelItemId
 
 
-type alias PopupState =
-    { panelItemId : Drawer.PanelItemId
-    , anchorId : String
-    , popupId : String
-    , anchorEl : Dom.Element
-    , popupEl : Maybe Dom.Element
-    }
-
-
 
 -- Flags
 
