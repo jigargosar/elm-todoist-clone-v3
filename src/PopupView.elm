@@ -1,4 +1,4 @@
-module PopupView exposing (LabelMenuItem, ProjectMenuItem, container, labelContent, projectContent)
+module PopupView exposing (FilterMenuItem, LabelMenuItem, ProjectMenuItem, container, filterContent, labelContent, projectContent)
 
 import Css
 import Html.Styled as H exposing (Html, div, text)
@@ -144,6 +144,32 @@ labelMenuItemConfig action =
     case action of
         EditLabel ->
             createHelp "edit" "Edit label"
+
+
+type FilterMenuItem
+    = EditFilter
+
+
+filterContent : List (Html FilterMenuItem)
+filterContent =
+    [ viewFilterMenuItem EditFilter
+    ]
+
+
+viewFilterMenuItem : FilterMenuItem -> Html FilterMenuItem
+viewFilterMenuItem item =
+    viewMenuItem (filterMenuItemConfig item)
+
+
+filterMenuItemConfig : FilterMenuItem -> MenuItemConfig FilterMenuItem
+filterMenuItemConfig action =
+    let
+        createHelp iconName title =
+            MenuItemConfig iconName title action
+    in
+    case action of
+        EditFilter ->
+            createHelp "edit" "Edit filter"
 
 
 viewMenuItem : MenuItemConfig msg -> Html msg

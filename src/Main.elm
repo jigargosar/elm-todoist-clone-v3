@@ -199,8 +199,8 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | ProjectMoreMenu PopupView.ProjectMenuItem
-    | LabelMoreMenu PopupView.ProjectMenuItem
-    | FilterMoreMenu PopupView.ProjectMenuItem
+    | LabelMoreMenu PopupView.LabelMenuItem
+    | FilterMoreMenu PopupView.FilterMenuItem
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -489,19 +489,16 @@ popupView model =
             let
                 popupContainer content =
                     PopupView.container { onClose = ClosePopup, noOp = NoOp } content popper
-
-                mockView =
-                    popupContainer (PopupView.projectContent |> List.map (H.map (\_ -> NoOp)))
             in
             case kind of
                 Drawer.ProjectItemId _ ->
                     popupContainer (PopupView.projectContent |> List.map (H.map ProjectMoreMenu))
 
                 Drawer.LabelItemId _ ->
-                    mockView
+                    popupContainer (PopupView.labelContent |> List.map (H.map LabelMoreMenu))
 
                 Drawer.FilterItemId _ ->
-                    mockView
+                    popupContainer (PopupView.filterContent |> List.map (H.map FilterMoreMenu))
 
 
 
