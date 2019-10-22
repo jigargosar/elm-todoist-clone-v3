@@ -5,7 +5,6 @@ module Drawer exposing
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
-    , PanelLists
     , initialPanelsState
     , togglePanelExpansion
     , viewPanel
@@ -109,13 +108,6 @@ panelMapper panel func big =
 togglePanelExpansion : Panel -> AllPanelsState -> AllPanelsState
 togglePanelExpansion panel =
     panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
-
-
-type alias PanelLists =
-    { projects : List Project
-    , labels : List Label
-    , filters : List Filter
-    }
 
 
 type alias AllPanelsConfig msg =
