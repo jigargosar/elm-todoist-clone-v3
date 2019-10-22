@@ -494,14 +494,11 @@ drawerView model =
                         isExpanded
                     ]
                 , if isExpanded then
-                    Drawer.viewPanelItems config items (dragFor panel)
+                    Drawer.viewPanelItems config items (getDragForPanel panel model.panelDrag)
 
                   else
                     View.none
                 ]
-
-        dragFor panel =
-            getDragForPanel panel model.panelDrag
 
         projectsCP =
             viewPanel projectPanelConfig
