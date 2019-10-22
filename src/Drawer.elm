@@ -201,8 +201,7 @@ type PanelItemId
 
 
 type alias PanelConfig id item msg =
-    { panel : Panel
-    , toggleExpansionClicked : msg
+    { toggleExpansionClicked : msg
     , panelTitle : String
     , itemConfig : PanelItemConfig id item msg
     }
