@@ -119,7 +119,7 @@ projectMenuItemConfig item =
             ProjectMenuItemConfig "edit" "Edit project"
 
         ShareProject ->
-            ProjectMenuItemConfig "share" "Share project"
+            ProjectMenuItemConfig "person_add" "Share project"
 
         AddToFavorites ->
             ProjectMenuItemConfig "favorite" "Add to favorites"
