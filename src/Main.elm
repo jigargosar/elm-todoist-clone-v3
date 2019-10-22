@@ -472,23 +472,23 @@ drawerView model =
         projectsCP =
             Drawer.viewPanel projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
-                panelsState.projects
-                (getDragForPanel Drawer.Projects panelDrag)
+                model.drawerPanelsState.projects
+                (dragFor Drawer.Projects)
 
         labelsCP =
             Drawer.viewPanel labelPanelConfig
                 (LabelCollection.sorted model.labelCollection)
-                panelsState.labels
-                (getDragForPanel Drawer.Labels panelDrag)
+                model.drawerPanelsState.labels
+                (dragFor Drawer.Labels)
 
         filtersCP =
             Drawer.viewPanel filterPanelConfig
                 (FilterCollection.sorted model.filterCollection)
-                panelsState.filters
-                (getDragForPanel Drawer.Filters panelDrag)
+                model.drawerPanelsState.filters
+                (dragFor Drawer.Filters)
 
-        ( panelsState, panelDrag ) =
-            ( model.drawerPanelsState, model.panelDrag )
+        dragFor panel =
+            getDragForPanel Drawer.Filters model.panelDrag
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
