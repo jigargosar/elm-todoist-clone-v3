@@ -387,11 +387,11 @@ projectPanelConfig =
         { moreClicked = moreClickedDecoder Drawer.ProjectItemId
         , dragMsg = DrawerPanelDrag Drawer.Projects
         , panelId = "project"
+        , iconName = "folder"
         , id = Project.id
         , idToString = ProjectId.toString
         , title = Project.title
         , route = Project.id >> Route.Project
-        , iconName = "folder"
         , iconStyle = Styles.c_ << Project.cssColor
         }
     }
