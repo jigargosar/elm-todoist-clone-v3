@@ -9,7 +9,7 @@ import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled exposing (Html, toUnstyled)
+import Html.Styled as H exposing (Html, toUnstyled)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -476,18 +476,21 @@ popupView model =
 
         Just ( kind, popper ) ->
             let
-                mockView content =
+                popupContainer content =
                     PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } content popper
+
+                mockView =
+                    popupContainer (PopupView.projectContent |> List.map (H.map (\_ -> NoOp)))
             in
             case kind of
                 Drawer.ProjectItemId projectId ->
-                    mockView PopupView.projectContent
+                    mockView
 
                 Drawer.LabelItemId labelId ->
-                    mockView PopupView.projectContent
+                    mockView
 
                 Drawer.FilterItemId filterId ->
-                    mockView PopupView.projectContent
+                    mockView
 
 
 

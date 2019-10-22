@@ -63,7 +63,7 @@ type ProjectMenuItem
     | DeleteProject
 
 
-projectContent : List (Html msg)
+projectContent : List (Html ProjectMenuItem)
 projectContent =
     [ viewProjectMenuItem AddProjectAbove
     , viewProjectMenuItem AddProjectBelow
@@ -92,13 +92,18 @@ viewDivider =
         []
 
 
-viewProjectMenuItem : ProjectMenuItem -> Html msg
+viewProjectMenuItem : ProjectMenuItem -> Html ProjectMenuItem
 viewProjectMenuItem item =
+    viewMenuItem (projectMenuItemConfig item)
+
+
+viewMenuItem : MenuItemConfig msg -> Html msg
+viewMenuItem item =
     let
-        { iconName, title } =
-            projectMenuItemConfig item
+        { iconName, title, action } =
+            item
     in
-    div [ css [ flex, ph 2 ] ]
+    div [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ] ]
         [ H.i
             [ css [ pv 1, ph 1, pointer ]
             , class "material-icons"
