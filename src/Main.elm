@@ -494,7 +494,7 @@ drawerView model =
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        viewPanel : Drawer.PanelConfig id item msg -> Drawer.Panel -> List item -> View (Html msg)
+        viewPanel : Drawer.PanelConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         viewPanel config panel items =
             let
                 isExpanded =
@@ -503,7 +503,7 @@ drawerView model =
             View.concat
                 [ View.content
                     [ ExpansionPanelUI.viewHeader
-                        config.toggleExpansionClicked
+                        (TogglePanel panel)
                         config.panelTitle
                         isExpanded
                     ]
