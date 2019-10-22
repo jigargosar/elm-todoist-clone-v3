@@ -13,16 +13,12 @@ module Drawer exposing
 import Css
 import Drag exposing (Drag)
 import DrawerItem as DI
-import ExpansionPanelUI
-import Filter exposing (Filter)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
-import Label exposing (Label)
 import LabelId exposing (LabelId)
-import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
@@ -116,8 +112,7 @@ type PanelItemId
 
 
 type alias PanelConfig id item msg =
-    { toggleExpansionClicked : msg
-    , panelTitle : String
+    { panelTitle : String
     , itemConfig : PanelItemConfig id item msg
     }
 

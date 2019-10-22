@@ -424,8 +424,7 @@ projectPanelConfig =
         panel =
             Drawer.Projects
     in
-    { toggleExpansionClicked = TogglePanel panel
-    , panelTitle = "Projects"
+    { panelTitle = "Projects"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.ProjectItemId
         , dragMsg = DrawerPanelDrag panel
@@ -446,8 +445,7 @@ labelPanelConfig =
         panel =
             Drawer.Labels
     in
-    { toggleExpansionClicked = TogglePanel panel
-    , panelTitle = "Labels"
+    { panelTitle = "Labels"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.LabelItemId
         , dragMsg = DrawerPanelDrag panel
@@ -468,8 +466,7 @@ filterPanelConfig =
         panel =
             Drawer.Filters
     in
-    { toggleExpansionClicked = TogglePanel panel
-    , panelTitle = "Filters"
+    { panelTitle = "Filters"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.FilterItemId
         , dragMsg = DrawerPanelDrag panel
