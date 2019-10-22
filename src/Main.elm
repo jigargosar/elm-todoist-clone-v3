@@ -45,13 +45,12 @@ todo =
 
 type alias PopupState =
     { panelItemId : Drawer.PanelItemId
-    , anchorId : String
     , anchorEl : Dom.Element
     , popupEl : Maybe Dom.Element
     }
 
 
-initPopupState : Drawer.PanelItemId -> String -> PopupState
+initPopupState : Drawer.PanelItemId -> PopupState
 initPopupState =
     todo
 
@@ -60,7 +59,7 @@ type alias Popup =
     Maybe PopupState
 
 
-initPopup : Drawer.PanelItemId -> String -> String -> Popup
+initPopup : Drawer.PanelItemId -> Popup
 initPopup =
     todo
 
