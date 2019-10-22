@@ -179,7 +179,7 @@ viewMenuItem item =
             item
     in
     div
-        [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ]
+        [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.95 ] ]
         , E.onClick action
         ]
         [ H.i
