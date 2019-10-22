@@ -487,18 +487,24 @@ popupView model =
 
         Just ( kind, popper ) ->
             let
-                popupContainer content =
-                    PopupView.container { onClose = ClosePopup, noOp = NoOp } content popper
+                viewHelp : List (Html a) -> (a -> Msg) -> View (Html Msg)
+                viewHelp content toMsg =
+                    PopupView.container
+                        { onClose = ClosePopup
+                        , noOp = NoOp
+                        }
+                        (content |> List.map (H.map toMsg))
+                        popper
             in
             case kind of
                 Drawer.ProjectItemId _ ->
-                    popupContainer (PopupView.projectContent |> List.map (H.map ProjectMoreMenu))
+                    viewHelp PopupView.projectContent ProjectMoreMenu
 
                 Drawer.LabelItemId _ ->
-                    popupContainer (PopupView.labelContent |> List.map (H.map LabelMoreMenu))
+                    viewHelp PopupView.labelContent LabelMoreMenu
 
                 Drawer.FilterItemId _ ->
-                    popupContainer (PopupView.filterContent |> List.map (H.map FilterMoreMenu))
+                    viewHelp PopupView.filterContent FilterMoreMenu
 
 
 
