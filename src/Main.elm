@@ -199,6 +199,7 @@ type Msg
     | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
+    | ProjectMoreMenu PopupView.ProjectMenuItem
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -271,6 +272,9 @@ update message model =
                 |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
         ClosePopup ->
+            ( { model | popup = Nothing }, Cmd.none )
+
+        ProjectMoreMenu _ ->
             ( { model | popup = Nothing }, Cmd.none )
 
 
