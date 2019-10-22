@@ -6,7 +6,7 @@ import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Popper exposing (Popper)
-import Styles
+import Styles exposing (..)
 import View exposing (View)
 
 
@@ -47,8 +47,67 @@ mockPopupView config content popper =
         ]
 
 
+type alias ProjectMenuItemConfig =
+    { iconName : String, title : String }
+
+
+type ProjectMenuItem
+    = AddProjectAbove
+    | AddProjectBelow
+    | EditProject
+    | ShareProject
+    | AddToFavorites
+    | EmailTasksToThisProject
+    | ProjectCalendarFeed
+    | ArchiveProject
+    | DeleteProject
+
+
 projectContent : List (Html msg)
 projectContent =
-    [ div [ css [ Styles.pv 2 ] ] [ H.text "popup title" ]
-    , div [ css [ Styles.pv 2 ] ] [ H.text "popup content" ]
+    [ viewProjectMenuItem AddProjectAbove
+    , viewProjectMenuItem AddProjectBelow
+    , viewDivider
     ]
+
+
+viewDivider =
+    div [ css [ Css.height <| Css.px 4, bo_b, boc <| grayL 0.95 ] ] []
+
+
+viewProjectMenuItem item =
+    let
+        { iconName, title } =
+            projectMenuItemConfig item
+    in
+    div [ css [ Styles.pv 2 ] ] [ H.text title ]
+
+
+projectMenuItemConfig item =
+    case item of
+        AddProjectAbove ->
+            ProjectMenuItemConfig "arrow_up" "Add Project above"
+
+        AddProjectBelow ->
+            ProjectMenuItemConfig "arrow_down" "Add Project below"
+
+        EditProject ->
+            ProjectMenuItemConfig "edit" "Edit project"
+
+        ShareProject ->
+            ProjectMenuItemConfig "share" "Share project"
+
+        AddToFavorites ->
+            ProjectMenuItemConfig "favorite" "Add to favorites"
+
+        EmailTasksToThisProject ->
+            ProjectMenuItemConfig "email" "Email tasks to this project"
+
+        ProjectCalendarFeed ->
+            ProjectMenuItemConfig "list" "Project calendar feed"
+
+        ArchiveProject ->
+            ProjectMenuItemConfig "archive" "Archive"
+
+        DeleteProject ->
+            ProjectMenuItemConfig "trash" "Delete project"
