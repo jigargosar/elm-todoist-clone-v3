@@ -178,7 +178,10 @@ viewMenuItem item =
         { iconName, title, action } =
             item
     in
-    div [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ] ]
+    div
+        [ css [ flex, ph 2, pointer, noSelection, hover [ bgGrayL 0.98 ] ]
+        , E.onClick action
+        ]
         [ H.i
             [ css [ pv 1, ph 1, pointer ]
             , class "material-icons"
