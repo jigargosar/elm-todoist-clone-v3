@@ -481,19 +481,19 @@ popupView model =
         Just ( kind, popper ) ->
             let
                 popupContainer content =
-                    PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } content popper
+                    PopupView.container { onClose = ClosePopup, noOp = NoOp } content popper
 
                 mockView =
                     popupContainer (PopupView.projectContent |> List.map (H.map (\_ -> NoOp)))
             in
             case kind of
-                Drawer.ProjectItemId projectId ->
+                Drawer.ProjectItemId _ ->
+                    popupContainer (PopupView.projectContent |> List.map (H.map ProjectMoreMenu))
+
+                Drawer.LabelItemId _ ->
                     mockView
 
-                Drawer.LabelItemId labelId ->
-                    mockView
-
-                Drawer.FilterItemId filterId ->
+                Drawer.FilterItemId _ ->
                     mockView
 
 

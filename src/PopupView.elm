@@ -10,8 +10,8 @@ import Styles exposing (..)
 import View exposing (View)
 
 
-mockPopupView : { onClose : msg, noOp : msg } -> List (Html msg) -> Popper -> View (Html msg)
-mockPopupView config content popper =
+container : { onClose : msg, noOp : msg } -> List (Html msg) -> Popper -> View (Html msg)
+container config content popper =
     View.portal
         [ div
             [ css
