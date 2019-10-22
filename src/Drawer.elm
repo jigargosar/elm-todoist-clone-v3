@@ -239,6 +239,11 @@ panelItemDomId config id =
     "drawer-panel__ " ++ config.panelId ++ "__item__" ++ config.idToString id
 
 
+panelItemMoreBtnDomId : PanelItemConfig id item msg -> id -> String
+panelItemMoreBtnDomId config id =
+    panelItemDomId config id ++ "__more-btn"
+
+
 viewPanelItem :
     PanelItemConfig id item msg
     -> Drag
@@ -283,7 +288,7 @@ viewPanelItem config drag idx item =
             { title = config.title item, sa = StyleAttrs [] [ Route.href <| config.route item ] }
 
         moreDomId =
-            config.panelId ++ "more-anchor__" ++ config.idToString id
+            panelItemMoreBtnDomId config id
 
         moreSA : StyleAttrs msg
         moreSA =
