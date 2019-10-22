@@ -172,8 +172,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Drawer.panelsSubscriptions panelsConfig model.drawerPanelsState
-        , case model.panelDrag of
+        [ case model.panelDrag of
             Just ( panel, drag ) ->
                 Drag.subscriptions (DrawerPanelDrag panel) drag
 
@@ -257,9 +256,13 @@ update message model =
             )
 
         DrawerPanelDrag panel msg ->
-            Drawer.updatePanelDrag DrawerPanelDrag DrawerPanelDragComplete panel msg model.drawerPanelsState
+            Drag.update
+                (DrawerPanelDrag panel)
+                (DrawerPanelDragComplete panel)
+                msg
+                (Drawer.getDragForPanel panel model.panelDrag)
                 |> Tuple.mapFirst
-                    (\drawerPanelState -> { model | drawerPanelsState = drawerPanelState })
+                    (\newDrag -> { model | panelDrag = Just ( panel, newDrag ) })
 
         DrawerPanelDragComplete panel info ->
             onDrawerPanelDragComplete panel info model

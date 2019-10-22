@@ -6,10 +6,9 @@ module Drawer exposing
     , PanelItemConfig
     , PanelItemId(..)
     , PanelLists
+    , getDragForPanel
     , initialPanelsState
-    , panelsSubscriptions
     , togglePanelExpansion
-    , updatePanelDrag
     , view
     )
 
@@ -41,7 +40,6 @@ type Panel
 
 type alias PanelState =
     { isExpanded : Bool
-    , drag : Drag
     }
 
 
@@ -73,7 +71,7 @@ type alias AllPanelsState =
 
 initialPanelState : PanelState
 initialPanelState =
-    PanelState True Drag.initial
+    PanelState True
 
 
 initialPanelsState : AllPanelsState
@@ -132,31 +130,6 @@ togglePanelExpansion panel =
     panelMapper panel (\s -> { s | isExpanded = not s.isExpanded })
 
 
-updatePanelDrag :
-    (Panel -> Drag.Msg -> msg)
-    -> (Panel -> Drag.Info -> msg)
-    -> Panel
-    -> Drag.Msg
-    -> AllPanelsState
-    -> ( AllPanelsState, Cmd msg )
-updatePanelDrag toMsg onComplete panel msg model =
-    let
-        drag =
-            (panelGetter panel model).drag
-    in
-    Drag.update (toMsg panel) (onComplete panel) msg drag
-        |> Tuple.mapFirst (\newDrag -> panelMapper panel (\s -> { s | drag = newDrag }) model)
-
-
-panelsSubscriptions : AllPanelsConfig msg -> AllPanelsState -> Sub msg
-panelsSubscriptions c panelState =
-    Sub.batch
-        [ c.projects.itemConfig.dragSystem.subscriptions panelState.projects.drag
-        , c.labels.itemConfig.dragSystem.subscriptions panelState.labels.drag
-        , c.filters.itemConfig.dragSystem.subscriptions panelState.filters.drag
-        ]
-
-
 type alias PanelLists =
     { projects : List Project
     , labels : List Label
@@ -169,6 +142,20 @@ type alias AllPanelsConfig msg =
     , labels : PanelConfig LabelId Label msg
     , filters : PanelConfig FilterId Filter msg
     }
+
+
+getDragForPanel : a -> Maybe ( a, Drag ) -> Drag
+getDragForPanel panel panelDrag =
+    case panelDrag of
+        Nothing ->
+            Drag.initial
+
+        Just ( panel_, drag ) ->
+            if panel_ == panel then
+                drag
+
+            else
+                Drag.initial
 
 
 view :
@@ -190,16 +177,22 @@ view allPanelConfig panelLists state panelDrag =
             viewPanel allPanelConfig.projects
                 panelLists.projects
                 (projectsPanelState state)
+                Projects
+                panelDrag
 
         labelsCP =
             viewPanel allPanelConfig.labels
                 panelLists.labels
                 (labelsPanelState state)
+                Labels
+                panelDrag
 
         filtersCP =
             viewPanel allPanelConfig.filters
                 panelLists.filters
                 (filtersPanelState state)
+                Filters
+                panelDrag
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
@@ -230,13 +223,13 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> View (Html msg)
-viewPanel config items (TaggedPanelState state) =
+viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> Panel -> Maybe ( Panel, Drag ) -> View (Html msg)
+viewPanel config items (TaggedPanelState state) panel panelDrag =
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
         , if state.isExpanded then
-            viewPanelItems config.itemConfig items state.drag
+            viewPanelItems config.itemConfig items (getDragForPanel panel panelDrag)
 
           else
             View.none
