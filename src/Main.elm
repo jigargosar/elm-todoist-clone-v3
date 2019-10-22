@@ -35,8 +35,8 @@ import Url exposing (Url)
 import View exposing (View)
 
 
-type PopupKind
-    = DrawerPanelItemPopup Drawer.PanelItemId
+type alias PopupKind =
+    Drawer.PanelItemId
 
 
 
@@ -349,7 +349,7 @@ moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Ms
 moreClickedDecoder panelItemId anchorId id =
     let
         kind =
-            DrawerPanelItemPopup (panelItemId id)
+            panelItemId id
 
         msg =
             PopupTriggered kind anchorId
@@ -475,21 +475,19 @@ popupView model =
             View.none
 
         Just ( kind, popper ) ->
+            let
+                mockView content =
+                    PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } content popper
+            in
             case kind of
-                DrawerPanelItemPopup panelItemId ->
-                    let
-                        mockView content =
-                            PopupView.mockPopupView { onClose = ClosePopup, noOp = NoOp } content popper
-                    in
-                    case panelItemId of
-                        Drawer.ProjectItemId projectId ->
-                            mockView PopupView.projectContent
+                Drawer.ProjectItemId projectId ->
+                    mockView PopupView.projectContent
 
-                        Drawer.LabelItemId labelId ->
-                            mockView PopupView.projectContent
+                Drawer.LabelItemId labelId ->
+                    mockView PopupView.projectContent
 
-                        Drawer.FilterItemId filterId ->
-                            mockView PopupView.projectContent
+                Drawer.FilterItemId filterId ->
+                    mockView PopupView.projectContent
 
 
 
