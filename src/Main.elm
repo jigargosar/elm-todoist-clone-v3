@@ -381,11 +381,15 @@ moreClickedDecoder panelItemId anchorId id =
 
 projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
+    let
+        panel =
+            Drawer.Projects
+    in
+    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
     , panelTitle = "Projects"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.ProjectItemId
-        , dragMsg = DrawerPanelDrag Drawer.Projects
+        , dragMsg = DrawerPanelDrag panel
         , panelId = "project"
         , iconName = "folder"
         , id = Project.id
@@ -399,11 +403,15 @@ projectPanelConfig =
 
 labelPanelConfig : Drawer.PanelConfig LabelId Label Msg
 labelPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Labels
+    let
+        panel =
+            Drawer.Labels
+    in
+    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
     , panelTitle = "Labels"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.LabelItemId
-        , dragMsg = DrawerPanelDrag Drawer.Labels
+        , dragMsg = DrawerPanelDrag panel
         , panelId = "label"
         , id = Label.id
         , idToString = LabelId.toString
@@ -417,11 +425,15 @@ labelPanelConfig =
 
 filterPanelConfig : Drawer.PanelConfig FilterId Filter Msg
 filterPanelConfig =
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Filters
+    let
+        panel =
+            Drawer.Filters
+    in
+    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
     , panelTitle = "Filters"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.FilterItemId
-        , dragMsg = DrawerPanelDrag Drawer.Filters
+        , dragMsg = DrawerPanelDrag panel
         , panelId = "filter"
         , id = Filter.id
         , idToString = FilterId.toString
