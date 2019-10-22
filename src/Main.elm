@@ -63,7 +63,6 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , drawerPanelsState : Drawer.AllPanelsState
     , projectsExpanded : Bool
     , labelsExpanded : Bool
     , filtersExpanded : Bool
@@ -87,7 +86,6 @@ init flags url navKey =
             , projectsExpanded = True
             , labelsExpanded = True
             , filtersExpanded = True
-            , drawerPanelsState = Drawer.initialPanelsState
             , popup = Nothing
             , panelDrag = Nothing
             }
