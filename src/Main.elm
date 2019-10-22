@@ -270,7 +270,7 @@ update message model =
                 (DrawerPanelDrag panel)
                 (DrawerPanelDragComplete panel)
                 msg
-                (getDragForPanel panel model.panelDrag)
+                (dragForPanel panel model.panelDrag)
                 |> Tuple.mapFirst
                     (\newDrag -> { model | panelDrag = Just ( panel, newDrag ) })
 
@@ -306,8 +306,8 @@ update message model =
             ( { model | popup = Nothing }, Cmd.none )
 
 
-getDragForPanel : a -> Maybe ( a, Drag ) -> Drag
-getDragForPanel panel panelDrag =
+dragForPanel : a -> Maybe ( a, Drag ) -> Drag
+dragForPanel panel panelDrag =
     case panelDrag of
         Nothing ->
             Drag.initial
@@ -480,7 +480,7 @@ drawerView model =
                     isPanelExpanded panel model
 
                 drag =
-                    getDragForPanel panel model.panelDrag
+                    dragForPanel panel model.panelDrag
 
                 title =
                     Drawer.panelTitle panel
