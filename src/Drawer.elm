@@ -45,23 +45,23 @@ type alias PanelState =
     }
 
 
-type PanelStateTag id item
-    = PanelStateTag PanelState
+type TaggedPanelState id item
+    = TaggedPanelState PanelState
 
 
-projectsPanelState : AllPanelsState -> PanelStateTag ProjectId Project
+projectsPanelState : AllPanelsState -> TaggedPanelState ProjectId Project
 projectsPanelState =
-    .projects >> PanelStateTag
+    .projects >> TaggedPanelState
 
 
-labelsPanelState : AllPanelsState -> PanelStateTag LabelId Label
+labelsPanelState : AllPanelsState -> TaggedPanelState LabelId Label
 labelsPanelState =
-    .labels >> PanelStateTag
+    .labels >> TaggedPanelState
 
 
-filtersPanelState : AllPanelsState -> PanelStateTag FilterId Filter
+filtersPanelState : AllPanelsState -> TaggedPanelState FilterId Filter
 filtersPanelState =
-    .filters >> PanelStateTag
+    .filters >> TaggedPanelState
 
 
 type alias AllPanelsState =
@@ -229,8 +229,8 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanel : PanelConfig id item msg -> List item -> PanelStateTag id item -> View (Html msg)
-viewPanel config items (PanelStateTag state) =
+viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id item -> View (Html msg)
+viewPanel config items (TaggedPanelState state) =
     View.concat
         [ View.content
             [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
