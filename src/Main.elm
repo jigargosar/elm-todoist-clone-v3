@@ -494,8 +494,12 @@ drawerView model =
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
-        viewPanel : Drawer.PanelConfig id item msg -> Drawer.Panel -> List item -> Bool -> View (Html msg)
-        viewPanel config panel items isExpanded =
+        viewPanel : Drawer.PanelConfig id item msg -> Drawer.Panel -> List item -> View (Html msg)
+        viewPanel config panel items =
+            let
+                isExpanded =
+                    isPanelExpanded panel model
+            in
             View.concat
                 [ View.content
                     [ ExpansionPanelUI.viewHeader
@@ -517,19 +521,16 @@ drawerView model =
             viewPanel projectPanelConfig
                 Drawer.Projects
                 (ProjectCollection.sorted model.projectCollection)
-                model.projectsExpanded
 
         labelsCP =
             viewPanel labelPanelConfig
                 Drawer.Labels
                 (LabelCollection.sorted model.labelCollection)
-                model.labelsExpanded
 
         filtersCP =
             viewPanel filterPanelConfig
                 Drawer.Filters
                 (FilterCollection.sorted model.filterCollection)
-                model.filtersExpanded
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
