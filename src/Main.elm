@@ -205,7 +205,7 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | ToggleDrawerExpansionPanel Drawer.Panel
+    | TogglePanel Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PopupTriggered PopupKind String
@@ -253,11 +253,16 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        ToggleDrawerExpansionPanel panel ->
-            ( { model
-                | drawerPanelsState =
-                    Drawer.togglePanelExpansion panel model.drawerPanelsState
-              }
+        TogglePanel panel ->
+            ( case panel of
+                Drawer.Projects ->
+                    { model | projectsExpanded = not model.projectsExpanded }
+
+                Drawer.Labels ->
+                    { model | labelsExpanded = not model.labelsExpanded }
+
+                Drawer.Filters ->
+                    { model | filtersExpanded = not model.filtersExpanded }
             , Cmd.none
             )
 
@@ -405,7 +410,7 @@ projectPanelConfig =
         panel =
             Drawer.Projects
     in
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
+    { toggleExpansionClicked = TogglePanel panel
     , panelTitle = "Projects"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.ProjectItemId
@@ -427,7 +432,7 @@ labelPanelConfig =
         panel =
             Drawer.Labels
     in
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
+    { toggleExpansionClicked = TogglePanel panel
     , panelTitle = "Labels"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.LabelItemId
@@ -449,7 +454,7 @@ filterPanelConfig =
         panel =
             Drawer.Filters
     in
-    { toggleExpansionClicked = ToggleDrawerExpansionPanel panel
+    { toggleExpansionClicked = TogglePanel panel
     , panelTitle = "Filters"
     , itemConfig =
         { moreClicked = moreClickedDecoder Drawer.FilterItemId
