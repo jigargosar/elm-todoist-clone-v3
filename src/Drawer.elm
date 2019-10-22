@@ -6,7 +6,7 @@ module Drawer exposing
     , PanelItemId(..)
     , initialPanelsState
     , togglePanelExpansion
-    , viewPanel
+    , viewPanelItems
     , viewSimpleNavItem
     )
 
@@ -133,23 +133,6 @@ type alias PanelItemConfig id item msg =
     , iconName : String
     , iconStyle : item -> Style
     }
-
-
-viewPanel : PanelConfig id item msg -> List item -> PanelState -> Drag -> View (Html msg)
-viewPanel config items state drag =
-    View.concat
-        [ View.content
-            [ ExpansionPanelUI.viewHeader
-                config.toggleExpansionClicked
-                config.panelTitle
-                state.isExpanded
-            ]
-        , if state.isExpanded then
-            viewPanelItems config.itemConfig items drag
-
-          else
-            View.none
-        ]
 
 
 viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> View (Html msg)

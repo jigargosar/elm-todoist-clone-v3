@@ -5,6 +5,7 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer
+import ExpansionPanelUI
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
@@ -480,25 +481,41 @@ drawerView model =
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
                 ]
 
+        viewPanel : Drawer.PanelConfig id item msg -> List item -> Bool -> Drag -> View (Html msg)
+        viewPanel config items isExpanded drag =
+            View.concat
+                [ View.content
+                    [ ExpansionPanelUI.viewHeader
+                        config.toggleExpansionClicked
+                        config.panelTitle
+                        isExpanded
+                    ]
+                , if isExpanded then
+                    Drawer.viewPanelItems config.itemConfig items drag
+
+                  else
+                    View.none
+                ]
+
         dragFor panel =
             getDragForPanel panel model.panelDrag
 
         projectsCP =
-            Drawer.viewPanel projectPanelConfig
+            viewPanel projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
-                model.drawerPanelsState.projects
+                model.projectsExpanded
                 (dragFor Drawer.Projects)
 
         labelsCP =
-            Drawer.viewPanel labelPanelConfig
+            viewPanel labelPanelConfig
                 (LabelCollection.sorted model.labelCollection)
-                model.drawerPanelsState.labels
+                model.labelsExpanded
                 (dragFor Drawer.Labels)
 
         filtersCP =
-            Drawer.viewPanel filterPanelConfig
+            viewPanel filterPanelConfig
                 (FilterCollection.sorted model.filterCollection)
-                model.drawerPanelsState.filters
+                model.filtersExpanded
                 (dragFor Drawer.Filters)
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
