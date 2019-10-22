@@ -462,36 +462,35 @@ filterPanelConfig =
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
-        viewHelp panelsState panelDrag =
-            let
-                prefixCP =
-                    View.content
-                        [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-                        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-                        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
-                        ]
+        prefixCP =
+            View.content
+                [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+                , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+                , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+                ]
 
-                projectsCP =
-                    Drawer.viewPanel projectPanelConfig
-                        (ProjectCollection.sorted model.projectCollection)
-                        panelsState.projects
-                        (getDragForPanel Drawer.Projects panelDrag)
+        projectsCP =
+            Drawer.viewPanel projectPanelConfig
+                (ProjectCollection.sorted model.projectCollection)
+                panelsState.projects
+                (getDragForPanel Drawer.Projects panelDrag)
 
-                labelsCP =
-                    Drawer.viewPanel labelPanelConfig
-                        (LabelCollection.sorted model.labelCollection)
-                        panelsState.labels
-                        (getDragForPanel Drawer.Labels panelDrag)
+        labelsCP =
+            Drawer.viewPanel labelPanelConfig
+                (LabelCollection.sorted model.labelCollection)
+                panelsState.labels
+                (getDragForPanel Drawer.Labels panelDrag)
 
-                filtersCP =
-                    Drawer.viewPanel filterPanelConfig
-                        (FilterCollection.sorted model.filterCollection)
-                        panelsState.filters
-                        (getDragForPanel Drawer.Filters panelDrag)
-            in
-            View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
+        filtersCP =
+            Drawer.viewPanel filterPanelConfig
+                (FilterCollection.sorted model.filterCollection)
+                panelsState.filters
+                (getDragForPanel Drawer.Filters panelDrag)
+
+        ( panelsState, panelDrag ) =
+            ( model.drawerPanelsState, model.panelDrag )
     in
-    viewHelp model.drawerPanelsState model.panelDrag
+    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
 
 pageView : Model -> View (Html Msg)
