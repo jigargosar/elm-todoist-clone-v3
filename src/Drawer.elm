@@ -234,6 +234,15 @@ viewPanelItems config items drag =
         )
 
 
+panelItemMoreTriggerDomId : PanelItemConfig id item msg -> item -> String
+panelItemMoreTriggerDomId =
+    todo
+
+
+todo =
+    Debug.todo "impl"
+
+
 viewPanelItem :
     PanelItemConfig id item msg
     -> Drag
