@@ -1,6 +1,5 @@
 module Drawer exposing
     ( Panel(..)
-    , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
     , panelTitle
@@ -47,12 +46,6 @@ type PanelItemId
     = ProjectItemId ProjectId
     | LabelItemId LabelId
     | FilterItemId FilterId
-
-
-type alias PanelConfig id item msg =
-    { panelTitle : String
-    , itemConfig : PanelItemConfig id item msg
-    }
 
 
 type alias PanelItemConfig id item msg =
