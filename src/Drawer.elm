@@ -177,7 +177,7 @@ view :
     -> AllPanelsState
     -> Maybe ( Panel, Drag )
     -> View (Html msg)
-view allPanelConfig panelLists panelState panelDrag =
+view allPanelConfig panelLists state panelDrag =
     let
         prefixCP =
             View.content
@@ -189,17 +189,17 @@ view allPanelConfig panelLists panelState panelDrag =
         projectsCP =
             viewPanel allPanelConfig.projects
                 panelLists.projects
-                (projectsPanelState panelState)
+                (projectsPanelState state)
 
         labelsCP =
             viewPanel allPanelConfig.labels
                 panelLists.labels
-                (labelsPanelState panelState)
+                (labelsPanelState state)
 
         filtersCP =
             viewPanel allPanelConfig.filters
                 panelLists.filters
-                (filtersPanelState panelState)
+                (filtersPanelState state)
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
