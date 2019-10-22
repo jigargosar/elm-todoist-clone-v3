@@ -473,8 +473,8 @@ filterPanelConfig =
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
-        viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
-        viewPanel config panel items =
+        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        panelView config panel items =
             let
                 isExpanded =
                     isPanelExpanded panel model
@@ -501,13 +501,13 @@ drawerView model =
     in
     View.concat
         [ navItemsView
-        , viewPanel projectPanelConfig
+        , panelView projectPanelConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        , viewPanel labelPanelConfig
+        , panelView labelPanelConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        , viewPanel filterPanelConfig
+        , panelView filterPanelConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
         ]
