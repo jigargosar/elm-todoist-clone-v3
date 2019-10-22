@@ -63,8 +63,8 @@ type alias Model =
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
     , drawerPanelsState : Drawer.AllPanelsState
-    , popup : Maybe ( PopupKind, Popper )
     , panelDrag : Maybe ( Drawer.Panel, Drag )
+    , popup : Maybe ( PopupKind, Popper )
     }
 
 
