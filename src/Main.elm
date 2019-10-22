@@ -2,7 +2,6 @@ module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
-import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Drag exposing (Drag)
 import Drawer

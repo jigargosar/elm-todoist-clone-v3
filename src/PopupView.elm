@@ -1,4 +1,4 @@
-module PopupView exposing (..)
+module PopupView exposing (LabelMenuItem, ProjectMenuItem, container, labelContent, projectContent)
 
 import Css
 import Html.Styled as H exposing (Html, div, text)
@@ -118,6 +118,32 @@ projectMenuItemConfig action =
 
         DeleteProject ->
             createHelp "delete" "Delete project"
+
+
+type LabelMenuItem
+    = EditLabel
+
+
+labelContent : List (Html LabelMenuItem)
+labelContent =
+    [ viewLabelMenuItem EditLabel
+    ]
+
+
+viewLabelMenuItem : LabelMenuItem -> Html LabelMenuItem
+viewLabelMenuItem item =
+    viewMenuItem (labelMenuItemConfig item)
+
+
+labelMenuItemConfig : LabelMenuItem -> MenuItemConfig LabelMenuItem
+labelMenuItemConfig action =
+    let
+        createHelp iconName title =
+            MenuItemConfig iconName title action
+    in
+    case action of
+        EditLabel ->
+            createHelp "edit" "Edit label"
 
 
 viewMenuItem : MenuItemConfig msg -> Html msg
