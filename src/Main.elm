@@ -473,7 +473,7 @@ filterPanelConfig =
 drawerView : Model -> { content : List (Html Msg), portal : List (Html Msg) }
 drawerView model =
     let
-        prefixCP =
+        navItemsView =
             View.content
                 [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
                 , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
@@ -499,23 +499,19 @@ drawerView model =
                   else
                     View.none
                 ]
-
-        projectsCP =
-            viewPanel projectPanelConfig
-                Drawer.Projects
-                (ProjectCollection.sorted model.projectCollection)
-
-        labelsCP =
-            viewPanel labelPanelConfig
-                Drawer.Labels
-                (LabelCollection.sorted model.labelCollection)
-
-        filtersCP =
-            viewPanel filterPanelConfig
-                Drawer.Filters
-                (FilterCollection.sorted model.filterCollection)
     in
-    View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
+    View.concat
+        [ navItemsView
+        , viewPanel projectPanelConfig
+            Drawer.Projects
+            (ProjectCollection.sorted model.projectCollection)
+        , viewPanel labelPanelConfig
+            Drawer.Labels
+            (LabelCollection.sorted model.labelCollection)
+        , viewPanel filterPanelConfig
+            Drawer.Filters
+            (FilterCollection.sorted model.filterCollection)
+        ]
 
 
 pageView : Model -> View (Html Msg)
