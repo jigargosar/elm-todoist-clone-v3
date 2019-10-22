@@ -485,6 +485,9 @@ drawerView model =
             let
                 isExpanded =
                     isPanelExpanded panel model
+
+                drag =
+                    getDragForPanel panel model.panelDrag
             in
             View.concat
                 [ View.content
@@ -494,7 +497,7 @@ drawerView model =
                         isExpanded
                     ]
                 , if isExpanded then
-                    Drawer.viewPanelItems config items (getDragForPanel panel model.panelDrag)
+                    Drawer.viewPanelItems config items drag
 
                   else
                     View.none
