@@ -92,6 +92,7 @@ viewDivider =
         []
 
 
+viewProjectMenuItem : ProjectMenuItem -> Html msg
 viewProjectMenuItem item =
     let
         { iconName, title } =
