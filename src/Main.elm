@@ -379,11 +379,6 @@ moreClickedDecoder panelItemId anchorId id =
     JD.succeed msg
 
 
-panelDragSystem : Drawer.Panel -> Drag.System a Msg
-panelDragSystem panel =
-    Drag.system (DrawerPanelDrag panel) (DrawerPanelDragComplete panel)
-
-
 projectPanelConfig : Drawer.PanelConfig ProjectId Project Msg
 projectPanelConfig =
     { toggleExpansionClicked = ToggleDrawerExpansionPanel Drawer.Projects
