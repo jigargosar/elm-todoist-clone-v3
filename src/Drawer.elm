@@ -179,7 +179,7 @@ view allPanelConfig panelLists panelState =
         filtersCP =
             viewPanel allPanelConfig.filters
                 panelLists.filters
-                panelState.labels
+                panelState.filters
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
