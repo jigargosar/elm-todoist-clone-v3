@@ -451,6 +451,7 @@ drawerView model =
         , filters = FilterCollection.sorted model.filterCollection
         }
         model.drawerPanelsState
+        model.panelDrag
 
 
 pageView : Model -> View (Html Msg)

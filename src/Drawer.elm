@@ -175,8 +175,9 @@ view :
     AllPanelsConfig msg
     -> PanelLists
     -> AllPanelsState
+    -> Maybe ( Panel, Drag )
     -> View (Html msg)
-view allPanelConfig panelLists panelState =
+view allPanelConfig panelLists panelState panelDrag =
     let
         prefixCP =
             View.content
