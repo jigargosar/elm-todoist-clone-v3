@@ -34,7 +34,6 @@ mockPopupView config content popper =
                   in
                   css
                     [ Styles.bgWhite
-                    , Styles.pa 3
                     , Styles.bor 3
                     , Styles.batch popperStyles
                     ]
@@ -81,7 +80,7 @@ projectContent =
 
 
 viewDivider =
-    div [ css [ Css.height <| Css.px 4, bo_b, boc <| grayL 0.95 ] ] []
+    div [ css [ Css.height <| Css.px 4, bo_b, boc <| grayL 0.9 ] ] []
 
 
 viewProjectMenuItem item =
@@ -89,7 +88,7 @@ viewProjectMenuItem item =
         { iconName, title } =
             projectMenuItemConfig item
     in
-    div [ css [ Styles.pv 2 ] ] [ H.text title ]
+    div [ css [ pv 2, ph 3 ] ] [ H.text title ]
 
 
 projectMenuItemConfig item =
