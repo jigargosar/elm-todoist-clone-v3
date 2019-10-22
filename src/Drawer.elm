@@ -177,22 +177,19 @@ view allPanelConfig panelLists state panelDrag =
             viewPanel allPanelConfig.projects
                 panelLists.projects
                 (projectsPanelState state)
-                Projects
-                panelDrag
+                (getDragForPanel Projects panelDrag)
 
         labelsCP =
             viewPanel allPanelConfig.labels
                 panelLists.labels
                 (labelsPanelState state)
-                Labels
-                panelDrag
+                (getDragForPanel Labels panelDrag)
 
         filtersCP =
             viewPanel allPanelConfig.filters
                 panelLists.filters
                 (filtersPanelState state)
-                Filters
-                panelDrag
+                (getDragForPanel Filters panelDrag)
     in
     View.concat [ prefixCP, projectsCP, labelsCP, filtersCP ]
 
@@ -213,6 +210,7 @@ type alias PanelConfig id item msg =
 type alias PanelItemConfig id item msg =
     { moreClicked : String -> id -> JD.Decoder msg
     , dragSystem : Drag.System item msg
+    , dragMsg : Drag.Msg -> msg
     , panelId : String
     , id : item -> id
     , idToString : id -> String
@@ -223,13 +221,17 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> Panel -> Maybe ( Panel, Drag ) -> View (Html msg)
-viewPanel config items (TaggedPanelState state) panel panelDrag =
+viewPanel : PanelConfig id item msg -> List item -> TaggedPanelState id -> Drag -> View (Html msg)
+viewPanel config items (TaggedPanelState state) drag =
     View.concat
         [ View.content
-            [ ExpansionPanelUI.viewHeader config.toggleExpansionClicked config.panelTitle state.isExpanded ]
+            [ ExpansionPanelUI.viewHeader
+                config.toggleExpansionClicked
+                config.panelTitle
+                state.isExpanded
+            ]
         , if state.isExpanded then
-            viewPanelItems config.itemConfig items (getDragForPanel panel panelDrag)
+            viewPanelItems config.itemConfig items drag
 
           else
             View.none
