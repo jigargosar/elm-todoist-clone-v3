@@ -65,8 +65,7 @@ addProjectContent =
     View.content
         [ div
             [ css
-                [ Css.fontSize Css.xxLarge
-                , bold
+                [ Css.fontSize Css.large
                 , pa 3
                 , bo_b
                 , boc <| Theme.borderGray
