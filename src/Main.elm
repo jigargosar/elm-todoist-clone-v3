@@ -498,7 +498,7 @@ drawerView model =
         ]
 
 
-navItemsView : View (Html msg)
+navItemsView : View.Html msg
 navItemsView =
     View.content
         [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
