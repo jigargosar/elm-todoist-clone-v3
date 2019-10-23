@@ -4,7 +4,8 @@ import Css
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, button, div, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events as E exposing (onClick)
+import Json.Decode as JD
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Styles exposing (..)
@@ -57,11 +58,33 @@ container config content =
                     ]
                 , A.id ""
                 , A.class "shadow-1"
+                , onEsc config.onEsc
                 ]
                 content.content
             ]
         ]
             ++ content.portal
+
+
+escape =
+    keyEq "Escape"
+
+
+keyEq : String -> a -> JD.Decoder a
+keyEq expectedKey msg =
+    JD.field "key" JD.string
+        |> JD.andThen
+            (\key ->
+                if key == expectedKey then
+                    JD.succeed msg
+
+                else
+                    JD.fail "no match"
+            )
+
+
+onEsc msg =
+    E.on "keydown" (JD.oneOf [ escape msg ])
 
 
 addProjectContent : Config msg -> AddProjectState -> View (Html msg)
