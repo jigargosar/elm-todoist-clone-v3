@@ -305,20 +305,9 @@ update message model =
             ( closePopup model, Cmd.none )
 
         ProjectMoreMenu action ->
-            let
-                onAction projectId =
-                    case action of
-                        PopupView.EditProject ->
-                            { model
-                                | dialog = Dialog.EditProject projectId |> Just
-                            }
-
-                        _ ->
-                            model
-            in
             case model.popup of
                 Just ( Drawer.ProjectItemId projectId, _ ) ->
-                    onAction projectId
+                    onProjectMoreMenuAction projectId action model
                         |> closePopup
                         |> Return.singleton
 
@@ -336,6 +325,17 @@ update message model =
 
         CloseDialog ->
             ( { model | dialog = Nothing }, Cmd.none )
+
+
+onProjectMoreMenuAction projectId action model =
+    case action of
+        PopupView.EditProject ->
+            { model
+                | dialog = Dialog.EditProject projectId |> Just
+            }
+
+        _ ->
+            model
 
 
 closePopup : { a | popup : Maybe b } -> { a | popup : Maybe b }
