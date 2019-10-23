@@ -9,6 +9,7 @@ import Json.Decode as JD
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Styles exposing (..)
+import Theme
 import View exposing (View)
 
 
@@ -42,9 +43,8 @@ container config content =
                 [ css
                     [ Styles.bgWhite
                     , Styles.bor 3
-                    , pv 2
                     ]
-                , A.id "rootPopup"
+                , A.id ""
                 , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
                 , A.class "shadow-1"
                 ]
@@ -62,5 +62,5 @@ dialogContent =
 
 addProjectView =
     View.content
-        [ div [ css [ bold, pv 3 ] ] [ text "Add Project" ]
+        [ div [ css [ bold, pv 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
         ]
