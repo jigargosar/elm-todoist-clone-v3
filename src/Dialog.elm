@@ -73,14 +73,8 @@ addProjectContent =
             ]
             [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
-            [ label [ css [ flex, flexColumn, pv 2 ] ]
-                [ span [ css [ lh 1.5, bold ] ] [ text "Project name" ]
-                , input [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ] ] []
-                ]
-            , label [ css [ flex, flexColumn, pv 2 ] ]
-                [ span [ css [ lh 1.5, bold ] ] [ text "Project color" ]
-                , input [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ] ] []
-                ]
+            [ formIpt "Project name"
+            , formIpt "Project color"
             , label [ css [ flex, itemsCenter, pv 2 ] ]
                 [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
                 , text "Add to favorites"
@@ -95,3 +89,18 @@ addProjectContent =
 
 plainBtn =
     batch [ btnReset, pa 2 ]
+
+
+ipt =
+    input [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ] ] []
+
+
+lbl title =
+    span [ css [ lh 1.5, bold ] ] [ text title ]
+
+
+formIpt title =
+    label [ css [ flex, flexColumn, pv 2 ] ]
+        [ lbl title
+        , ipt
+        ]
