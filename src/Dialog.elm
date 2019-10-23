@@ -77,7 +77,7 @@ addProjectContent config state =
 
 
 btnSubmit title =
-    button [ css [ plainBtnStyles ] ] [ text "Add" ]
+    button [ css [ plainBtnStyles ] ] [ text title ]
 
 
 plainBtnStyles =
