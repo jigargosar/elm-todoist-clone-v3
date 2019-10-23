@@ -473,27 +473,26 @@ filterPanelConfig =
 drawerView : Model -> View (Html Msg)
 drawerView model =
     let
-        lazyPanelContentView config panel items _ =
-            Drawer.viewPanelItems config
-                items
-                (dragForPanel panel model.panelDrag)
-
-        panelViewHelp : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
-        panelViewHelp config panel items =
+        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        panelView config panel items =
             Drawer.panelView TogglePanel
                 panel
                 (isPanelExpanded panel model)
-                (lazyPanelContentView config panel items)
+                (\_ ->
+                    Drawer.viewPanelItems config
+                        items
+                        (dragForPanel panel model.panelDrag)
+                )
     in
     View.concat
         [ navItemsView
-        , panelViewHelp projectPanelConfig
+        , panelView projectPanelConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        , panelViewHelp labelPanelConfig
+        , panelView labelPanelConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        , panelViewHelp filterPanelConfig
+        , panelView filterPanelConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
         ]
