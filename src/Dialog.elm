@@ -70,12 +70,8 @@ addProjectContent config state =
                 ]
             ]
         , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
-            [ button [ css [ plainBtn ], onClick config.cancel ] [ text "Add" ]
-            , button
-                [ css [ plainBtn ]
-                , onClick config.cancel
-                ]
-                [ text "Cancel" ]
+            [ button [ css [ plainBtn ] ] [ text "Add" ]
+            , button [ css [ plainBtn ] ] [ text "Cancel" ]
             ]
         ]
 
