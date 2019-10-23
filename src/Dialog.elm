@@ -22,7 +22,7 @@ type Dialog
     | EditFilter FilterId
 
 
-container : { onClose : msg, noOp : msg } -> View.Html msg -> View (Html msg)
+container : { onOverlayClick : msg, noOp : msg } -> View.Html msg -> View (Html msg)
 container config content =
     View.portal <|
         [ div
@@ -37,7 +37,7 @@ container config content =
                 --                 , Styles.bg (Css.hsla 0 1 1 0.6)
                 , Styles.z_ 10
                 ]
-            , E.onClick config.onClose
+            , E.onClick config.onOverlayClick
             ]
             [ div
                 [ css

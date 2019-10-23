@@ -667,11 +667,11 @@ dialogView model =
         Just dialog ->
             case dialog of
                 Dialog.AddProject ->
-                    Dialog.container { onClose = CloseDialog, noOp = NoOp }
+                    Dialog.container { onOverlayClick = CloseDialog, noOp = NoOp }
                         Dialog.addProjectContent
 
                 _ ->
-                    Dialog.container { onClose = CloseDialog, noOp = NoOp }
+                    Dialog.container { onOverlayClick = CloseDialog, noOp = NoOp }
                         Dialog.dialogContent
 
         Nothing ->
