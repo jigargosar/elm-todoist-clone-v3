@@ -5,6 +5,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events exposing (onClick)
 import Styles exposing (..)
+import View
 
 
 type alias Parts msg =
@@ -14,8 +15,8 @@ type alias Parts msg =
     }
 
 
-view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
-view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
+view : { closeDrawerModal : msg } -> Parts msg -> View.Html msg -> Bool -> Html msg
+view { closeDrawerModal } { appbar, drawer, main } rest isDrawerModalOpen =
     styled div
         [ bgBody
         , c_grayL 0.3
@@ -45,6 +46,8 @@ view { closeDrawerModal } { appbar, drawer, main } isDrawerModalOpen =
          ]
             ++ drawer.portal
             ++ main.portal
+            ++ rest.content
+            ++ rest.portal
         )
 
 
