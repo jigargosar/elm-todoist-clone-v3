@@ -73,8 +73,8 @@ addProjectContent =
             ]
             [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
-            [ formIpt "Project name"
-            , formIpt "Project color"
+            [ formTextIpt "Project name"
+            , formTextIpt "Project color"
             , label [ css [ flex, itemsCenter, pv 2 ] ]
                 [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
                 , text "Add to favorites"
@@ -99,7 +99,7 @@ lbl title =
     span [ css [ lh 1.5, bold ] ] [ text title ]
 
 
-formIpt title =
+formTextIpt title =
     label [ css [ flex, flexColumn, pv 2 ] ]
         [ lbl title
         , ipt
