@@ -4,6 +4,7 @@ import Css
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, button, div, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_)
+import Html.Styled.Events exposing (onClick)
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Styles exposing (..)
@@ -63,14 +64,8 @@ container content =
             ++ content.portal
 
 
-dialogContent : View.Html msg
-dialogContent =
-    --View.content [ div [] [ text "Dialog Content" ] ]
-    addProjectContent
-
-
-addProjectContent : View (Html msg)
-addProjectContent =
+addProjectContent : Config msg -> View (Html msg)
+addProjectContent config =
     View.content
         [ div
             [ css
@@ -90,8 +85,12 @@ addProjectContent =
                 ]
             ]
         , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
-            [ button [ css [ plainBtn ] ] [ text "Add" ]
-            , button [ css [ plainBtn ] ] [ text "Cancel" ]
+            [ button [ css [ plainBtn ], onClick config.cancel ] [ text "Add" ]
+            , button
+                [ css [ plainBtn ]
+                , onClick config.cancel
+                ]
+                [ text "Cancel" ]
             ]
         ]
 
@@ -115,13 +114,17 @@ formTextIpt title =
         ]
 
 
-viewDialog : Dialog -> View (Html msg)
-viewDialog dialog =
+type alias Config msg =
+    { cancel : msg }
+
+
+viewDialog : Config msg -> Dialog -> View (Html msg)
+viewDialog config dialog =
     case dialog of
         AddProject model ->
-            container
-                addProjectContent
+            container <|
+                addProjectContent config
 
         _ ->
-            container
-                dialogContent
+            container <|
+                addProjectContent config

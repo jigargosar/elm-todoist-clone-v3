@@ -665,7 +665,7 @@ dialogView : Model -> View (Html Msg)
 dialogView model =
     case model.dialog of
         Just dialog ->
-            Dialog.viewDialog dialog
+            Dialog.viewDialog { cancel = CloseDialog } dialog
 
         Nothing ->
             View.none
