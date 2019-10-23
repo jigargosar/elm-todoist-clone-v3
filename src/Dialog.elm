@@ -1,9 +1,9 @@
-module Dialog exposing (Dialog(..), container, dialogContent)
+module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent)
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, div, text)
-import Html.Styled.Attributes as A exposing (class, css)
+import Html.Styled as H exposing (Html, div, input, label, text)
+import Html.Styled.Attributes as A exposing (class, css, type_)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import LabelId exposing (LabelId)
@@ -59,7 +59,21 @@ dialogContent =
     View.content [ div [] [ text "Dialog Content" ] ]
 
 
-addProjectView =
+addProjectContent =
     View.content
-        [ div [ css [ bold, pv 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
+        [ div [ css [ bold, pa 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
+        , div [ css [ pa 2 ] ]
+            [ div [ css [ flex ] ]
+                [ label [] [ text "Project name" ]
+                , input [] []
+                ]
+            , div [ css [ flex ] ]
+                [ label [] [ text "Project color" ]
+                , input [] []
+                ]
+            , div [ css [ flex ] ]
+                [ input [ type_ "checkbox" ] []
+                , label [] [ text "Add to favorites" ]
+                ]
+            ]
         ]

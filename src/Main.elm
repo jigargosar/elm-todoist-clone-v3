@@ -665,8 +665,14 @@ dialogView : Model -> View (Html Msg)
 dialogView model =
     case model.dialog of
         Just dialog ->
-            Dialog.container { onClose = CloseDialog, noOp = NoOp }
-                Dialog.dialogContent
+            case dialog of
+                Dialog.AddProject ->
+                    Dialog.container { onClose = CloseDialog, noOp = NoOp }
+                        Dialog.addProjectContent
+
+                _ ->
+                    Dialog.container { onClose = CloseDialog, noOp = NoOp }
+                        Dialog.dialogContent
 
         Nothing ->
             View.none
