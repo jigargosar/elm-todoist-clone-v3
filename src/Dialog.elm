@@ -1,4 +1,4 @@
-module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent, initAddProject, viewDialog)
+module Dialog exposing (Dialog(..), addProjectContent, container, initAddProject, viewDialog)
 
 import Css
 import FilterId exposing (FilterId)
