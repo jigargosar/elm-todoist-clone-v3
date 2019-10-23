@@ -489,9 +489,7 @@ drawerView model =
                     TogglePanel panel
             in
             View.concat
-                [ View.content
-                    [ ExpansionPanelUI.viewHeader toggleMsg title isExpanded
-                    ]
+                [ ExpansionPanelUI.headerView toggleMsg title isExpanded
                 , if isExpanded then
                     Drawer.viewPanelItems config items drag
 
