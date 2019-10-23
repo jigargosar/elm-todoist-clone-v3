@@ -487,15 +487,11 @@ drawerView model =
 
                 toggleMsg =
                     TogglePanel panel
-            in
-            View.concat
-                [ ExpansionPanelUI.headerView toggleMsg title isExpanded
-                , if isExpanded then
-                    Drawer.viewPanelItems config items drag
 
-                  else
-                    View.none
-                ]
+                lazyContentView =
+                    \_ -> Drawer.viewPanelItems config items drag
+            in
+            ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
     in
     View.concat
         [ navItemsView

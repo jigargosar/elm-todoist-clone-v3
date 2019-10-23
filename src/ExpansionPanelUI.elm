@@ -1,4 +1,4 @@
-module ExpansionPanelUI exposing (headerView, viewHeader)
+module ExpansionPanelUI exposing (headerView, view, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
