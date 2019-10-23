@@ -667,7 +667,7 @@ dialogView model =
         Just dialog ->
             case dialog of
                 Dialog.AddProject ->
-                    Dialog.container { onOverlayClick = CloseDialog, noOp = NoOp }
+                    Dialog.container { onOverlayClick = NoOp, noOp = NoOp }
                         Dialog.addProjectContent
 
                 _ ->
