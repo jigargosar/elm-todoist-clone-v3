@@ -124,9 +124,7 @@ viewDialog config dialog =
         viewHelp innerView =
             { content =
                 [ div [ css [ overlayStyles ] ]
-                    [ form formAttrs
-                        innerView.content
-                    ]
+                    [ form formAttrs innerView.content ]
                 ]
             , portal = innerView.portal
             }
