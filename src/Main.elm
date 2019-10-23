@@ -631,6 +631,7 @@ popupView model =
                     viewHelp PopupView.filterContent FilterMoreMenu
 
 
+dialogView : Model -> View (Html Msg)
 dialogView model =
     case model.dialog of
         Just dialog ->
