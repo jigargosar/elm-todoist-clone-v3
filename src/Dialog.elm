@@ -32,8 +32,8 @@ type Dialog
     | EditFilter FilterId
 
 
-container : View.Html msg -> View (Html msg)
-container content =
+container : { onEsc : msg } -> View.Html msg -> View (Html msg)
+container config content =
     View.portal <|
         [ div
             [ css
@@ -124,10 +124,14 @@ type alias Config msg =
 
 viewDialog : Config msg -> Dialog -> View (Html msg)
 viewDialog config dialog =
+    let
+        viewHelp =
+            container { onEsc = config.cancel }
+    in
     case dialog of
         AddProject model ->
-            container <|
+            viewHelp <|
                 addProjectContent config model
 
         _ ->
-            container View.none
+            View.none
