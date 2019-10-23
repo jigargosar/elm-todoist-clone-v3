@@ -211,6 +211,7 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | TogglePanel Drawer.Panel
+    | PanelAddClicked Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PopupTriggered PopupKind String
@@ -272,6 +273,17 @@ update message model =
                     { model | filtersExpanded = not model.filtersExpanded }
             , Cmd.none
             )
+
+        PanelAddClicked panel ->
+            case panel of
+                Drawer.Projects ->
+                    ( { model | dialog = Just Dialog.AddProject }, Cmd.none )
+
+                Drawer.Labels ->
+                    ( { model | dialog = Just Dialog.AddLabel }, Cmd.none )
+
+                Drawer.Filters ->
+                    ( { model | dialog = Just Dialog.AddFilter }, Cmd.none )
 
         DrawerPanelDrag panel msg ->
             Drag.update
@@ -454,8 +466,15 @@ moreClickedDecoder panelItemId anchorId id =
     JD.succeed msg
 
 
-projectPanelConfig : Drawer.PanelItemConfig ProjectId Project Msg
-projectPanelConfig =
+panelConfig : Drawer.PanelConfig Msg
+panelConfig =
+    { toggle = TogglePanel
+    , add = PanelAddClicked
+    }
+
+
+projectPanelItemConfig : Drawer.PanelItemConfig ProjectId Project Msg
+projectPanelItemConfig =
     let
         panel =
             Drawer.Projects
@@ -472,8 +491,8 @@ projectPanelConfig =
     }
 
 
-labelPanelConfig : Drawer.PanelItemConfig LabelId Label Msg
-labelPanelConfig =
+labelPanelItemConfig : Drawer.PanelItemConfig LabelId Label Msg
+labelPanelItemConfig =
     let
         panel =
             Drawer.Labels
@@ -490,8 +509,8 @@ labelPanelConfig =
     }
 
 
-filterPanelConfig : Drawer.PanelItemConfig FilterId Filter Msg
-filterPanelConfig =
+filterPanelItemConfig : Drawer.PanelItemConfig FilterId Filter Msg
+filterPanelItemConfig =
     let
         panel =
             Drawer.Filters
@@ -513,7 +532,7 @@ drawerView model =
     let
         panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         panelView config panel items =
-            Drawer.panelView TogglePanel
+            Drawer.panelView panelConfig
                 panel
                 (isPanelExpanded panel model)
                 (\_ ->
@@ -524,13 +543,13 @@ drawerView model =
     in
     View.concat
         [ Drawer.prefixNavItemsView
-        , panelView projectPanelConfig
+        , panelView projectPanelItemConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        , panelView labelPanelConfig
+        , panelView labelPanelItemConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        , panelView filterPanelConfig
+        , panelView filterPanelItemConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
         ]
