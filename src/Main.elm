@@ -309,16 +309,15 @@ update message model =
                 Just ( Drawer.ProjectItemId projectId, _ ) ->
                     (case action of
                         PopupView.EditProject ->
-                            ( { model
+                            { model
                                 | dialog = Dialog.EditProject projectId |> Just
-                              }
-                            , Cmd.none
-                            )
+                            }
 
                         _ ->
-                            ( { model | popup = Nothing }, Cmd.none )
+                            model
                     )
-                        |> Return.map closePopup
+                        |> closePopup
+                        |> Return.singleton
 
                 _ ->
                     ( model, Cmd.none )
