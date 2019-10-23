@@ -24,7 +24,7 @@ type Dialog
 
 container : { onClose : msg, noOp : msg } -> View.Html msg -> View (Html msg)
 container config content =
-    { content =
+    View.portal <|
         [ div
             [ css
                 [ Styles.fixed
@@ -51,8 +51,7 @@ container config content =
                 content.content
             ]
         ]
-    , portal = content.portal
-    }
+            ++ content.portal
 
 
 dialogContent : View.Html msg
