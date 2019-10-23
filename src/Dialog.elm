@@ -3,7 +3,7 @@ module Dialog exposing (Dialog(..), addProjectContent, container, initAddProject
 import Css
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Html, button, div, input, label, span, text)
-import Html.Styled.Attributes as A exposing (css, type_)
+import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events exposing (onClick)
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
@@ -12,7 +12,7 @@ import Theme
 import View exposing (View)
 
 
-type alias AddProjectForm =
+type alias AddProjectState =
     { title : String
     , color : String
     }
@@ -20,11 +20,11 @@ type alias AddProjectForm =
 
 initAddProject : Dialog
 initAddProject =
-    AddProject <| AddProjectForm "" ""
+    AddProject <| AddProjectState "" ""
 
 
 type Dialog
-    = AddProject AddProjectForm
+    = AddProject AddProjectState
     | EditProject ProjectId
     | AddLabel
     | EditLabel LabelId
@@ -64,8 +64,8 @@ container content =
             ++ content.portal
 
 
-addProjectContent : Config msg -> View (Html msg)
-addProjectContent config =
+addProjectContent : Config msg -> AddProjectState -> View (Html msg)
+addProjectContent config state =
     View.content
         [ div
             [ css
@@ -77,8 +77,8 @@ addProjectContent config =
             ]
             [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
-            [ formTextIpt "Project name"
-            , formTextIpt "Project color"
+            [ formTextIpt "Project name" state.title
+            , formTextIpt "Project color" state.color
             , label [ css [ flex, itemsCenter, pv 2 ] ]
                 [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
                 , text "Add to favorites"
@@ -99,18 +99,22 @@ plainBtn =
     batch [ btnReset, pa 2 ]
 
 
-ipt =
-    input [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ] ] []
+ipt val =
+    input
+        [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
+        , value val
+        ]
+        []
 
 
 lbl title =
     span [ css [ lh 1.5, bold ] ] [ text title ]
 
 
-formTextIpt title =
+formTextIpt title val =
     label [ css [ flex, flexColumn, pv 2 ] ]
         [ lbl title
-        , ipt
+        , ipt val
         ]
 
 
@@ -123,7 +127,7 @@ viewDialog config dialog =
     case dialog of
         AddProject model ->
             container <|
-                addProjectContent config
+                addProjectContent config model
 
         _ ->
             container View.none
