@@ -43,6 +43,8 @@ container config content =
                 [ css
                     [ Styles.bgWhite
                     , Styles.bor 3
+                    , w_ 300
+                    , max_w_pct 100
                     ]
                 , A.id ""
                 , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
