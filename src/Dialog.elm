@@ -1,14 +1,15 @@
-module Dialog exposing (Dialog(..), addProjectContent, container, initAddProject, viewDialog)
+module Dialog exposing (Dialog(..), addProjectContent, initAddProject, viewDialog)
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled exposing (Attribute, Html, button, div, input, label, span, text)
+import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events as E exposing (onClick)
 import Json.Decode as JD
 import Key
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
+import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
 import Theme
 import View exposing (View)
@@ -34,37 +35,28 @@ type Dialog
     | EditFilter FilterId
 
 
-container : { onEsc : msg } -> View.Html msg -> View (Html msg)
-container config content =
-    View.portal <|
-        [ div
-            [ css
-                [ Styles.fixed
-                , Styles.absFill
-                , Styles.flex
-                , Styles.itemsCenter
-                , Styles.justifyCenter
-                , Styles.bg (Css.hsla 0 0 0 0.2)
+overlayStyles =
+    batch
+        [ fixed
+        , absFill
+        , flex
+        , itemsCenter
+        , justifyCenter
+        , bg (Css.hsla 0 0 0 0.2)
 
-                --                 , Styles.bg (Css.hsla 0 1 1 0.6)
-                , Styles.z_ 10
-                ]
-            ]
-            [ div
-                [ css
-                    [ Styles.bgWhite
-                    , Styles.bor 3
-                    , w_ 300
-                    , max_w_pct 100
-                    ]
-                , A.id ""
-                , A.class "shadow-1"
-                , Key.onKeyDown [ Key.escape config.onEsc ]
-                ]
-                content.content
-            ]
+        --                 , bg (Css.hsla 0 1 1 0.6)
+        , z_ 10
         ]
-            ++ content.portal
+
+
+formSA =
+    StyleAttrs
+        [ bgWhite
+        , Styles.bor 3
+        , w_ 300
+        , max_w_pct 100
+        ]
+        [ A.class "shadow-1" ]
 
 
 addProjectContent : Config msg -> AddProjectState -> View (Html msg)
@@ -128,8 +120,18 @@ type alias Config msg =
 viewDialog : Config msg -> Dialog -> View (Html msg)
 viewDialog config dialog =
     let
-        viewHelp =
-            container { onEsc = config.cancel }
+        formAttrs =
+            SA.toAttrs formSA
+
+        viewHelp innerView =
+            { content =
+                [ div [ css [ overlayStyles ] ]
+                    [ form (formAttrs ++ [ Key.onKeyDown [ Key.escape config.cancel ] ])
+                        innerView.content
+                    ]
+                ]
+            , portal = innerView.portal
+            }
     in
     case dialog of
         AddProject model ->
