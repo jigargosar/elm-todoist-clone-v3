@@ -448,7 +448,7 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = View.concat [ drawerView model, popupView model, dialogView ]
+        , drawer = View.concat [ drawerView model, popupView model, dialogView model ]
         , main = pageView model
         }
         model.isDrawerModalOpen
