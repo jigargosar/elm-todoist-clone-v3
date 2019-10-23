@@ -351,6 +351,34 @@ onProjectMoreMenuAction projectId action model =
                 |> Return.map closePopup
 
 
+onLabelMoreMenuAction : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd Msg )
+onLabelMoreMenuAction labelId action model =
+    case action of
+        PopupView.EditLabel ->
+            ( { model | dialog = Dialog.EditLabel labelId |> Just }
+            , Cmd.none
+            )
+                |> Return.map closePopup
+
+        _ ->
+            ( model, Cmd.none )
+                |> Return.map closePopup
+
+
+onFilterMoreMenuAction : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cmd Msg )
+onFilterMoreMenuAction filterId action model =
+    case action of
+        PopupView.EditFilter ->
+            ( { model | dialog = Dialog.EditFilter filterId |> Just }
+            , Cmd.none
+            )
+                |> Return.map closePopup
+
+        _ ->
+            ( model, Cmd.none )
+                |> Return.map closePopup
+
+
 closePopup : { a | popup : Maybe b } -> { a | popup : Maybe b }
 closePopup model =
     { model | popup = Nothing }

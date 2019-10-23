@@ -1,6 +1,6 @@
 module PopupView exposing
-    ( FilterMenuItem
-    , LabelMenuItem
+    ( FilterMenuItem(..)
+    , LabelMenuItem(..)
     , ProjectMenuItem(..)
     , container
     , filterContent
