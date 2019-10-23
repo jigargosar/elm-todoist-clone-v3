@@ -22,9 +22,9 @@ type Dialog
     | EditFilter FilterId
 
 
-container : { onClose : msg, noOp : msg } -> List (Html msg) -> View (Html msg)
+container : { onClose : msg, noOp : msg } -> View.Html msg -> View (Html msg)
 container config content =
-    View.portal
+    { content =
         [ div
             [ css
                 [ Styles.fixed
@@ -49,11 +49,17 @@ container config content =
                 , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
                 , A.class "shadow-1"
                 ]
-                content
+                content.content
             ]
         ]
+    , portal = content.portal
+    }
 
 
-dialogContent : List (Html msg)
+dialogContent : View.Html msg
 dialogContent =
-    [ div [] [ text "Dialog Content" ] ]
+    View.content [ div [] [ text "Dialog Content" ] ]
+
+
+addProjectView =
+    1
