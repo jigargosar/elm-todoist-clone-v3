@@ -325,6 +325,7 @@ update message model =
             ( { model | dialog = Nothing }, Cmd.none )
 
 
+onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
 onProjectMoreMenuAction projectId action model =
     case action of
         PopupView.EditProject ->
