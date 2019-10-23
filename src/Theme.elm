@@ -4,4 +4,4 @@ import Styles
 
 
 borderGray =
-    Styles.grayL 0.95
+    Styles.grayL 0.8

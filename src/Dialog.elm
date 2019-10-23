@@ -2,7 +2,7 @@ module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent)
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, button, div, input, label, text)
+import Html.Styled as H exposing (Html, button, div, input, label, span, text)
 import Html.Styled.Attributes as A exposing (class, css, type_)
 import Html.Styled.Events as E
 import Json.Decode as JD
@@ -60,16 +60,17 @@ dialogContent =
     addProjectContent
 
 
+addProjectContent : View (Html msg)
 addProjectContent =
     View.content
         [ div [ css [ bold, pa 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
             [ label [ css [ flex, flexColumn, pv 2 ] ]
-                [ text "Project name"
+                [ span [ css [ lh 1.5 ] ] [ text "Project name" ]
                 , input [] []
                 ]
-            , div [ css [ flex, flexColumn, pv 2 ] ]
-                [ label [] [ text "Project color" ]
+            , label [ css [ flex, flexColumn, pv 2 ] ]
+                [ span [ css [ lh 1.5 ] ] [ text "Project color" ]
                 , input [] []
                 ]
             , label [ css [ flex, itemsCenter, pv 2 ] ]
