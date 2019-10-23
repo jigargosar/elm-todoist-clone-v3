@@ -485,7 +485,7 @@ drawerView model =
                 )
     in
     View.concat
-        [ navItemsView
+        [ Drawer.prefixNavItemsView
         , panelView projectPanelConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
@@ -495,15 +495,6 @@ drawerView model =
         , panelView filterPanelConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
-        ]
-
-
-navItemsView : View.Html msg
-navItemsView =
-    View.content
-        [ Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-        , Drawer.viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
         ]
 
 

@@ -4,6 +4,7 @@ module Drawer exposing
     , PanelItemId(..)
     , panelTitle
     , panelView
+    , prefixNavItemsView
     , viewPanelItems
     , viewSimpleNavItem
     )
@@ -23,6 +24,15 @@ import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
 import View exposing (View)
+
+
+prefixNavItemsView : View.Html msg
+prefixNavItemsView =
+    View.content
+        [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+        , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+        , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+        ]
 
 
 type Panel
