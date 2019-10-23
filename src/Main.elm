@@ -478,12 +478,12 @@ drawerView model =
                 items
                 (dragForPanel panel model.panelDrag)
 
-        panelView panel lazyContentView =
-            Drawer.panelView TogglePanel panel (isPanelExpanded panel model) lazyContentView
-
         panelViewHelp : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         panelViewHelp config panel items =
-            panelView panel (lazyPanelContentView config panel items)
+            Drawer.panelView TogglePanel
+                panel
+                (isPanelExpanded panel model)
+                (lazyPanelContentView config panel items)
     in
     View.concat
         [ navItemsView
