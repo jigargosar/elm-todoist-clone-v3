@@ -1,7 +1,9 @@
 module Drawer exposing
     ( Panel(..)
+    , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
+    , getExpansionPanelConfig
     , panelTitle
     , panelView
     , prefixNavItemsView
@@ -54,14 +56,25 @@ panelTitle panel =
             "Filters"
 
 
-panelView : (Panel -> msg) -> Panel -> Bool -> (() -> View.Html msg) -> View.Html msg
-panelView toggle panel isExpanded lazyContentView =
+type alias PanelConfig msg =
+    { toggle : Panel -> msg
+    , add : Panel -> msg
+    }
+
+
+getExpansionPanelConfig : Panel -> PanelConfig msg -> ExpansionPanelUI.Config msg
+getExpansionPanelConfig panel { toggle, add } =
+    { toggle = toggle panel, add = add panel }
+
+
+panelView : PanelConfig msg -> Panel -> Bool -> (() -> View.Html msg) -> View.Html msg
+panelView config panel isExpanded lazyContentView =
     let
         title =
             panelTitle panel
 
         toggleMsg =
-            toggle panel
+            getExpansionPanelConfig panel config
     in
     ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
 

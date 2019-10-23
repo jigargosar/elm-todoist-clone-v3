@@ -1,10 +1,10 @@
-module ExpansionPanelUI exposing (headerView, view, viewHeader)
+module ExpansionPanelUI exposing (Config, headerView, view, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events as E exposing (onClick)
 import Styles exposing (..)
 import View
 
@@ -13,8 +13,14 @@ iBtnStyle =
     batch [ btnReset, pointer ]
 
 
-viewHeader : msg -> String -> Bool -> Html msg
-viewHeader toggle title isExpanded =
+type alias Config msg =
+    { toggle : msg
+    , add : msg
+    }
+
+
+viewHeader : Config msg -> String -> Bool -> Html msg
+viewHeader { toggle, add } title isExpanded =
     let
         isCollapsed =
             not isExpanded
@@ -35,19 +41,23 @@ viewHeader toggle title isExpanded =
                 [ i [ class "material-icons" ] [ text "expand_more" ] ]
             , styled span [ bold, pa 1 ] [] [ text title ]
             ]
-        , button [ css [ iBtnStyle, mr 3 ] ] [ i [ class "material-icons" ] [ text "add" ] ]
+        , button
+            [ css [ iBtnStyle, mr 3 ]
+            , E.onClick add
+            ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
         ]
 
 
-headerView : msg -> String -> Bool -> View.View (Html msg)
-headerView toggle title isExpanded =
-    View.content [ viewHeader toggle title isExpanded ]
+headerView : Config msg -> String -> Bool -> View.View (Html msg)
+headerView config title isExpanded =
+    View.content [ viewHeader config title isExpanded ]
 
 
-view : msg -> String -> Bool -> (() -> View.Html msg) -> View.Html msg
-view toggle title isExpanded contentViewLazy =
+view : Config msg -> String -> Bool -> (() -> View.Html msg) -> View.Html msg
+view config title isExpanded contentViewLazy =
     View.concat
-        [ headerView toggle title isExpanded
+        [ headerView config title isExpanded
         , if isExpanded then
             contentViewLazy ()
 
