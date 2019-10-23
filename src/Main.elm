@@ -493,11 +493,7 @@ drawerView model =
 
         panelViewHelp : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         panelViewHelp config panel items =
-            let
-                lazyContentView =
-                    lazyPanelContentView config panel items
-            in
-            panelView panel lazyContentView
+            panelView panel (lazyPanelContentView config panel items)
     in
     View.concat
         [ navItemsView
