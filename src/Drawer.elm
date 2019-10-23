@@ -3,6 +3,7 @@ module Drawer exposing
     , PanelItemConfig
     , PanelItemId(..)
     , panelTitle
+    , panelView
     , viewPanelItems
     , viewSimpleNavItem
     )
@@ -10,6 +11,7 @@ module Drawer exposing
 import Css
 import Drag exposing (Drag)
 import DrawerItem as DI
+import ExpansionPanelUI
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A
@@ -40,6 +42,18 @@ panelTitle panel =
 
         Filters ->
             "Filters"
+
+
+panelView : (Panel -> msg) -> Panel -> Bool -> (() -> View.Html msg) -> View.Html msg
+panelView toggle panel isExpanded lazyContentView =
+    let
+        title =
+            panelTitle panel
+
+        toggleMsg =
+            toggle panel
+    in
+    ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
 
 
 type PanelItemId

@@ -479,17 +479,7 @@ drawerView model =
                 (dragForPanel panel model.panelDrag)
 
         panelView panel lazyContentView =
-            let
-                isExpanded =
-                    isPanelExpanded panel model
-
-                title =
-                    Drawer.panelTitle panel
-
-                toggleMsg =
-                    TogglePanel panel
-            in
-            ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
+            Drawer.panelView TogglePanel panel (isPanelExpanded panel model) lazyContentView
 
         panelViewHelp : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         panelViewHelp config panel items =
