@@ -35,6 +35,10 @@ import Url exposing (Url)
 import View exposing (View)
 
 
+
+-- POPUP
+
+
 type alias PopupKind =
     Drawer.PanelItemId
 
