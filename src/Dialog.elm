@@ -70,10 +70,14 @@ addProjectContent config state =
                 ]
             ]
         , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
-            [ button [ css [ plainBtnStyles ] ] [ text "Add" ]
-            , button [ css [ plainBtnStyles ] ] [ text "Cancel" ]
+            [ btnSubmit "Add"
+            , btnSubmit "Cancel"
             ]
         ]
+
+
+btnSubmit title =
+    button [ css [ plainBtnStyles ] ] [ text "Add" ]
 
 
 plainBtnStyles =
