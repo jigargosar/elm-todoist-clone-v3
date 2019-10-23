@@ -324,11 +324,21 @@ update message model =
                 _ ->
                     ( model, Cmd.none )
 
-        LabelMoreMenu _ ->
-            ( { model | popup = Nothing }, Cmd.none )
+        LabelMoreMenu action ->
+            case model.popup of
+                Just ( Drawer.LabelItemId labelId, _ ) ->
+                    onLabelMoreMenuAction labelId action model
 
-        FilterMoreMenu _ ->
-            ( { model | popup = Nothing }, Cmd.none )
+                _ ->
+                    ( model, Cmd.none )
+
+        FilterMoreMenu action ->
+            case model.popup of
+                Just ( Drawer.FilterItemId filterId, _ ) ->
+                    onFilterMoreMenuAction filterId action model
+
+                _ ->
+                    ( model, Cmd.none )
 
         OpenDialog dialog ->
             ( { model | dialog = Just dialog }, Cmd.none )
