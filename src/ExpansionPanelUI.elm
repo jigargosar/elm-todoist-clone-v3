@@ -42,3 +42,15 @@ viewHeader toggle title isExpanded =
 headerView : msg -> String -> Bool -> View.View (Html msg)
 headerView toggle title isExpanded =
     View.content [ viewHeader toggle title isExpanded ]
+
+
+view : msg -> String -> Bool -> (() -> View.Html msg) -> View.Html msg
+view toggle title isExpanded contentViewLazy =
+    View.concat
+        [ headerView toggle title isExpanded
+        , if isExpanded then
+            contentViewLazy ()
+
+          else
+            View.none
+        ]

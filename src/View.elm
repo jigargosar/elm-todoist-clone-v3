@@ -1,8 +1,14 @@
-module View exposing (View, concat, content, fromTuple, maybePortal, none, portal, singleton)
+module View exposing (Html, View, concat, content, fromTuple, maybePortal, none, portal, singleton)
+
+import Html.Styled
 
 
 type alias View a =
     { content : List a, portal : List a }
+
+
+type alias Html msg =
+    View (Html.Styled.Html msg)
 
 
 singleton : a -> View a
