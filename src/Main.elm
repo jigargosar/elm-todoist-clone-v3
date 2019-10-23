@@ -308,8 +308,8 @@ update message model =
             case model.popup of
                 Just ( Drawer.ProjectItemId projectId, _ ) ->
                     onProjectMoreMenuAction projectId action model
-                        |> closePopup
                         |> Return.singleton
+                        |> Return.map closePopup
 
                 _ ->
                     ( model, Cmd.none )
