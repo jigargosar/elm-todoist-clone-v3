@@ -2,7 +2,7 @@ module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent)
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, div, input, label, text)
+import Html.Styled as H exposing (Html, button, div, input, label, text)
 import Html.Styled.Attributes as A exposing (class, css, type_)
 import Html.Styled.Events as E
 import Json.Decode as JD
@@ -56,7 +56,8 @@ container config content =
 
 dialogContent : View.Html msg
 dialogContent =
-    View.content [ div [] [ text "Dialog Content" ] ]
+    --View.content [ div [] [ text "Dialog Content" ] ]
+    addProjectContent
 
 
 addProjectContent =
@@ -76,6 +77,8 @@ addProjectContent =
                 , text "Add to favorites"
                 ]
             ]
-        , div [ css [ bo_t, boc <| Theme.borderGray ] ]
-            []
+        , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
+            [ button [ css [ mh 2 ] ] [ text "Add" ]
+            , button [ css [ mh 1 ] ] [ text "Cancel" ]
+            ]
         ]

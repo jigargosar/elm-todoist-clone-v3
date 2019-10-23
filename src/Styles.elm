@@ -1,7 +1,7 @@
 module Styles exposing (..)
 
 import Color
-import Css exposing (auto, end, inherit, int, marginLeft, marginRight, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, transparent, zero)
+import Css exposing (auto, end, inherit, int, marginBottom, marginLeft, marginRight, marginTop, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, transparent, zero)
 import Css.Media as Media
 import Css.Transitions as CT
 import ModularScale
@@ -166,6 +166,14 @@ paddingVertical v =
     Css.batch [ paddingTop v, paddingBottom v ]
 
 
+marginHorizontal v =
+    Css.batch [ Css.marginLeft v, Css.marginRight v ]
+
+
+marginVertical v =
+    Css.batch [ marginTop v, marginBottom v ]
+
+
 modularScaleTachyonsSpacing =
     ModularScale.config [ 0.25 ] ModularScale.Octave
 
@@ -207,6 +215,16 @@ ph =
 pv : Int -> Css.Style
 pv =
     paddingVertical << sp
+
+
+mh : Int -> Css.Style
+mh =
+    marginHorizontal << sp
+
+
+mv : Int -> Css.Style
+mv =
+    marginVertical << sp
 
 
 pt : Int -> Css.Style
@@ -260,6 +278,10 @@ flexColumn =
 
 flexRow =
     Css.flexDirection Css.row
+
+
+flexRowReverse =
+    Css.flexDirection Css.rowReverse
 
 
 itemsCenter =
