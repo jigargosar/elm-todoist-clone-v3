@@ -126,5 +126,4 @@ viewDialog config dialog =
                 addProjectContent config
 
         _ ->
-            container <|
-                addProjectContent config
+            container View.none
