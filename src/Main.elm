@@ -473,6 +473,13 @@ filterPanelConfig =
 drawerView : Model -> View (Html Msg)
 drawerView model =
     let
+        lazyPanelContentView config panel items =
+            let
+                drag =
+                    dragForPanel panel model.panelDrag
+            in
+            \_ -> Drawer.viewPanelItems config items drag
+
         panelView panel lazyContentView =
             let
                 isExpanded =
