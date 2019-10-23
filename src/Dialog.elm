@@ -1,4 +1,4 @@
-module Dialog exposing (..)
+module Dialog exposing (Dialog(..))
 
 import FilterId exposing (FilterId)
 import LabelId exposing (LabelId)

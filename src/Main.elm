@@ -3,6 +3,7 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
 import ExpansionPanelUI
@@ -72,6 +73,7 @@ type alias Model =
     , filtersExpanded : Bool
     , panelDrag : Maybe ( Drawer.Panel, Drag )
     , popup : Maybe ( PopupKind, Popper )
+    , dialog : Maybe Dialog
     }
 
 
@@ -92,6 +94,7 @@ init flags url navKey =
             , filtersExpanded = True
             , popup = Nothing
             , panelDrag = Nothing
+            , dialog = Nothing
             }
     in
     Return.singleton initial
