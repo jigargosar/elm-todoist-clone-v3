@@ -302,22 +302,23 @@ update message model =
                 |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
 
         ClosePopup ->
-            ( { model | popup = Nothing }, Cmd.none )
+            ( closePopup model, Cmd.none )
 
         ProjectMoreMenu action ->
             case model.popup of
                 Just ( Drawer.ProjectItemId projectId, _ ) ->
-                    case action of
+                    (case action of
                         PopupView.EditProject ->
                             ( { model
-                                | popup = Nothing
-                                , dialog = Dialog.EditProject projectId |> Just
+                                | dialog = Dialog.EditProject projectId |> Just
                               }
                             , Cmd.none
                             )
 
                         _ ->
                             ( { model | popup = Nothing }, Cmd.none )
+                    )
+                        |> Return.map closePopup
 
                 _ ->
                     ( model, Cmd.none )
@@ -333,6 +334,11 @@ update message model =
 
         CloseDialog ->
             ( { model | dialog = Nothing }, Cmd.none )
+
+
+closePopup : { a | popup : Maybe b } -> { a | popup : Maybe b }
+closePopup model =
+    { model | popup = Nothing }
 
 
 dragForPanel : a -> Maybe ( a, Drag ) -> Drag
