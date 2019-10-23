@@ -1,4 +1,12 @@
-module PopupView exposing (FilterMenuItem, LabelMenuItem, ProjectMenuItem, container, filterContent, labelContent, projectContent)
+module PopupView exposing
+    ( FilterMenuItem
+    , LabelMenuItem
+    , ProjectMenuItem(..)
+    , container
+    , filterContent
+    , labelContent
+    , projectContent
+    )
 
 import Css
 import Html.Styled as H exposing (Html, div, text)

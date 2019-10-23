@@ -6,7 +6,6 @@ import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
-import ExpansionPanelUI
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
@@ -305,8 +304,23 @@ update message model =
         ClosePopup ->
             ( { model | popup = Nothing }, Cmd.none )
 
-        ProjectMoreMenu _ ->
-            ( { model | popup = Nothing }, Cmd.none )
+        ProjectMoreMenu action ->
+            case model.popup of
+                Just ( Drawer.ProjectItemId projectId, _ ) ->
+                    case action of
+                        PopupView.EditProject ->
+                            ( { model
+                                | popup = Nothing
+                                , dialog = Dialog.EditProject projectId |> Just
+                              }
+                            , Cmd.none
+                            )
+
+                        _ ->
+                            ( { model | popup = Nothing }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         LabelMoreMenu _ ->
             ( { model | popup = Nothing }, Cmd.none )
