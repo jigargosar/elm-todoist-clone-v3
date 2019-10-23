@@ -477,6 +477,10 @@ bold =
     Css.fontWeight Css.bold
 
 
+bolder =
+    Css.fontWeight Css.bolder
+
+
 c_grayL =
     Css.color << grayL
 

@@ -63,7 +63,16 @@ dialogContent =
 addProjectContent : View (Html msg)
 addProjectContent =
     View.content
-        [ div [ css [ bold, pa 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
+        [ div
+            [ css
+                [ Css.fontSize Css.xxLarge
+                , bold
+                , pa 3
+                , bo_b
+                , boc <| Theme.borderGray
+                ]
+            ]
+            [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
             [ label [ css [ flex, flexColumn, pv 2 ] ]
                 [ span [ css [ lh 1.5 ] ] [ text "Project name" ]
