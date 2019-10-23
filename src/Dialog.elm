@@ -62,18 +62,20 @@ dialogContent =
 addProjectContent =
     View.content
         [ div [ css [ bold, pa 3, bo_b, boc <| Theme.borderGray ] ] [ text "Add Project" ]
-        , div [ css [ pa 2 ] ]
-            [ div [ css [ flex ] ]
-                [ label [] [ text "Project name" ]
+        , div [ css [ ph 3 ] ]
+            [ label [ css [ flex, flexColumn, pv 2 ] ]
+                [ text "Project name"
                 , input [] []
                 ]
-            , div [ css [ flex ] ]
+            , div [ css [ flex, flexColumn, pv 2 ] ]
                 [ label [] [ text "Project color" ]
                 , input [] []
                 ]
-            , div [ css [ flex ] ]
-                [ input [ type_ "checkbox" ] []
-                , label [] [ text "Add to favorites" ]
+            , label [ css [ flex, itemsCenter, pv 2 ] ]
+                [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
+                , text "Add to favorites"
                 ]
             ]
+        , div [ css [ bo_t, boc <| Theme.borderGray ] ]
+            []
         ]

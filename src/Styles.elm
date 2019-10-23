@@ -254,6 +254,14 @@ flex =
     Css.displayFlex
 
 
+flexColumn =
+    Css.flexDirection Css.column
+
+
+flexRow =
+    Css.flexDirection Css.row
+
+
 itemsCenter =
     Css.alignItems Css.center
 
