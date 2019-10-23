@@ -2,10 +2,8 @@ module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent)
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, button, div, input, label, span, text)
-import Html.Styled.Attributes as A exposing (class, css, type_)
-import Html.Styled.Events as E
-import Json.Decode as JD
+import Html.Styled exposing (Html, button, div, input, label, span, text)
+import Html.Styled.Attributes as A exposing (css, type_)
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Styles exposing (..)
