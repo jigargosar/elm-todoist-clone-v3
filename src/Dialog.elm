@@ -22,8 +22,8 @@ type Dialog
     | EditFilter FilterId
 
 
-container : { onOverlayClick : msg, noOp : msg } -> View.Html msg -> View (Html msg)
-container config content =
+container : View.Html msg -> View (Html msg)
+container content =
     View.portal <|
         [ div
             [ css
@@ -37,7 +37,6 @@ container config content =
                 --                 , Styles.bg (Css.hsla 0 1 1 0.6)
                 , Styles.z_ 10
                 ]
-            , E.onClick config.onOverlayClick
             ]
             [ div
                 [ css
@@ -47,7 +46,6 @@ container config content =
                     , max_w_pct 100
                     ]
                 , A.id ""
-                , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
                 , A.class "shadow-1"
                 ]
                 content.content
@@ -89,7 +87,11 @@ addProjectContent =
                 ]
             ]
         , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
-            [ button [ css [ btnReset, ma 2 ] ] [ text "Add" ]
-            , button [ css [ btnReset, ma 2 ] ] [ text "Cancel" ]
+            [ button [ css [ plainBtn ] ] [ text "Add" ]
+            , button [ css [ plainBtn ] ] [ text "Cancel" ]
             ]
         ]
+
+
+plainBtn =
+    batch [ btnReset, pa 2 ]
