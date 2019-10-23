@@ -634,7 +634,8 @@ popupView model =
 dialogView model =
     case model.dialog of
         Just dialog ->
-            View.none
+            Dialog.container { onClose = CloseDialog, noOp = NoOp }
+                Dialog.dialogContent
 
         Nothing ->
             View.none
