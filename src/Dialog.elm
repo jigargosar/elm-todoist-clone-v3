@@ -7,7 +7,6 @@ import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import LabelId exposing (LabelId)
-import Popper exposing (Popper)
 import ProjectId exposing (ProjectId)
 import Styles exposing (..)
 import View exposing (View)
@@ -62,4 +61,6 @@ dialogContent =
 
 
 addProjectView =
-    1
+    View.content
+        [ div [ css [ bold, pv 3 ] ] [ text "Add Project" ]
+        ]
