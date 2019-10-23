@@ -10,13 +10,14 @@ import View
 
 type alias Parts msg =
     { appbar : List (Html msg)
-    , drawer : { content : List (Html msg), portal : List (Html msg) }
-    , main : { content : List (Html msg), portal : List (Html msg) }
+    , drawer : View.Html msg
+    , main : View.Html msg
+    , modal : View.Html msg
     }
 
 
-view : { closeDrawerModal : msg } -> Parts msg -> View.Html msg -> Bool -> Html msg
-view { closeDrawerModal } { appbar, drawer, main } rest isDrawerModalOpen =
+view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
+view { closeDrawerModal } { appbar, drawer, main, modal } isDrawerModalOpen =
     styled div
         [ bgBody
         , c_grayL 0.3
@@ -46,8 +47,8 @@ view { closeDrawerModal } { appbar, drawer, main } rest isDrawerModalOpen =
          ]
             ++ drawer.portal
             ++ main.portal
-            ++ rest.content
-            ++ rest.portal
+            ++ modal.content
+            ++ modal.portal
         )
 
 

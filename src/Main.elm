@@ -480,8 +480,8 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
         , main = pageView model
+        , modal = View.concat [ popupView model, dialogView model ]
         }
-        (View.concat [ popupView model, dialogView model ])
         model.isDrawerModalOpen
 
 
