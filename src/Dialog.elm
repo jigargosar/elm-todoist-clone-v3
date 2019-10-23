@@ -49,16 +49,6 @@ overlayStyles =
         ]
 
 
-formSA =
-    StyleAttrs
-        [ bgWhite
-        , Styles.bor 3
-        , w_ 300
-        , max_w_pct 100
-        ]
-        [ A.class "shadow-1" ]
-
-
 addProjectContent : Config msg -> AddProjectState -> View (Html msg)
 addProjectContent config state =
     View.content
@@ -121,12 +111,20 @@ viewDialog : Config msg -> Dialog -> View (Html msg)
 viewDialog config dialog =
     let
         formAttrs =
-            SA.toAttrs formSA
+            [ css
+                [ bgWhite
+                , Styles.bor 3
+                , w_ 300
+                , max_w_pct 100
+                ]
+            , A.class "shadow-1"
+            , Key.onKeyDown [ Key.escape config.cancel ]
+            ]
 
         viewHelp innerView =
             { content =
                 [ div [ css [ overlayStyles ] ]
-                    [ form (formAttrs ++ [ Key.onKeyDown [ Key.escape config.cancel ] ])
+                    [ form formAttrs
                         innerView.content
                     ]
                 ]
