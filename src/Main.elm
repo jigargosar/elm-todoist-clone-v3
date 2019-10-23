@@ -360,10 +360,6 @@ onLabelMoreMenuAction labelId action model =
             )
                 |> Return.map closePopup
 
-        _ ->
-            ( model, Cmd.none )
-                |> Return.map closePopup
-
 
 onFilterMoreMenuAction : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cmd Msg )
 onFilterMoreMenuAction filterId action model =
@@ -372,10 +368,6 @@ onFilterMoreMenuAction filterId action model =
             ( { model | dialog = Dialog.EditFilter filterId |> Just }
             , Cmd.none
             )
-                |> Return.map closePopup
-
-        _ ->
-            ( model, Cmd.none )
                 |> Return.map closePopup
 
 
