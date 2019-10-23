@@ -65,7 +65,7 @@ addProjectContent =
     View.content
         [ div
             [ css
-                [ Css.fontSize Css.large
+                [ Css.fontSize Css.larger
                 , pa 3
                 , bo_b
                 , boc <| Theme.borderGray
@@ -74,11 +74,11 @@ addProjectContent =
             [ text "Add Project" ]
         , div [ css [ ph 3 ] ]
             [ label [ css [ flex, flexColumn, pv 2 ] ]
-                [ span [ css [ lh 1.5 ] ] [ text "Project name" ]
+                [ span [ css [ lh 1.5, bold ] ] [ text "Project name" ]
                 , input [] []
                 ]
             , label [ css [ flex, flexColumn, pv 2 ] ]
-                [ span [ css [ lh 1.5 ] ] [ text "Project color" ]
+                [ span [ css [ lh 1.5, bold ] ] [ text "Project color" ]
                 , input [] []
                 ]
             , label [ css [ flex, itemsCenter, pv 2 ] ]
