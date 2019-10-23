@@ -474,11 +474,9 @@ drawerView : Model -> View (Html Msg)
 drawerView model =
     let
         lazyPanelContentView config panel items _ =
-            let
-                drag =
-                    dragForPanel panel model.panelDrag
-            in
-            Drawer.viewPanelItems config items drag
+            Drawer.viewPanelItems config
+                items
+                (dragForPanel panel model.panelDrag)
 
         panelView panel lazyContentView =
             let
