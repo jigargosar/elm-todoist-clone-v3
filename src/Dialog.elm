@@ -1,4 +1,4 @@
-module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent)
+module Dialog exposing (Dialog(..), addProjectContent, container, dialogContent, initAddProject, viewDialog)
 
 import Css
 import FilterId exposing (FilterId)
@@ -11,8 +11,19 @@ import Theme
 import View exposing (View)
 
 
+type alias AddProjectForm =
+    { title : String
+    , color : String
+    }
+
+
+initAddProject : Dialog
+initAddProject =
+    AddProject <| AddProjectForm "" ""
+
+
 type Dialog
-    = AddProject
+    = AddProject AddProjectForm
     | EditProject ProjectId
     | AddLabel
     | EditLabel LabelId
@@ -102,3 +113,15 @@ formTextIpt title =
         [ lbl title
         , ipt
         ]
+
+
+viewDialog : Dialog -> View (Html msg)
+viewDialog dialog =
+    case dialog of
+        AddProject model ->
+            container
+                addProjectContent
+
+        _ ->
+            container
+                dialogContent

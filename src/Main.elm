@@ -277,7 +277,7 @@ update message model =
         PanelAddClicked panel ->
             case panel of
                 Drawer.Projects ->
-                    ( { model | dialog = Just Dialog.AddProject }, Cmd.none )
+                    ( { model | dialog = Just Dialog.initAddProject }, Cmd.none )
 
                 Drawer.Labels ->
                     ( { model | dialog = Just Dialog.AddLabel }, Cmd.none )
@@ -665,14 +665,7 @@ dialogView : Model -> View (Html Msg)
 dialogView model =
     case model.dialog of
         Just dialog ->
-            case dialog of
-                Dialog.AddProject ->
-                    Dialog.container
-                        Dialog.addProjectContent
-
-                _ ->
-                    Dialog.container
-                        Dialog.dialogContent
+            Dialog.viewDialog dialog
 
         Nothing ->
             View.none
