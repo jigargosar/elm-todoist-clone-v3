@@ -220,6 +220,8 @@ type Msg
     | ProjectMoreMenu PopupView.ProjectMenuItem
     | LabelMoreMenu PopupView.LabelMenuItem
     | FilterMoreMenu PopupView.FilterMenuItem
+    | OpenDialog Dialog
+    | CloseDialog
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -311,6 +313,12 @@ update message model =
 
         FilterMoreMenu _ ->
             ( { model | popup = Nothing }, Cmd.none )
+
+        OpenDialog dialog ->
+            ( { model | dialog = Just dialog }, Cmd.none )
+
+        CloseDialog ->
+            ( { model | dialog = Nothing }, Cmd.none )
 
 
 dragForPanel : a -> Maybe ( a, Drag ) -> Drag
