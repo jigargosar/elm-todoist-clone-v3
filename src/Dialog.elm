@@ -2,7 +2,7 @@ module Dialog exposing (Dialog(..), addProjectContent, container, initAddProject
 
 import Css
 import FilterId exposing (FilterId)
-import Html.Styled exposing (Html, button, div, input, label, span, text)
+import Html.Styled exposing (Attribute, Html, button, div, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events as E exposing (onClick)
 import Json.Decode as JD
@@ -58,7 +58,7 @@ container config content =
                     ]
                 , A.id ""
                 , A.class "shadow-1"
-                , onEsc config.onEsc
+                , onKeyDown [ escape config.onEsc ]
                 ]
                 content.content
             ]
@@ -66,6 +66,7 @@ container config content =
             ++ content.portal
 
 
+escape : a -> JD.Decoder a
 escape =
     keyEq "Escape"
 
@@ -83,8 +84,9 @@ keyEq expectedKey msg =
             )
 
 
-onEsc msg =
-    E.on "keydown" (JD.oneOf [ escape msg ])
+onKeyDown : List (JD.Decoder msg) -> Attribute msg
+onKeyDown decoders =
+    E.on "keydown" (JD.oneOf decoders)
 
 
 addProjectContent : Config msg -> AddProjectState -> View (Html msg)
