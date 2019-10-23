@@ -4,7 +4,7 @@ import Css
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events as E exposing (onClick)
+import Html.Styled.Events as E exposing (onClick, onSubmit)
 import Json.Decode as JD
 import Key
 import LabelId exposing (LabelId)
@@ -119,6 +119,7 @@ viewDialog config dialog =
                 ]
             , A.class "shadow-1"
             , Key.onKeyDown [ Key.escape config.cancel ]
+            , onSubmit config.cancel
             ]
 
         viewHelp innerView =
