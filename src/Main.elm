@@ -473,8 +473,21 @@ filterPanelConfig =
 drawerView : Model -> View (Html Msg)
 drawerView model =
     let
-        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
-        panelView config panel items =
+        panelView panel lazyContentView =
+            let
+                isExpanded =
+                    isPanelExpanded panel model
+
+                title =
+                    Drawer.panelTitle panel
+
+                toggleMsg =
+                    TogglePanel panel
+            in
+            ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
+
+        panelViewHelp : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        panelViewHelp config panel items =
             let
                 isExpanded =
                     isPanelExpanded panel model
@@ -495,13 +508,13 @@ drawerView model =
     in
     View.concat
         [ navItemsView
-        , panelView projectPanelConfig
+        , panelViewHelp projectPanelConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        , panelView labelPanelConfig
+        , panelViewHelp labelPanelConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        , panelView filterPanelConfig
+        , panelViewHelp filterPanelConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
         ]
