@@ -8,6 +8,7 @@ module Drawer exposing
     , panelView
     , panelView2
     , prefixNavItemsView
+    , prefixNavItemsView2
     , viewPanelItemGhost
     , viewPanelItems
     , viewPanelItems2
@@ -38,6 +39,14 @@ prefixNavItemsView =
         , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
         , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
         ]
+
+
+prefixNavItemsView2 : List (Html msg)
+prefixNavItemsView2 =
+    [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
+    , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
+    , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+    ]
 
 
 type Panel

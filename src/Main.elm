@@ -582,6 +582,18 @@ drawerView model =
                         items
                         (dragForPanel panel model.panelDrag)
                 )
+
+        viewHelp =
+            Drawer.prefixNavItemsView2
+                ++ panelView2 projectPanelItemConfig
+                    Drawer.Projects
+                    (ProjectCollection.sorted model.projectCollection)
+                ++ panelView2 labelPanelItemConfig
+                    Drawer.Labels
+                    (LabelCollection.sorted model.labelCollection)
+                ++ panelView2 filterPanelItemConfig
+                    Drawer.Filters
+                    (FilterCollection.sorted model.filterCollection)
     in
     View.concat
         [ Drawer.prefixNavItemsView
