@@ -589,7 +589,7 @@ drawerView model =
 panelDragView : Model -> View (Html Msg)
 panelDragView model =
     let
-        _ =
+        dragGhostHtmlList =
             model.panelDrag
                 |> Maybe.map
                     (\( panel, drag ) ->
@@ -609,24 +609,9 @@ panelDragView model =
                                     (FilterCollection.sorted model.filterCollection)
                                     drag
                     )
-
-        panelView : Drawer.PanelItemConfig id item msg -> Drawer.Panel -> List item -> List (Html msg)
-        panelView config panel items =
-            Drawer.viewPanelItemGhost config
-                items
-                (dragForPanel panel model.panelDrag)
+                |> Maybe.withDefault []
     in
-    View.portal
-        (panelView projectPanelItemConfig
-            Drawer.Projects
-            (ProjectCollection.sorted model.projectCollection)
-            ++ panelView labelPanelItemConfig
-                Drawer.Labels
-                (LabelCollection.sorted model.labelCollection)
-            ++ panelView filterPanelItemConfig
-                Drawer.Filters
-                (FilterCollection.sorted model.filterCollection)
-        )
+    View.portal dragGhostHtmlList
 
 
 pageView : Model -> View (Html Msg)
