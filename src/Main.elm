@@ -184,7 +184,7 @@ subscriptions model =
     Sub.batch
         [ case model.panelDrag of
             Just ( panel, drag ) ->
-                Drag.subscriptions (DrawerPanelDrag panel) drag
+                Drag.subscriptions (PanelMsg panel << Drawer.DragMsg) drag
 
             Nothing ->
                 Sub.none
