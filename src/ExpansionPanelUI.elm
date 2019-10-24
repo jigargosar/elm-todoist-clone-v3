@@ -1,4 +1,4 @@
-module ExpansionPanelUI exposing (Config, headerView, view, viewHeader)
+module ExpansionPanelUI exposing (Config, headerView, view, view2, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
@@ -64,3 +64,14 @@ view config title isExpanded contentViewLazy =
           else
             View.none
         ]
+
+
+view2 : Config msg -> String -> Bool -> (() -> List (Html msg)) -> List (Html msg)
+view2 config title isExpanded contentViewLazy =
+    viewHeader config title isExpanded
+        :: (if isExpanded then
+                contentViewLazy ()
+
+            else
+                []
+           )
