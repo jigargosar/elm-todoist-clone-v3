@@ -6,9 +6,9 @@ module Drawer exposing
     , getExpansionPanelConfig
     , panelTitle
     , panelView
-    , panelView2
     , prefixNavItemsView
     , prefixNavItemsView2
+    , viewPanel
     , viewPanelItemGhost
     , viewPanelItems
     , viewPanelItems2
@@ -91,8 +91,8 @@ panelView config panel isExpanded lazyContentView =
     ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
 
 
-panelView2 : PanelConfig msg -> Panel -> Bool -> (() -> List (Html msg)) -> List (Html msg)
-panelView2 config panel isExpanded lazyContentView =
+viewPanel : PanelConfig msg -> Panel -> Bool -> (() -> List (Html msg)) -> List (Html msg)
+viewPanel config panel isExpanded lazyContentView =
     let
         title =
             panelTitle panel

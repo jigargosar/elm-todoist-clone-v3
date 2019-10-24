@@ -478,7 +478,7 @@ view : Model -> Html Msg
 view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = drawerView model
+        , drawer = viewDrawer model
         , main = pageView model
         , modal = View.concat [ popupView model, dialogView model, panelDragView model ]
         }
@@ -558,23 +558,12 @@ filterPanelItemConfig =
     }
 
 
-drawerView : Model -> List (Html Msg)
-drawerView model =
+viewDrawer : Model -> List (Html Msg)
+viewDrawer model =
     let
-        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
-        panelView config panel items =
-            Drawer.panelView panelConfig
-                panel
-                (isPanelExpanded panel model)
-                (\_ ->
-                    Drawer.viewPanelItems config
-                        items
-                        (dragForPanel panel model.panelDrag)
-                )
-
-        panelView2 : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> List (Html Msg)
-        panelView2 config panel items =
-            Drawer.panelView2 panelConfig
+        viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> List (Html Msg)
+        viewPanel config panel items =
+            Drawer.viewPanel panelConfig
                 panel
                 (isPanelExpanded panel model)
                 (\_ ->
@@ -584,13 +573,13 @@ drawerView model =
                 )
     in
     Drawer.prefixNavItemsView2
-        ++ panelView2 projectPanelItemConfig
+        ++ viewPanel projectPanelItemConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        ++ panelView2 labelPanelItemConfig
+        ++ viewPanel labelPanelItemConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        ++ panelView2 filterPanelItemConfig
+        ++ viewPanel filterPanelItemConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
 
