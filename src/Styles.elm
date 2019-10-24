@@ -1,7 +1,26 @@
 module Styles exposing (..)
 
 import Color
-import Css exposing (auto, end, inherit, int, margin, marginBottom, marginLeft, marginRight, marginTop, none, num, padding, paddingBottom, paddingLeft, paddingTop, px, transparent, zero)
+import Css
+    exposing
+        ( auto
+        , end
+        , inherit
+        , int
+        , marginBottom
+        , marginLeft
+        , marginRight
+        , marginTop
+        , none
+        , num
+        , padding
+        , paddingBottom
+        , paddingLeft
+        , paddingTop
+        , px
+        , transparent
+        , zero
+        )
 import Css.Media as Media
 import Css.Transitions as CT
 import ModularScale
@@ -204,7 +223,7 @@ pa =
 
 
 ma =
-    margin << sp
+    Css.margin << sp
 
 
 ma0 =
