@@ -84,8 +84,7 @@ btnSubmit title =
 plainBtnStyles =
     batch
         [ btnReset
-        , pv 1
-        , ph 2
+        , PX.p2 4 8
         , PX.m2 0 2
         , bor 1
         , hover [ bgGrayL 0.95 ]
