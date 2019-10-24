@@ -595,18 +595,7 @@ drawerView model =
                     Drawer.Filters
                     (FilterCollection.sorted model.filterCollection)
     in
-    View.concat
-        [ Drawer.prefixNavItemsView
-        , panelView projectPanelItemConfig
-            Drawer.Projects
-            (ProjectCollection.sorted model.projectCollection)
-        , panelView labelPanelItemConfig
-            Drawer.Labels
-            (LabelCollection.sorted model.labelCollection)
-        , panelView filterPanelItemConfig
-            Drawer.Filters
-            (FilterCollection.sorted model.filterCollection)
-        ]
+    View.content viewHelp
 
 
 panelDragView : Model -> View (Html Msg)
