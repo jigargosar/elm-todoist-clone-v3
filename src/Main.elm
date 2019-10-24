@@ -502,14 +502,14 @@ view model =
         model.isDrawerModalOpen
 
 
-moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Msg
-moreClickedDecoder panelItemId anchorId id =
+moreClickedDecoder : Drawer.Panel -> (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Msg
+moreClickedDecoder panel panelItemId anchorId id =
     let
         kind =
             panelItemId id
 
         msg =
-            PopupTriggered kind anchorId
+            PanelMsg panel <| Drawer.More anchorId kind
     in
     JD.succeed msg
 
@@ -527,7 +527,7 @@ projectPanelItemConfig =
         panel =
             Drawer.Projects
     in
-    { moreClicked = moreClickedDecoder Drawer.ProjectItemId
+    { moreClicked = moreClickedDecoder panel Drawer.ProjectItemId
     , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "project"
     , iconName = "folder"
@@ -545,7 +545,7 @@ labelPanelItemConfig =
         panel =
             Drawer.Labels
     in
-    { moreClicked = moreClickedDecoder Drawer.LabelItemId
+    { moreClicked = moreClickedDecoder panel Drawer.LabelItemId
     , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "label"
     , id = Label.id
@@ -563,7 +563,7 @@ filterPanelItemConfig =
         panel =
             Drawer.Filters
     in
-    { moreClicked = moreClickedDecoder Drawer.FilterItemId
+    { moreClicked = moreClickedDecoder panel Drawer.FilterItemId
     , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "filter"
     , id = Filter.id
