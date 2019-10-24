@@ -480,7 +480,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = drawerView model
         , main = pageView model
-        , modal = View.concat [ popupView model, dialogView model ]
+        , modal = View.concat [ popupView model, dialogView model, panelDragView model ]
         }
         model.isDrawerModalOpen
 
@@ -560,6 +560,34 @@ filterPanelItemConfig =
 
 drawerView : Model -> View (Html Msg)
 drawerView model =
+    let
+        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        panelView config panel items =
+            Drawer.panelView panelConfig
+                panel
+                (isPanelExpanded panel model)
+                (\_ ->
+                    Drawer.viewPanelItems config
+                        items
+                        (dragForPanel panel model.panelDrag)
+                )
+    in
+    View.concat
+        [ Drawer.prefixNavItemsView
+        , panelView projectPanelItemConfig
+            Drawer.Projects
+            (ProjectCollection.sorted model.projectCollection)
+        , panelView labelPanelItemConfig
+            Drawer.Labels
+            (LabelCollection.sorted model.labelCollection)
+        , panelView filterPanelItemConfig
+            Drawer.Filters
+            (FilterCollection.sorted model.filterCollection)
+        ]
+
+
+panelDragView : Model -> View (Html Msg)
+panelDragView model =
     let
         panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
         panelView config panel items =
