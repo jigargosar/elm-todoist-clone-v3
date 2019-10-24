@@ -589,6 +589,27 @@ drawerView model =
 panelDragView : Model -> View (Html Msg)
 panelDragView model =
     let
+        _ =
+            model.panelDrag
+                |> Maybe.map
+                    (\( panel, drag ) ->
+                        case panel of
+                            Drawer.Projects ->
+                                Drawer.viewPanelItemGhost projectPanelItemConfig
+                                    (ProjectCollection.sorted model.projectCollection)
+                                    drag
+
+                            Drawer.Labels ->
+                                Drawer.viewPanelItemGhost labelPanelItemConfig
+                                    (LabelCollection.sorted model.labelCollection)
+                                    drag
+
+                            Drawer.Filters ->
+                                Drawer.viewPanelItemGhost filterPanelItemConfig
+                                    (FilterCollection.sorted model.filterCollection)
+                                    drag
+                    )
+
         panelView : Drawer.PanelItemConfig id item msg -> Drawer.Panel -> List item -> List (Html msg)
         panelView config panel items =
             Drawer.viewPanelItemGhost config
