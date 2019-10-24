@@ -1,4 +1,13 @@
-module DrawerItem exposing (DrawerItem, init, initLink, render, withContentAsLink, withContentText, withPrimaryIcon, withSecondaryMoreAction)
+module DrawerItem exposing
+    ( DrawerItem
+    , init
+    , initLink
+    , render
+    , withContentAsLink
+    , withContentText
+    , withPrimaryIcon
+    , withSecondaryMoreAction
+    )
 
 import Css
 import Html.Styled exposing (..)
