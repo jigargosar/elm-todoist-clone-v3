@@ -70,7 +70,7 @@ addProjectContent config state =
                 , text "Add to favorites"
                 ]
             ]
-        , div [ css [ flex, flexRowReverse, pa 2, bo_t, boc <| Theme.borderGray ] ]
+        , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
             [ btnSubmit "Add"
             , btnSubmit "Cancel"
             ]
@@ -85,10 +85,9 @@ plainBtnStyles =
     batch
         [ btnReset
         , PX.p2 4 8
-        , PX.m2 0 2
         , bor 1
         , hover [ bgGrayL 0.95 ]
-        , focus [ bgGrayL 0.9 ]
+        , focus [ bgGrayL 0.9, z_ 1 ]
         ]
 
 
