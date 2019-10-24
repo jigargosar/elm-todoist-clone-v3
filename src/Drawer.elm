@@ -7,11 +7,9 @@ module Drawer exposing
     , panelTitle
     , panelView
     , prefixNavItemsView
-    , prefixNavItemsView2
     , viewPanel
     , viewPanelItemGhost
     , viewPanelItems
-    , viewPanelItems2
     , viewSimpleNavItem
     )
 
@@ -32,17 +30,8 @@ import Styles exposing (..)
 import View exposing (View)
 
 
-prefixNavItemsView : View.Html msg
+prefixNavItemsView : List (Html msg)
 prefixNavItemsView =
-    View.content
-        [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-        , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-        , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
-        ]
-
-
-prefixNavItemsView2 : List (Html msg)
-prefixNavItemsView2 =
     [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
     , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
     , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
@@ -122,19 +111,8 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> View (Html msg)
+viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
 viewPanelItems config items drag =
-    View.fromTuple
-        ( items
-            |> Drag.rotate drag
-            |> List.indexedMap
-                (viewPanelItem config drag)
-        , []
-        )
-
-
-viewPanelItems2 : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
-viewPanelItems2 config items drag =
     items
         |> Drag.rotate drag
         |> List.indexedMap (viewPanelItem config drag)

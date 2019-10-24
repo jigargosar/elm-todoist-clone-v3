@@ -567,12 +567,12 @@ viewDrawer model =
                 panel
                 (isPanelExpanded panel model)
                 (\_ ->
-                    Drawer.viewPanelItems2 config
+                    Drawer.viewPanelItems config
                         items
                         (dragForPanel panel model.panelDrag)
                 )
     in
-    Drawer.prefixNavItemsView2
+    Drawer.prefixNavItemsView
         ++ viewPanel projectPanelItemConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
