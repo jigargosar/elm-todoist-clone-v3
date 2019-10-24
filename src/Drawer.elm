@@ -26,7 +26,6 @@ import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
-import View exposing (View)
 
 
 prefixNavItemsView : List (Html msg)
