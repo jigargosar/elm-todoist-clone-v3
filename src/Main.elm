@@ -528,7 +528,7 @@ projectPanelItemConfig =
             Drawer.Projects
     in
     { moreClicked = moreClickedDecoder Drawer.ProjectItemId
-    , dragMsg = DrawerPanelDrag panel
+    , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "project"
     , iconName = "folder"
     , id = Project.id
@@ -546,7 +546,7 @@ labelPanelItemConfig =
             Drawer.Labels
     in
     { moreClicked = moreClickedDecoder Drawer.LabelItemId
-    , dragMsg = DrawerPanelDrag panel
+    , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "label"
     , id = Label.id
     , idToString = LabelId.toString
@@ -564,7 +564,7 @@ filterPanelItemConfig =
             Drawer.Filters
     in
     { moreClicked = moreClickedDecoder Drawer.FilterItemId
-    , dragMsg = DrawerPanelDrag panel
+    , dragMsg = PanelMsg panel << Drawer.DragMsg
     , panelId = "filter"
     , id = Filter.id
     , idToString = FilterId.toString
