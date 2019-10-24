@@ -1,6 +1,5 @@
 module Drawer exposing
     ( Panel(..)
-    , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
     , PanelMsg(..)
@@ -55,12 +54,6 @@ panelTitle panel =
             "Filters"
 
 
-type alias PanelConfig msg =
-    { toggle : msg
-    , add : msg
-    }
-
-
 type PanelMsg
     = Toggle
     | Add
@@ -69,13 +62,13 @@ type PanelMsg
     | More String PanelItemId
 
 
-viewPanel : PanelConfig msg -> Panel -> Bool -> (() -> List (Html msg)) -> List (Html msg)
-viewPanel config panel isExpanded lazyContentView =
+viewPanel : Panel -> Bool -> (() -> List (Html PanelMsg)) -> List (Html PanelMsg)
+viewPanel panel isExpanded lazyContentView =
     let
         title =
             panelTitle panel
     in
-    viewPanelHeader config title isExpanded
+    viewPanelHeader title isExpanded
         :: (if isExpanded then
                 lazyContentView ()
 
@@ -85,13 +78,10 @@ viewPanel config panel isExpanded lazyContentView =
 
 
 viewPanelHeader :
-    { toggle : msg
-    , add : msg
-    }
-    -> String
+    String
     -> Bool
-    -> Html msg
-viewPanelHeader { toggle, add } title isExpanded =
+    -> Html PanelMsg
+viewPanelHeader title isExpanded =
     let
         isCollapsed =
             not isExpanded
@@ -102,7 +92,7 @@ viewPanelHeader { toggle, add } title isExpanded =
     div
         [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
-            [ css [ iBtnStyle, pa 1, flexGrow1 ], E.onClick toggle ]
+            [ css [ iBtnStyle, pa 1, flexGrow1 ], E.onClick Toggle ]
             [ span
                 [ css
                     [ c_grayL 0.6
@@ -117,7 +107,7 @@ viewPanelHeader { toggle, add } title isExpanded =
             ]
         , button
             [ css [ iBtnStyle, mr 3 ]
-            , E.onClick add
+            , E.onClick Add
             ]
             [ i [ class "material-icons" ] [ text "add" ] ]
         ]
@@ -129,9 +119,9 @@ type PanelItemId
     | FilterItemId FilterId
 
 
-type alias PanelItemConfig id item msg =
-    { moreClicked : String -> id -> JD.Decoder msg
-    , dragMsg : Drag.Msg -> msg
+type alias PanelItemConfig id item =
+    { moreClicked : String -> id -> JD.Decoder PanelMsg
+    , dragMsg : Drag.Msg -> PanelMsg
     , panelId : String
     , id : item -> id
     , idToString : id -> String
@@ -142,29 +132,29 @@ type alias PanelItemConfig id item msg =
     }
 
 
-viewPanelItems : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItems : PanelItemConfig id item -> List item -> Drag -> List (Html PanelMsg)
 viewPanelItems config items drag =
     items
         |> Drag.rotate drag
         |> List.indexedMap (viewPanelItem config drag)
 
 
-panelItemDomId : PanelItemConfig id item msg -> id -> String
+panelItemDomId : PanelItemConfig id item -> id -> String
 panelItemDomId config id =
     "drawer-panel__ " ++ config.panelId ++ "__item__" ++ config.idToString id
 
 
-panelItemMoreBtnDomId : PanelItemConfig id item msg -> id -> String
+panelItemMoreBtnDomId : PanelItemConfig id item -> id -> String
 panelItemMoreBtnDomId config id =
     panelItemDomId config id ++ "__more-btn"
 
 
 viewPanelItem :
-    PanelItemConfig id item msg
+    PanelItemConfig id item
     -> Drag
     -> Int
     -> item
-    -> Html msg
+    -> Html PanelMsg
 viewPanelItem config drag idx item =
     let
         id =
@@ -185,7 +175,7 @@ viewPanelItem config drag idx item =
                 ]
                 (A.id domId :: Drag.dropEvents config.dragMsg idx drag)
 
-        primaryIcon : { name : String, sa : StyleAttrs msg }
+        primaryIcon : { name : String, sa : StyleAttrs PanelMsg }
         primaryIcon =
             let
                 dragEvents =
@@ -202,14 +192,14 @@ viewPanelItem config drag idx item =
         moreDomId =
             panelItemMoreBtnDomId config id
 
-        moreSA : StyleAttrs msg
+        moreSA : StyleAttrs PanelMsg
         moreSA =
             StyleAttrs [] [ A.id moreDomId, E.on "click" (config.moreClicked moreDomId id) ]
     in
     viewPanelItemHelp rootSA primaryIcon link moreSA
 
 
-viewPanelItemGhost : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItemGhost : PanelItemConfig id item -> List item -> Drag -> List (Html msg)
 viewPanelItemGhost config items drag =
     Drag.ghostItemWithStyles items drag
         |> Maybe.map

@@ -184,7 +184,7 @@ subscriptions model =
     Sub.batch
         [ case model.panelDrag of
             Just ( panel, drag ) ->
-                Drag.subscriptions (PanelMsg panel << Drawer.DragMsg) drag
+                Drag.subscriptions (DrawerPanelMsg panel << Drawer.DragMsg) drag
 
             Nothing ->
                 Sub.none
@@ -221,7 +221,7 @@ type Msg
     | FilterMoreMenu PopupView.FilterMenuItem
     | OpenDialog Dialog
     | CloseDialog
-    | PanelMsg Drawer.Panel Drawer.PanelMsg
+    | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -287,8 +287,8 @@ update message model =
 
         DrawerPanelDrag panel msg ->
             Drag.update
-                (PanelMsg panel << Drawer.DragMsg)
-                (PanelMsg panel << Drawer.DragComplete)
+                (DrawerPanelMsg panel << Drawer.DragMsg)
+                (DrawerPanelMsg panel << Drawer.DragComplete)
                 msg
                 (dragForPanel panel model.panelDrag)
                 |> Tuple.mapFirst
@@ -346,7 +346,7 @@ update message model =
         CloseDialog ->
             ( { model | dialog = Nothing }, Cmd.none )
 
-        PanelMsg panel panelMsg ->
+        DrawerPanelMsg panel panelMsg ->
             case panelMsg of
                 Drawer.Toggle ->
                     update (TogglePanel panel) model
@@ -502,33 +502,22 @@ view model =
         model.isDrawerModalOpen
 
 
-moreClickedDecoder : Drawer.Panel -> (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Msg
-moreClickedDecoder panel panelItemId anchorId id =
+moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Drawer.PanelMsg
+moreClickedDecoder panelItemId anchorId id =
     let
         kind =
             panelItemId id
 
         msg =
-            PanelMsg panel <| Drawer.More anchorId kind
+            Drawer.More anchorId kind
     in
     JD.succeed msg
 
 
-panelConfig : Drawer.Panel -> Drawer.PanelConfig Msg
-panelConfig panel =
-    { toggle = PanelMsg panel Drawer.Toggle
-    , add = PanelMsg panel Drawer.Add
-    }
-
-
-projectPanelItemConfig : Drawer.PanelItemConfig ProjectId Project Msg
+projectPanelItemConfig : Drawer.PanelItemConfig ProjectId Project
 projectPanelItemConfig =
-    let
-        panel =
-            Drawer.Projects
-    in
-    { moreClicked = moreClickedDecoder panel Drawer.ProjectItemId
-    , dragMsg = PanelMsg panel << Drawer.DragMsg
+    { moreClicked = moreClickedDecoder Drawer.ProjectItemId
+    , dragMsg = Drawer.DragMsg
     , panelId = "project"
     , iconName = "folder"
     , id = Project.id
@@ -539,14 +528,10 @@ projectPanelItemConfig =
     }
 
 
-labelPanelItemConfig : Drawer.PanelItemConfig LabelId Label Msg
+labelPanelItemConfig : Drawer.PanelItemConfig LabelId Label
 labelPanelItemConfig =
-    let
-        panel =
-            Drawer.Labels
-    in
-    { moreClicked = moreClickedDecoder panel Drawer.LabelItemId
-    , dragMsg = PanelMsg panel << Drawer.DragMsg
+    { moreClicked = moreClickedDecoder Drawer.LabelItemId
+    , dragMsg = Drawer.DragMsg
     , panelId = "label"
     , id = Label.id
     , idToString = LabelId.toString
@@ -557,14 +542,10 @@ labelPanelItemConfig =
     }
 
 
-filterPanelItemConfig : Drawer.PanelItemConfig FilterId Filter Msg
+filterPanelItemConfig : Drawer.PanelItemConfig FilterId Filter
 filterPanelItemConfig =
-    let
-        panel =
-            Drawer.Filters
-    in
-    { moreClicked = moreClickedDecoder panel Drawer.FilterItemId
-    , dragMsg = PanelMsg panel << Drawer.DragMsg
+    { moreClicked = moreClickedDecoder Drawer.FilterItemId
+    , dragMsg = Drawer.DragMsg
     , panelId = "filter"
     , id = Filter.id
     , idToString = FilterId.toString
@@ -578,9 +559,9 @@ filterPanelItemConfig =
 viewDrawer : Model -> List (Html Msg)
 viewDrawer model =
     let
-        viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> List (Html Msg)
+        viewPanel : Drawer.PanelItemConfig id item -> Drawer.Panel -> List item -> List (Html Msg)
         viewPanel config panel items =
-            Drawer.viewPanel (panelConfig panel)
+            Drawer.viewPanel
                 panel
                 (isPanelExpanded panel model)
                 (\_ ->
@@ -588,6 +569,7 @@ viewDrawer model =
                         items
                         (dragForPanel panel model.panelDrag)
                 )
+                |> List.map (H.map (DrawerPanelMsg panel))
     in
     Drawer.prefixNavItemsView
         ++ viewPanel projectPanelItemConfig
