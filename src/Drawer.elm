@@ -106,7 +106,7 @@ viewPanelItems config items drag =
             |> Drag.rotate drag
             |> List.indexedMap
                 (viewPanelItem config drag)
-        , viewPanelItemGhost config items drag
+        , []
         )
 
 
