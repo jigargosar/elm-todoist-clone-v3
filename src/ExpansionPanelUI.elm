@@ -1,4 +1,4 @@
-module ExpansionPanelUI exposing (Config, view, viewHeader)
+module ExpansionPanelUI exposing (Config, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
@@ -46,14 +46,3 @@ viewHeader { toggle, add } title isExpanded =
             ]
             [ i [ class "material-icons" ] [ text "add" ] ]
         ]
-
-
-view : Config msg -> String -> Bool -> (() -> List (Html msg)) -> List (Html msg)
-view config title isExpanded contentViewLazy =
-    viewHeader config title isExpanded
-        :: (if isExpanded then
-                contentViewLazy ()
-
-            else
-                []
-           )

@@ -72,10 +72,16 @@ viewPanel config panel isExpanded lazyContentView =
         title =
             panelTitle panel
 
-        toggleMsg =
+        epConfig =
             getExpansionPanelConfig panel config
     in
-    ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
+    ExpansionPanelUI.viewHeader epConfig title isExpanded
+        :: (if isExpanded then
+                lazyContentView ()
+
+            else
+                []
+           )
 
 
 type PanelItemId
