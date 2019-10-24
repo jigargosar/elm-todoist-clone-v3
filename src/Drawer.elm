@@ -3,6 +3,7 @@ module Drawer exposing
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
+    , PanelMsg(..)
     , panelTitle
     , prefixNavItemsView
     , viewPanel
@@ -58,6 +59,14 @@ type alias PanelConfig msg =
     { toggle : msg
     , add : msg
     }
+
+
+type PanelMsg
+    = Toggle
+    | Add
+    | DragMsg Drag.Msg
+    | DragComplete Drag.Info
+    | More String PanelItemId
 
 
 viewPanel : PanelConfig msg -> Panel -> Bool -> (() -> List (Html msg)) -> List (Html msg)

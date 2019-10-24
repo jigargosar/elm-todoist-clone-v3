@@ -221,6 +221,7 @@ type Msg
     | FilterMoreMenu PopupView.FilterMenuItem
     | OpenDialog Dialog
     | CloseDialog
+    | PanelMsg Drawer.Panel Drawer.PanelMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -344,6 +345,23 @@ update message model =
 
         CloseDialog ->
             ( { model | dialog = Nothing }, Cmd.none )
+
+        PanelMsg panel panelMsg ->
+            case panelMsg of
+                Drawer.Toggle ->
+                    update (TogglePanel panel) model
+
+                Drawer.Add ->
+                    update (PanelAddClicked panel) model
+
+                Drawer.DragMsg msg ->
+                    update (DrawerPanelDrag panel msg) model
+
+                Drawer.DragComplete info ->
+                    update (DrawerPanelDragComplete panel info) model
+
+                Drawer.More anchorId panelItemId ->
+                    update (PopupTriggered panelItemId anchorId) model
 
 
 onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
