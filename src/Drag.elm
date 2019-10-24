@@ -2,7 +2,6 @@ module Drag exposing
     ( Drag
     , Info
     , Msg
-    , System
     , dragEvents
     , dropEvents
     , eqDragOverIdx
@@ -13,7 +12,6 @@ module Drag exposing
     , rotate
     , rotateFromInfo
     , subscriptions
-    , system
     , update
     )
 
@@ -29,35 +27,6 @@ import Styles
 import Task
 import XY exposing (XY)
 import XYDelta exposing (XYDelta)
-
-
-type alias System a msg =
-    { initial : Drag
-    , update : Msg -> Drag -> ( Drag, Cmd msg )
-    , subscriptions : Drag -> Sub msg
-    , dragEvents : Int -> String -> Drag -> List (H.Attribute msg)
-    , dropEvents : Int -> Drag -> List (H.Attribute msg)
-    , eqDragOverIdx : Int -> Drag -> Bool
-    , info : Drag -> Maybe Info
-    , rotate : Drag -> List a -> List a
-    , ghostStylesWithDragIdx : Drag -> Maybe ( Int, List Css.Style )
-    , ghostItemWithStyles : List a -> Drag -> Maybe ( List Css.Style, a )
-    }
-
-
-system : (Msg -> msg) -> (Info -> msg) -> System a msg
-system toMsg onComplete =
-    { initial = initial
-    , update = update toMsg onComplete
-    , subscriptions = subscriptions toMsg
-    , dragEvents = dragEvents toMsg
-    , dropEvents = dropEvents toMsg
-    , eqDragOverIdx = eqDragOverIdx
-    , info = info
-    , rotate = rotate
-    , ghostStylesWithDragIdx = ghostStylesWithDragIdx
-    , ghostItemWithStyles = ghostItemWithStyles
-    }
 
 
 type alias Info =
