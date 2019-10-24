@@ -137,8 +137,7 @@ viewPanelItems2 : PanelItemConfig id item msg -> List item -> Drag -> List (Html
 viewPanelItems2 config items drag =
     items
         |> Drag.rotate drag
-        |> List.indexedMap
-            (viewPanelItem config drag)
+        |> List.indexedMap (viewPanelItem config drag)
 
 
 panelItemDomId : PanelItemConfig id item msg -> id -> String
