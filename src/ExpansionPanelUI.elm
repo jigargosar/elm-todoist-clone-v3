@@ -1,4 +1,4 @@
-module ExpansionPanelUI exposing (Config, headerView, view, view2, viewHeader)
+module ExpansionPanelUI exposing (Config, view, viewHeader)
 
 import Css
 import Css.Transitions as Transitions exposing (transition)
@@ -6,7 +6,6 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events as E exposing (onClick)
 import Styles exposing (..)
-import View
 
 
 iBtnStyle =
@@ -49,25 +48,8 @@ viewHeader { toggle, add } title isExpanded =
         ]
 
 
-headerView : Config msg -> String -> Bool -> View.View (Html msg)
-headerView config title isExpanded =
-    View.content [ viewHeader config title isExpanded ]
-
-
-view : Config msg -> String -> Bool -> (() -> View.Html msg) -> View.Html msg
+view : Config msg -> String -> Bool -> (() -> List (Html msg)) -> List (Html msg)
 view config title isExpanded contentViewLazy =
-    View.concat
-        [ headerView config title isExpanded
-        , if isExpanded then
-            contentViewLazy ()
-
-          else
-            View.none
-        ]
-
-
-view2 : Config msg -> String -> Bool -> (() -> List (Html msg)) -> List (Html msg)
-view2 config title isExpanded contentViewLazy =
     viewHeader config title isExpanded
         :: (if isExpanded then
                 contentViewLazy ()

@@ -76,7 +76,7 @@ viewPanel config panel isExpanded lazyContentView =
         toggleMsg =
             getExpansionPanelConfig panel config
     in
-    ExpansionPanelUI.view2 toggleMsg title isExpanded lazyContentView
+    ExpansionPanelUI.view toggleMsg title isExpanded lazyContentView
 
 
 type PanelItemId
