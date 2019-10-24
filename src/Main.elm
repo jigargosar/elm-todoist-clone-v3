@@ -496,10 +496,10 @@ moreClickedDecoder panelItemId anchorId id =
     JD.succeed msg
 
 
-panelConfig : Drawer.PanelConfig Msg
-panelConfig =
-    { toggle = TogglePanel
-    , add = PanelAddClicked
+panelConfig : Drawer.Panel -> Drawer.PanelConfig Msg
+panelConfig panel =
+    { toggle = TogglePanel panel
+    , add = PanelAddClicked panel
     }
 
 
@@ -562,7 +562,7 @@ viewDrawer model =
     let
         viewPanel : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> List (Html Msg)
         viewPanel config panel items =
-            Drawer.viewPanel panelConfig
+            Drawer.viewPanel (panelConfig panel)
                 panel
                 (isPanelExpanded panel model)
                 (\_ ->

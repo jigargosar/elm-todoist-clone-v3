@@ -55,8 +55,8 @@ panelTitle panel =
 
 
 type alias PanelConfig msg =
-    { toggle : Panel -> msg
-    , add : Panel -> msg
+    { toggle : msg
+    , add : msg
     }
 
 
@@ -65,14 +65,8 @@ viewPanel config panel isExpanded lazyContentView =
     let
         title =
             panelTitle panel
-
-        { toggle, add } =
-            config
-
-        epConfig =
-            { toggle = toggle panel, add = add panel }
     in
-    viewPanelHeader epConfig title isExpanded
+    viewPanelHeader config title isExpanded
         :: (if isExpanded then
                 lazyContentView ()
 
