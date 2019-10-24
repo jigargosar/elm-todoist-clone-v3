@@ -9,6 +9,7 @@ import Json.Decode as JD
 import Key
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
+import Px as PX
 import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
 import Theme
@@ -81,7 +82,7 @@ btnSubmit title =
 
 
 plainBtnStyles =
-    batch [ btnReset, pv 1, ph 2, ma 1, hover [ bgGrayL 0.95 ], focus [ bgGrayL 0.8 ] ]
+    batch [ btnReset, pv 1, ph 2, PX.m2 0 2, hover [ bgGrayL 0.95 ], focus [ bgGrayL 0.8 ] ]
 
 
 ipt val =
