@@ -589,7 +589,7 @@ drawerView model =
 panelDragView : Model -> View (Html Msg)
 panelDragView model =
     let
-        dragGhostHtmlList =
+        ghostView =
             model.panelDrag
                 |> Maybe.map
                     (\( panel, drag ) ->
@@ -611,7 +611,7 @@ panelDragView model =
                     )
                 |> Maybe.withDefault []
     in
-    View.portal dragGhostHtmlList
+    View.portal ghostView
 
 
 pageView : Model -> View (Html Msg)
