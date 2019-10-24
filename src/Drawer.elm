@@ -11,6 +11,7 @@ module Drawer exposing
     , viewPanel
     , viewPanelItemGhost
     , viewPanelItems
+    , viewProjectsPanel
     , viewSimpleNavItem
     )
 
@@ -66,6 +67,18 @@ type PanelMsg
     | DragMsg Drag.Msg
     | DragComplete Drag.Info
     | More String PanelItemId
+
+
+viewProjectsPanel : (Panel -> Bool) -> (Panel -> Drag) -> List Project -> List (Html PanelMsg)
+viewProjectsPanel isPanelExpanded dragForPanel projects =
+    viewPanel
+        Projects
+        (isPanelExpanded Projects)
+        (\_ ->
+            viewPanelItems projectPanelItemConfig
+                projects
+                (dragForPanel Projects)
+        )
 
 
 viewPanel : Panel -> Bool -> (() -> List (Html PanelMsg)) -> List (Html PanelMsg)
