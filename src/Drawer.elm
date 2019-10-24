@@ -3,7 +3,6 @@ module Drawer exposing
     , PanelConfig
     , PanelItemConfig
     , PanelItemId(..)
-    , getExpansionPanelConfig
     , panelTitle
     , prefixNavItemsView
     , viewPanel
@@ -61,18 +60,17 @@ type alias PanelConfig msg =
     }
 
 
-getExpansionPanelConfig panel { toggle, add } =
-    { toggle = toggle panel, add = add panel }
-
-
 viewPanel : PanelConfig msg -> Panel -> Bool -> (() -> List (Html msg)) -> List (Html msg)
 viewPanel config panel isExpanded lazyContentView =
     let
         title =
             panelTitle panel
 
+        { toggle, add } =
+            config
+
         epConfig =
-            getExpansionPanelConfig panel config
+            { toggle = toggle panel, add = add panel }
     in
     viewPanelHeader epConfig title isExpanded
         :: (if isExpanded then
