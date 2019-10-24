@@ -32,7 +32,6 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
-import View exposing (View)
 
 
 
