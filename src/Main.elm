@@ -612,34 +612,31 @@ panelDragView model =
     View.portal ghostView
 
 
-pageView : Model -> View (Html Msg)
+pageView : Model -> List (Html Msg)
 pageView model =
     case model.page of
         Page.NotFound url ->
             Page.NotFound.view url
 
         Page.TodoListByProjectRef projectRef ->
-            View.content <|
-                mainView projectRef
-                    model.projectCollection
-                    model.labelCollection
-                    model.todoDict
+            mainView projectRef
+                model.projectCollection
+                model.labelCollection
+                model.todoDict
 
         Page.TodoListByLabelId labelId ->
-            View.content <|
-                todoListByLabelIdView
-                    labelId
-                    model.projectCollection
-                    model.labelCollection
-                    model.todoDict
+            todoListByLabelIdView
+                labelId
+                model.projectCollection
+                model.labelCollection
+                model.todoDict
 
         Page.TodoListByFilterId filterId ->
-            View.content <|
-                todoListByFilterIdView
-                    filterId
-                    model.projectCollection
-                    model.labelCollection
-                    model.todoDict
+            todoListByFilterIdView
+                filterId
+                model.projectCollection
+                model.labelCollection
+                model.todoDict
 
 
 mainView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)

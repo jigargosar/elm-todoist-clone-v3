@@ -11,7 +11,7 @@ import View
 type alias Parts msg =
     { appbar : List (Html msg)
     , drawer : List (Html msg)
-    , main : View.Html msg
+    , main : List (Html msg)
     , modal : View.Html msg
     }
 
@@ -37,7 +37,7 @@ view { closeDrawerModal } { appbar, drawer, main, modal } isDrawerModalOpen =
                 -- TEST OVERFLOW SCROLL
                 -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
                 drawer
-            , styledMain [] main.content
+            , styledMain [] main
             ]
          , viewModalDrawer closeDrawerModal
             isDrawerModalOpen
@@ -45,7 +45,6 @@ view { closeDrawerModal } { appbar, drawer, main, modal } isDrawerModalOpen =
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
             drawer
          ]
-            ++ main.portal
             ++ modal.content
             ++ modal.portal
         )
