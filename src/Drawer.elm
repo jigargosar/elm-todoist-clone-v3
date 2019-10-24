@@ -13,12 +13,12 @@ module Drawer exposing
     )
 
 import Css
+import Css.Transitions as Transitions exposing (transition)
 import Drag exposing (Drag)
 import DrawerItem as DI
-import ExpansionPanelUI
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as A
+import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Json.Decode as JD
 import LabelId exposing (LabelId)
@@ -61,7 +61,6 @@ type alias PanelConfig msg =
     }
 
 
-getExpansionPanelConfig : Panel -> PanelConfig msg -> ExpansionPanelUI.Config msg
 getExpansionPanelConfig panel { toggle, add } =
     { toggle = toggle panel, add = add panel }
 
@@ -75,13 +74,52 @@ viewPanel config panel isExpanded lazyContentView =
         epConfig =
             getExpansionPanelConfig panel config
     in
-    ExpansionPanelUI.viewHeader epConfig title isExpanded
+    viewPanelHeader epConfig title isExpanded
         :: (if isExpanded then
                 lazyContentView ()
 
             else
                 []
            )
+
+
+viewPanelHeader :
+    { toggle : msg
+    , add : msg
+    }
+    -> String
+    -> Bool
+    -> Html msg
+viewPanelHeader { toggle, add } title isExpanded =
+    let
+        isCollapsed =
+            not isExpanded
+
+        iBtnStyle =
+            batch [ btnReset, pointer ]
+    in
+    div
+        [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
+        [ button
+            [ css [ iBtnStyle, pa 1, flexGrow1 ], E.onClick toggle ]
+            [ span
+                [ css
+                    [ c_grayL 0.6
+                    , batch
+                        [ styleIf isCollapsed [ Css.transforms [ Css.rotate (Css.deg -90) ] ]
+                        , transition [ Transitions.transform 200 ]
+                        ]
+                    ]
+                ]
+                [ i [ class "material-icons" ] [ text "expand_more" ] ]
+            , styled span [ bold, pa 1 ] [] [ text title ]
+            ]
+        , button
+            [ css [ iBtnStyle, mr 3 ]
+            , E.onClick add
+            ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
+        ]
 
 
 type PanelItemId
