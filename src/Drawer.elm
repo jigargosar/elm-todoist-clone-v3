@@ -3,8 +3,11 @@ module Drawer exposing
     , PanelItemConfig
     , PanelItemId(..)
     , PanelMsg(..)
+    , filterPanelItemConfig
+    , labelPanelItemConfig
     , panelTitle
     , prefixNavItemsView
+    , projectPanelItemConfig
     , viewPanel
     , viewPanelItemGhost
     , viewPanelItems
@@ -15,12 +18,15 @@ import Css
 import Css.Transitions as Transitions exposing (transition)
 import Drag exposing (Drag)
 import DrawerItem as DI
+import Filter exposing (Filter)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events as E
 import Json.Decode as JD
+import Label exposing (Label)
 import LabelId exposing (LabelId)
+import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
@@ -129,6 +135,60 @@ type alias PanelItemConfig id item =
     , route : item -> Route.Route
     , iconName : String
     , iconStyle : item -> Style
+    }
+
+
+moreClickedDecoder : (id -> PanelItemId) -> String -> id -> JD.Decoder PanelMsg
+moreClickedDecoder panelItemId anchorId id =
+    let
+        kind =
+            panelItemId id
+
+        msg =
+            More anchorId kind
+    in
+    JD.succeed msg
+
+
+projectPanelItemConfig : PanelItemConfig ProjectId Project
+projectPanelItemConfig =
+    { moreClicked = moreClickedDecoder ProjectItemId
+    , dragMsg = DragMsg
+    , panelId = "project"
+    , iconName = "folder"
+    , id = Project.id
+    , idToString = ProjectId.toString
+    , title = Project.title
+    , route = Project.id >> Route.Project
+    , iconStyle = Styles.c_ << Project.cssColor
+    }
+
+
+labelPanelItemConfig : PanelItemConfig LabelId Label
+labelPanelItemConfig =
+    { moreClicked = moreClickedDecoder LabelItemId
+    , dragMsg = DragMsg
+    , panelId = "label"
+    , id = Label.id
+    , idToString = LabelId.toString
+    , title = Label.title
+    , route = Label.id >> Route.Label
+    , iconName = "label"
+    , iconStyle = Styles.c_ << Label.cssColor
+    }
+
+
+filterPanelItemConfig : PanelItemConfig FilterId Filter
+filterPanelItemConfig =
+    { moreClicked = moreClickedDecoder FilterItemId
+    , dragMsg = DragMsg
+    , panelId = "filter"
+    , id = Filter.id
+    , idToString = FilterId.toString
+    , title = Filter.title
+    , route = Filter.id >> Route.Filter
+    , iconName = "filter_list"
+    , iconStyle = Styles.c_ << Filter.cssColor
     }
 
 

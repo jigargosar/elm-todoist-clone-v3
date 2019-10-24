@@ -502,60 +502,6 @@ view model =
         model.isDrawerModalOpen
 
 
-moreClickedDecoder : (id -> Drawer.PanelItemId) -> String -> id -> JD.Decoder Drawer.PanelMsg
-moreClickedDecoder panelItemId anchorId id =
-    let
-        kind =
-            panelItemId id
-
-        msg =
-            Drawer.More anchorId kind
-    in
-    JD.succeed msg
-
-
-projectPanelItemConfig : Drawer.PanelItemConfig ProjectId Project
-projectPanelItemConfig =
-    { moreClicked = moreClickedDecoder Drawer.ProjectItemId
-    , dragMsg = Drawer.DragMsg
-    , panelId = "project"
-    , iconName = "folder"
-    , id = Project.id
-    , idToString = ProjectId.toString
-    , title = Project.title
-    , route = Project.id >> Route.Project
-    , iconStyle = Styles.c_ << Project.cssColor
-    }
-
-
-labelPanelItemConfig : Drawer.PanelItemConfig LabelId Label
-labelPanelItemConfig =
-    { moreClicked = moreClickedDecoder Drawer.LabelItemId
-    , dragMsg = Drawer.DragMsg
-    , panelId = "label"
-    , id = Label.id
-    , idToString = LabelId.toString
-    , title = Label.title
-    , route = Label.id >> Route.Label
-    , iconName = "label"
-    , iconStyle = Styles.c_ << Label.cssColor
-    }
-
-
-filterPanelItemConfig : Drawer.PanelItemConfig FilterId Filter
-filterPanelItemConfig =
-    { moreClicked = moreClickedDecoder Drawer.FilterItemId
-    , dragMsg = Drawer.DragMsg
-    , panelId = "filter"
-    , id = Filter.id
-    , idToString = FilterId.toString
-    , title = Filter.title
-    , route = Filter.id >> Route.Filter
-    , iconName = "filter_list"
-    , iconStyle = Styles.c_ << Filter.cssColor
-    }
-
-
 viewDrawer : Model -> List (Html Msg)
 viewDrawer model =
     let
@@ -572,13 +518,13 @@ viewDrawer model =
                 |> List.map (H.map (DrawerPanelMsg panel))
     in
     Drawer.prefixNavItemsView
-        ++ viewPanel projectPanelItemConfig
+        ++ viewPanel Drawer.projectPanelItemConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        ++ viewPanel labelPanelItemConfig
+        ++ viewPanel Drawer.labelPanelItemConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
-        ++ viewPanel filterPanelItemConfig
+        ++ viewPanel Drawer.filterPanelItemConfig
             Drawer.Filters
             (FilterCollection.sorted model.filterCollection)
 
@@ -590,17 +536,17 @@ panelDragView model =
             (\( panel, drag ) ->
                 case panel of
                     Drawer.Projects ->
-                        Drawer.viewPanelItemGhost projectPanelItemConfig
+                        Drawer.viewPanelItemGhost Drawer.projectPanelItemConfig
                             (ProjectCollection.sorted model.projectCollection)
                             drag
 
                     Drawer.Labels ->
-                        Drawer.viewPanelItemGhost labelPanelItemConfig
+                        Drawer.viewPanelItemGhost Drawer.labelPanelItemConfig
                             (LabelCollection.sorted model.labelCollection)
                             drag
 
                     Drawer.Filters ->
-                        Drawer.viewPanelItemGhost filterPanelItemConfig
+                        Drawer.viewPanelItemGhost Drawer.filterPanelItemConfig
                             (FilterCollection.sorted model.filterCollection)
                             drag
             )
