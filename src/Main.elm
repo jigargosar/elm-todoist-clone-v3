@@ -287,8 +287,8 @@ update message model =
 
         DrawerPanelDrag panel msg ->
             Drag.update
-                (DrawerPanelDrag panel)
-                (DrawerPanelDragComplete panel)
+                (PanelMsg panel << Drawer.DragMsg)
+                (PanelMsg panel << Drawer.DragComplete)
                 msg
                 (dragForPanel panel model.panelDrag)
                 |> Tuple.mapFirst
