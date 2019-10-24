@@ -516,8 +516,8 @@ moreClickedDecoder panelItemId anchorId id =
 
 panelConfig : Drawer.Panel -> Drawer.PanelConfig Msg
 panelConfig panel =
-    { toggle = TogglePanel panel
-    , add = PanelAddClicked panel
+    { toggle = PanelMsg panel Drawer.Toggle
+    , add = PanelMsg panel Drawer.Add
     }
 
 
