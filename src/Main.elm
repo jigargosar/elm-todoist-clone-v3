@@ -589,29 +589,23 @@ drawerView model =
 panelDragView : Model -> View (Html Msg)
 panelDragView model =
     let
-        panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
+        panelView : Drawer.PanelItemConfig id item msg -> Drawer.Panel -> List item -> List (Html msg)
         panelView config panel items =
-            Drawer.panelView panelConfig
-                panel
-                (isPanelExpanded panel model)
-                (\_ ->
-                    Drawer.viewPanelItems config
-                        items
-                        (dragForPanel panel model.panelDrag)
-                )
+            Drawer.viewPanelItemGhost config
+                items
+                (dragForPanel panel model.panelDrag)
     in
-    View.concat
-        [ Drawer.prefixNavItemsView
-        , panelView projectPanelItemConfig
+    View.portal
+        (panelView projectPanelItemConfig
             Drawer.Projects
             (ProjectCollection.sorted model.projectCollection)
-        , panelView labelPanelItemConfig
-            Drawer.Labels
-            (LabelCollection.sorted model.labelCollection)
-        , panelView filterPanelItemConfig
-            Drawer.Filters
-            (FilterCollection.sorted model.filterCollection)
-        ]
+            ++ panelView labelPanelItemConfig
+                Drawer.Labels
+                (LabelCollection.sorted model.labelCollection)
+            ++ panelView filterPanelItemConfig
+                Drawer.Filters
+                (FilterCollection.sorted model.filterCollection)
+        )
 
 
 pageView : Model -> View (Html Msg)

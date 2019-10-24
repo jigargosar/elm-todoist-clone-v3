@@ -7,6 +7,7 @@ module Drawer exposing
     , panelTitle
     , panelView
     , prefixNavItemsView
+    , viewPanelItemGhost
     , viewPanelItems
     , viewSimpleNavItem
     )
