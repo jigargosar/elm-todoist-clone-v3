@@ -558,7 +558,7 @@ filterPanelItemConfig =
     }
 
 
-drawerView : Model -> View (Html Msg)
+drawerView : Model -> List (Html Msg)
 drawerView model =
     let
         panelView : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> View (Html Msg)
@@ -582,20 +582,17 @@ drawerView model =
                         items
                         (dragForPanel panel model.panelDrag)
                 )
-
-        viewHelp =
-            Drawer.prefixNavItemsView2
-                ++ panelView2 projectPanelItemConfig
-                    Drawer.Projects
-                    (ProjectCollection.sorted model.projectCollection)
-                ++ panelView2 labelPanelItemConfig
-                    Drawer.Labels
-                    (LabelCollection.sorted model.labelCollection)
-                ++ panelView2 filterPanelItemConfig
-                    Drawer.Filters
-                    (FilterCollection.sorted model.filterCollection)
     in
-    View.content viewHelp
+    Drawer.prefixNavItemsView2
+        ++ panelView2 projectPanelItemConfig
+            Drawer.Projects
+            (ProjectCollection.sorted model.projectCollection)
+        ++ panelView2 labelPanelItemConfig
+            Drawer.Labels
+            (LabelCollection.sorted model.labelCollection)
+        ++ panelView2 filterPanelItemConfig
+            Drawer.Filters
+            (FilterCollection.sorted model.filterCollection)
 
 
 panelDragView : Model -> View (Html Msg)
