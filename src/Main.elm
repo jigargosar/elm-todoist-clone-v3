@@ -571,6 +571,17 @@ drawerView model =
                         items
                         (dragForPanel panel model.panelDrag)
                 )
+
+        panelView2 : Drawer.PanelItemConfig id item Msg -> Drawer.Panel -> List item -> List (Html Msg)
+        panelView2 config panel items =
+            Drawer.panelView2 panelConfig
+                panel
+                (isPanelExpanded panel model)
+                (\_ ->
+                    Drawer.viewPanelItems2 config
+                        items
+                        (dragForPanel panel model.panelDrag)
+                )
     in
     View.concat
         [ Drawer.prefixNavItemsView

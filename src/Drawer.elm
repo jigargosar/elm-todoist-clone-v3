@@ -10,6 +10,7 @@ module Drawer exposing
     , prefixNavItemsView
     , viewPanelItemGhost
     , viewPanelItems
+    , viewPanelItems2
     , viewSimpleNavItem
     )
 
@@ -121,6 +122,14 @@ viewPanelItems config items drag =
                 (viewPanelItem config drag)
         , []
         )
+
+
+viewPanelItems2 : PanelItemConfig id item msg -> List item -> Drag -> List (Html msg)
+viewPanelItems2 config items drag =
+    items
+        |> Drag.rotate drag
+        |> List.indexedMap
+            (viewPanelItem config drag)
 
 
 panelItemDomId : PanelItemConfig id item msg -> id -> String
