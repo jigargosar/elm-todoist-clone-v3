@@ -480,7 +480,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
         , main = pageView model
-        , modal = View.concat [ popupView model, dialogView model, panelDragView model ]
+        , modal = popupView model ++ dialogView model ++ panelDragView model
         }
         model.isDrawerModalOpen
 
@@ -584,32 +584,28 @@ viewDrawer model =
             (FilterCollection.sorted model.filterCollection)
 
 
-panelDragView : Model -> View (Html Msg)
+panelDragView : Model -> List (Html Msg)
 panelDragView model =
-    let
-        ghostView =
-            model.panelDrag
-                |> Maybe.map
-                    (\( panel, drag ) ->
-                        case panel of
-                            Drawer.Projects ->
-                                Drawer.viewPanelItemGhost projectPanelItemConfig
-                                    (ProjectCollection.sorted model.projectCollection)
-                                    drag
+    model.panelDrag
+        |> Maybe.map
+            (\( panel, drag ) ->
+                case panel of
+                    Drawer.Projects ->
+                        Drawer.viewPanelItemGhost projectPanelItemConfig
+                            (ProjectCollection.sorted model.projectCollection)
+                            drag
 
-                            Drawer.Labels ->
-                                Drawer.viewPanelItemGhost labelPanelItemConfig
-                                    (LabelCollection.sorted model.labelCollection)
-                                    drag
+                    Drawer.Labels ->
+                        Drawer.viewPanelItemGhost labelPanelItemConfig
+                            (LabelCollection.sorted model.labelCollection)
+                            drag
 
-                            Drawer.Filters ->
-                                Drawer.viewPanelItemGhost filterPanelItemConfig
-                                    (FilterCollection.sorted model.filterCollection)
-                                    drag
-                    )
-                |> Maybe.withDefault []
-    in
-    View.portal ghostView
+                    Drawer.Filters ->
+                        Drawer.viewPanelItemGhost filterPanelItemConfig
+                            (FilterCollection.sorted model.filterCollection)
+                            drag
+            )
+        |> Maybe.withDefault []
 
 
 pageView : Model -> List (Html Msg)
@@ -657,15 +653,15 @@ todoListByFilterIdView _ pc lc todoDict =
     ]
 
 
-popupView : Model -> View (Html Msg)
+popupView : Model -> List (Html Msg)
 popupView model =
     case model.popup of
         Nothing ->
-            View.none
+            []
 
         Just ( kind, popper ) ->
             let
-                viewHelp : List (Html a) -> (a -> Msg) -> View (Html Msg)
+                viewHelp : List (Html msg) -> (msg -> Msg) -> List (Html Msg)
                 viewHelp content toMsg =
                     PopupView.container
                         { onClose = ClosePopup
@@ -685,14 +681,14 @@ popupView model =
                     viewHelp PopupView.filterContent FilterMoreMenu
 
 
-dialogView : Model -> View (Html Msg)
+dialogView : Model -> List (Html Msg)
 dialogView model =
     case model.dialog of
         Just dialog ->
             Dialog.viewDialog { cancel = CloseDialog } dialog
 
         Nothing ->
-            View.none
+            []
 
 
 

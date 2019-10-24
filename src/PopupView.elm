@@ -15,44 +15,42 @@ import Html.Styled.Events as E
 import Json.Decode as JD
 import Popper exposing (Popper)
 import Styles exposing (..)
-import View exposing (View)
 
 
-container : { onClose : msg, noOp : msg } -> List (Html msg) -> Popper -> View (Html msg)
+container : { onClose : msg, noOp : msg } -> List (Html msg) -> Popper -> List (Html msg)
 container config content popper =
-    View.portal
-        [ div
-            [ css
-                [ Styles.fixed
-                , Styles.absFill
-                , Styles.flex
-                , Styles.itemsCenter
-                , Styles.justifyCenter
-                , Styles.bg (Css.hsla 0 0 0 0.2)
+    [ div
+        [ css
+            [ Styles.fixed
+            , Styles.absFill
+            , Styles.flex
+            , Styles.itemsCenter
+            , Styles.justifyCenter
+            , Styles.bg (Css.hsla 0 0 0 0.2)
 
-                --                 , Styles.bg (Css.hsla 0 1 1 0.6)
-                , Styles.z_ 10
-                ]
-            , E.onClick config.onClose
+            --                 , Styles.bg (Css.hsla 0 1 1 0.6)
+            , Styles.z_ 10
             ]
-            [ div
-                [ let
-                    popperStyles =
-                        Popper.styles popper
-                  in
-                  css
-                    [ Styles.bgWhite
-                    , Styles.bor 3
-                    , Styles.batch popperStyles
-                    , pv 2
-                    ]
-                , A.id "rootPopup"
-                , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
-                , A.class "shadow-1"
-                ]
-                content
-            ]
+        , E.onClick config.onClose
         ]
+        [ div
+            [ let
+                popperStyles =
+                    Popper.styles popper
+              in
+              css
+                [ Styles.bgWhite
+                , Styles.bor 3
+                , Styles.batch popperStyles
+                , pv 2
+                ]
+            , A.id "rootPopup"
+            , E.stopPropagationOn "click" (JD.succeed ( config.noOp, True ))
+            , A.class "shadow-1"
+            ]
+            content
+        ]
+    ]
 
 
 type alias MenuItemConfig msg =

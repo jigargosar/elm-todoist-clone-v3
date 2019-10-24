@@ -5,14 +5,13 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (class, css)
 import Html.Styled.Events exposing (onClick)
 import Styles exposing (..)
-import View
 
 
 type alias Parts msg =
     { appbar : List (Html msg)
     , drawer : List (Html msg)
     , main : List (Html msg)
-    , modal : View.Html msg
+    , modal : List (Html msg)
     }
 
 
@@ -45,8 +44,7 @@ view { closeDrawerModal } { appbar, drawer, main, modal } isDrawerModalOpen =
             -- [ styled div [ Css.height (Css.vh 200) ] [] drawer ]
             drawer
          ]
-            ++ modal.content
-            ++ modal.portal
+            ++ modal
         )
 
 

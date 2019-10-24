@@ -4,16 +4,13 @@ import Css
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events as E exposing (onClick, onSubmit)
-import Json.Decode as JD
+import Html.Styled.Events exposing (onSubmit)
 import Key
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import Px as PX
-import StyleAttrs as SA exposing (StyleAttrs)
 import Styles exposing (..)
 import Theme
-import View exposing (View)
 
 
 type alias AddProjectState =
@@ -50,31 +47,30 @@ overlayStyles =
         ]
 
 
-addProjectContent : Config msg -> AddProjectState -> View (Html msg)
+addProjectContent : Config msg -> AddProjectState -> List (Html msg)
 addProjectContent config state =
-    View.content
-        [ div
-            [ css
-                [ Css.fontSize Css.larger
-                , pa 3
-                , bo_b
-                , boc <| Theme.borderGray
-                ]
-            ]
-            [ text "Add Project" ]
-        , div [ css [ ph 3 ] ]
-            [ formTextIpt "Project name" state.title
-            , formTextIpt "Project color" state.color
-            , label [ css [ flex, itemsCenter, pv 2 ] ]
-                [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
-                , text "Add to favorites"
-                ]
-            ]
-        , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
-            [ btnSubmit "Add"
-            , btnSubmit "Cancel"
+    [ div
+        [ css
+            [ Css.fontSize Css.larger
+            , pa 3
+            , bo_b
+            , boc <| Theme.borderGray
             ]
         ]
+        [ text "Add Project" ]
+    , div [ css [ ph 3 ] ]
+        [ formTextIpt "Project name" state.title
+        , formTextIpt "Project color" state.color
+        , label [ css [ flex, itemsCenter, pv 2 ] ]
+            [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
+            , text "Add to favorites"
+            ]
+        ]
+    , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
+        [ btnSubmit "Add"
+        , btnSubmit "Cancel"
+        ]
+    ]
 
 
 btnSubmit title =
@@ -114,7 +110,7 @@ type alias Config msg =
     { cancel : msg }
 
 
-viewDialog : Config msg -> Dialog -> View (Html msg)
+viewDialog : Config msg -> Dialog -> List (Html msg)
 viewDialog config dialog =
     let
         formAttrs =
@@ -130,12 +126,9 @@ viewDialog config dialog =
             ]
 
         viewHelp innerView =
-            { content =
-                [ div [ css [ overlayStyles ] ]
-                    [ form formAttrs innerView.content ]
-                ]
-            , portal = innerView.portal
-            }
+            [ div [ css [ overlayStyles ] ]
+                [ form formAttrs innerView ]
+            ]
     in
     case dialog of
         AddProject model ->
@@ -143,4 +136,4 @@ viewDialog config dialog =
                 addProjectContent config model
 
         _ ->
-            View.none
+            []
