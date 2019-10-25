@@ -121,7 +121,7 @@ viewProjectPanel projectList model =
                     viewProjectPanelItems projectList
 
                 ProjectPanelItemsDragging itemsDraggingModel ->
-                    viewProjectPanelItems itemsDraggingModel.list
+                    viewProjectPanelItemsDragged itemsDraggingModel
             ]
                 |> List.concat
 
@@ -138,6 +138,11 @@ viewProjectPanelHeaderExpanded =
 
 viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
 viewProjectPanelItems =
+    impl
+
+
+viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
+viewProjectPanelItemsDragged model =
     impl
 
 
