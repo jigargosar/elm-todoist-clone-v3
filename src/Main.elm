@@ -71,9 +71,9 @@ type ProjectPanelMsg
     = ProjectPanelNoOp
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
-    | ProjectPanelItemDragged (List Project) Project String Position
+    | ProjectPanelItemDragged (DragSort.DragStartMsg Project)
     | ProjectPanelLogError String
-    | ProjectPanelItemDragged_2 (List Project) Project Position Dom.Element
+    | ProjectPanelItemDragged_2 (DragSort.DragInitMsg Project)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
@@ -122,10 +122,10 @@ updateProjectPanel config message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemDragged projectList project dragElDomId startPosition ->
+        ProjectPanelItemDragged dragStart ->
             ( model
-            , Dom.getElement dragElDomId
-                |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
+            , DragSort.dragInitTask dragStart
+                |> Task.map ProjectPanelItemDragged_2
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform config.toMsg
             )
@@ -133,14 +133,8 @@ updateProjectPanel config message model =
         ProjectPanelLogError error ->
             ( model, logError error )
 
-        ProjectPanelItemDragged_2 projectList project startPosition dragEl ->
-            ( DragSort.init
-                { list = projectList
-                , drag = project
-                , dragEl = dragEl
-                , start = startPosition
-                , current = startPosition
-                }
+        ProjectPanelItemDragged_2 dragInit ->
+            ( DragSort.init dragInit
                 |> ProjectPanelItemsDragging
             , Cmd.none
             )
@@ -250,7 +244,7 @@ viewProjectPanelItem projectList project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: dragHandlerAttrs (ProjectPanelItemDragged projectList project domId)
+                :: DragSort.dragHandle ProjectPanelItemDragged projectList project domId
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]

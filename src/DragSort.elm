@@ -1,12 +1,13 @@
 module DragSort exposing (..)
 
-import Basics.More exposing (eq_, flip, rotateListByElem)
+import Basics.More exposing (eq_, flip, onDomErrorRecover, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
+import Task exposing (Task)
 
 
 type alias Position =
@@ -26,9 +27,9 @@ type alias State item =
     }
 
 
-init : State item -> DragSort item
-init =
-    DragSort
+init : DragInitMsg item -> DragSort item
+init (DragInitMsg state) =
+    DragSort state
 
 
 sortOnDragOver : item -> DragSort item -> DragSort item
@@ -105,3 +106,13 @@ dragHandle msg list_ item domId =
         )
     , A.draggable "true"
     ]
+
+
+type DragInitMsg item
+    = DragInitMsg (State item)
+
+
+dragInitTask : DragStartMsg item -> Task Dom.Error (DragInitMsg item)
+dragInitTask (DragStartMsg l i d p) =
+    Dom.getElement d
+        |> Task.map (\el -> State l i el p p |> DragInitMsg)
