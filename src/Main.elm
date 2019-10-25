@@ -72,8 +72,8 @@ type ProjectPanelMsg
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelLogError String
-    | ProjectPanelItemDragged (DragSort.DragInit_Step_1 Project)
-    | ProjectPanelItemDragged_2 (DragSort.DragInit_Step_2 Project)
+    | ProjectPanelItemDragged (DragSort.Init_Step_1 Project)
+    | ProjectPanelItemDragged_2 (DragSort.Init_Step_2 Project)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
