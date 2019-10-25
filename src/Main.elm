@@ -172,10 +172,23 @@ updateProjectPanel config message model =
             )
 
         ProjectPanelItemDragComplete ->
-            ( ProjectPanelExpanded, Cmd.none )
+            case model of
+                ProjectPanelCollapsed ->
+                    ( model, Cmd.none )
+
+                ProjectPanelExpanded ->
+                    ( model, Cmd.none )
+
+                ProjectPanelItemsDragging { list } ->
+                    ( ProjectPanelExpanded, config.projectOrderChanged list |> performMsg )
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
+
+
+performMsg : a -> Cmd a
+performMsg =
+    Task.succeed >> Task.perform identity
 
 
 onDomErrorRecover : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
