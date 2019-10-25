@@ -165,15 +165,19 @@ updateProjectPanelItem message model =
         ProjectPanelItemDraggedOver dragOverProject ->
             case model of
                 ProjectPanelItemsDragging ({ list, dragProject } as draggingModel) ->
-                    let
-                        newProjectList =
-                            rotateListByElem dragProject dragOverProject list
-                                |> Maybe.withDefault list
-                    in
-                    ( { draggingModel | list = newProjectList }
-                        |> ProjectPanelItemsDragging
-                    , Cmd.none
-                    )
+                    if dragOverProject == dragProject then
+                        ( model, Cmd.none )
+
+                    else
+                        let
+                            newProjectList =
+                                rotateListByElem dragProject dragOverProject list
+                                    |> Maybe.withDefault list
+                        in
+                        ( { draggingModel | list = newProjectList }
+                            |> ProjectPanelItemsDragging
+                        , Cmd.none
+                        )
 
                 ProjectPanelItemsNotDragging ->
                     ( model, Cmd.none )
@@ -257,7 +261,7 @@ viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html Proj
 viewProjectPanelItemsDragged model =
     let
         viewItemHelp project =
-            viewProjectPanelItemDragged (model.dragOverProject == project) project
+            viewProjectPanelItemDragged (model.dragProject == project) project
     in
     List.map viewItemHelp model.list
 
