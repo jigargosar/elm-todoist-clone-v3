@@ -58,9 +58,13 @@ type alias Flags =
 -- MODEL
 
 
+type alias ProjectPanelItemsDraggingModel =
+    { before : List Project, dragged : Project, after : List Project }
+
+
 type ProjectPanelItemsDrag
     = ProjectPanelItemsNotDragging
-    | ProjectPanelItemsDragging { before : List Project, dragged : Project, after : List Project }
+    | ProjectPanelItemsDragging ProjectPanelItemsDraggingModel
 
 
 type ProjectPanel
