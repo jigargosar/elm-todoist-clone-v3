@@ -267,10 +267,10 @@ viewProjectPanelItemDragged isBeingDraggedOver project =
     let
         dragOverAttributes =
             if isBeingDraggedOver then
-                [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
+                []
 
             else
-                []
+                [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
 
         dragOverStyle =
             styleIf isBeingDraggedOver [ hidden ]
