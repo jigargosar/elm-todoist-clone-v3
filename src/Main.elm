@@ -96,11 +96,12 @@ projectPanelSubscriptions projectPanel =
         ProjectPanelExpanded ->
             Sub.none
 
-        ProjectPanelItemsDragging _ ->
-            Sub.batch
-                [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete)
-                , Browser.Events.onMouseMove (JD.map ProjectPanelItemDragMovedAt pageXYAsPositionDecoder)
-                ]
+        ProjectPanelItemsDragging dragSort ->
+            DragSort.subscriptions
+                { currentChanged = ProjectPanelItemDragMovedAt
+                , done = ProjectPanelItemDragComplete
+                }
+                dragSort
 
 
 type alias ProjectPanelConfig msg =

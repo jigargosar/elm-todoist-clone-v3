@@ -2,6 +2,8 @@ module DragSort exposing (..)
 
 import Basics.More exposing (eq_, rotateListByElem)
 import Browser.Dom as Dom
+import Browser.Events
+import Json.Decode as JD exposing (Decoder)
 
 
 type alias Position =
@@ -66,3 +68,18 @@ list =
 isBeingDragged : item -> DragSort item -> Bool
 isBeingDragged item =
     unwrap >> .drag >> eq_ item
+
+
+subscriptions : { currentChanged : Position -> msg, done : msg } -> DragSort item -> Sub msg
+subscriptions { currentChanged, done } _ =
+    Sub.batch
+        [ Browser.Events.onMouseUp (JD.succeed done)
+        , Browser.Events.onMouseMove (JD.map currentChanged pageXYAsPositionDecoder)
+        ]
+
+
+pageXYAsPositionDecoder : Decoder Position
+pageXYAsPositionDecoder =
+    JD.map2 Position
+        (JD.field "pageX" JD.int)
+        (JD.field "pageY" JD.int)
