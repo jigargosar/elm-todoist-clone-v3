@@ -48,10 +48,8 @@ type alias Position =
 
 type alias ProjectPanelItemsDraggingModel =
     { list : List Project
-    , dragIdx : Int
     , dragProject : Project
     , dragEl : Dom.Element
-    , dragOverIdx : Int
     , dragOverProject : Project
     , start : Position
     , current : Position
@@ -138,10 +136,8 @@ updateProjectPanelItem message model =
 
         ProjectPanelItemDragged_2 projectList idx project startPosition (Ok dragEl) ->
             ( ProjectPanelItemsDraggingModel projectList
-                idx
                 project
                 dragEl
-                idx
                 project
                 startPosition
                 startPosition
@@ -179,8 +175,7 @@ updateProjectPanelItem message model =
                                 |> Maybe.withDefault draggingModel.list
                     in
                     ( { draggingModel
-                        | dragOverIdx = idx
-                        , dragOverProject = dragOverProject
+                        | dragOverProject = dragOverProject
                         , list = rotateProjectList
                       }
                         |> ProjectPanelItemsDragging
