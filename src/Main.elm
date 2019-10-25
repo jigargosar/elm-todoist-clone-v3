@@ -76,8 +76,8 @@ initialProjectPanel =
 
 
 type ProjectPanelItemMsg
-    = ProjectPanelItemDragged (List Project) Int Project String Position
-    | ProjectPanelItemDragged_2 (List Project) Int Project Position (Result Dom.Error Dom.Element)
+    = ProjectPanelItemDragged (List Project) Project String Position
+    | ProjectPanelItemDragged_2 (List Project) Project Position (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
@@ -140,16 +140,16 @@ updateProjectPanelItem :
     -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
     case message of
-        ProjectPanelItemDragged projectList idx project dragElDomId startPosition ->
+        ProjectPanelItemDragged projectList project dragElDomId startPosition ->
             ( model
             , Dom.getElement dragElDomId
-                |> Task.attempt (ProjectPanelItemDragged_2 projectList idx project startPosition)
+                |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
             )
 
-        ProjectPanelItemDragged_2 projectList idx project startPosition (Err (Dom.NotFound domId)) ->
+        ProjectPanelItemDragged_2 projectList project startPosition (Err (Dom.NotFound domId)) ->
             ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
-        ProjectPanelItemDragged_2 projectList _ project startPosition (Ok dragEl) ->
+        ProjectPanelItemDragged_2 projectList project startPosition (Ok dragEl) ->
             ( ProjectPanelItemsDraggingModel projectList
                 project
                 dragEl
@@ -222,7 +222,7 @@ viewProjectPanelHeaderExpanded =
 
 viewProjectPanelItems : List Project -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItems projects =
-    List.indexedMap (viewProjectPanelItem projects) projects
+    List.map (viewProjectPanelItem projects) projects
 
 
 dragHandlerAttrs : (Position -> msg) -> List (Attribute msg)
@@ -235,8 +235,8 @@ dragHandlerAttrs onDragStart =
     ]
 
 
-viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelItemMsg
-viewProjectPanelItem projectList idx project =
+viewProjectPanelItem : List Project -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItem projectList project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
@@ -247,7 +247,7 @@ viewProjectPanelItem projectList idx project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: dragHandlerAttrs (ProjectPanelItemDragged projectList idx project domId)
+                :: dragHandlerAttrs (ProjectPanelItemDragged projectList project domId)
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
