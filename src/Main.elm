@@ -140,8 +140,8 @@ updateProjectPanelItem message model =
                 |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
             )
 
-        ProjectPanelItemDragged_2 projectList project startPosition result ->
-            case result of
+        ProjectPanelItemDragged_2 projectList project startPosition dragElResult ->
+            case dragElResult of
                 Ok dragEl ->
                     ( ProjectPanelItemsDraggingModel projectList
                         project
