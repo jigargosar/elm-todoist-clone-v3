@@ -124,7 +124,7 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDragged dragInitTaskPayload ->
             ( model
-            , DragSort.initTask dragInitTaskPayload
+            , DragSort.getElement dragInitTaskPayload
                 |> Task.map ProjectPanelItemDragged_2
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform config.toMsg

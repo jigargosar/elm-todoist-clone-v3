@@ -112,7 +112,7 @@ type InitPayload item
     = Init_Step_2 (State item)
 
 
-initTask : InitTaskPayload item -> Task Dom.Error (InitPayload item)
-initTask (Init_Step_1 l i d p) =
+getElement : InitTaskPayload item -> Task Dom.Error (InitPayload item)
+getElement (Init_Step_1 l i d p) =
     Dom.getElement d
         |> Task.map (\el -> State l i el p p |> Init_Step_2)
