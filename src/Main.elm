@@ -639,7 +639,7 @@ update message model =
                     update (PopupTriggered panelItemId anchorId) model
 
         ProjectPanelMsg_ msg ->
-            updateProjectPanel_ msg model
+            handleProjectPanelMsg msg model
 
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
@@ -650,8 +650,8 @@ projectPanelConfig =
     { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
 
 
-updateProjectPanel_ : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
-updateProjectPanel_ msg model =
+handleProjectPanelMsg : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
+handleProjectPanelMsg msg model =
     updateProjectPanel
         projectPanelConfig
         msg
