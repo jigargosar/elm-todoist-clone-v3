@@ -77,7 +77,7 @@ initialProjectPanel =
 
 
 type ProjectPanelItemMsg
-    = ProjectPanelItemDragged (List Project) Int String Position
+    = ProjectPanelItemDragged (List Project) Int Project String Position
     | ProjectPanelItemDragged_2 Position Int (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
@@ -136,7 +136,7 @@ updateProjectPanelItem :
     -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
     case message of
-        ProjectPanelItemDragged projectList idx start domId ->
+        ProjectPanelItemDragged projectList idx project domId startPosition ->
             ( model, Cmd.none )
 
         ProjectPanelItemDragged_2 position int result ->
@@ -204,7 +204,7 @@ viewProjectPanelItem projectList idx project =
         [ div
             (css [ Px.p2 8 8, pointer ]
                 :: projectPanelItemDragHandlerAttributes
-                    (ProjectPanelItemDragged projectList idx domId)
+                    (ProjectPanelItemDragged projectList idx project domId)
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
