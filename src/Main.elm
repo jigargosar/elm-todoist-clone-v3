@@ -79,7 +79,7 @@ initialProjectPanel =
 type ProjectPanelItemMsg
     = ProjectPanelItemDragged (List Project) Int Project String Position
     | ProjectPanelItemDragged_2 (List Project) Int Project Position (Result Dom.Error Dom.Element)
-    | ProjectPanelItemDraggedOver Int
+    | ProjectPanelItemDraggedOver Int Project
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
 
@@ -148,7 +148,7 @@ updateProjectPanelItem message model =
             , Cmd.none
             )
 
-        ProjectPanelItemDraggedOver int ->
+        ProjectPanelItemDraggedOver idx project ->
             ( model, Cmd.none )
 
         ProjectPanelItemDragComplete ->
@@ -235,7 +235,7 @@ viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Int -> Project -
 viewProjectPanelItemDragged model idx project =
     let
         projectPanelItemDragOverAttributes =
-            []
+            [ E.onMouseOver (ProjectPanelItemDraggedOver idx project) ]
     in
     div
         (css [ lh 1.5, flex ] :: projectPanelItemDragOverAttributes)
