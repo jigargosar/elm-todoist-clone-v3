@@ -36,27 +36,7 @@ import Url exposing (Url)
 
 
 
--- POPUP
-
-
-type alias PopupKind =
-    Drawer.PanelItemId
-
-
-
--- Flags
-
-
-type alias Flags =
-    { todoList : Value
-    , projectList : Value
-    , labelList : Value
-    , filterList : Value
-    }
-
-
-
--- MODEL
+-- PROJECT PANEL
 
 
 type alias Position =
@@ -81,6 +61,30 @@ type ProjectPanelItemsDrag
 type ProjectPanel
     = ProjectPanelCollapsed
     | ProjectPanelExpanded ProjectPanelItemsDrag
+
+
+
+-- POPUP
+
+
+type alias PopupKind =
+    Drawer.PanelItemId
+
+
+
+-- Flags
+
+
+type alias Flags =
+    { todoList : Value
+    , projectList : Value
+    , labelList : Value
+    , filterList : Value
+    }
+
+
+
+-- MODEL
 
 
 type alias Model =
