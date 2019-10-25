@@ -72,10 +72,12 @@ initialProjectPanel =
 
 
 type ProjectPanelMsg
-    = ProjectPanelHeaderClicked
+    = ProjectPanelNoOp
+    | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelItemDragged (List Project) Project String Position
-    | ProjectPanelItemDragged_2 (List Project) Project Position (Result Dom.Error Dom.Element)
+    | ProjectPanelItemDraggedError Dom.Error
+    | ProjectPanelItemDragged_2 (List Project) Project Position Dom.Element
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
@@ -108,6 +110,9 @@ projectPanelSubscriptions projectPanel =
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
 updateProjectPanel message model =
     case message of
+        ProjectPanelNoOp ->
+            ( model, Cmd.none )
+
         ProjectPanelHeaderClicked ->
             ( model, Cmd.none )
 
@@ -117,23 +122,23 @@ updateProjectPanel message model =
         ProjectPanelItemDragged projectList project dragElDomId startPosition ->
             ( model
             , Dom.getElement dragElDomId
-                |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
+                |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
+                |> Task.onError (ProjectPanelItemDraggedError >> Task.succeed)
+                |> Task.perform identity
             )
 
-        ProjectPanelItemDragged_2 projectList project startPosition dragElResult ->
-            case dragElResult of
-                Ok dragEl ->
-                    ( ProjectPanelItemsDraggingModel projectList
-                        project
-                        dragEl
-                        startPosition
-                        startPosition
-                        |> ProjectPanelItemsDragging
-                    , Cmd.none
-                    )
+        ProjectPanelItemDraggedError (Dom.NotFound domId) ->
+            ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
-                Err (Dom.NotFound domId) ->
-                    ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
+        ProjectPanelItemDragged_2 projectList project startPosition dragEl ->
+            ( ProjectPanelItemsDraggingModel projectList
+                project
+                dragEl
+                startPosition
+                startPosition
+                |> ProjectPanelItemsDragging
+            , Cmd.none
+            )
 
         ProjectPanelItemDraggedOver dragOverProject ->
             ( mapProjectPanelItemsDraggingModel
