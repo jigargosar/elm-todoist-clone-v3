@@ -18,6 +18,7 @@ import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import Layout
+import List.Extra as List
 import Log exposing (logError)
 import Page exposing (Page)
 import Page.NotFound
@@ -134,7 +135,7 @@ updateProjectPanelItem message model =
         ProjectPanelItemDragged_2 projectList idx project startPosition (Err (Dom.NotFound domId)) ->
             ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
-        ProjectPanelItemDragged_2 projectList idx project startPosition (Ok dragEl) ->
+        ProjectPanelItemDragged_2 projectList _ project startPosition (Ok dragEl) ->
             ( ProjectPanelItemsDraggingModel projectList
                 project
                 dragEl
@@ -147,36 +148,23 @@ updateProjectPanelItem message model =
 
         ProjectPanelItemDraggedOver dragOverProject ->
             case model of
-                ProjectPanelItemsDragging draggingModel ->
+                ProjectPanelItemsDragging ({ list, dragProject } as draggingModel) ->
                     let
-                        indexedProjectList =
-                            List.indexedMap Tuple.pair draggingModel.list
-
-                        dragIdx =
-                            indexedProjectList
-                                |> List.filter (Tuple.second >> (==) draggingModel.dragProject)
-                                |> List.head
-                                |> Maybe.map Tuple.first
-
-                        dragOverIdx =
-                            indexedProjectList
-                                |> List.filter (Tuple.second >> (==) dragOverProject)
-                                |> List.head
-                                |> Maybe.map Tuple.first
-
-                        rotateProjectList =
-                            Maybe.map2 rotateProjectList2 dragIdx dragOverIdx
-                                |> Maybe.withDefault draggingModel.list
-
-                        rotateProjectList2 dragI dragOverI =
-                            SelectList.fromList draggingModel.list
+                        rotateProjectList dragI dragOverI =
+                            SelectList.fromList list
                                 |> Maybe.andThen (SelectList.selectBy dragI)
                                 |> Maybe.map (SelectList.moveBy (dragOverI - dragI) >> SelectList.toList)
-                                |> Maybe.withDefault draggingModel.list
+
+                        newProjectList =
+                            Maybe.map2 rotateProjectList
+                                (List.elemIndex dragProject list)
+                                (List.elemIndex dragOverProject list)
+                                |> Maybe.andThen identity
+                                |> Maybe.withDefault list
                     in
                     ( { draggingModel
                         | dragOverProject = dragOverProject
-                        , list = rotateProjectList
+                        , list = newProjectList
                       }
                         |> ProjectPanelItemsDragging
                     , Cmd.none
