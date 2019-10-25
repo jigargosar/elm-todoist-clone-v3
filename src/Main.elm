@@ -179,10 +179,10 @@ updateProjectPanelItem message model =
                     ( model, Cmd.none )
 
         ProjectPanelItemDragComplete ->
-            ( model, Cmd.none )
+            ( ProjectPanelItemsNotDragging, Cmd.none )
 
         ProjectPanelItemDragCanceled ->
-            ( model, Cmd.none )
+            ( ProjectPanelItemsNotDragging, Cmd.none )
 
 
 
