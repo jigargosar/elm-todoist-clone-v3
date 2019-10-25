@@ -88,8 +88,8 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-dragHandelAttrs : (Position -> msg) -> List (Attribute msg)
-dragHandelAttrs onDragStart =
+dragHandleAttrs : (Position -> msg) -> List (Attribute msg)
+dragHandleAttrs onDragStart =
     [ E.preventDefaultOn "dragstart"
         (JD.map onDragStart pageXYAsPositionDecoder
             |> JD.map (flip Tuple.pair True)
