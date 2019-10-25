@@ -74,11 +74,16 @@ projectPanelInitial =
 type ProjectPanelMsg
     = ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
-    | ProjectPanelItemDragged Position ProjectId
-    | ProjectPanelItemDragged_2 Position ProjectId (Result Dom.Error Dom.Element)
-    | ProjectPanelItemDraggedOver ProjectId
+    | ProjectPanelItemDragged (List Project) Int Position
+    | ProjectPanelItemDragged_2 Position Int (Result Dom.Error Dom.Element)
+    | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
+
+
+updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
+updateProjectPanel =
+    impl
 
 
 
