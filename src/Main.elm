@@ -78,7 +78,7 @@ initialProjectPanel =
 type ProjectPanelItemMsg
     = ProjectPanelItemDragged (List Project) Int Project String Position
     | ProjectPanelItemDragged_2 (List Project) Int Project Position (Result Dom.Error Dom.Element)
-    | ProjectPanelItemDraggedOver Int Project
+    | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
 
@@ -145,7 +145,7 @@ updateProjectPanelItem message model =
             , Cmd.none
             )
 
-        ProjectPanelItemDraggedOver idx dragOverProject ->
+        ProjectPanelItemDraggedOver dragOverProject ->
             case model of
                 ProjectPanelItemsDragging draggingModel ->
                     let
@@ -263,17 +263,17 @@ viewProjectPanelItem projectList idx project =
 viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItemsDragged model =
     let
-        viewItemHelp idx project =
-            viewProjectPanelItemDragged (model.dragOverProject == project) idx project
+        viewItemHelp project =
+            viewProjectPanelItemDragged (model.dragOverProject == project) project
     in
-    List.indexedMap viewItemHelp model.list
+    List.map viewItemHelp model.list
 
 
-viewProjectPanelItemDragged : Bool -> Int -> Project -> Html ProjectPanelItemMsg
-viewProjectPanelItemDragged isBeingDraggedOver idx project =
+viewProjectPanelItemDragged : Bool -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemDragged isBeingDraggedOver project =
     let
         dragOverAttributes =
-            [ E.onMouseOver (ProjectPanelItemDraggedOver idx project) ]
+            [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
 
         dragOverStyle =
             styleIf isBeingDraggedOver [ hidden ]
