@@ -1,5 +1,6 @@
 module Basics.More exposing (..)
 
+import List.Extra as List
 import SelectList
 
 
@@ -24,3 +25,11 @@ rotateListByIndices from to list =
         |> SelectList.fromList
         >> Maybe.andThen (SelectList.selectBy from)
         >> Maybe.map (SelectList.moveBy (to - from) >> SelectList.toList)
+
+
+rotateListByElem : a -> a -> List a -> Maybe (List a)
+rotateListByElem fromEl toEl list =
+    Maybe.map2 (\from to -> rotateListByIndices from to list)
+        (List.elemIndex fromEl list)
+        (List.elemIndex toEl list)
+        |> Maybe.andThen identity
