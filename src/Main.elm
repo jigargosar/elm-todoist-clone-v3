@@ -145,14 +145,14 @@ updateProjectPanel config message model =
             )
 
         ProjectPanelItemDraggedOver dragOverProject ->
-            ( mapProjectPanelItemsDraggingModel
+            ( mapProjectPanelItemsDragSort
                 (DragSort.sortOnDragOver dragOverProject)
                 model
             , Cmd.none
             )
 
         ProjectPanelItemDragMovedAt position ->
-            ( mapProjectPanelItemsDraggingModel
+            ( mapProjectPanelItemsDragSort
                 (DragSort.setCurrent position)
                 model
             , Cmd.none
@@ -173,11 +173,11 @@ updateProjectPanel config message model =
             ( ProjectPanelExpanded, Cmd.none )
 
 
-mapProjectPanelItemsDraggingModel :
+mapProjectPanelItemsDragSort :
     (ProjectPanelItemsDragSort -> ProjectPanelItemsDragSort)
     -> ProjectPanel
     -> ProjectPanel
-mapProjectPanelItemsDraggingModel func model =
+mapProjectPanelItemsDragSort func model =
     case model of
         ProjectPanelItemsDragging draggingModel ->
             func draggingModel |> ProjectPanelItemsDragging
