@@ -67,6 +67,15 @@ projectPanelInitial =
     ProjectPanelExpanded ProjectPanelItemsNotDragging
 
 
+viewProjectPanel : List Project -> ProjectPanel -> List (Html msg)
+viewProjectPanel projectList model =
+    impl
+
+
+impl =
+    Debug.todo "impl"
+
+
 
 -- POPUP
 
