@@ -29,6 +29,7 @@ import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Px
 import Return
+import SelectList
 import Styles exposing (..)
 import Task
 import TodoDict exposing (TodoDict)
@@ -148,10 +149,40 @@ updateProjectPanelItem message model =
             , Cmd.none
             )
 
-        ProjectPanelItemDraggedOver idx project ->
+        ProjectPanelItemDraggedOver idx dragOverProject ->
             case model of
                 ProjectPanelItemsDragging draggingModel ->
-                    ( { draggingModel | dragOverIdx = idx, dragOverProject = project }
+                    let
+                        indexedProjectList =
+                            List.indexedMap Tuple.pair draggingModel.list
+
+                        dragIdx =
+                            indexedProjectList
+                                |> List.filter (Tuple.second >> (==) draggingModel.dragProject)
+                                |> List.head
+                                |> Maybe.map Tuple.first
+
+                        dragOverIdx =
+                            indexedProjectList
+                                |> List.filter (Tuple.second >> (==) dragOverProject)
+                                |> List.head
+                                |> Maybe.map Tuple.first
+
+                        rotateProjectList =
+                            Maybe.map2 rotateProjectList2 dragIdx dragOverIdx
+                                |> Maybe.withDefault draggingModel.list
+
+                        rotateProjectList2 dragI dragOverI =
+                            SelectList.fromList draggingModel.list
+                                |> Maybe.andThen (SelectList.selectBy dragI)
+                                |> Maybe.map (SelectList.moveBy (dragOverI - dragI) >> SelectList.toList)
+                                |> Maybe.withDefault draggingModel.list
+                    in
+                    ( { draggingModel
+                        | dragOverIdx = idx
+                        , dragOverProject = dragOverProject
+                        , list = rotateProjectList
+                      }
                         |> ProjectPanelItemsDragging
                     , Cmd.none
                     )
