@@ -639,9 +639,11 @@ update message model =
                     update (PopupTriggered panelItemId anchorId) model
 
         ProjectPanelMsg_ msg ->
-            updateProjectPanel { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged } msg model.projectPanel
-                |> Tuple.mapBoth (\projectPanel -> { model | projectPanel = projectPanel })
-                    identity
+            updateProjectPanel
+                { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
+                msg
+                model.projectPanel
+                |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
