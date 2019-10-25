@@ -112,7 +112,7 @@ type InitContext_2 item
     = Init_Step_2 (State item)
 
 
-getElement : InitContext item -> Task Dom.Error (InitContext_2 item)
-getElement (Init_Step_1 l i d p) =
+getDragElement : InitContext item -> Task Dom.Error (InitContext_2 item)
+getDragElement (Init_Step_1 l i d p) =
     Dom.getElement d
         |> Task.map (\el -> State l i el p p |> Init_Step_2)
