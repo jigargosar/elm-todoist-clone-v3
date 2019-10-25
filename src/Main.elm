@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, rotateListByElem, rotateListByIndices)
+import Basics.More exposing (flip, rotateListByElem)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Events
@@ -20,7 +20,6 @@ import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import Layout
-import List.Extra as List
 import Log exposing (logError)
 import Page exposing (Page)
 import Page.NotFound
@@ -32,7 +31,6 @@ import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Px
 import Return
-import SelectList
 import Styles exposing (..)
 import Task
 import TodoDict exposing (TodoDict)
@@ -53,7 +51,6 @@ type alias ProjectPanelItemsDraggingModel =
     { list : List Project
     , dragProject : Project
     , dragEl : Dom.Element
-    , dragOverProject : Project
     , start : Position
     , current : Position
     }
@@ -156,7 +153,6 @@ updateProjectPanelItem message model =
             ( ProjectPanelItemsDraggingModel projectList
                 project
                 dragEl
-                project
                 startPosition
                 startPosition
                 |> ProjectPanelItemsDragging
