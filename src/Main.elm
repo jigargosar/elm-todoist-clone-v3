@@ -105,7 +105,7 @@ projectPanelSubscriptions projectPanel =
                 ]
 
 
-updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd Msg )
+updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
 updateProjectPanel message model =
     case message of
         ProjectPanelHeaderClicked ->
@@ -117,7 +117,7 @@ updateProjectPanel message model =
         ProjectPanelItemDragged projectList project dragElDomId startPosition ->
             ( model
             , Dom.getElement dragElDomId
-                |> Task.attempt (ProjectPanelMsg_ << ProjectPanelItemDragged_2 projectList project startPosition)
+                |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
             )
 
         ProjectPanelItemDragged_2 projectList project startPosition dragElResult ->
@@ -615,7 +615,8 @@ update message model =
 
         ProjectPanelMsg_ msg ->
             updateProjectPanel msg model.projectPanel
-                |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
+                |> Tuple.mapBoth (\projectPanel -> { model | projectPanel = projectPanel })
+                    (Cmd.map ProjectPanelMsg_)
 
 
 onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
