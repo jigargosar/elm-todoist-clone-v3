@@ -124,7 +124,7 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDragged dragInitContext ->
             ( model
-            , DragSort.getDragElement dragInitContext
+            , DragSort.initStep1GetDragElement dragInitContext
                 |> Task.map ProjectPanelItemDragged_2
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform config.toMsg
@@ -134,7 +134,7 @@ updateProjectPanel config message model =
             ( model, logError error )
 
         ProjectPanelItemDragged_2 dragInitContext_2 ->
-            ( DragSort.init dragInitContext_2 |> ProjectPanelItemsDragging
+            ( DragSort.initStep_2 dragInitContext_2 |> ProjectPanelItemsDragging
             , Cmd.none
             )
 

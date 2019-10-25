@@ -27,8 +27,8 @@ type alias State item =
     }
 
 
-init : InitContext_2 item -> DragSort item
-init (InitContext_2 state) =
+initStep_2 : InitContext_2 item -> DragSort item
+initStep_2 (InitContext_2 state) =
     DragSort state
 
 
@@ -112,7 +112,7 @@ type InitContext_2 item
     = InitContext_2 (State item)
 
 
-getDragElement : InitContext item -> Task Dom.Error (InitContext_2 item)
-getDragElement (InitContext l i d p) =
+initStep1GetDragElement : InitContext item -> Task Dom.Error (InitContext_2 item)
+initStep1GetDragElement (InitContext l i d p) =
     Dom.getElement d
         |> Task.map (\el -> State l i el p p |> InitContext_2)
