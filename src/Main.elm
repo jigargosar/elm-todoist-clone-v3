@@ -236,17 +236,24 @@ viewProjectPanelItem projectList idx project =
 
 viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItemsDragged model =
-    List.indexedMap (viewProjectPanelItemDragged model) model.list
-
-
-viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Int -> Project -> Html ProjectPanelItemMsg
-viewProjectPanelItemDragged model idx project =
     let
-        projectPanelItemDragOverAttributes =
+        viewItemHelp idx project =
+            viewProjectPanelItemDragged (model.dragOverProject == project) idx project
+    in
+    List.indexedMap viewItemHelp model.list
+
+
+viewProjectPanelItemDragged : Bool -> Int -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemDragged isBeingDraggedOver idx project =
+    let
+        dragOverAttributes =
             [ E.onMouseOver (ProjectPanelItemDraggedOver idx project) ]
+
+        dragOverStyle =
+            styleIf isBeingDraggedOver [ hidden ]
     in
     div
-        (css [ lh 1.5, flex ] :: projectPanelItemDragOverAttributes)
+        (css [ lh 1.5, flex, dragOverStyle ] :: dragOverAttributes)
         [ div
             (css [ Px.p2 8 8, pointer ] :: [])
             [ text "DRAG_HANDLE" ]
