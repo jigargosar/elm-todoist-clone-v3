@@ -6,6 +6,7 @@ import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Events
 import Browser.Navigation as Nav
+import Css
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
@@ -261,23 +262,25 @@ viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html Proj
 viewProjectPanelItemsDragged model =
     let
         viewItemHelp project =
-            viewProjectPanelItemDragged (model.dragProject == project) project
+            viewProjectPanelItemDragged model project
     in
     List.map viewItemHelp model.list
 
 
-viewProjectPanelItemDragged : Bool -> Project -> Html ProjectPanelItemMsg
-viewProjectPanelItemDragged isBeingDraggedOver project =
+viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemDragged model project =
     let
-        dragOverAttributes =
-            if isBeingDraggedOver then
-                []
+        isBeingDraggedOver =
+            project == model.dragOverProject
 
-            else
-                [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
+        isBeingDragged =
+            project == model.dragProject
+
+        dragOverAttributes =
+            [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
 
         dragOverStyle =
-            styleIf isBeingDraggedOver [ hidden ]
+            styleIf isBeingDragged [ Css.opacity <| Css.zero ]
     in
     div
         (css [ lh 1.5, flex, dragOverStyle ] :: dragOverAttributes)
