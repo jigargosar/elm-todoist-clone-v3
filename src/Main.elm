@@ -72,6 +72,7 @@ type alias Model =
     , panelDrag : Maybe ( Drawer.Panel, Drag )
     , popup : Maybe ( PopupKind, Popper )
     , dialog : Maybe Dialog
+    , projectPanel : { isExpanded : Bool }
     }
 
 
@@ -93,6 +94,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
+            , projectPanel = { isExpanded = True }
             }
     in
     Return.singleton initial
