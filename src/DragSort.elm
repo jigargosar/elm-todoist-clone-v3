@@ -3,8 +3,8 @@ module DragSort exposing (..)
 import Basics.More exposing (eq_, flip, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
-import Html.Attributes as A
 import Html.Styled exposing (Attribute)
+import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 
