@@ -91,7 +91,7 @@ pageXYAsPositionDecoder =
 
 projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelMsg)
 projectPanelItemDragHandlerAttributes projectList idx =
-    [ E.stopPropagationOn "drag"
+    [ E.preventDefaultOn "drag"
         (JD.map (ProjectPanelItemDragged projectList idx) pageXYAsPositionDecoder
             |> JD.map (flip Tuple.pair True)
         )
