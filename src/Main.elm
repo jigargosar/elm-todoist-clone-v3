@@ -67,7 +67,7 @@ type ProjectPanel
     | ProjectPanelExpanded ProjectPanelItemsDrag
 
 
-projectPanelInitial =
+initialProjectPanel =
     ProjectPanelExpanded ProjectPanelItemsNotDragging
 
 
@@ -197,7 +197,7 @@ type alias Model =
     , panelDrag : Maybe ( Drawer.Panel, Drag )
     , popup : Maybe ( PopupKind, Popper )
     , dialog : Maybe Dialog
-    , projectPanel : { isExpanded : Bool }
+    , projectPanel : ProjectPanel
     }
 
 
@@ -219,7 +219,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
-            , projectPanel = { isExpanded = True }
+            , projectPanel = initialProjectPanel
             }
     in
     Return.singleton initial
@@ -349,6 +349,7 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
+    | ProjectPanelMsg_ ProjectPanelMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -489,6 +490,11 @@ update message model =
 
                 Drawer.More anchorId panelItemId ->
                     update (PopupTriggered panelItemId anchorId) model
+
+        ProjectPanelMsg_ msg ->
+            updateProjectPanel msg model.projectPanel
+                |> Tuple.mapBoth (\projectPanel -> { model | projectPanel = projectPanel })
+                    (Cmd.map ProjectPanelMsg_)
 
 
 onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
