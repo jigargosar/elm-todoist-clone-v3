@@ -203,7 +203,7 @@ viewProjectPanelItem projectList idx project =
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
 
-        dragHandlerAttrs : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
+        dragHandlerAttrs : (Position -> msg) -> List (Attribute msg)
         dragHandlerAttrs onDragStart =
             [ E.preventDefaultOn "dragstart"
                 (JD.map onDragStart pageXYAsPositionDecoder
