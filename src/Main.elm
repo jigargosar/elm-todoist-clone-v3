@@ -203,7 +203,7 @@ viewProjectPanel projectList model =
                     viewProjectPanelItems projectList
 
                 ProjectPanelItemsDragging itemsDraggingModel ->
-                    viewProjectPanelItemsDragged itemsDraggingModel
+                    viewProjectPanelItemsWhenDragActive itemsDraggingModel
               )
                 |> List.map (H.map ProjectPanelItemMsg_)
             ]
@@ -254,17 +254,17 @@ viewProjectPanelItem projectList idx project =
         ]
 
 
-viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
-viewProjectPanelItemsDragged model =
+viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
+viewProjectPanelItemsWhenDragActive model =
     let
         viewItemHelp project =
-            viewProjectPanelItemDragged model project
+            viewProjectPanelItemWhenDragActive model project
     in
     List.map viewItemHelp model.list
 
 
-viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelItemMsg
-viewProjectPanelItemDragged model project =
+viewProjectPanelItemWhenDragActive : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemWhenDragActive model project =
     let
         isBeingDragged =
             project == model.dragProject
