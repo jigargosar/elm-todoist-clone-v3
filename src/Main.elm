@@ -36,7 +36,7 @@ import Url exposing (Url)
 
 
 
--- PROJECT PANEL
+-- PROJECT PANEL MODEL
 
 
 type alias Position =
@@ -65,6 +65,22 @@ type ProjectPanel
 
 projectPanelInitial =
     ProjectPanelExpanded ProjectPanelItemsNotDragging
+
+
+
+-- PROJECT PANEL UPDATE
+
+
+type ProjectPanelMsg
+    = ProjectPanelHeaderClicked
+    | ProjectPanelAddClicked
+    | ProjectPanelItemDragged Position ProjectId
+    | ProjectPanelItemDragged_2 Position ProjectId (Result Dom.Error Dom.Element)
+    | ProjectPanelItemDraggedOver ProjectId
+
+
+
+-- PROJECT PANEL VIEW
 
 
 viewProjectPanel : List Project -> ProjectPanel -> List (Html msg)
