@@ -154,10 +154,7 @@ updateProjectPanelItem message model =
                             rotateListByElem dragProject dragOverProject list
                                 |> Maybe.withDefault list
                     in
-                    ( { draggingModel
-                        | dragOverProject = dragOverProject
-                        , list = newProjectList
-                      }
+                    ( { draggingModel | list = newProjectList }
                         |> ProjectPanelItemsDragging
                     , Cmd.none
                     )
