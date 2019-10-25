@@ -12,6 +12,7 @@ import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled as H exposing (Attribute, Html, toUnstyled)
+import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
@@ -94,6 +95,7 @@ projectPanelItemDragHandlerAttributes projectList idx =
         (JD.map (ProjectPanelItemDragged projectList idx) pageXYAsPositionDecoder
             |> JD.map (flip Tuple.pair True)
         )
+    , A.draggable "true"
     ]
 
 
