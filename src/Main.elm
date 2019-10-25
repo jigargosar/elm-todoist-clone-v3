@@ -97,16 +97,6 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-projectPanelItemDragHandlerAttributes : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
-projectPanelItemDragHandlerAttributes onDragStart =
-    [ E.preventDefaultOn "dragstart"
-        (JD.map onDragStart pageXYAsPositionDecoder
-            |> JD.map (flip Tuple.pair True)
-        )
-    , A.draggable "true"
-    ]
-
-
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
 updateProjectPanel message model =
     let
@@ -212,6 +202,15 @@ viewProjectPanelItem projectList idx project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
+
+        projectPanelItemDragHandlerAttributes : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
+        projectPanelItemDragHandlerAttributes onDragStart =
+            [ E.preventDefaultOn "dragstart"
+                (JD.map onDragStart pageXYAsPositionDecoder
+                    |> JD.map (flip Tuple.pair True)
+                )
+            , A.draggable "true"
+            ]
     in
     div
         [ A.id domId
