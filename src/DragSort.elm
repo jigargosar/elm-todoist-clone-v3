@@ -27,7 +27,7 @@ type alias State item =
     }
 
 
-init : Init_Step_2 item -> DragSort item
+init : InitPayload item -> DragSort item
 init (Init_Step_2 state) =
     DragSort state
 
@@ -89,11 +89,11 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-type Init_Step_1 item
+type InitTaskPayload item
     = Init_Step_1 (List item) item String Position
 
 
-dragHandle : (Init_Step_1 item -> msg) -> List item -> item -> String -> List (Attribute msg)
+dragHandle : (InitTaskPayload item -> msg) -> List item -> item -> String -> List (Attribute msg)
 dragHandle msg list_ item domId =
     let
         dragStartMsg : Position -> msg
@@ -108,11 +108,11 @@ dragHandle msg list_ item domId =
     ]
 
 
-type Init_Step_2 item
+type InitPayload item
     = Init_Step_2 (State item)
 
 
-dragInitTask : Init_Step_1 item -> Task Dom.Error (Init_Step_2 item)
-dragInitTask (Init_Step_1 l i d p) =
+initTask : InitTaskPayload item -> Task Dom.Error (InitPayload item)
+initTask (Init_Step_1 l i d p) =
     Dom.getElement d
         |> Task.map (\el -> State l i el p p |> Init_Step_2)

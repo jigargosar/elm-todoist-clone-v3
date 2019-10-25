@@ -72,8 +72,8 @@ type ProjectPanelMsg
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelLogError String
-    | ProjectPanelItemDragged (DragSort.Init_Step_1 Project)
-    | ProjectPanelItemDragged_2 (DragSort.Init_Step_2 Project)
+    | ProjectPanelItemDragged (DragSort.InitTaskPayload Project)
+    | ProjectPanelItemDragged_2 (DragSort.InitPayload Project)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
@@ -122,9 +122,9 @@ updateProjectPanel config message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemDragged dragInitPayload ->
+        ProjectPanelItemDragged dragInitTaskPayload ->
             ( model
-            , DragSort.dragInitTask dragInitPayload
+            , DragSort.initTask dragInitTaskPayload
                 |> Task.map ProjectPanelItemDragged_2
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform config.toMsg
