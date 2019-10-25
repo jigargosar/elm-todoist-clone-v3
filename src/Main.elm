@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Appbar
 import Browser exposing (UrlRequest)
+import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
@@ -58,8 +59,18 @@ type alias Flags =
 -- MODEL
 
 
+type alias Position =
+    { x : Int, y : Int }
+
+
 type alias ProjectPanelItemsDraggingModel =
-    { before : List Project, dragged : Project, after : List Project }
+    { before : List Project
+    , drag : Project
+    , after : List Project
+    , dragEl : Dom.Element
+    , start : Position
+    , current : Position
+    }
 
 
 type ProjectPanelItemsDrag
