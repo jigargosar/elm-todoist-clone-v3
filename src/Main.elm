@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, rotateListByElem)
+import Basics.More exposing (flip, msgToCmd, rotateListByElem)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Events
@@ -184,11 +184,6 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
-
-
-msgToCmd : a -> Cmd a
-msgToCmd =
-    Task.succeed >> Task.perform identity
 
 
 onDomErrorRecover : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg

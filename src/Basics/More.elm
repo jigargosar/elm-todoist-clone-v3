@@ -2,6 +2,7 @@ module Basics.More exposing (..)
 
 import List.Extra as List
 import SelectList
+import Task
 
 
 flip : (c -> b -> a) -> b -> c -> a
@@ -33,3 +34,8 @@ rotateListByElem fromEl toEl list =
         (List.elemIndex fromEl list)
         (List.elemIndex toEl list)
         |> Maybe.andThen identity
+
+
+msgToCmd : a -> Cmd a
+msgToCmd =
+    Task.succeed >> Task.perform identity
