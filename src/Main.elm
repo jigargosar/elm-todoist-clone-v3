@@ -44,9 +44,9 @@ type alias Position =
 
 
 type alias ProjectPanelItemsDraggingModel =
-    { before : List Project
-    , drag : Project
-    , after : List Project
+    { list : List Project
+    , dragIdx : Int
+    , dragOverIdx : Int
     , dragEl : Dom.Element
     , start : Position
     , current : Position
