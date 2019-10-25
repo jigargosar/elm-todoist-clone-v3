@@ -63,6 +63,10 @@ type ProjectPanel
     | ProjectPanelExpanded ProjectPanelItemsDrag
 
 
+projectPanelInitial =
+    ProjectPanelExpanded ProjectPanelItemsNotDragging
+
+
 
 -- POPUP
 
