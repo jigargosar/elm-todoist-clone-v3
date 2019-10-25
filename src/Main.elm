@@ -140,10 +140,10 @@ updateProjectPanel message model =
                     ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
         ProjectPanelItemDraggedOver dragOverProject ->
-            case model of
-                ProjectPanelItemsDragging draggingModel ->
+            ( mapProjectPanelItemsDraggingModel
+                (\draggingModel ->
                     if dragOverProject == draggingModel.dragProject then
-                        ( model, Cmd.none )
+                        draggingModel
 
                     else
                         let
@@ -151,16 +151,11 @@ updateProjectPanel message model =
                                 rotateListByElem draggingModel.dragProject dragOverProject draggingModel.list
                                     |> Maybe.withDefault draggingModel.list
                         in
-                        ( { draggingModel | list = newProjectList }
-                            |> ProjectPanelItemsDragging
-                        , Cmd.none
-                        )
-
-                ProjectPanelCollapsed ->
-                    ( model, Cmd.none )
-
-                ProjectPanelExpanded ->
-                    ( model, Cmd.none )
+                        { draggingModel | list = newProjectList }
+                )
+                model
+            , Cmd.none
+            )
 
         ProjectPanelItemDragComplete ->
             ( ProjectPanelExpanded, Cmd.none )
@@ -169,18 +164,27 @@ updateProjectPanel message model =
             ( ProjectPanelExpanded, Cmd.none )
 
         ProjectPanelItemDragMovedAt position ->
-            case model of
-                ProjectPanelItemsDragging draggingModel ->
-                    ( { draggingModel | current = position }
-                        |> ProjectPanelItemsDragging
-                    , Cmd.none
-                    )
+            ( mapProjectPanelItemsDraggingModel
+                (\draggingModel -> { draggingModel | current = position })
+                model
+            , Cmd.none
+            )
 
-                ProjectPanelCollapsed ->
-                    ( model, Cmd.none )
 
-                ProjectPanelExpanded ->
-                    ( model, Cmd.none )
+mapProjectPanelItemsDraggingModel :
+    (ProjectPanelItemsDraggingModel -> ProjectPanelItemsDraggingModel)
+    -> ProjectPanel
+    -> ProjectPanel
+mapProjectPanelItemsDraggingModel func model =
+    case model of
+        ProjectPanelItemsDragging draggingModel ->
+            func draggingModel |> ProjectPanelItemsDragging
+
+        ProjectPanelCollapsed ->
+            model
+
+        ProjectPanelExpanded ->
+            model
 
 
 
