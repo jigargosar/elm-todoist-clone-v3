@@ -11,8 +11,8 @@ import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Attribute, Html, div, toUnstyled)
-import Html.Styled.Attributes as A
+import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
+import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
@@ -29,9 +29,10 @@ import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
+import Px
 import Return
 import Route
-import Styles
+import Styles exposing (..)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -137,8 +138,16 @@ viewProjectPanelHeaderExpanded =
 
 
 viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
-viewProjectPanelItems =
-    impl
+viewProjectPanelItems projects =
+    List.indexedMap (viewProjectPanelItem projects) projects
+
+
+viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelMsg
+viewProjectPanelItem projectList idx project =
+    div [ css [ lh 1.5, flex ] ]
+        [ div [ css [ Px.p2 8 8 ] ] [ text "DRAG_HANDLE" ]
+        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
+        ]
 
 
 viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
