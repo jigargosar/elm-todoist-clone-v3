@@ -108,7 +108,8 @@ projectPanelSubscriptions projectPanel =
                     Sub.none
 
                 ProjectPanelItemsDragging _ ->
-                    Browser.Events.onMouseUp <| JD.succeed (ProjectPanelItemMsg_ ProjectPanelItemDragComplete)
+                    Sub.batch [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete) ]
+                        |> Sub.map ProjectPanelItemMsg_
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
