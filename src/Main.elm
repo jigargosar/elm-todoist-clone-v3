@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, rotateList)
+import Basics.More exposing (flip, rotateListByIndices)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
@@ -151,7 +151,7 @@ updateProjectPanelItem message model =
                 ProjectPanelItemsDragging ({ list, dragProject } as draggingModel) ->
                     let
                         newProjectList =
-                            Maybe.map2 (\from to -> rotateList from to list)
+                            Maybe.map2 (\from to -> rotateListByIndices from to list)
                                 (List.elemIndex dragProject list)
                                 (List.elemIndex dragOverProject list)
                                 |> Maybe.andThen identity

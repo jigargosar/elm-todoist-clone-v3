@@ -18,8 +18,8 @@ swap ( a, b ) =
     ( b, a )
 
 
-rotateList : Int -> Int -> List a -> Maybe (List a)
-rotateList from to list =
+rotateListByIndices : Int -> Int -> List a -> Maybe (List a)
+rotateListByIndices from to list =
     list
         |> SelectList.fromList
         >> Maybe.andThen (SelectList.selectBy from)
