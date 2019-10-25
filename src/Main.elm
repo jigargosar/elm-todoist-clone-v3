@@ -76,7 +76,7 @@ type ProjectPanelMsg
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelItemDragged (List Project) Project String Position
-    | ProjectPanelItemDraggedError Dom.Error
+    | ProjectPanelLogError String
     | ProjectPanelItemDragged_2 (List Project) Project Position Dom.Element
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
@@ -123,12 +123,12 @@ updateProjectPanel message model =
             ( model
             , Dom.getElement dragElDomId
                 |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
-                |> Task.onError (ProjectPanelItemDraggedError >> Task.succeed)
+                |> Task.onError (\_ -> "ProjectPanelItemDragged_2 Dom.NotFound: " ++ dragElDomId |> ProjectPanelLogError |> Task.succeed)
                 |> Task.perform identity
             )
 
-        ProjectPanelItemDraggedError (Dom.NotFound domId) ->
-            ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
+        ProjectPanelLogError error ->
+            ( model, logError error )
 
         ProjectPanelItemDragged_2 projectList project startPosition dragEl ->
             ( ProjectPanelItemsDraggingModel projectList
