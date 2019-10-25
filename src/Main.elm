@@ -442,6 +442,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
+        , projectPanelSubscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
         ]
 
 
