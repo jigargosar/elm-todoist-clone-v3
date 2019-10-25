@@ -107,10 +107,6 @@ projectPanelSubscriptions projectPanel =
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd Msg )
 updateProjectPanel message model =
-    let
-        _ =
-            Debug.log "updateProjectPanel" ( message, model )
-    in
     case message of
         ProjectPanelHeaderClicked ->
             ( model, Cmd.none )
