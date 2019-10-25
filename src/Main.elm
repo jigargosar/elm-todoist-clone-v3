@@ -79,6 +79,7 @@ type ProjectPanelItemMsg
     = ProjectPanelItemDragged (List Project) Project String Position
     | ProjectPanelItemDragged_2 (List Project) Project Position (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Project
+    | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
 
@@ -108,7 +109,10 @@ projectPanelSubscriptions projectPanel =
                     Sub.none
 
                 ProjectPanelItemsDragging _ ->
-                    Sub.batch [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete) ]
+                    Sub.batch
+                        [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete)
+                        , Browser.Events.onMouseMove (JD.map ProjectPanelItemDragMovedAt pageXYAsPositionDecoder)
+                        ]
                         |> Sub.map ProjectPanelItemMsg_
 
 
@@ -147,7 +151,7 @@ updateProjectPanelItem message model =
                 |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
             )
 
-        ProjectPanelItemDragged_2 projectList project startPosition (Err (Dom.NotFound domId)) ->
+        ProjectPanelItemDragged_2 _ _ _ (Err (Dom.NotFound domId)) ->
             ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
         ProjectPanelItemDragged_2 projectList project startPosition (Ok dragEl) ->
@@ -185,6 +189,17 @@ updateProjectPanelItem message model =
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelItemsNotDragging, Cmd.none )
+
+        ProjectPanelItemDragMovedAt position ->
+            case model of
+                ProjectPanelItemsDragging draggingModel ->
+                    ( { draggingModel | current = position }
+                        |> ProjectPanelItemsDragging
+                    , Cmd.none
+                    )
+
+                ProjectPanelItemsNotDragging ->
+                    ( model, Cmd.none )
 
 
 
