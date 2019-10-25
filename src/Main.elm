@@ -153,7 +153,7 @@ viewProjectPanelItem projectList idx project =
 
 viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
 viewProjectPanelItemsDragged model =
-    impl
+    []
 
 
 impl =
@@ -630,7 +630,12 @@ view model =
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
-        , main = pageView model
+        , main =
+            [ viewProjectPanel [] model.projectPanel
+                |> List.map (H.map ProjectPanelMsg_)
+            , pageView model
+            ]
+                |> List.concat
         , modal = popupView model ++ dialogView model ++ panelDragView model
         }
         model.isDrawerModalOpen
