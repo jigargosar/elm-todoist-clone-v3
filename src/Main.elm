@@ -67,6 +67,7 @@ type ProjectPanel
     | ProjectPanelExpanded ProjectPanelItemsDrag
 
 
+initialProjectPanel : ProjectPanel
 initialProjectPanel =
     ProjectPanelExpanded ProjectPanelItemsNotDragging
 
@@ -101,8 +102,8 @@ projectPanelItemDragHandlerAttributes projectList idx =
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
-updateProjectPanel =
-    impl
+updateProjectPanel message model =
+    ( model, Cmd.none )
 
 
 
