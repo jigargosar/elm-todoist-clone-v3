@@ -108,8 +108,28 @@ updateProjectPanel =
 -- PROJECT PANEL VIEW
 
 
-viewProjectPanel : List Project -> ProjectPanel -> List (Html msg)
+viewProjectPanel : List Project -> ProjectPanel -> List (Html ProjectPanelMsg)
 viewProjectPanel projectList model =
+    case model of
+        ProjectPanelCollapsed ->
+            viewProjectPanelHeaderCollapsed
+
+        ProjectPanelExpanded itemsDragModel ->
+            case itemsDragModel of
+                ProjectPanelItemsNotDragging ->
+                    viewProjectPanelItems projectList
+
+                ProjectPanelItemsDragging itemsDraggingModel ->
+                    viewProjectPanelItems itemsDraggingModel.list
+
+
+viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
+viewProjectPanelHeaderCollapsed =
+    impl
+
+
+viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
+viewProjectPanelItems =
     impl
 
 
