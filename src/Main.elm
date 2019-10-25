@@ -32,7 +32,7 @@ import ProjectRef exposing (ProjectRef)
 import Px
 import Return
 import Styles exposing (..)
-import Task
+import Task exposing (Task)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -123,7 +123,7 @@ updateProjectPanel message model =
             ( model
             , Dom.getElement dragElDomId
                 |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
-                |> Task.onError (\_ -> "ProjectPanelItemDragged_2 Dom.NotFound: " ++ dragElDomId |> ProjectPanelLogError |> Task.succeed)
+                |> mapDomError "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform identity
             )
 
@@ -170,6 +170,19 @@ updateProjectPanel message model =
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
+
+
+mapDomError : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
+mapDomError logPrefix logMsg =
+    Task.onError
+        (\(Dom.NotFound id) ->
+            logPrefix
+                ++ ": Dom.NotFound \""
+                ++ id
+                ++ "\""
+                |> logMsg
+                |> Task.succeed
+        )
 
 
 mapProjectPanelItemsDraggingModel :
