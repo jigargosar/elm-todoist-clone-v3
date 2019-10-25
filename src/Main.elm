@@ -58,6 +58,16 @@ type alias Flags =
 -- MODEL
 
 
+type ProjectPanelItemsDrag
+    = ProjectPanelItemsNotDragging
+    | ProjectPanelItemsDragging { before : List Project, dragged : Project, after : List Project }
+
+
+type ProjectPanel
+    = ProjectPanelCollapsed
+    | ProjectPanelExpanded ProjectPanelItemsDrag
+
+
 type alias Model =
     { page : Page
     , navKey : Nav.Key
