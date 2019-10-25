@@ -203,8 +203,8 @@ viewProjectPanelItem projectList idx project =
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
 
-        projectPanelItemDragHandlerAttributes : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
-        projectPanelItemDragHandlerAttributes onDragStart =
+        dragHandlerAttrs : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
+        dragHandlerAttrs onDragStart =
             [ E.preventDefaultOn "dragstart"
                 (JD.map onDragStart pageXYAsPositionDecoder
                     |> JD.map (flip Tuple.pair True)
@@ -218,8 +218,7 @@ viewProjectPanelItem projectList idx project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: projectPanelItemDragHandlerAttributes
-                    (ProjectPanelItemDragged projectList idx project domId)
+                :: dragHandlerAttrs (ProjectPanelItemDragged projectList idx project domId)
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
