@@ -229,7 +229,22 @@ viewProjectPanelItem projectList idx project =
 
 viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItemsDragged model =
-    []
+    List.indexedMap (viewProjectPanelItemDragged model) model.list
+
+
+viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Int -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemDragged model idx project =
+    let
+        projectPanelItemDragOverAttributes =
+            []
+    in
+    div
+        (css [ lh 1.5, flex ] :: projectPanelItemDragOverAttributes)
+        [ div
+            (css [ Px.p2 8 8, pointer ] :: [])
+            [ text "DRAG_HANDLE" ]
+        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
+        ]
 
 
 
