@@ -9,6 +9,7 @@ import Browser.Navigation as Nav
 import Css
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
+import DragSort exposing (DragSort)
 import Drawer
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
@@ -47,19 +48,14 @@ type alias Position =
     { x : Int, y : Int }
 
 
-type alias ProjectPanelItemsDraggingModel =
-    { list : List Project
-    , dragProject : Project
-    , dragEl : Dom.Element
-    , start : Position
-    , current : Position
-    }
+type alias ProjectPanelItemsDragSort =
+    DragSort Project
 
 
 type ProjectPanel
     = ProjectPanelCollapsed
     | ProjectPanelExpanded
-    | ProjectPanelItemsDragging ProjectPanelItemsDraggingModel
+    | ProjectPanelItemsDragging ProjectPanelItemsDragSort
 
 
 initialProjectPanel : ProjectPanel
@@ -137,7 +133,7 @@ updateProjectPanel config message model =
             ( model, logError error )
 
         ProjectPanelItemDragged_2 projectList project startPosition dragEl ->
-            ( ProjectPanelItemsDraggingModel projectList
+            ( DragSort projectList
                 project
                 dragEl
                 startPosition
@@ -148,17 +144,17 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDraggedOver dragOverProject ->
             ( mapProjectPanelItemsDraggingModel
-                (\draggingModel ->
-                    if dragOverProject == draggingModel.dragProject then
-                        draggingModel
+                (\dragSort ->
+                    if dragOverProject == dragSort.drag then
+                        dragSort
 
                     else
                         let
                             newProjectList =
-                                rotateListByElem draggingModel.dragProject dragOverProject draggingModel.list
-                                    |> Maybe.withDefault draggingModel.list
+                                rotateListByElem dragSort.drag dragOverProject dragSort.list
+                                    |> Maybe.withDefault dragSort.list
                         in
-                        { draggingModel | list = newProjectList }
+                        { dragSort | list = newProjectList }
                 )
                 model
             , Cmd.none
@@ -187,7 +183,7 @@ updateProjectPanel config message model =
 
 
 mapProjectPanelItemsDraggingModel :
-    (ProjectPanelItemsDraggingModel -> ProjectPanelItemsDraggingModel)
+    (ProjectPanelItemsDragSort -> ProjectPanelItemsDragSort)
     -> ProjectPanel
     -> ProjectPanel
 mapProjectPanelItemsDraggingModel func model =
@@ -269,7 +265,7 @@ viewProjectPanelItem projectList project =
         ]
 
 
-viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
+viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDragSort -> List (Html ProjectPanelMsg)
 viewProjectPanelItemsWhenDragActive model =
     let
         viewItemHelp project =
@@ -278,11 +274,11 @@ viewProjectPanelItemsWhenDragActive model =
     List.map viewItemHelp model.list
 
 
-viewProjectPanelItemWhenDragActive : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelMsg
+viewProjectPanelItemWhenDragActive : ProjectPanelItemsDragSort -> Project -> Html ProjectPanelMsg
 viewProjectPanelItemWhenDragActive model project =
     let
         isBeingDragged =
-            project == model.dragProject
+            project == model.drag
 
         dragOverAttributes =
             [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
