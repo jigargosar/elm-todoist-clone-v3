@@ -136,7 +136,7 @@ updateProjectPanelItem :
     -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
     case message of
-        ProjectPanelItemDragged projectList idx project domId startPosition ->
+        ProjectPanelItemDragged projectList idx project dragElDomId startPosition ->
             ( model, Cmd.none )
 
         ProjectPanelItemDragged_2 position int result ->
