@@ -1,5 +1,7 @@
 module Basics.More exposing (..)
 
+import SelectList
+
 
 flip : (c -> b -> a) -> b -> c -> a
 flip func b a =
@@ -14,3 +16,11 @@ memberAt idx =
 swap : ( a, b ) -> ( b, a )
 swap ( a, b ) =
     ( b, a )
+
+
+rotateList : Int -> Int -> List a -> Maybe (List a)
+rotateList from to list =
+    list
+        |> SelectList.fromList
+        >> Maybe.andThen (SelectList.selectBy from)
+        >> Maybe.map (SelectList.moveBy (to - from) >> SelectList.toList)
