@@ -71,19 +71,15 @@ initialProjectPanel =
 -- PROJECT PANEL UPDATE
 
 
-type ProjectPanelItemMsg
-    = ProjectPanelItemDragged (List Project) Project String Position
+type ProjectPanelMsg
+    = ProjectPanelHeaderClicked
+    | ProjectPanelAddClicked
+    | ProjectPanelItemDragged (List Project) Project String Position
     | ProjectPanelItemDragged_2 (List Project) Project Position (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
-
-
-type ProjectPanelMsg
-    = ProjectPanelHeaderClicked
-    | ProjectPanelAddClicked
-    | ProjectPanelItemMsg_ ProjectPanelItemMsg
 
 
 pageXYAsPositionDecoder : Decoder Position
@@ -107,7 +103,6 @@ projectPanelSubscriptions projectPanel =
                 [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete)
                 , Browser.Events.onMouseMove (JD.map ProjectPanelItemDragMovedAt pageXYAsPositionDecoder)
                 ]
-                |> Sub.map ProjectPanelItemMsg_
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
@@ -123,17 +118,6 @@ updateProjectPanel message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemMsg_ msg ->
-            updateProjectPanelItem msg model
-                |> Tuple.mapBoth identity (Cmd.map ProjectPanelItemMsg_)
-
-
-updateProjectPanelItem :
-    ProjectPanelItemMsg
-    -> ProjectPanel
-    -> ( ProjectPanel, Cmd ProjectPanelItemMsg )
-updateProjectPanelItem message model =
-    case message of
         ProjectPanelItemDragged projectList project dragElDomId startPosition ->
             ( model
             , Dom.getElement dragElDomId
@@ -212,14 +196,12 @@ viewProjectPanel projectList model =
         ProjectPanelItemsDragging itemsDraggingModel ->
             [ viewProjectPanelHeaderExpanded
             , viewProjectPanelItemsWhenDragActive itemsDraggingModel
-                |> List.map (H.map ProjectPanelItemMsg_)
             ]
                 |> List.concat
 
         ProjectPanelExpanded ->
             [ viewProjectPanelHeaderExpanded
             , viewProjectPanelItems projectList
-                |> List.map (H.map ProjectPanelItemMsg_)
             ]
                 |> List.concat
 
@@ -234,7 +216,7 @@ viewProjectPanelHeaderExpanded =
     []
 
 
-viewProjectPanelItems : List Project -> List (Html ProjectPanelItemMsg)
+viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
 viewProjectPanelItems projects =
     List.map (viewProjectPanelItem projects) projects
 
@@ -249,7 +231,7 @@ dragHandlerAttrs onDragStart =
     ]
 
 
-viewProjectPanelItem : List Project -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItem : List Project -> Project -> Html ProjectPanelMsg
 viewProjectPanelItem projectList project =
     let
         domId =
@@ -268,7 +250,7 @@ viewProjectPanelItem projectList project =
         ]
 
 
-viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
+viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
 viewProjectPanelItemsWhenDragActive model =
     let
         viewItemHelp project =
@@ -277,7 +259,7 @@ viewProjectPanelItemsWhenDragActive model =
     List.map viewItemHelp model.list
 
 
-viewProjectPanelItemWhenDragActive : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelItemMsg
+viewProjectPanelItemWhenDragActive : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelMsg
 viewProjectPanelItemWhenDragActive model project =
     let
         isBeingDragged =
