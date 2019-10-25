@@ -115,18 +115,24 @@ viewProjectPanel projectList model =
             viewProjectPanelHeaderCollapsed
 
         ProjectPanelExpanded itemsDragModel ->
-            viewProjectPanelHeaderCollapsed
-                ++ (case itemsDragModel of
-                        ProjectPanelItemsNotDragging ->
-                            viewProjectPanelItems projectList
+            [ viewProjectPanelHeaderExpanded
+            , case itemsDragModel of
+                ProjectPanelItemsNotDragging ->
+                    viewProjectPanelItems projectList
 
-                        ProjectPanelItemsDragging itemsDraggingModel ->
-                            viewProjectPanelItems itemsDraggingModel.list
-                   )
+                ProjectPanelItemsDragging itemsDraggingModel ->
+                    viewProjectPanelItems itemsDraggingModel.list
+            ]
+                |> List.concat
 
 
 viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
 viewProjectPanelHeaderCollapsed =
+    []
+
+
+viewProjectPanelHeaderExpanded : List (Html ProjectPanelMsg)
+viewProjectPanelHeaderExpanded =
     []
 
 
