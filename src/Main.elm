@@ -157,18 +157,18 @@ updateProjectPanel message model =
             , Cmd.none
             )
 
-        ProjectPanelItemDragComplete ->
-            ( ProjectPanelExpanded, Cmd.none )
-
-        ProjectPanelItemDragCanceled ->
-            ( ProjectPanelExpanded, Cmd.none )
-
         ProjectPanelItemDragMovedAt position ->
             ( mapProjectPanelItemsDraggingModel
                 (\draggingModel -> { draggingModel | current = position })
                 model
             , Cmd.none
             )
+
+        ProjectPanelItemDragComplete ->
+            ( ProjectPanelExpanded, Cmd.none )
+
+        ProjectPanelItemDragCanceled ->
+            ( ProjectPanelExpanded, Cmd.none )
 
 
 mapProjectPanelItemsDraggingModel :
