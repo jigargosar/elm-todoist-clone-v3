@@ -645,6 +645,7 @@ update message model =
             updateProjectSortOrder projectList model
 
 
+updateProjectPanel_ : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
 updateProjectPanel_ msg model =
     updateProjectPanel
         { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
