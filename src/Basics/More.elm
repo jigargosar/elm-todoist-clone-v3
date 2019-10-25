@@ -53,3 +53,7 @@ onDomErrorRecover logPrefix logMsg =
                 |> logMsg
                 |> Task.succeed
         )
+
+
+eq_ =
+    (==)

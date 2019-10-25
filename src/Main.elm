@@ -133,11 +133,13 @@ updateProjectPanel config message model =
             ( model, logError error )
 
         ProjectPanelItemDragged_2 projectList project startPosition dragEl ->
-            ( DragSort projectList
-                project
-                dragEl
-                startPosition
-                startPosition
+            ( DragSort.init
+                { list = projectList
+                , drag = project
+                , dragEl = dragEl
+                , start = startPosition
+                , current = startPosition
+                }
                 |> ProjectPanelItemsDragging
             , Cmd.none
             )
@@ -164,8 +166,8 @@ updateProjectPanel config message model =
                 ProjectPanelExpanded ->
                     ( model, Cmd.none )
 
-                ProjectPanelItemsDragging { list } ->
-                    ( ProjectPanelExpanded, config.projectOrderChanged list |> msgToCmd )
+                ProjectPanelItemsDragging dragSort ->
+                    ( ProjectPanelExpanded, config.projectOrderChanged (DragSort.list dragSort) |> msgToCmd )
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
@@ -255,19 +257,19 @@ viewProjectPanelItem projectList project =
 
 
 viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDragSort -> List (Html ProjectPanelMsg)
-viewProjectPanelItemsWhenDragActive model =
+viewProjectPanelItemsWhenDragActive dragSort =
     let
         viewItemHelp project =
-            viewProjectPanelItemWhenDragActive model project
+            viewProjectPanelItemWhenDragActive dragSort project
     in
-    List.map viewItemHelp model.list
+    List.map viewItemHelp (DragSort.list dragSort)
 
 
 viewProjectPanelItemWhenDragActive : ProjectPanelItemsDragSort -> Project -> Html ProjectPanelMsg
-viewProjectPanelItemWhenDragActive model project =
+viewProjectPanelItemWhenDragActive dragSort project =
     let
         isBeingDragged =
-            project == model.drag
+            DragSort.isBeingDragged project dragSort
 
         dragOverAttributes =
             [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
