@@ -11,7 +11,7 @@ import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Attribute, Html, toUnstyled)
+import Html.Styled as H exposing (Attribute, Html, div, toUnstyled)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
@@ -115,17 +115,19 @@ viewProjectPanel projectList model =
             viewProjectPanelHeaderCollapsed
 
         ProjectPanelExpanded itemsDragModel ->
-            case itemsDragModel of
-                ProjectPanelItemsNotDragging ->
-                    viewProjectPanelItems projectList
+            viewProjectPanelHeaderCollapsed
+                ++ (case itemsDragModel of
+                        ProjectPanelItemsNotDragging ->
+                            viewProjectPanelItems projectList
 
-                ProjectPanelItemsDragging itemsDraggingModel ->
-                    viewProjectPanelItems itemsDraggingModel.list
+                        ProjectPanelItemsDragging itemsDraggingModel ->
+                            viewProjectPanelItems itemsDraggingModel.list
+                   )
 
 
 viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
 viewProjectPanelHeaderCollapsed =
-    impl
+    []
 
 
 viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
