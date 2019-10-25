@@ -28,3 +28,8 @@ sortOnDragOver dragOver model =
                     |> Maybe.withDefault model.list
         in
         { model | list = newProjectList }
+
+
+setCurrent : Position -> DragSort item -> DragSort item
+setCurrent position model =
+    { model | current = position }

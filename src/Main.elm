@@ -151,7 +151,7 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDragMovedAt position ->
             ( mapProjectPanelItemsDraggingModel
-                (\draggingModel -> { draggingModel | current = position })
+                (DragSort.setCurrent position)
                 model
             , Cmd.none
             )
