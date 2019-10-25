@@ -76,14 +76,18 @@ initialProjectPanel =
 -- PROJECT PANEL UPDATE
 
 
-type ProjectPanelMsg
-    = ProjectPanelHeaderClicked
-    | ProjectPanelAddClicked
-    | ProjectPanelItemDragged (List Project) Int Position
+type ProjectPanelItemMsg
+    = ProjectPanelItemDragged (List Project) Int Position
     | ProjectPanelItemDragged_2 Position Int (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
+
+
+type ProjectPanelMsg
+    = ProjectPanelHeaderClicked
+    | ProjectPanelAddClicked
+    | ProjectPanelItemMsg_ ProjectPanelItemMsg
 
 
 pageXYAsPositionDecoder : Decoder Position
@@ -93,7 +97,7 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelMsg)
+projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelItemMsg)
 projectPanelItemDragHandlerAttributes projectList idx =
     [ E.preventDefaultOn "dragstart"
         (JD.map (ProjectPanelItemDragged projectList idx) pageXYAsPositionDecoder
@@ -116,20 +120,22 @@ updateProjectPanel message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemDragged list int position ->
-            ( model, Cmd.none )
+        ProjectPanelItemMsg_ msg ->
+            case model of
+                ProjectPanelCollapsed ->
+                    ( model, Cmd.none )
 
-        ProjectPanelItemDragged_2 position int result ->
-            ( model, Cmd.none )
+                ProjectPanelExpanded projectPanelItemsDrag ->
+                    updateProjectPanelItem msg projectPanelItemsDrag
+                        |> Tuple.mapBoth ProjectPanelExpanded (Cmd.map ProjectPanelItemMsg_)
 
-        ProjectPanelItemDraggedOver int ->
-            ( model, Cmd.none )
 
-        ProjectPanelItemDragComplete ->
-            ( model, Cmd.none )
-
-        ProjectPanelItemDragCanceled ->
-            ( model, Cmd.none )
+updateProjectPanelItem :
+    ProjectPanelItemMsg
+    -> ProjectPanelItemsDrag
+    -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
+updateProjectPanelItem message model =
+    ( model, Cmd.none )
 
 
 
@@ -144,12 +150,14 @@ viewProjectPanel projectList model =
 
         ProjectPanelExpanded itemsDragModel ->
             [ viewProjectPanelHeaderExpanded
-            , case itemsDragModel of
+            , (case itemsDragModel of
                 ProjectPanelItemsNotDragging ->
                     viewProjectPanelItems projectList
 
                 ProjectPanelItemsDragging itemsDraggingModel ->
                     viewProjectPanelItemsDragged itemsDraggingModel
+              )
+                |> List.map (H.map ProjectPanelItemMsg_)
             ]
                 |> List.concat
 
@@ -164,12 +172,12 @@ viewProjectPanelHeaderExpanded =
     []
 
 
-viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
+viewProjectPanelItems : List Project -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItems projects =
     List.indexedMap (viewProjectPanelItem projects) projects
 
 
-viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelMsg
+viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelItemMsg
 viewProjectPanelItem projectList idx project =
     div [ css [ lh 1.5, flex ] ]
         [ div
@@ -179,7 +187,7 @@ viewProjectPanelItem projectList idx project =
         ]
 
 
-viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelMsg)
+viewProjectPanelItemsDragged : ProjectPanelItemsDraggingModel -> List (Html ProjectPanelItemMsg)
 viewProjectPanelItemsDragged model =
     []
 
