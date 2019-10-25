@@ -4,6 +4,7 @@ import Appbar
 import Basics.More exposing (flip, rotateListByElem, rotateListByIndices)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
+import Browser.Events
 import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
@@ -95,6 +96,21 @@ pageXYAsPositionDecoder =
     JD.map2 Position
         (JD.field "pageX" JD.int)
         (JD.field "pageY" JD.int)
+
+
+projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
+projectPanelSubscriptions projectPanel =
+    case projectPanel of
+        ProjectPanelCollapsed ->
+            Sub.none
+
+        ProjectPanelExpanded projectPanelItemsDrag ->
+            case projectPanelItemsDrag of
+                ProjectPanelItemsNotDragging ->
+                    Sub.none
+
+                ProjectPanelItemsDragging _ ->
+                    Browser.Events.onMouseUp <| JD.succeed (ProjectPanelItemMsg_ ProjectPanelItemDragComplete)
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
