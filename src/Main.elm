@@ -77,7 +77,7 @@ initialProjectPanel =
 
 
 type ProjectPanelItemMsg
-    = ProjectPanelItemDragged (List Project) Int Position
+    = ProjectPanelItemDragged (List Project) Int String Position
     | ProjectPanelItemDragged_2 Position Int (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
@@ -97,10 +97,10 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelItemMsg)
-projectPanelItemDragHandlerAttributes projectList idx =
+projectPanelItemDragHandlerAttributes : (Position -> ProjectPanelItemMsg) -> List (Attribute ProjectPanelItemMsg)
+projectPanelItemDragHandlerAttributes onDragStart =
     [ E.preventDefaultOn "dragstart"
-        (JD.map (ProjectPanelItemDragged projectList idx) pageXYAsPositionDecoder
+        (JD.map onDragStart pageXYAsPositionDecoder
             |> JD.map (flip Tuple.pair True)
         )
     , A.draggable "true"
@@ -136,7 +136,7 @@ updateProjectPanelItem :
     -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
     case message of
-        ProjectPanelItemDragged projectList idx start ->
+        ProjectPanelItemDragged projectList idx start domId ->
             ( model, Cmd.none )
 
         ProjectPanelItemDragged_2 position int result ->
@@ -193,9 +193,19 @@ viewProjectPanelItems projects =
 
 viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelItemMsg
 viewProjectPanelItem projectList idx project =
-    div [ css [ lh 1.5, flex ] ]
+    let
+        domId =
+            "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
+    in
+    div
+        [ A.id domId
+        , css [ lh 1.5, flex ]
+        ]
         [ div
-            (css [ Px.p2 8 8, pointer ] :: projectPanelItemDragHandlerAttributes projectList idx)
+            (css [ Px.p2 8 8, pointer ]
+                :: projectPanelItemDragHandlerAttributes
+                    (ProjectPanelItemDragged projectList idx domId)
+            )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
         ]
