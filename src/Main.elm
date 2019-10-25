@@ -631,7 +631,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
         , main =
-            [ viewProjectPanel [] model.projectPanel
+            [ viewProjectPanel (ProjectCollection.sorted model.projectCollection) model.projectPanel
                 |> List.map (H.map ProjectPanelMsg_)
             , pageView model
             ]
