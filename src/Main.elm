@@ -659,8 +659,12 @@ handleProjectPanelMsg msg model =
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
+mapProjectCollection func model =
+    { model | projectCollection = func model.projectCollection }
+
+
 updateProjectSortOrder projectList model =
-    ( { model | projectCollection = ProjectCollection.updateSortOrder projectList model.projectCollection }
+    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
     , Cmd.none
     )
 
