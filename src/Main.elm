@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Appbar
+import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
@@ -10,8 +11,9 @@ import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Html, toUnstyled)
-import Json.Decode as JD
+import Html.Styled as H exposing (Attribute, Html, toUnstyled)
+import Html.Styled.Events as E
+import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
@@ -79,6 +81,20 @@ type ProjectPanelMsg
     | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
+
+
+pageXYAsPositionDecoder : Decoder Position
+pageXYAsPositionDecoder =
+    impl
+
+
+projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelMsg)
+projectPanelItemDragHandlerAttributes projectList idx =
+    [ E.stopPropagationOn "drag"
+        (JD.map (ProjectPanelItemDragged projectList idx) pageXYAsPositionDecoder
+            |> JD.map (flip Tuple.pair True)
+        )
+    ]
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
