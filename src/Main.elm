@@ -645,10 +645,15 @@ update message model =
             updateProjectSortOrder projectList model
 
 
+projectPanelConfig : ProjectPanelConfig Msg
+projectPanelConfig =
+    { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
+
+
 updateProjectPanel_ : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
 updateProjectPanel_ msg model =
     updateProjectPanel
-        { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
+        projectPanelConfig
         msg
         model.projectPanel
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
