@@ -1,8 +1,9 @@
 module Basics.More exposing (..)
 
+import Browser.Dom as Dom
 import List.Extra as List
 import SelectList
-import Task
+import Task exposing (Task)
 
 
 flip : (c -> b -> a) -> b -> c -> a
@@ -39,3 +40,16 @@ rotateListByElem fromEl toEl list =
 msgToCmd : a -> Cmd a
 msgToCmd =
     Task.succeed >> Task.perform identity
+
+
+onDomErrorRecover : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
+onDomErrorRecover logPrefix logMsg =
+    Task.onError
+        (\(Dom.NotFound id) ->
+            logPrefix
+                ++ ": Dom.NotFound \""
+                ++ id
+                ++ "\""
+                |> logMsg
+                |> Task.succeed
+        )

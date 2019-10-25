@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, msgToCmd, rotateListByElem)
+import Basics.More exposing (flip, msgToCmd, onDomErrorRecover, rotateListByElem)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Events
@@ -184,19 +184,6 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
-
-
-onDomErrorRecover : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
-onDomErrorRecover logPrefix logMsg =
-    Task.onError
-        (\(Dom.NotFound id) ->
-            logPrefix
-                ++ ": Dom.NotFound \""
-                ++ id
-                ++ "\""
-                |> logMsg
-                |> Task.succeed
-        )
 
 
 mapProjectPanelItemsDraggingModel :
