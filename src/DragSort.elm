@@ -88,26 +88,16 @@ pageXYAsPositionDecoder =
         (JD.field "pageY" JD.int)
 
 
-dragHandleAttrsHelp : (Position -> msg) -> List (Attribute msg)
-dragHandleAttrsHelp onDragStart =
-    [ E.preventDefaultOn "dragstart"
-        (JD.map onDragStart pageXYAsPositionDecoder
-            |> JD.map (flip Tuple.pair True)
-        )
-    , A.draggable "true"
-    ]
+type DragStartMsg item
+    = DragStartMsg (List item) item String Position
 
 
-type DragHandle item
-    = DragHandle (List item) item String Position
-
-
-dragHandle : (DragHandle item -> msg) -> List item -> item -> String -> List (Attribute msg)
+dragHandle : (DragStartMsg item -> msg) -> List item -> item -> String -> List (Attribute msg)
 dragHandle msg list_ item domId =
     let
         dragStartMsg : Position -> msg
         dragStartMsg =
-            DragHandle list_ item domId >> msg
+            DragStartMsg list_ item domId >> msg
     in
     [ E.preventDefaultOn "dragstart"
         (JD.map dragStartMsg pageXYAsPositionDecoder
