@@ -123,7 +123,7 @@ updateProjectPanel message model =
             ( model
             , Dom.getElement dragElDomId
                 |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
-                |> mapDomError "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
+                |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform identity
             )
 
@@ -172,8 +172,8 @@ updateProjectPanel message model =
             ( ProjectPanelExpanded, Cmd.none )
 
 
-mapDomError : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
-mapDomError logPrefix logMsg =
+onDomErrorRecover : String -> (String -> msg) -> Task Dom.Error msg -> Task x msg
+onDomErrorRecover logPrefix logMsg =
     Task.onError
         (\(Dom.NotFound id) ->
             logPrefix
