@@ -77,6 +77,8 @@ type ProjectPanelMsg
     | ProjectPanelItemDragged Position ProjectId
     | ProjectPanelItemDragged_2 Position ProjectId (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver ProjectId
+    | ProjectPanelItemDragComplete
+    | ProjectPanelItemDragCanceled
 
 
 
