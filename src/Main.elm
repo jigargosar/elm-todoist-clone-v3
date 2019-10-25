@@ -107,8 +107,8 @@ projectPanelSubscriptions projectPanel =
                 ]
 
 
-updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
-updateProjectPanel message model =
+updateProjectPanel : { toMsg : ProjectPanelMsg -> msg } -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+updateProjectPanel config message model =
     case message of
         ProjectPanelNoOp ->
             ( model, Cmd.none )
@@ -124,7 +124,7 @@ updateProjectPanel message model =
             , Dom.getElement dragElDomId
                 |> Task.map (ProjectPanelItemDragged_2 projectList project startPosition)
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
-                |> Task.perform identity
+                |> Task.perform config.toMsg
             )
 
         ProjectPanelLogError error ->
@@ -632,9 +632,9 @@ update message model =
                     update (PopupTriggered panelItemId anchorId) model
 
         ProjectPanelMsg_ msg ->
-            updateProjectPanel msg model.projectPanel
+            updateProjectPanel { toMsg = ProjectPanelMsg_ } msg model.projectPanel
                 |> Tuple.mapBoth (\projectPanel -> { model | projectPanel = projectPanel })
-                    (Cmd.map ProjectPanelMsg_)
+                    identity
 
 
 onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
