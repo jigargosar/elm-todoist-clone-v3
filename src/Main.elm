@@ -71,9 +71,9 @@ type ProjectPanelMsg
     = ProjectPanelNoOp
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
-    | ProjectPanelItemDragged (DragSort.DragStartMsg Project)
+    | ProjectPanelItemDragStart (DragSort.DragStartMsg Project)
     | ProjectPanelLogError String
-    | ProjectPanelItemDragged_2 (DragSort.DragInitMsg Project)
+    | ProjectPanelItemInit (DragSort.DragInitMsg Project)
     | ProjectPanelItemDraggedOver Project
     | ProjectPanelItemDragMovedAt Position
     | ProjectPanelItemDragComplete
@@ -122,10 +122,10 @@ updateProjectPanel config message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemDragged dragStart ->
+        ProjectPanelItemDragStart dragStart ->
             ( model
             , DragSort.dragInitTask dragStart
-                |> Task.map ProjectPanelItemDragged_2
+                |> Task.map ProjectPanelItemInit
                 |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
                 |> Task.perform config.toMsg
             )
@@ -133,9 +133,8 @@ updateProjectPanel config message model =
         ProjectPanelLogError error ->
             ( model, logError error )
 
-        ProjectPanelItemDragged_2 dragInit ->
-            ( DragSort.init dragInit
-                |> ProjectPanelItemsDragging
+        ProjectPanelItemInit dragInit ->
+            ( DragSort.init dragInit |> ProjectPanelItemsDragging
             , Cmd.none
             )
 
@@ -244,7 +243,7 @@ viewProjectPanelItem projectList project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: DragSort.dragHandle ProjectPanelItemDragged projectList project domId
+                :: DragSort.dragHandle ProjectPanelItemDragStart projectList project domId
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
