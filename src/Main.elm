@@ -133,8 +133,8 @@ updateProjectPanel config message model =
         ProjectPanelLogError error ->
             ( model, logError error )
 
-        ProjectPanelItemDragged_2 dragInit ->
-            ( DragSort.init dragInit |> ProjectPanelItemsDragging
+        ProjectPanelItemDragged_2 dragInitPayload ->
+            ( DragSort.init dragInitPayload |> ProjectPanelItemsDragging
             , Cmd.none
             )
 
