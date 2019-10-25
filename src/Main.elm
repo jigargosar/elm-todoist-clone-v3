@@ -197,20 +197,21 @@ viewProjectPanelItems projects =
     List.indexedMap (viewProjectPanelItem projects) projects
 
 
+dragHandlerAttrs : (Position -> msg) -> List (Attribute msg)
+dragHandlerAttrs onDragStart =
+    [ E.preventDefaultOn "dragstart"
+        (JD.map onDragStart pageXYAsPositionDecoder
+            |> JD.map (flip Tuple.pair True)
+        )
+    , A.draggable "true"
+    ]
+
+
 viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelItemMsg
 viewProjectPanelItem projectList idx project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
-
-        dragHandlerAttrs : (Position -> msg) -> List (Attribute msg)
-        dragHandlerAttrs onDragStart =
-            [ E.preventDefaultOn "dragstart"
-                (JD.map onDragStart pageXYAsPositionDecoder
-                    |> JD.map (flip Tuple.pair True)
-                )
-            , A.draggable "true"
-            ]
     in
     div
         [ A.id domId
