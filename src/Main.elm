@@ -105,6 +105,10 @@ projectPanelItemDragHandlerAttributes projectList idx =
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
 updateProjectPanel message model =
+    let
+        _ =
+            Debug.log "updateProjectPanel" ( message, model )
+    in
     ( model, Cmd.none )
 
 
