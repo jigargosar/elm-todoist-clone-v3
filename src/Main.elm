@@ -135,7 +135,21 @@ updateProjectPanelItem :
     -> ProjectPanelItemsDrag
     -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
-    ( model, Cmd.none )
+    case message of
+        ProjectPanelItemDragged list int position ->
+            ( model, Cmd.none )
+
+        ProjectPanelItemDragged_2 position int result ->
+            ( model, Cmd.none )
+
+        ProjectPanelItemDraggedOver int ->
+            ( model, Cmd.none )
+
+        ProjectPanelItemDragComplete ->
+            ( model, Cmd.none )
+
+        ProjectPanelItemDragCanceled ->
+            ( model, Cmd.none )
 
 
 
