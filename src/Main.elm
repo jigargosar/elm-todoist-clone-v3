@@ -144,18 +144,7 @@ updateProjectPanel config message model =
 
         ProjectPanelItemDraggedOver dragOverProject ->
             ( mapProjectPanelItemsDraggingModel
-                (\dragSort ->
-                    if dragOverProject == dragSort.drag then
-                        dragSort
-
-                    else
-                        let
-                            newProjectList =
-                                rotateListByElem dragSort.drag dragOverProject dragSort.list
-                                    |> Maybe.withDefault dragSort.list
-                        in
-                        { dragSort | list = newProjectList }
-                )
+                (DragSort.sortOnDragOver dragOverProject)
                 model
             , Cmd.none
             )
