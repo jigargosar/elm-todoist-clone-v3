@@ -140,18 +140,20 @@ updateProjectPanelItem message model =
                 |> Task.attempt (ProjectPanelItemDragged_2 projectList project startPosition)
             )
 
-        ProjectPanelItemDragged_2 _ _ _ (Err (Dom.NotFound domId)) ->
-            ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
+        ProjectPanelItemDragged_2 projectList project startPosition result ->
+            case result of
+                Ok dragEl ->
+                    ( ProjectPanelItemsDraggingModel projectList
+                        project
+                        dragEl
+                        startPosition
+                        startPosition
+                        |> ProjectPanelItemsDragging
+                    , Cmd.none
+                    )
 
-        ProjectPanelItemDragged_2 projectList project startPosition (Ok dragEl) ->
-            ( ProjectPanelItemsDraggingModel projectList
-                project
-                dragEl
-                startPosition
-                startPosition
-                |> ProjectPanelItemsDragging
-            , Cmd.none
-            )
+                Err (Dom.NotFound domId) ->
+                    ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
 
         ProjectPanelItemDraggedOver dragOverProject ->
             case model of
