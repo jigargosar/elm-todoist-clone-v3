@@ -270,9 +270,6 @@ viewProjectPanelItemsDragged model =
 viewProjectPanelItemDragged : ProjectPanelItemsDraggingModel -> Project -> Html ProjectPanelItemMsg
 viewProjectPanelItemDragged model project =
     let
-        isBeingDraggedOver =
-            project == model.dragOverProject
-
         isBeingDragged =
             project == model.dragProject
 
