@@ -8,7 +8,6 @@ import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
-import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
@@ -16,7 +15,6 @@ import Html.Styled.Attributes as A exposing (css)
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
-import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import Layout
@@ -31,7 +29,6 @@ import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Px
 import Return
-import Route
 import Styles exposing (..)
 import Task
 import TodoDict exposing (TodoDict)
