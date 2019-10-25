@@ -56,19 +56,15 @@ type alias ProjectPanelItemsDraggingModel =
     }
 
 
-type ProjectPanelItemsDrag
-    = ProjectPanelItemsNotDragging
-    | ProjectPanelItemsDragging ProjectPanelItemsDraggingModel
-
-
 type ProjectPanel
     = ProjectPanelCollapsed
-    | ProjectPanelExpanded ProjectPanelItemsDrag
+    | ProjectPanelExpanded
+    | ProjectPanelItemsDragging ProjectPanelItemsDraggingModel
 
 
 initialProjectPanel : ProjectPanel
 initialProjectPanel =
-    ProjectPanelExpanded ProjectPanelItemsNotDragging
+    ProjectPanelExpanded
 
 
 
@@ -103,17 +99,15 @@ projectPanelSubscriptions projectPanel =
         ProjectPanelCollapsed ->
             Sub.none
 
-        ProjectPanelExpanded projectPanelItemsDrag ->
-            case projectPanelItemsDrag of
-                ProjectPanelItemsNotDragging ->
-                    Sub.none
+        ProjectPanelExpanded ->
+            Sub.none
 
-                ProjectPanelItemsDragging _ ->
-                    Sub.batch
-                        [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete)
-                        , Browser.Events.onMouseMove (JD.map ProjectPanelItemDragMovedAt pageXYAsPositionDecoder)
-                        ]
-                        |> Sub.map ProjectPanelItemMsg_
+        ProjectPanelItemsDragging _ ->
+            Sub.batch
+                [ Browser.Events.onMouseUp (JD.succeed ProjectPanelItemDragComplete)
+                , Browser.Events.onMouseMove (JD.map ProjectPanelItemDragMovedAt pageXYAsPositionDecoder)
+                ]
+                |> Sub.map ProjectPanelItemMsg_
 
 
 updateProjectPanel : ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd ProjectPanelMsg )
@@ -130,19 +124,14 @@ updateProjectPanel message model =
             ( model, Cmd.none )
 
         ProjectPanelItemMsg_ msg ->
-            case model of
-                ProjectPanelCollapsed ->
-                    ( model, Cmd.none )
-
-                ProjectPanelExpanded projectPanelItemsDrag ->
-                    updateProjectPanelItem msg projectPanelItemsDrag
-                        |> Tuple.mapBoth ProjectPanelExpanded (Cmd.map ProjectPanelItemMsg_)
+            updateProjectPanelItem msg model
+                |> Tuple.mapBoth identity (Cmd.map ProjectPanelItemMsg_)
 
 
 updateProjectPanelItem :
     ProjectPanelItemMsg
-    -> ProjectPanelItemsDrag
-    -> ( ProjectPanelItemsDrag, Cmd ProjectPanelItemMsg )
+    -> ProjectPanel
+    -> ( ProjectPanel, Cmd ProjectPanelItemMsg )
 updateProjectPanelItem message model =
     case message of
         ProjectPanelItemDragged projectList project dragElDomId startPosition ->
@@ -166,29 +155,32 @@ updateProjectPanelItem message model =
 
         ProjectPanelItemDraggedOver dragOverProject ->
             case model of
-                ProjectPanelItemsDragging ({ list, dragProject } as draggingModel) ->
-                    if dragOverProject == dragProject then
+                ProjectPanelItemsDragging draggingModel ->
+                    if dragOverProject == draggingModel.dragProject then
                         ( model, Cmd.none )
 
                     else
                         let
                             newProjectList =
-                                rotateListByElem dragProject dragOverProject list
-                                    |> Maybe.withDefault list
+                                rotateListByElem draggingModel.dragProject dragOverProject draggingModel.list
+                                    |> Maybe.withDefault draggingModel.list
                         in
                         ( { draggingModel | list = newProjectList }
                             |> ProjectPanelItemsDragging
                         , Cmd.none
                         )
 
-                ProjectPanelItemsNotDragging ->
+                ProjectPanelCollapsed ->
+                    ( model, Cmd.none )
+
+                ProjectPanelExpanded ->
                     ( model, Cmd.none )
 
         ProjectPanelItemDragComplete ->
-            ( ProjectPanelItemsNotDragging, Cmd.none )
+            ( ProjectPanelExpanded, Cmd.none )
 
         ProjectPanelItemDragCanceled ->
-            ( ProjectPanelItemsNotDragging, Cmd.none )
+            ( ProjectPanelExpanded, Cmd.none )
 
         ProjectPanelItemDragMovedAt position ->
             case model of
@@ -198,7 +190,10 @@ updateProjectPanelItem message model =
                     , Cmd.none
                     )
 
-                ProjectPanelItemsNotDragging ->
+                ProjectPanelCollapsed ->
+                    ( model, Cmd.none )
+
+                ProjectPanelExpanded ->
                     ( model, Cmd.none )
 
 
@@ -212,15 +207,16 @@ viewProjectPanel projectList model =
         ProjectPanelCollapsed ->
             viewProjectPanelHeaderCollapsed
 
-        ProjectPanelExpanded itemsDragModel ->
+        ProjectPanelItemsDragging itemsDraggingModel ->
             [ viewProjectPanelHeaderExpanded
-            , (case itemsDragModel of
-                ProjectPanelItemsNotDragging ->
-                    viewProjectPanelItems projectList
+            , viewProjectPanelItemsWhenDragActive itemsDraggingModel
+                |> List.map (H.map ProjectPanelItemMsg_)
+            ]
+                |> List.concat
 
-                ProjectPanelItemsDragging itemsDraggingModel ->
-                    viewProjectPanelItemsWhenDragActive itemsDraggingModel
-              )
+        ProjectPanelExpanded ->
+            [ viewProjectPanelHeaderExpanded
+            , viewProjectPanelItems projectList
                 |> List.map (H.map ProjectPanelItemMsg_)
             ]
                 |> List.concat
