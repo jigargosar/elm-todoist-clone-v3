@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, msgToCmd, onDomErrorRecover, rotateListByElem)
+import Basics.More exposing (flip, msgToCmd, onDomErrorRecover)
 import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Events
