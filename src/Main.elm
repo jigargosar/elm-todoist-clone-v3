@@ -146,7 +146,7 @@ viewProjectPanelItems projects =
 viewProjectPanelItem : List Project -> Int -> Project -> Html ProjectPanelMsg
 viewProjectPanelItem projectList idx project =
     div [ css [ lh 1.5, flex ] ]
-        [ div [ css [ Px.p2 8 8 ] ] [ text "DRAG_HANDLE" ]
+        [ div [ css [ Px.p2 8 8, pointer ] ] [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
         ]
 
