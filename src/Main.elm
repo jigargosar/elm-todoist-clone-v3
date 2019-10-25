@@ -107,7 +107,13 @@ projectPanelSubscriptions projectPanel =
                 ]
 
 
-updateProjectPanel : { toMsg : ProjectPanelMsg -> msg } -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+type alias ProjectPanelConfig msg =
+    { toMsg : ProjectPanelMsg -> msg
+    , projectOrderChanged : List Project -> msg
+    }
+
+
+updateProjectPanel : ProjectPanelConfig msg -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 updateProjectPanel config message model =
     case message of
         ProjectPanelNoOp ->
@@ -490,6 +496,7 @@ type Msg
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
     | ProjectPanelMsg_ ProjectPanelMsg
+    | ProjectOrderChanged (List Project)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -632,9 +639,18 @@ update message model =
                     update (PopupTriggered panelItemId anchorId) model
 
         ProjectPanelMsg_ msg ->
-            updateProjectPanel { toMsg = ProjectPanelMsg_ } msg model.projectPanel
+            updateProjectPanel { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged } msg model.projectPanel
                 |> Tuple.mapBoth (\projectPanel -> { model | projectPanel = projectPanel })
                     identity
+
+        ProjectOrderChanged projectList ->
+            updateProjectSortOrder projectList model
+
+
+updateProjectSortOrder projectList model =
+    ( { model | projectCollection = ProjectCollection.updateSortOrder projectList model.projectCollection }
+    , Cmd.none
+    )
 
 
 onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
