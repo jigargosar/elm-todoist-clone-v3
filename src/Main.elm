@@ -33,6 +33,7 @@ import Px
 import Return
 import Route
 import Styles exposing (..)
+import Task
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -78,7 +79,7 @@ initialProjectPanel =
 
 type ProjectPanelItemMsg
     = ProjectPanelItemDragged (List Project) Int Project String Position
-    | ProjectPanelItemDragged_2 Position Int (Result Dom.Error Dom.Element)
+    | ProjectPanelItemDragged_2 (List Project) Int Project Position (Result Dom.Error Dom.Element)
     | ProjectPanelItemDraggedOver Int
     | ProjectPanelItemDragComplete
     | ProjectPanelItemDragCanceled
@@ -137,9 +138,12 @@ updateProjectPanelItem :
 updateProjectPanelItem message model =
     case message of
         ProjectPanelItemDragged projectList idx project dragElDomId startPosition ->
-            ( model, Cmd.none )
+            ( model
+            , Dom.getElement dragElDomId
+                |> Task.attempt (ProjectPanelItemDragged_2 projectList idx project startPosition)
+            )
 
-        ProjectPanelItemDragged_2 position int result ->
+        ProjectPanelItemDragged_2 projectList idx project startPosition result ->
             ( model, Cmd.none )
 
         ProjectPanelItemDraggedOver int ->
