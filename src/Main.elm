@@ -149,7 +149,15 @@ updateProjectPanelItem message model =
             )
 
         ProjectPanelItemDraggedOver idx project ->
-            ( model, Cmd.none )
+            case model of
+                ProjectPanelItemsDragging draggingModel ->
+                    ( { draggingModel | dragOverIdx = idx, dragOverProject = project }
+                        |> ProjectPanelItemsDragging
+                    , Cmd.none
+                    )
+
+                ProjectPanelItemsNotDragging ->
+                    ( model, Cmd.none )
 
         ProjectPanelItemDragComplete ->
             ( model, Cmd.none )
