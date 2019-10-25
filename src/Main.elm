@@ -88,7 +88,9 @@ type ProjectPanelMsg
 
 pageXYAsPositionDecoder : Decoder Position
 pageXYAsPositionDecoder =
-    JD.fail ""
+    JD.map2 Position
+        (JD.field "pageX" JD.int)
+        (JD.field "pageY" JD.int)
 
 
 projectPanelItemDragHandlerAttributes : List Project -> Int -> List (Attribute ProjectPanelMsg)
