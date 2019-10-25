@@ -180,14 +180,14 @@ updateProjectPanel config message model =
                     ( model, Cmd.none )
 
                 ProjectPanelItemsDragging { list } ->
-                    ( ProjectPanelExpanded, config.projectOrderChanged list |> performMsg )
+                    ( ProjectPanelExpanded, config.projectOrderChanged list |> msgToCmd )
 
         ProjectPanelItemDragCanceled ->
             ( ProjectPanelExpanded, Cmd.none )
 
 
-performMsg : a -> Cmd a
-performMsg =
+msgToCmd : a -> Cmd a
+msgToCmd =
     Task.succeed >> Task.perform identity
 
 
