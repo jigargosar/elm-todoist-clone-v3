@@ -51,8 +51,10 @@ type alias Position =
 type alias ProjectPanelItemsDraggingModel =
     { list : List Project
     , dragIdx : Int
-    , dragOverIdx : Int
+    , dragProject : Project
     , dragEl : Dom.Element
+    , dragOverIdx : Int
+    , dragOverProject : Project
     , start : Position
     , current : Position
     }
@@ -143,8 +145,21 @@ updateProjectPanelItem message model =
                 |> Task.attempt (ProjectPanelItemDragged_2 projectList idx project startPosition)
             )
 
-        ProjectPanelItemDragged_2 projectList idx project startPosition result ->
-            ( model, Cmd.none )
+        ProjectPanelItemDragged_2 projectList idx project startPosition (Err (Dom.NotFound domId)) ->
+            ( model, logError <| "ProjectPanelItemDragged_2 Dom.NotFound: " ++ domId )
+
+        ProjectPanelItemDragged_2 projectList idx project startPosition (Ok dragEl) ->
+            ( ProjectPanelItemsDraggingModel projectList
+                idx
+                project
+                dragEl
+                idx
+                project
+                startPosition
+                startPosition
+                |> ProjectPanelItemsDragging
+            , Cmd.none
+            )
 
         ProjectPanelItemDraggedOver int ->
             ( model, Cmd.none )
