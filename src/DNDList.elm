@@ -116,13 +116,13 @@ dragHandleAttrs dragStartMsg =
 view : (Msg item -> msg) -> List item -> Model item -> View item msg
 view toMsg items model =
     let
-        mapAttrList =
+        attrsToMsg =
             List.map (A.map toMsg)
     in
     case model of
         Dragging state ->
             WhenDragging
-                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (WhileDragging <| DraggedOver item) ]
+                { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (WhileDragging <| DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
                 }
@@ -133,7 +133,7 @@ view toMsg items model =
                     \item domId ->
                         (DragStarted << DragStart items item domId)
                             |> dragHandleAttrs
-                            |> mapAttrList
+                            |> attrsToMsg
                 , items = items
                 }
 
