@@ -13,9 +13,7 @@ import Task
 
 type Model item
     = NotDragging
-      --| GettingDragElement (GettingDragElementModel item)
     | GettingDragElement (GettingDragElementState item)
-      --| Dragging (DraggingModel item)
     | Dragging (DraggingState item)
 
 
