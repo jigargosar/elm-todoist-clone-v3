@@ -1,19 +1,37 @@
 module DNDList exposing (DraggingView, Model, Msg, NotDraggingView, View(..), init, subscriptions, update, view)
 
-import Basics.More exposing (Position, flip, pageXYAsPositionDecoder)
+import Basics.More exposing (Position, flip, msgToCmd, pageXYAsPositionDecoder)
+import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
+import Task
 
 
 type Model item
     = NotDragging
       --| GettingDragElement (GettingDragElementModel item)
-    | GettingDragElement
+    | GettingDragElement (GettingDragElementState item)
       --| Dragging (DraggingModel item)
-    | Dragging
+    | Dragging (DraggingState item)
+
+
+type alias GettingDragElementState item =
+    { items : List item
+    , dragItem : item
+    , startPosition : Position
+    }
+
+
+type alias DraggingState item =
+    { items : List item
+    , dragItem : item
+    , startPosition : Position
+    , dragElement : Dom.Element
+    , currentPosition : Position
+    }
 
 
 init : Model item
@@ -26,11 +44,27 @@ type Msg item
     | MouseMoved Position
     | DragOver item
     | DragStart (List item) item String Position
+    | GotElement (Result Dom.Error Dom.Element)
+    | Canceled
 
 
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
-    case message of
+    case ( model, message ) of
+        ( _, DragStart items item domId startPosition ) ->
+            ( GettingDragElementState items item startPosition
+                |> GettingDragElement
+            , Dom.getElement domId |> Task.attempt GotElement |> Cmd.map toMsg
+            )
+
+        ( _, Canceled ) ->
+            ( NotDragging, Cmd.none )
+
+        ( Dragging { items }, Complete ) ->
+            ( NotDragging
+            , config.onComplete items |> msgToCmd
+            )
+
         _ ->
             ( model, Cmd.none )
 
@@ -52,10 +86,10 @@ view toMsg items model =
             List.map (A.map toMsg)
     in
     case model of
-        Dragging ->
+        Dragging state ->
             WhenDragging
                 { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DragOver item) ]
-                , items = items
+                , items = state.items
                 , isBeingDragged = always False
                 }
 
@@ -91,7 +125,7 @@ type View item msg
 subscriptions : (Msg item -> msg) -> Model item -> Sub msg
 subscriptions toMsg model =
     case model of
-        Dragging ->
+        Dragging _ ->
             Sub.batch
                 [ Browser.Events.onMouseUp (JD.succeed Complete)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
