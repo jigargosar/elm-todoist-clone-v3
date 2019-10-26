@@ -6,6 +6,7 @@ module ProjectPanel exposing
     , subscriptions
     , update
     , view
+    , viewDNDGhost
     )
 
 import Css
@@ -113,7 +114,10 @@ getDND model =
 
 viewDNDGhost : ProjectPanel -> List (Html Msg)
 viewDNDGhost =
-    getDND >> DNDList.ghost
+    getDND
+        >> Maybe.andThen DNDList.ghost
+        >> Maybe.map (\( styles, project ) -> [ div [] [ text "ghost" ] ])
+        >> Maybe.withDefault []
 
 
 viewCollapsed : List (Html Msg)
