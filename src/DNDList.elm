@@ -1,6 +1,6 @@
 module DNDList exposing (DraggingView, Model, Msg, NotDraggingView, View(..), init, subscriptions, update, view)
 
-import Basics.More exposing (Position, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
+import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
@@ -119,7 +119,7 @@ view toMsg items model =
             WhenDragging
                 { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DragOver item) ]
                 , items = state.items
-                , isBeingDragged = always False
+                , isBeingDragged = eq_ state.dragItem
                 }
 
         _ ->
