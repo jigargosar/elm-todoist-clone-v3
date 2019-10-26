@@ -1,6 +1,6 @@
 module DragSort exposing (..)
 
-import Basics.More exposing (eq_, flip, onDomErrorRecover, rotateListByElem)
+import Basics.More exposing (eq_, flip, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
@@ -157,45 +157,27 @@ type DNDListEvents
 
 
 stateTransitions event state =
-    case state of
-        NotDragging ->
-            case event of
-                OnDragStart ->
-                    GettingDragElement
+    case ( state, event ) of
+        ( _, OnDragStart ) ->
+            GettingDragElement
 
-                _ ->
-                    state
+        ( _, OnCancel ) ->
+            NotDragging
 
-        GettingDragElement ->
-            case event of
-                OnDragStart ->
-                    GettingDragElement
+        ( GettingDragElement, GotDragElement ) ->
+            Dragging
 
-                GotDragElement ->
-                    Dragging
+        ( GettingDragElement, GotDragElementError ) ->
+            NotDragging
 
-                GotDragElementError ->
-                    NotDragging
+        ( Dragging, OnDragOver ) ->
+            Dragging
 
-                _ ->
-                    state
+        ( Dragging, OnMouseMoved ) ->
+            Dragging
 
-        Dragging ->
-            case event of
-                OnDragStart ->
-                    GettingDragElement
+        ( Dragging, OnComplete ) ->
+            NotDragging
 
-                OnDragOver ->
-                    Dragging
-
-                OnMouseMoved ->
-                    Dragging
-
-                OnCancel ->
-                    NotDragging
-
-                OnComplete ->
-                    NotDragging
-
-                _ ->
-                    state
+        _ ->
+            state
