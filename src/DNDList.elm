@@ -1,4 +1,14 @@
-module DNDList exposing (DraggingConfig, Model, Msg, NotDraggingConfig, View(..), init, subscriptions, update, view)
+module DNDList exposing
+    ( DraggingConfig
+    , Model
+    , Msg
+    , NotDraggingConfig
+    , View(..)
+    , init
+    , subscriptions
+    , update
+    , view
+    )
 
 import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
 import Browser.Dom as Dom
