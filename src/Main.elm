@@ -22,7 +22,7 @@ import PopupView
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
-import ProjectPanel exposing (ProjectPanel, ProjectPanelMsg)
+import ProjectPanel exposing (Msg, ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Return
 import TodoDict exposing (TodoDict)
@@ -92,7 +92,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
-            , projectPanel = ProjectPanel.initialProjectPanel
+            , projectPanel = ProjectPanel.initial
             }
     in
     Return.singleton initial
@@ -194,7 +194,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.projectPanelSubscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
+        , ProjectPanel.subscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
         ]
 
 
@@ -223,7 +223,7 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
-    | ProjectPanelMsg_ ProjectPanel.ProjectPanelMsg
+    | ProjectPanelMsg_ ProjectPanel.Msg
     | ProjectOrderChanged (List Project)
 
 
@@ -378,9 +378,9 @@ projectPanelConfig =
     { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
 
 
-handleProjectPanelMsg : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
+handleProjectPanelMsg : Msg -> Model -> ( Model, Cmd Msg )
 handleProjectPanelMsg msg model =
-    ProjectPanel.updateProjectPanel
+    ProjectPanel.update
         projectPanelConfig
         msg
         model.projectPanel

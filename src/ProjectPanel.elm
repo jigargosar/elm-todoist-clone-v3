@@ -1,10 +1,10 @@
 module ProjectPanel exposing
-    ( ProjectPanel
+    ( Msg
+    , ProjectPanel
     , ProjectPanelConfig
-    , ProjectPanelMsg
-    , initialProjectPanel
-    , projectPanelSubscriptions
-    , updateProjectPanel
+    , initial
+    , subscriptions
+    , update
     , viewProjectPanel
     )
 
@@ -23,8 +23,8 @@ type ProjectPanel
     | ProjectPanelExpanded (DNDList.Model Project)
 
 
-initialProjectPanel : ProjectPanel
-initialProjectPanel =
+initial : ProjectPanel
+initial =
     ProjectPanelExpanded DNDList.init
 
 
@@ -32,41 +32,41 @@ initialProjectPanel =
 -- PROJECT PANEL UPDATE
 
 
-type ProjectPanelMsg
-    = ProjectPanelHeaderClicked
-    | ProjectPanelAddClicked
-    | ProjectPanelDND (DNDList.Msg Project)
+type Msg
+    = HeaderClicked
+    | AddClicked
+    | DNDList (DNDList.Msg Project)
 
 
-projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
-projectPanelSubscriptions projectPanel =
+subscriptions : ProjectPanel -> Sub Msg
+subscriptions projectPanel =
     case projectPanel of
         ProjectPanelCollapsed ->
             Sub.none
 
         ProjectPanelExpanded dnd ->
-            DNDList.subscriptions ProjectPanelDND dnd
+            DNDList.subscriptions DNDList dnd
 
 
 type alias ProjectPanelConfig msg =
-    { toMsg : ProjectPanelMsg -> msg
+    { toMsg : Msg -> msg
     , projectOrderChanged : List Project -> msg
     }
 
 
-updateProjectPanel : ProjectPanelConfig msg -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-updateProjectPanel config message model =
+update : ProjectPanelConfig msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+update config message model =
     case message of
-        ProjectPanelHeaderClicked ->
+        HeaderClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelAddClicked ->
+        AddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelDND msg ->
+        DNDList msg ->
             case model of
                 ProjectPanelExpanded dnd ->
-                    DNDList.update (config.toMsg << ProjectPanelDND)
+                    DNDList.update (config.toMsg << DNDList)
                         { onComplete = config.projectOrderChanged }
                         msg
                         dnd
@@ -80,14 +80,14 @@ updateProjectPanel config message model =
 -- PROJECT PANEL VIEW
 
 
-viewProjectPanel : List Project -> ProjectPanel -> List (Html ProjectPanelMsg)
+viewProjectPanel : List Project -> ProjectPanel -> List (Html Msg)
 viewProjectPanel projectList model =
     case model of
         ProjectPanelCollapsed ->
             viewProjectPanelHeaderCollapsed
 
         ProjectPanelExpanded dnd ->
-            case DNDList.view ProjectPanelDND projectList dnd of
+            case DNDList.view DNDList projectList dnd of
                 DNDList.WhenNotDragging config ->
                     [ viewProjectPanelHeaderExpanded
                     , List.map (viewProjectPanelItem config) config.items
@@ -101,12 +101,12 @@ viewProjectPanel projectList model =
                         |> List.concat
 
 
-viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
+viewProjectPanelHeaderCollapsed : List (Html Msg)
 viewProjectPanelHeaderCollapsed =
     []
 
 
-viewProjectPanelHeaderExpanded : List (Html ProjectPanelMsg)
+viewProjectPanelHeaderExpanded : List (Html Msg)
 viewProjectPanelHeaderExpanded =
     []
 
