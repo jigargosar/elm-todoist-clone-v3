@@ -40,10 +40,6 @@ import Url exposing (Url)
 -- PROJECT PANEL MODEL
 
 
-type alias Position =
-    { x : Int, y : Int }
-
-
 type ProjectPanel
     = ProjectPanelCollapsed
     | ProjectPanelExpanded (DNDList.Model Project)
