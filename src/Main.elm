@@ -55,8 +55,7 @@ initialProjectPanel =
 
 
 type ProjectPanelMsg
-    = ProjectPanelNoOp
-    | ProjectPanelHeaderClicked
+    = ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelDND (DNDList.Msg Project)
 
@@ -80,9 +79,6 @@ type alias ProjectPanelConfig msg =
 updateProjectPanel : ProjectPanelConfig msg -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 updateProjectPanel config message model =
     case message of
-        ProjectPanelNoOp ->
-            ( model, Cmd.none )
-
         ProjectPanelHeaderClicked ->
             ( model, Cmd.none )
 
