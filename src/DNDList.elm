@@ -39,12 +39,13 @@ init =
 
 
 type Msg item
-    = Completed
-    | MouseMoved Position
-    | DraggedOver item
+    = NoOp
     | DragStarted (DragStart item)
     | GotElement (DragStart item) (Result Dom.Error Dom.Element)
     | Canceled
+    | Completed
+    | MouseMoved Position
+    | DraggedOver item
 
 
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
