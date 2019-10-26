@@ -57,7 +57,12 @@ type Msg item
     | DraggedOver item
 
 
-update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
+update :
+    (Msg item -> msg)
+    -> { onComplete : List item -> msg }
+    -> Msg item
+    -> Model item
+    -> ( Model item, Cmd msg )
 update toMsg config message model =
     case message of
         DragStarted payload ->
