@@ -116,9 +116,6 @@ updateProjectPanel config message model =
 
 
 
-{- ProjectPanelItemDragCanceled ->
-   ( ProjectPanelExpanded, Cmd.none )
--}
 -- PROJECT PANEL VIEW
 
 
