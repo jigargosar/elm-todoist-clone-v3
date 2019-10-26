@@ -63,7 +63,6 @@ type ProjectPanelMsg
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelDND (DNDList.Msg Project)
-    | ProjectPanelItemDragComplete (List Project)
 
 
 projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
@@ -97,17 +96,14 @@ updateProjectPanel config message model =
         ProjectPanelDND msg ->
             case model of
                 ProjectPanelExpanded dnd ->
-                    DNDList.update ProjectPanelDND
-                        { onComplete = ProjectPanelItemDragComplete }
+                    DNDList.update (config.toMsg << ProjectPanelDND)
+                        { onComplete = config.projectOrderChanged }
                         msg
                         dnd
-                        |> Tuple.mapBoth ProjectPanelExpanded (Cmd.map config.toMsg)
+                        |> Tuple.mapBoth ProjectPanelExpanded identity
 
                 _ ->
                     ( model, Cmd.none )
-
-        ProjectPanelItemDragComplete projectList ->
-            ( model, config.projectOrderChanged projectList |> msgToCmd )
 
 
 
