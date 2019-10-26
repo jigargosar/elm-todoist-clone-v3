@@ -129,13 +129,13 @@ viewProjectPanel projectList model =
             case DNDList.view ProjectPanelDND projectList dnd of
                 DNDList.WhenNotDragging config ->
                     [ viewProjectPanelHeaderExpanded
-                    , viewProjectPanelItems projectList config
+                    , List.map (viewProjectPanelItem config) config.items
                     ]
                         |> List.concat
 
                 DNDList.WhenDragging config ->
                     [ viewProjectPanelHeaderExpanded
-                    , viewProjectPanelItemsWhenDragActive config
+                    , List.map (viewProjectPanelItemWhenDragActive config) config.items
                     ]
                         |> List.concat
 
@@ -148,11 +148,6 @@ viewProjectPanelHeaderCollapsed =
 viewProjectPanelHeaderExpanded : List (Html ProjectPanelMsg)
 viewProjectPanelHeaderExpanded =
     []
-
-
-viewProjectPanelItems : List Project -> DNDList.NotDraggingView Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
-viewProjectPanelItems projects config =
-    List.map (viewProjectPanelItem config) projects
 
 
 viewProjectPanelItem : DNDList.NotDraggingView Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
@@ -172,15 +167,6 @@ viewProjectPanelItem config project =
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
         ]
-
-
-viewProjectPanelItemsWhenDragActive : DNDList.DraggingView Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
-viewProjectPanelItemsWhenDragActive config =
-    let
-        viewItemHelp =
-            viewProjectPanelItemWhenDragActive config
-    in
-    List.map viewItemHelp config.items
 
 
 viewProjectPanelItemWhenDragActive : DNDList.DraggingView Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
