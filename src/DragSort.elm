@@ -128,11 +128,16 @@ type Msg
     = Msg
 
 
-view : List items -> DnDListView item
+update : (Msg -> msg) -> { onComplete : List item -> msg } -> Msg -> DNDListState item -> ( DNDListState item, Cmd msg )
+update =
+    impl
+
+
+view : (Msg -> msg) -> List items -> DnDListView item msg
 view =
     impl
 
 
-type DnDListView item
-    = NotDraggingView { dragHandleAttrs : item -> String -> List (Attribute Msg) }
-    | DraggingView { dragOverAttrs : item -> List (Attribute Msg), isBeingDragged : item -> Bool }
+type DnDListView item msg
+    = NotDraggingView { dragHandleAttrs : item -> String -> List (Attribute msg) }
+    | DraggingView { dragOverAttrs : item -> List (Attribute msg), isBeingDragged : item -> Bool }
