@@ -107,12 +107,7 @@ updateProjectPanel config message model =
                     ( model, Cmd.none )
 
         ProjectPanelItemDragComplete projectList ->
-            case model of
-                ProjectPanelCollapsed ->
-                    ( model, Cmd.none )
-
-                ProjectPanelExpanded _ ->
-                    ( model, config.projectOrderChanged projectList |> msgToCmd )
+            ( model, config.projectOrderChanged projectList |> msgToCmd )
 
 
 
