@@ -1,6 +1,6 @@
 module DragSort exposing (..)
 
-import Basics.More exposing (eq_, flip, rotateListByElem)
+import Basics.More exposing (Position, eq_, flip, impl, pageXYAsPositionDecoder, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
@@ -8,10 +8,6 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 import Task exposing (Task)
-
-
-type alias Position =
-    { x : Int, y : Int }
 
 
 type DragSort item
@@ -82,13 +78,6 @@ subscriptions { currentChanged, done } _ =
         ]
 
 
-pageXYAsPositionDecoder : Decoder Position
-pageXYAsPositionDecoder =
-    JD.map2 Position
-        (JD.field "pageX" JD.int)
-        (JD.field "pageY" JD.int)
-
-
 type InitContext item
     = InitContext (List item) item String Position
 
@@ -130,54 +119,20 @@ type DNDListState item
     | Dragging
 
 
-type alias GettingDragElementModel item =
-    { list : List item
-    , dragItem : item
-    , dragStartedAt : Position
-    }
+init : DNDListState item
+init =
+    impl
 
 
-type alias DraggingModel item =
-    { list : List item
-    , dragItem : item
-    , dragStartedAt : Position
-    , dragElement : Dom.Element
-    , mouseAt : Position
-    }
+type Msg
+    = Msg
 
 
-type DNDListEvents
-    = OnDragStart
-    | OnDragOver
-    | OnMouseMoved
-    | OnCancel
-    | OnComplete
-    | GotDragElement
-    | GotDragElementError
+view : List items -> DnDListView item
+view =
+    impl
 
 
-stateTransitions event state =
-    case ( state, event ) of
-        ( _, OnDragStart ) ->
-            GettingDragElement
-
-        ( _, OnCancel ) ->
-            NotDragging
-
-        ( GettingDragElement, GotDragElement ) ->
-            Dragging
-
-        ( GettingDragElement, GotDragElementError ) ->
-            NotDragging
-
-        ( Dragging, OnDragOver ) ->
-            Dragging
-
-        ( Dragging, OnMouseMoved ) ->
-            Dragging
-
-        ( Dragging, OnComplete ) ->
-            NotDragging
-
-        _ ->
-            state
+type DnDListView item
+    = NotDraggingView { dragHandleAttrs : item -> String -> List (Attribute Msg) }
+    | DraggingView { dragOverAttrs : item -> List (Attribute Msg), isBeingDragged : item -> Bool }

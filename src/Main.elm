@@ -221,16 +221,6 @@ viewProjectPanelItems projects =
     List.map (viewProjectPanelItem projects) projects
 
 
-dragHandlerAttrs : (Position -> msg) -> List (Attribute msg)
-dragHandlerAttrs onDragStart =
-    [ E.preventDefaultOn "dragstart"
-        (JD.map onDragStart pageXYAsPositionDecoder
-            |> JD.map (flip Tuple.pair True)
-        )
-    , A.draggable "true"
-    ]
-
-
 viewProjectPanelItem : List Project -> Project -> Html ProjectPanelMsg
 viewProjectPanelItem projectList project =
     let

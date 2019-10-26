@@ -1,6 +1,7 @@
 module Basics.More exposing (..)
 
 import Browser.Dom as Dom
+import Json.Decode as JD exposing (Decoder)
 import List.Extra as List
 import SelectList
 import Task exposing (Task)
@@ -57,3 +58,18 @@ onDomErrorRecover logPrefix logMsg =
 
 eq_ =
     (==)
+
+
+impl =
+    Debug.todo "impl"
+
+
+type alias Position =
+    { x : Int, y : Int }
+
+
+pageXYAsPositionDecoder : Decoder Position
+pageXYAsPositionDecoder =
+    JD.map2 Position
+        (JD.field "pageX" JD.int)
+        (JD.field "pageY" JD.int)
