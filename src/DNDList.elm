@@ -1,6 +1,6 @@
 module DNDList exposing (DraggingView, Model, Msg, NotDraggingView, View(..), init, subscriptions, update, view)
 
-import Basics.More exposing (Position, flip, msgToCmd, pageXYAsPositionDecoder)
+import Basics.More exposing (Position, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
 import Html.Styled exposing (Attribute)
@@ -72,11 +72,22 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
-        ( Dragging { items }, DragOver item ) ->
-            ( model, Cmd.none )
+        ( Dragging ({ items, dragItem } as state), DragOver dragOverItem ) ->
+            ( if dragOverItem == dragItem then
+                model
+
+              else
+                Dragging
+                    { state
+                        | items =
+                            rotateListByElem dragItem dragOverItem items
+                                |> Maybe.withDefault items
+                    }
+            , Cmd.none
+            )
 
         ( Dragging state, MouseMoved currentPosition ) ->
-            ( { state | currentPosition = currentPosition } |> Dragging
+            ( Dragging { state | currentPosition = currentPosition }
             , Cmd.none
             )
 
