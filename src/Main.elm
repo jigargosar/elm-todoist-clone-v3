@@ -66,10 +66,6 @@ type ProjectPanelMsg
     | ProjectPanelItemDragComplete (List Project)
 
 
-
---| ProjectPanelItemDragCanceled
-
-
 projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
 projectPanelSubscriptions projectPanel =
     case projectPanel of
