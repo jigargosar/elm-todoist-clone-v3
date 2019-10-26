@@ -63,12 +63,6 @@ type ProjectPanelMsg
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
     | ProjectPanelDND (DNDList.Msg Project)
-      {- | ProjectPanelLogError String
-         | ProjectPanelItemDragStart (DragSort.InitContext Project)
-         | ProjectPanelItemDragStart_2 (DragSort.InitContext_2 Project)
-         | ProjectPanelItemDraggedOver Project
-         | ProjectPanelItemDragMovedAt Position
-      -}
     | ProjectPanelItemDragComplete (List Project)
 
 
