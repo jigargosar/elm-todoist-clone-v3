@@ -41,8 +41,8 @@ init =
 type Msg item
     = Complete
     | MouseMoved Position
-    | DragOver item
-    | DragStart (List item) item String Position
+    | DraggedOver item
+    | DragStarted (List item) item String Position
     | GotElement (Result Dom.Error Dom.Element)
     | Canceled
 
@@ -50,7 +50,7 @@ type Msg item
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
     case ( model, message ) of
-        ( _, DragStart items item domId startPosition ) ->
+        ( _, DragStarted items item domId startPosition ) ->
             ( GettingDragElementState items item startPosition
                 |> GettingDragElement
             , Dom.getElement domId |> Task.attempt GotElement |> Cmd.map toMsg
@@ -70,7 +70,7 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
-        ( Dragging ({ items, dragItem } as state), DragOver dragOverItem ) ->
+        ( Dragging ({ items, dragItem } as state), DraggedOver dragOverItem ) ->
             ( if dragOverItem == dragItem then
                 model
 
@@ -117,7 +117,7 @@ view toMsg items model =
     case model of
         Dragging state ->
             WhenDragging
-                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DragOver item) ]
+                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
                 }
@@ -126,7 +126,7 @@ view toMsg items model =
             WhenNotDragging
                 { dragHandleAttrs =
                     \item domId ->
-                        DragStart items item domId
+                        DragStarted items item domId
                             |> dragHandleAttrs
                             |> mapAttrList
                 , items = items
