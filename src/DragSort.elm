@@ -124,8 +124,10 @@ initStep_1_GetDragElement (InitContext l i d p) =
 
 type DNDListState item
     = NotDragging
-    | GettingDragElement (GettingDragElementModel item)
-    | Dragging (DraggingModel item)
+      --| GettingDragElement (GettingDragElementModel item)
+    | GettingDragElement
+      --| Dragging (DraggingModel item)
+    | Dragging
 
 
 type alias GettingDragElementModel item =
@@ -152,3 +154,48 @@ type DNDListEvents
     | OnComplete
     | GotDragElement
     | GotDragElementError
+
+
+stateTransitions event state =
+    case state of
+        NotDragging ->
+            case event of
+                OnDragStart ->
+                    GettingDragElement
+
+                _ ->
+                    state
+
+        GettingDragElement ->
+            case event of
+                OnDragStart ->
+                    GettingDragElement
+
+                GotDragElement ->
+                    Dragging
+
+                GotDragElementError ->
+                    NotDragging
+
+                _ ->
+                    state
+
+        Dragging ->
+            case event of
+                OnDragStart ->
+                    GettingDragElement
+
+                OnDragOver ->
+                    Dragging
+
+                OnMouseMoved ->
+                    Dragging
+
+                OnCancel ->
+                    NotDragging
+
+                OnComplete ->
+                    NotDragging
+
+                _ ->
+                    state
