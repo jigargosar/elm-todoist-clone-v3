@@ -3,15 +3,12 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import Css
-import DNDList
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
-import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
-import Html.Styled.Attributes as A exposing (css)
+import Html.Styled as H exposing (Attribute, Html, toUnstyled)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
@@ -25,10 +22,9 @@ import PopupView
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
+import ProjectPanel exposing (ProjectPanel, ProjectPanelMsg)
 import ProjectRef exposing (ProjectRef)
-import Px
 import Return
-import Styles exposing (..)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -37,142 +33,6 @@ import Url exposing (Url)
 
 
 -- PROJECT PANEL MODEL
-
-
-type ProjectPanel
-    = ProjectPanelCollapsed
-    | ProjectPanelExpanded (DNDList.Model Project)
-
-
-initialProjectPanel : ProjectPanel
-initialProjectPanel =
-    ProjectPanelExpanded DNDList.init
-
-
-
--- PROJECT PANEL UPDATE
-
-
-type ProjectPanelMsg
-    = ProjectPanelHeaderClicked
-    | ProjectPanelAddClicked
-    | ProjectPanelDND (DNDList.Msg Project)
-
-
-projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
-projectPanelSubscriptions projectPanel =
-    case projectPanel of
-        ProjectPanelCollapsed ->
-            Sub.none
-
-        ProjectPanelExpanded dnd ->
-            DNDList.subscriptions ProjectPanelDND dnd
-
-
-type alias ProjectPanelConfig msg =
-    { toMsg : ProjectPanelMsg -> msg
-    , projectOrderChanged : List Project -> msg
-    }
-
-
-updateProjectPanel : ProjectPanelConfig msg -> ProjectPanelMsg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-updateProjectPanel config message model =
-    case message of
-        ProjectPanelHeaderClicked ->
-            ( model, Cmd.none )
-
-        ProjectPanelAddClicked ->
-            ( model, Cmd.none )
-
-        ProjectPanelDND msg ->
-            case model of
-                ProjectPanelExpanded dnd ->
-                    DNDList.update (config.toMsg << ProjectPanelDND)
-                        { onComplete = config.projectOrderChanged }
-                        msg
-                        dnd
-                        |> Tuple.mapFirst ProjectPanelExpanded
-
-                _ ->
-                    ( model, Cmd.none )
-
-
-
--- PROJECT PANEL VIEW
-
-
-viewProjectPanel : List Project -> ProjectPanel -> List (Html ProjectPanelMsg)
-viewProjectPanel projectList model =
-    case model of
-        ProjectPanelCollapsed ->
-            viewProjectPanelHeaderCollapsed
-
-        ProjectPanelExpanded dnd ->
-            case DNDList.view ProjectPanelDND projectList dnd of
-                DNDList.WhenNotDragging config ->
-                    [ viewProjectPanelHeaderExpanded
-                    , List.map (viewProjectPanelItem config) config.items
-                    ]
-                        |> List.concat
-
-                DNDList.WhenDragging config ->
-                    [ viewProjectPanelHeaderExpanded
-                    , List.map (viewProjectPanelItemWhenDragActive config) config.items
-                    ]
-                        |> List.concat
-
-
-viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
-viewProjectPanelHeaderCollapsed =
-    []
-
-
-viewProjectPanelHeaderExpanded : List (Html ProjectPanelMsg)
-viewProjectPanelHeaderExpanded =
-    []
-
-
-viewProjectPanelItem : DNDList.NotDraggingConfig Project msg -> Project -> Html msg
-viewProjectPanelItem config project =
-    let
-        domId =
-            "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
-    in
-    div
-        [ A.id domId
-        , css [ lh 1.5, flex ]
-        ]
-        [ div
-            (css [ Px.p2 8 8, pointer ]
-                :: config.dragHandleAttrs project domId
-            )
-            [ text "DRAG_HANDLE" ]
-        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
-        ]
-
-
-viewProjectPanelItemWhenDragActive : DNDList.DraggingConfig Project msg -> Project -> Html msg
-viewProjectPanelItemWhenDragActive config project =
-    let
-        isBeingDragged =
-            config.isBeingDragged project
-
-        dragOverAttributes =
-            config.dragOverAttrs project
-
-        dragOverStyle =
-            styleIf isBeingDragged [ Css.opacity <| Css.zero ]
-    in
-    div
-        (css [ lh 1.5, flex, dragOverStyle ] :: dragOverAttributes)
-        [ div
-            (css [ Px.p2 8 8, pointer ] :: [])
-            [ text "DRAG_HANDLE" ]
-        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
-        ]
-
-
-
 -- POPUP
 
 
@@ -232,7 +92,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
-            , projectPanel = initialProjectPanel
+            , projectPanel = ProjectPanel.initialProjectPanel
             }
     in
     Return.singleton initial
@@ -334,7 +194,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , projectPanelSubscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
+        , ProjectPanel.projectPanelSubscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
         ]
 
 
@@ -363,7 +223,7 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
-    | ProjectPanelMsg_ ProjectPanelMsg
+    | ProjectPanelMsg_ ProjectPanel.ProjectPanelMsg
     | ProjectOrderChanged (List Project)
 
 
@@ -513,14 +373,14 @@ update message model =
             updateProjectSortOrder projectList model
 
 
-projectPanelConfig : ProjectPanelConfig Msg
+projectPanelConfig : ProjectPanel.ProjectPanelConfig Msg
 projectPanelConfig =
     { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
 
 
 handleProjectPanelMsg : ProjectPanelMsg -> Model -> ( Model, Cmd Msg )
 handleProjectPanelMsg msg model =
-    updateProjectPanel
+    ProjectPanel.updateProjectPanel
         projectPanelConfig
         msg
         model.projectPanel
@@ -670,7 +530,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
         , main =
-            [ viewProjectPanel (ProjectCollection.sorted model.projectCollection) model.projectPanel
+            [ ProjectPanel.viewProjectPanel (ProjectCollection.sorted model.projectCollection) model.projectPanel
                 |> List.map (H.map ProjectPanelMsg_)
             , pageView model
             ]
