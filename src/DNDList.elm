@@ -150,7 +150,7 @@ view toMsg items model =
     case model of
         Dragging state ->
             WhenDragging
-                { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (WhileDragging <| DraggedOver item) ]
+                { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
                 }
@@ -192,7 +192,7 @@ subscriptions toMsg model =
                 [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
-                |> Sub.map (WhileDragging >> toMsg)
+                |> Sub.map toMsg
 
         _ ->
             Sub.none
