@@ -65,11 +65,21 @@ impl =
 
 
 type alias Position =
-    { x : Int, y : Int }
+    { x : Float, y : Float }
 
 
 pageXYAsPositionDecoder : Decoder Position
 pageXYAsPositionDecoder =
     JD.map2 Position
-        (JD.field "pageX" JD.int)
-        (JD.field "pageY" JD.int)
+        (JD.field "pageX" JD.float)
+        (JD.field "pageY" JD.float)
+
+
+positionDiff : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> Position
+positionDiff p1 p2 =
+    Position (p1.x - p2.x) (p1.y - p2.y)
+
+
+positionAdd : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> Position
+positionAdd p1 p2 =
+    Position (p1.x + p2.x) (p1.y + p2.y)

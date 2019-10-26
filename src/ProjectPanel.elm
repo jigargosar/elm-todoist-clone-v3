@@ -101,6 +101,21 @@ view projectList model =
                         |> List.concat
 
 
+getDND : ProjectPanel -> Maybe (DNDList.Model Project)
+getDND model =
+    case model of
+        Expanded dnd ->
+            Just dnd
+
+        Collapsed ->
+            Nothing
+
+
+viewDNDGhost : ProjectPanel -> List (Html Msg)
+viewDNDGhost =
+    getDND >> DNDList.ghost
+
+
 viewCollapsed : List (Html Msg)
 viewCollapsed =
     []

@@ -4,20 +4,23 @@ module DNDList exposing
     , Msg
     , NotDraggingConfig
     , View(..)
+    , ghost
     , init
     , subscriptions
     , update
     , view
     )
 
-import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
+import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, positionAdd, positionDiff, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
+import Css
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Log exposing (logError)
+import Styles
 import Task
 
 
@@ -170,6 +173,38 @@ view toMsg items model =
                             |> attrsToMsg
                 , items = items
                 }
+
+
+getState model =
+    case model of
+        NotDragging ->
+            Nothing
+
+        Dragging state ->
+            Just state
+
+
+ghost : Model a -> Maybe ( List Css.Style, a )
+ghost =
+    getState
+        >> Maybe.map
+            (\{ dragItem, dragElement, startPosition, currentPosition } ->
+                let
+                    dragElementOffset =
+                        dragElement.element
+
+                    { x, y } =
+                        positionAdd (positionDiff currentPosition startPosition) dragElementOffset
+                in
+                ( [ Styles.absolute
+                  , Styles.top_0
+                  , Styles.left_0
+                  , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
+                  , Css.pointerEvents Css.none
+                  ]
+                , dragItem
+                )
+            )
 
 
 type alias NotDraggingConfig item msg =
