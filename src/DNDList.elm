@@ -42,7 +42,7 @@ type Msg item
     = DragStarted (DragStart item)
     | GotElement (DragStart item) (Result Dom.Error Dom.Element)
     | Canceled
-    | OnDraggingMsg (DraggingMsg item)
+    | WhileDragging (DraggingMsg item)
 
 
 type DraggingMsg item
@@ -73,7 +73,7 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
-        OnDraggingMsg msg ->
+        WhileDragging msg ->
             case model of
                 NotDragging ->
                     ( model, Cmd.none )
@@ -124,7 +124,7 @@ view toMsg items model =
     case model of
         Dragging state ->
             WhenDragging
-                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (OnDraggingMsg <| DraggedOver item) ]
+                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (WhileDragging <| DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
                 }
@@ -166,7 +166,7 @@ subscriptions toMsg model =
                 [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
-                |> Sub.map (OnDraggingMsg >> toMsg)
+                |> Sub.map (WhileDragging >> toMsg)
 
         _ ->
             Sub.none
