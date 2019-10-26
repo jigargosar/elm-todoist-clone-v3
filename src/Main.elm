@@ -175,13 +175,13 @@ viewProjectPanel projectList model =
 
         ProjectPanelExpanded dnd ->
             case DNDList.viewInfo ProjectPanelDND projectList dnd of
-                DNDList.NotDraggingView config ->
+                DNDList.WhenNotDragging config ->
                     [ viewProjectPanelHeaderExpanded
                     , viewProjectPanelItems projectList config
                     ]
                         |> List.concat
 
-                DNDList.DraggingView config ->
+                DNDList.WhenDragging config ->
                     [ viewProjectPanelHeaderExpanded
                     , viewProjectPanelItemsWhenDragActive config
                     ]

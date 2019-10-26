@@ -53,14 +53,14 @@ viewInfo toMsg items model =
     in
     case model of
         Dragging ->
-            DraggingView
+            WhenDragging
                 { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DragOver item) ]
                 , items = items
                 , isBeingDragged = always False
                 }
 
         _ ->
-            NotDraggingView
+            WhenNotDragging
                 { dragHandleAttrs =
                     \item domId ->
                         DragStart items item domId
@@ -84,8 +84,8 @@ type alias DraggingInfo item msg =
 
 
 type ViewInfo item msg
-    = NotDraggingView (NotDraggingInfo item msg)
-    | DraggingView (DraggingInfo item msg)
+    = WhenNotDragging (NotDraggingInfo item msg)
+    | WhenDragging (DraggingInfo item msg)
 
 
 subscriptions : (Msg item -> msg) -> Model item -> Sub msg
