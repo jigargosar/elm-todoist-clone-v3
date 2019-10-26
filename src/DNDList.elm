@@ -39,7 +39,7 @@ init =
 
 
 type Msg item
-    = Complete
+    = Completed
     | MouseMoved Position
     | DraggedOver item
     | DragStarted (List item) item String Position
@@ -89,7 +89,7 @@ update toMsg config message model =
             , Cmd.none
             )
 
-        ( Dragging { items }, Complete ) ->
+        ( Dragging { items }, Completed ) ->
             ( NotDragging
             , config.onComplete items |> msgToCmd
             )
@@ -156,7 +156,7 @@ subscriptions toMsg model =
     case model of
         Dragging _ ->
             Sub.batch
-                [ Browser.Events.onMouseUp (JD.succeed Complete)
+                [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
                 |> Sub.map toMsg
