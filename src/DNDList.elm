@@ -7,6 +7,7 @@ import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
+import Log exposing (logError)
 import Task
 
 
@@ -59,6 +60,17 @@ update toMsg config message model =
 
         ( _, Canceled ) ->
             ( NotDragging, Cmd.none )
+
+        ( GettingDragElement { items, dragItem, startPosition }, GotElement result ) ->
+            case result of
+                Ok dragElement ->
+                    ( DraggingState items dragItem startPosition dragElement startPosition
+                        |> Dragging
+                    , Cmd.none
+                    )
+
+                Err (Dom.NotFound domId) ->
+                    ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
         ( Dragging { items }, Complete ) ->
             ( NotDragging
