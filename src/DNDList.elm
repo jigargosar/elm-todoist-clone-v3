@@ -72,6 +72,14 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
+        ( Dragging { items }, DragOver item ) ->
+            ( model, Cmd.none )
+
+        ( Dragging state, MouseMoved currentPosition ) ->
+            ( { state | currentPosition = currentPosition } |> Dragging
+            , Cmd.none
+            )
+
         ( Dragging { items }, Complete ) ->
             ( NotDragging
             , config.onComplete items |> msgToCmd
