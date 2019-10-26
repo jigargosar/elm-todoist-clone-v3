@@ -1,4 +1,4 @@
-module DNDList exposing (DraggingView, Model, Msg, NotDraggingView, View(..), init, subscriptions, update, view)
+module DNDList exposing (DraggingConfig, Model, Msg, NotDraggingConfig, View(..), init, subscriptions, update, view)
 
 import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, rotateListByElem)
 import Browser.Dom as Dom
@@ -138,13 +138,13 @@ view toMsg items model =
                 }
 
 
-type alias NotDraggingView item msg =
+type alias NotDraggingConfig item msg =
     { dragHandleAttrs : item -> String -> List (Attribute msg)
     , items : List item
     }
 
 
-type alias DraggingView item msg =
+type alias DraggingConfig item msg =
     { dragOverAttrs : item -> List (Attribute msg)
     , isBeingDragged : item -> Bool
     , items : List item
@@ -152,8 +152,8 @@ type alias DraggingView item msg =
 
 
 type View item msg
-    = WhenNotDragging (NotDraggingView item msg)
-    | WhenDragging (DraggingView item msg)
+    = WhenNotDragging (NotDraggingConfig item msg)
+    | WhenDragging (DraggingConfig item msg)
 
 
 subscriptions : (Msg item -> msg) -> Model item -> Sub msg

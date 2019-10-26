@@ -133,7 +133,7 @@ viewProjectPanelHeaderExpanded =
     []
 
 
-viewProjectPanelItem : DNDList.NotDraggingView Project msg -> Project -> Html msg
+viewProjectPanelItem : DNDList.NotDraggingConfig Project msg -> Project -> Html msg
 viewProjectPanelItem config project =
     let
         domId =
@@ -152,7 +152,7 @@ viewProjectPanelItem config project =
         ]
 
 
-viewProjectPanelItemWhenDragActive : DNDList.DraggingView Project msg -> Project -> Html msg
+viewProjectPanelItemWhenDragActive : DNDList.DraggingConfig Project msg -> Project -> Html msg
 viewProjectPanelItemWhenDragActive config project =
     let
         isBeingDragged =
