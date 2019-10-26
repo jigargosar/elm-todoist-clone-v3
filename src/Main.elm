@@ -1,7 +1,6 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Css
