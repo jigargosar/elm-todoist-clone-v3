@@ -378,7 +378,7 @@ projectPanelConfig =
     { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
 
 
-handleProjectPanelMsg : Msg -> Model -> ( Model, Cmd Msg )
+handleProjectPanelMsg : ProjectPanel.Msg -> Model -> ( Model, Cmd Msg )
 handleProjectPanelMsg msg model =
     ProjectPanel.update
         projectPanelConfig
