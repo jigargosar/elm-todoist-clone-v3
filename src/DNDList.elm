@@ -13,18 +13,18 @@ import Task
 
 type Model item
     = NotDragging
-    | GettingDragElement (GettingDragElementState item)
-    | Dragging (DraggingState item)
+    | DragStart (DragStart_ item)
+    | Dragging (Dragging_ item)
 
 
-type alias GettingDragElementState item =
+type alias DragStart_ item =
     { items : List item
     , dragItem : item
     , startPosition : Position
     }
 
 
-type alias DraggingState item =
+type alias Dragging_ item =
     { items : List item
     , dragItem : item
     , startPosition : Position
@@ -51,18 +51,18 @@ update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> M
 update toMsg config message model =
     case ( model, message ) of
         ( _, DragStarted items item domId startPosition ) ->
-            ( GettingDragElementState items item startPosition
-                |> GettingDragElement
+            ( DragStart_ items item startPosition
+                |> DragStart
             , Dom.getElement domId |> Task.attempt GotElement |> Cmd.map toMsg
             )
 
         ( _, Canceled ) ->
             ( NotDragging, Cmd.none )
 
-        ( GettingDragElement { items, dragItem, startPosition }, GotElement result ) ->
+        ( DragStart { items, dragItem, startPosition }, GotElement result ) ->
             case result of
                 Ok dragElement ->
-                    ( DraggingState items dragItem startPosition dragElement startPosition
+                    ( Dragging_ items dragItem startPosition dragElement startPosition
                         |> Dragging
                     , Cmd.none
                     )
