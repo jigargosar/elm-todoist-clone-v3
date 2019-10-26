@@ -1,12 +1,11 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip, msgToCmd, onDomErrorRecover)
+import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
-import Browser.Dom as Dom
-import Browser.Events
 import Browser.Navigation as Nav
 import Css
+import DNDList
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import DragSort exposing (DragSort)
@@ -15,7 +14,6 @@ import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
 import Html.Styled.Attributes as A exposing (css)
-import Html.Styled.Events as E
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
@@ -33,7 +31,6 @@ import ProjectRef exposing (ProjectRef)
 import Px
 import Return
 import Styles exposing (..)
-import Task exposing (Task)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -54,13 +51,12 @@ type alias ProjectPanelItemsDragSort =
 
 type ProjectPanel
     = ProjectPanelCollapsed
-    | ProjectPanelExpanded
-    | ProjectPanelItemsDragging ProjectPanelItemsDragSort
+    | ProjectPanelExpanded (DNDList.Model Project)
 
 
 initialProjectPanel : ProjectPanel
 initialProjectPanel =
-    ProjectPanelExpanded
+    ProjectPanelExpanded DNDList.init
 
 
 
@@ -71,20 +67,18 @@ type ProjectPanelMsg
     = ProjectPanelNoOp
     | ProjectPanelHeaderClicked
     | ProjectPanelAddClicked
-    | ProjectPanelLogError String
-    | ProjectPanelItemDragStart (DragSort.InitContext Project)
-    | ProjectPanelItemDragStart_2 (DragSort.InitContext_2 Project)
-    | ProjectPanelItemDraggedOver Project
-    | ProjectPanelItemDragMovedAt Position
-    | ProjectPanelItemDragComplete
-    | ProjectPanelItemDragCanceled
+    | ProjectPanelDND (DNDList.Msg Project)
+      {- | ProjectPanelLogError String
+         | ProjectPanelItemDragStart (DragSort.InitContext Project)
+         | ProjectPanelItemDragStart_2 (DragSort.InitContext_2 Project)
+         | ProjectPanelItemDraggedOver Project
+         | ProjectPanelItemDragMovedAt Position
+      -}
+    | ProjectPanelItemDragComplete (List Project)
 
 
-pageXYAsPositionDecoder : Decoder Position
-pageXYAsPositionDecoder =
-    JD.map2 Position
-        (JD.field "pageX" JD.int)
-        (JD.field "pageY" JD.int)
+
+--| ProjectPanelItemDragCanceled
 
 
 projectPanelSubscriptions : ProjectPanel -> Sub ProjectPanelMsg
@@ -93,15 +87,8 @@ projectPanelSubscriptions projectPanel =
         ProjectPanelCollapsed ->
             Sub.none
 
-        ProjectPanelExpanded ->
-            Sub.none
-
-        ProjectPanelItemsDragging dragSort ->
-            DragSort.subscriptions
-                { currentChanged = ProjectPanelItemDragMovedAt
-                , done = ProjectPanelItemDragComplete
-                }
-                dragSort
+        ProjectPanelExpanded dnd ->
+            DNDList.subscriptions ProjectPanelDND dnd
 
 
 type alias ProjectPanelConfig msg =
@@ -122,68 +109,61 @@ updateProjectPanel config message model =
         ProjectPanelAddClicked ->
             ( model, Cmd.none )
 
-        ProjectPanelItemDragStart dragInitContext ->
-            ( model
-            , DragSort.initStep_1_GetDragElement dragInitContext
-                |> Task.map ProjectPanelItemDragStart_2
-                |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
-                |> Task.perform config.toMsg
-            )
+        ProjectPanelDND msg ->
+            case model of
+                ProjectPanelExpanded dnd ->
+                    DNDList.update ProjectPanelDND
+                        { onComplete = ProjectPanelItemDragComplete }
+                        msg
+                        dnd
+                        |> Tuple.mapBoth ProjectPanelExpanded (Cmd.map config.toMsg)
 
-        ProjectPanelLogError error ->
-            ( model, logError error )
+                _ ->
+                    ( model, Cmd.none )
 
-        ProjectPanelItemDragStart_2 dragInitContext_2 ->
-            ( DragSort.initStep_2 dragInitContext_2 |> ProjectPanelItemsDragging
-            , Cmd.none
-            )
+        {- ProjectPanelItemDragStart dragInitContext ->
+               ( model
+               , DragSort.initStep_1_GetDragElement dragInitContext
+                   |> Task.map ProjectPanelItemDragStart_2
+                   |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
+                   |> Task.perform config.toMsg
+               )
 
-        ProjectPanelItemDraggedOver dragOverProject ->
-            ( mapProjectPanelItemsDragSort
-                (DragSort.sortOnDragOver dragOverProject)
-                model
-            , Cmd.none
-            )
+           ProjectPanelLogError error ->
+               ( model, logError error )
 
-        ProjectPanelItemDragMovedAt position ->
-            ( mapProjectPanelItemsDragSort
-                (DragSort.setCurrent position)
-                model
-            , Cmd.none
-            )
+           ProjectPanelItemDragStart_2 dragInitContext_2 ->
+               ( DragSort.initStep_2 dragInitContext_2 |> ProjectPanelItemsDragging
+               , Cmd.none
+               )
 
-        ProjectPanelItemDragComplete ->
+           ProjectPanelItemDraggedOver dragOverProject ->
+               ( mapProjectPanelItemsDragSort
+                   (DragSort.sortOnDragOver dragOverProject)
+                   model
+               , Cmd.none
+               )
+
+           ProjectPanelItemDragMovedAt position ->
+               ( mapProjectPanelItemsDragSort
+                   (DragSort.setCurrent position)
+                   model
+               , Cmd.none
+               )
+        -}
+        ProjectPanelItemDragComplete projectList ->
             case model of
                 ProjectPanelCollapsed ->
                     ( model, Cmd.none )
 
-                ProjectPanelExpanded ->
-                    ( model, Cmd.none )
-
-                ProjectPanelItemsDragging dragSort ->
-                    ( ProjectPanelExpanded, config.projectOrderChanged (DragSort.list dragSort) |> msgToCmd )
-
-        ProjectPanelItemDragCanceled ->
-            ( ProjectPanelExpanded, Cmd.none )
-
-
-mapProjectPanelItemsDragSort :
-    (ProjectPanelItemsDragSort -> ProjectPanelItemsDragSort)
-    -> ProjectPanel
-    -> ProjectPanel
-mapProjectPanelItemsDragSort func model =
-    case model of
-        ProjectPanelItemsDragging draggingModel ->
-            func draggingModel |> ProjectPanelItemsDragging
-
-        ProjectPanelCollapsed ->
-            model
-
-        ProjectPanelExpanded ->
-            model
+                ProjectPanelExpanded _ ->
+                    ( model, config.projectOrderChanged projectList |> msgToCmd )
 
 
 
+{- ProjectPanelItemDragCanceled ->
+   ( ProjectPanelExpanded, Cmd.none )
+-}
 -- PROJECT PANEL VIEW
 
 
@@ -193,17 +173,19 @@ viewProjectPanel projectList model =
         ProjectPanelCollapsed ->
             viewProjectPanelHeaderCollapsed
 
-        ProjectPanelItemsDragging itemsDraggingModel ->
-            [ viewProjectPanelHeaderExpanded
-            , viewProjectPanelItemsWhenDragActive itemsDraggingModel
-            ]
-                |> List.concat
+        ProjectPanelExpanded dnd ->
+            case DNDList.viewInfo ProjectPanelDND projectList dnd of
+                DNDList.NotDraggingView config ->
+                    [ viewProjectPanelHeaderExpanded
+                    , viewProjectPanelItems projectList config
+                    ]
+                        |> List.concat
 
-        ProjectPanelExpanded ->
-            [ viewProjectPanelHeaderExpanded
-            , viewProjectPanelItems projectList
-            ]
-                |> List.concat
+                DNDList.DraggingView config ->
+                    [ viewProjectPanelHeaderExpanded
+                    , viewProjectPanelItemsWhenDragActive config
+                    ]
+                        |> List.concat
 
 
 viewProjectPanelHeaderCollapsed : List (Html ProjectPanelMsg)
@@ -216,13 +198,13 @@ viewProjectPanelHeaderExpanded =
     []
 
 
-viewProjectPanelItems : List Project -> List (Html ProjectPanelMsg)
-viewProjectPanelItems projects =
-    List.map (viewProjectPanelItem projects) projects
+viewProjectPanelItems : List Project -> DNDList.NotDraggingInfo Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
+viewProjectPanelItems projects config =
+    List.map (viewProjectPanelItem config) projects
 
 
-viewProjectPanelItem : List Project -> Project -> Html ProjectPanelMsg
-viewProjectPanelItem projectList project =
+viewProjectPanelItem : DNDList.NotDraggingInfo Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
+viewProjectPanelItem config project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
@@ -233,30 +215,30 @@ viewProjectPanelItem projectList project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: DragSort.dragHandle ProjectPanelItemDragStart projectList project domId
+                :: config.dragHandleAttrs project domId
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
         ]
 
 
-viewProjectPanelItemsWhenDragActive : ProjectPanelItemsDragSort -> List (Html ProjectPanelMsg)
-viewProjectPanelItemsWhenDragActive dragSort =
+viewProjectPanelItemsWhenDragActive : DNDList.DraggingInfo Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
+viewProjectPanelItemsWhenDragActive config =
     let
-        viewItemHelp project =
-            viewProjectPanelItemWhenDragActive dragSort project
+        viewItemHelp =
+            viewProjectPanelItemWhenDragActive config
     in
-    List.map viewItemHelp (DragSort.list dragSort)
+    List.map viewItemHelp config.items
 
 
-viewProjectPanelItemWhenDragActive : ProjectPanelItemsDragSort -> Project -> Html ProjectPanelMsg
-viewProjectPanelItemWhenDragActive dragSort project =
+viewProjectPanelItemWhenDragActive : DNDList.DraggingInfo Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
+viewProjectPanelItemWhenDragActive config project =
     let
         isBeingDragged =
-            DragSort.isBeingDragged project dragSort
+            config.isBeingDragged project
 
         dragOverAttributes =
-            [ E.onMouseOver (ProjectPanelItemDraggedOver project) ]
+            config.dragOverAttrs project
 
         dragOverStyle =
             styleIf isBeingDragged [ Css.opacity <| Css.zero ]
