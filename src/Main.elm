@@ -106,36 +106,6 @@ updateProjectPanel config message model =
                 _ ->
                     ( model, Cmd.none )
 
-        {- ProjectPanelItemDragStart dragInitContext ->
-               ( model
-               , DragSort.initStep_1_GetDragElement dragInitContext
-                   |> Task.map ProjectPanelItemDragStart_2
-                   |> onDomErrorRecover "ProjectPanelItemDragged dragElDomId " ProjectPanelLogError
-                   |> Task.perform config.toMsg
-               )
-
-           ProjectPanelLogError error ->
-               ( model, logError error )
-
-           ProjectPanelItemDragStart_2 dragInitContext_2 ->
-               ( DragSort.initStep_2 dragInitContext_2 |> ProjectPanelItemsDragging
-               , Cmd.none
-               )
-
-           ProjectPanelItemDraggedOver dragOverProject ->
-               ( mapProjectPanelItemsDragSort
-                   (DragSort.sortOnDragOver dragOverProject)
-                   model
-               , Cmd.none
-               )
-
-           ProjectPanelItemDragMovedAt position ->
-               ( mapProjectPanelItemsDragSort
-                   (DragSort.setCurrent position)
-                   model
-               , Cmd.none
-               )
-        -}
         ProjectPanelItemDragComplete projectList ->
             case model of
                 ProjectPanelCollapsed ->
