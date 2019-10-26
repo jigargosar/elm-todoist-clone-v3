@@ -174,7 +174,7 @@ viewProjectPanel projectList model =
             viewProjectPanelHeaderCollapsed
 
         ProjectPanelExpanded dnd ->
-            case DNDList.viewInfo ProjectPanelDND projectList dnd of
+            case DNDList.view ProjectPanelDND projectList dnd of
                 DNDList.WhenNotDragging config ->
                     [ viewProjectPanelHeaderExpanded
                     , viewProjectPanelItems projectList config
@@ -198,12 +198,12 @@ viewProjectPanelHeaderExpanded =
     []
 
 
-viewProjectPanelItems : List Project -> DNDList.NotDraggingInfo Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
+viewProjectPanelItems : List Project -> DNDList.NotDraggingView Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
 viewProjectPanelItems projects config =
     List.map (viewProjectPanelItem config) projects
 
 
-viewProjectPanelItem : DNDList.NotDraggingInfo Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
+viewProjectPanelItem : DNDList.NotDraggingView Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
 viewProjectPanelItem config project =
     let
         domId =
@@ -222,7 +222,7 @@ viewProjectPanelItem config project =
         ]
 
 
-viewProjectPanelItemsWhenDragActive : DNDList.DraggingInfo Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
+viewProjectPanelItemsWhenDragActive : DNDList.DraggingView Project ProjectPanelMsg -> List (Html ProjectPanelMsg)
 viewProjectPanelItemsWhenDragActive config =
     let
         viewItemHelp =
@@ -231,7 +231,7 @@ viewProjectPanelItemsWhenDragActive config =
     List.map viewItemHelp config.items
 
 
-viewProjectPanelItemWhenDragActive : DNDList.DraggingInfo Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
+viewProjectPanelItemWhenDragActive : DNDList.DraggingView Project ProjectPanelMsg -> Project -> Html ProjectPanelMsg
 viewProjectPanelItemWhenDragActive config project =
     let
         isBeingDragged =

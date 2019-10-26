@@ -1,4 +1,4 @@
-module DNDList exposing (DraggingInfo, Model, Msg, NotDraggingInfo, ViewInfo(..), init, subscriptions, update, viewInfo)
+module DNDList exposing (DraggingView, Model, Msg, NotDraggingView, View(..), init, subscriptions, update, view)
 
 import Basics.More exposing (Position, flip, pageXYAsPositionDecoder)
 import Browser.Events
@@ -45,8 +45,8 @@ dragHandleAttrs dragStartMsg =
     ]
 
 
-viewInfo : (Msg item -> msg) -> List item -> Model item -> ViewInfo item msg
-viewInfo toMsg items model =
+view : (Msg item -> msg) -> List item -> Model item -> View item msg
+view toMsg items model =
     let
         mapAttrList =
             List.map (A.map toMsg)
@@ -70,22 +70,22 @@ viewInfo toMsg items model =
                 }
 
 
-type alias NotDraggingInfo item msg =
+type alias NotDraggingView item msg =
     { dragHandleAttrs : item -> String -> List (Attribute msg)
     , items : List item
     }
 
 
-type alias DraggingInfo item msg =
+type alias DraggingView item msg =
     { dragOverAttrs : item -> List (Attribute msg)
     , isBeingDragged : item -> Bool
     , items : List item
     }
 
 
-type ViewInfo item msg
-    = WhenNotDragging (NotDraggingInfo item msg)
-    | WhenDragging (DraggingInfo item msg)
+type View item msg
+    = WhenNotDragging (NotDraggingView item msg)
+    | WhenDragging (DraggingView item msg)
 
 
 subscriptions : (Msg item -> msg) -> Model item -> Sub msg
