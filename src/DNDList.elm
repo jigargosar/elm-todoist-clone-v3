@@ -53,16 +53,16 @@ type DraggingMsg item
 
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
-    case message of
-        DragStarted dragStart ->
+    case ( model, message ) of
+        ( _, DragStarted dragStart ) ->
             ( model
             , Dom.getElement dragStart.dragItemDomId |> Task.attempt (GotElement dragStart) |> Cmd.map toMsg
             )
 
-        Canceled ->
+        ( _, Canceled ) ->
             ( NotDragging, Cmd.none )
 
-        GotElement { items, dragItem, startPosition } result ->
+        ( _, GotElement { items, dragItem, startPosition } result ) ->
             case result of
                 Ok dragElement ->
                     ( State items dragItem startPosition dragElement startPosition
@@ -73,36 +73,34 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
-        WhileDragging msg ->
-            case model of
-                NotDragging ->
-                    ( model, Cmd.none )
+        ( NotDragging, WhileDragging _ ) ->
+            ( model, Cmd.none )
 
-                Dragging ({ items, dragItem } as state) ->
-                    case msg of
-                        Completed ->
-                            ( NotDragging
-                            , config.onComplete items |> msgToCmd
-                            )
+        ( Dragging ({ items, dragItem } as state), WhileDragging msg ) ->
+            case msg of
+                Completed ->
+                    ( NotDragging
+                    , config.onComplete items |> msgToCmd
+                    )
 
-                        MouseMoved currentPosition ->
-                            ( Dragging { state | currentPosition = currentPosition }
-                            , Cmd.none
-                            )
+                MouseMoved currentPosition ->
+                    ( Dragging { state | currentPosition = currentPosition }
+                    , Cmd.none
+                    )
 
-                        DraggedOver dragOverItem ->
-                            ( if dragOverItem == dragItem then
-                                model
+                DraggedOver dragOverItem ->
+                    ( if dragOverItem == dragItem then
+                        model
 
-                              else
-                                Dragging
-                                    { state
-                                        | items =
-                                            rotateListByElem dragItem dragOverItem items
-                                                |> Maybe.withDefault items
-                                    }
-                            , Cmd.none
-                            )
+                      else
+                        Dragging
+                            { state
+                                | items =
+                                    rotateListByElem dragItem dragOverItem items
+                                        |> Maybe.withDefault items
+                            }
+                    , Cmd.none
+                    )
 
 
 dragHandleAttrs : (Position -> msg) -> List (Attribute msg)
