@@ -116,3 +116,39 @@ initStep_1_GetDragElement : InitContext item -> Task Dom.Error (InitContext_2 it
 initStep_1_GetDragElement (InitContext l i d p) =
     Dom.getElement d
         |> Task.map (\el -> State l i el p p |> InitContext_2)
+
+
+
+--
+
+
+type DNDListState item
+    = NotDragging
+    | GettingDragElement (GettingDragElementModel item)
+    | Dragging (DraggingModel item)
+
+
+type alias GettingDragElementModel item =
+    { list : List item
+    , dragItem : item
+    , dragStartedAt : Position
+    }
+
+
+type alias DraggingModel item =
+    { list : List item
+    , dragItem : item
+    , dragStartedAt : Position
+    , dragElement : Dom.Element
+    , mouseAt : Position
+    }
+
+
+type DNDListEvents
+    = OnDragStart
+    | OnDragOver
+    | OnMouseMoved
+    | OnCancel
+    | OnComplete
+    | GotDragElement
+    | GotDragElementError
