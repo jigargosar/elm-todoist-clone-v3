@@ -99,6 +99,7 @@ update toMsg config message model =
             )
 
 
+sortItemsOnDragOver : item -> State item -> State item
 sortItemsOnDragOver dragOverItem state =
     if dragOverItem == state.dragItem then
         state
