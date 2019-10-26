@@ -118,7 +118,7 @@ viewDNDGhost toMsg =
         >> Maybe.andThen DNDList.ghost
         >> Maybe.map
             (\( styles, project ) ->
-                [ div [] [ text "ghost" ] ]
+                [ div [ css styles ] [ text "ghost" ] ]
                     |> List.map (H.map toMsg)
             )
 
