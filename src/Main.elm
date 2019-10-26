@@ -32,7 +32,6 @@ import Url exposing (Url)
 
 
 
--- PROJECT PANEL MODEL
 -- POPUP
 
 
