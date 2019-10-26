@@ -5,7 +5,7 @@ module ProjectPanel exposing
     , initial
     , subscriptions
     , update
-    , viewProjectPanel
+    , view
     )
 
 import Css
@@ -19,13 +19,13 @@ import Styles exposing (..)
 
 
 type ProjectPanel
-    = ProjectPanelCollapsed
-    | ProjectPanelExpanded (DNDList.Model Project)
+    = Collapsed
+    | Expanded (DNDList.Model Project)
 
 
 initial : ProjectPanel
 initial =
-    ProjectPanelExpanded DNDList.init
+    Expanded DNDList.init
 
 
 
@@ -41,10 +41,10 @@ type Msg
 subscriptions : ProjectPanel -> Sub Msg
 subscriptions projectPanel =
     case projectPanel of
-        ProjectPanelCollapsed ->
+        Collapsed ->
             Sub.none
 
-        ProjectPanelExpanded dnd ->
+        Expanded dnd ->
             DNDList.subscriptions DNDList dnd
 
 
@@ -65,12 +65,12 @@ update config message model =
 
         DNDList msg ->
             case model of
-                ProjectPanelExpanded dnd ->
+                Expanded dnd ->
                     DNDList.update (config.toMsg << DNDList)
                         { onComplete = config.projectOrderChanged }
                         msg
                         dnd
-                        |> Tuple.mapFirst ProjectPanelExpanded
+                        |> Tuple.mapFirst Expanded
 
                 _ ->
                     ( model, Cmd.none )
@@ -80,39 +80,39 @@ update config message model =
 -- PROJECT PANEL VIEW
 
 
-viewProjectPanel : List Project -> ProjectPanel -> List (Html Msg)
-viewProjectPanel projectList model =
+view : List Project -> ProjectPanel -> List (Html Msg)
+view projectList model =
     case model of
-        ProjectPanelCollapsed ->
-            viewProjectPanelHeaderCollapsed
+        Collapsed ->
+            viewCollapsed
 
-        ProjectPanelExpanded dnd ->
-            case DNDList.view DNDList projectList dnd of
+        Expanded dndList ->
+            case DNDList.view DNDList projectList dndList of
                 DNDList.WhenNotDragging config ->
-                    [ viewProjectPanelHeaderExpanded
-                    , List.map (viewProjectPanelItem config) config.items
+                    [ viewExpanded
+                    , List.map (viewItem config) config.items
                     ]
                         |> List.concat
 
                 DNDList.WhenDragging config ->
-                    [ viewProjectPanelHeaderExpanded
-                    , List.map (viewProjectPanelItemWhenDragActive config) config.items
+                    [ viewExpanded
+                    , List.map (viewItemWhenDragActive config) config.items
                     ]
                         |> List.concat
 
 
-viewProjectPanelHeaderCollapsed : List (Html Msg)
-viewProjectPanelHeaderCollapsed =
+viewCollapsed : List (Html Msg)
+viewCollapsed =
     []
 
 
-viewProjectPanelHeaderExpanded : List (Html Msg)
-viewProjectPanelHeaderExpanded =
+viewExpanded : List (Html Msg)
+viewExpanded =
     []
 
 
-viewProjectPanelItem : DNDList.NotDraggingConfig Project msg -> Project -> Html msg
-viewProjectPanelItem config project =
+viewItem : DNDList.NotDraggingConfig Project msg -> Project -> Html msg
+viewItem config project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
@@ -130,8 +130,8 @@ viewProjectPanelItem config project =
         ]
 
 
-viewProjectPanelItemWhenDragActive : DNDList.DraggingConfig Project msg -> Project -> Html msg
-viewProjectPanelItemWhenDragActive config project =
+viewItemWhenDragActive : DNDList.DraggingConfig Project msg -> Project -> Html msg
+viewItemWhenDragActive config project =
     let
         isBeingDragged =
             config.isBeingDragged project

@@ -530,7 +530,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
         , main =
-            [ ProjectPanel.viewProjectPanel (ProjectCollection.sorted model.projectCollection) model.projectPanel
+            [ ProjectPanel.view (ProjectCollection.sorted model.projectCollection) model.projectPanel
                 |> List.map (H.map ProjectPanelMsg_)
             , pageView model
             ]
