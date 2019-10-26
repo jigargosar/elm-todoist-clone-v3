@@ -193,7 +193,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions model.projectPanel |> Sub.map ProjectPanelMsg_
+        , ProjectPanel.subscriptions model.projectPanel |> Sub.map ProjectPanelMsg
         ]
 
 
@@ -222,7 +222,7 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
-    | ProjectPanelMsg_ ProjectPanel.Msg
+    | ProjectPanelMsg ProjectPanel.Msg
     | ProjectOrderChanged (List Project)
 
 
@@ -365,7 +365,7 @@ update message model =
                 Drawer.More anchorId panelItemId ->
                     update (PopupTriggered panelItemId anchorId) model
 
-        ProjectPanelMsg_ msg ->
+        ProjectPanelMsg msg ->
             handleProjectPanelMsg msg model
 
         ProjectOrderChanged projectList ->
@@ -374,7 +374,7 @@ update message model =
 
 projectPanelConfig : ProjectPanel.ProjectPanelConfig Msg
 projectPanelConfig =
-    { toMsg = ProjectPanelMsg_, projectOrderChanged = ProjectOrderChanged }
+    { toMsg = ProjectPanelMsg, projectOrderChanged = ProjectOrderChanged }
 
 
 handleProjectPanelMsg : ProjectPanel.Msg -> Model -> ( Model, Cmd Msg )
@@ -530,7 +530,7 @@ view model =
         , drawer = viewDrawer model
         , main =
             [ ProjectPanel.view (ProjectCollection.sorted model.projectCollection) model.projectPanel
-                |> List.map (H.map ProjectPanelMsg_)
+                |> List.map (H.map ProjectPanelMsg)
             , pageView model
             ]
                 |> List.concat
