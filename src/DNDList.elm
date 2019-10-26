@@ -54,9 +54,9 @@ type DraggingMsg item
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
     case ( model, message ) of
-        ( _, DragStarted dragStart ) ->
+        ( _, DragStarted payload ) ->
             ( model
-            , Dom.getElement dragStart.dragItemDomId |> Task.attempt (GotElement dragStart) |> Cmd.map toMsg
+            , Dom.getElement payload.dragItemDomId |> Task.attempt (GotElement payload) |> Cmd.map toMsg
             )
 
         ( _, Canceled ) ->
