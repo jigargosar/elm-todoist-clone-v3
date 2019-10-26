@@ -13,11 +13,10 @@ import Task
 
 type Model item
     = NotDragging
-    | DragStart (DragStart_ item)
-    | Dragging (Dragging_ item)
+    | Dragging (State item)
 
 
-type alias DragStart_ item =
+type alias DragStart item =
     { items : List item
     , dragItem : item
     , dragItemDomId : String
@@ -25,7 +24,7 @@ type alias DragStart_ item =
     }
 
 
-type alias Dragging_ item =
+type alias State item =
     { items : List item
     , dragItem : item
     , startPosition : Position
@@ -43,8 +42,8 @@ type Msg item
     = Completed
     | MouseMoved Position
     | DraggedOver item
-    | DragStarted (DragStart_ item)
-    | GotElement (Result Dom.Error Dom.Element)
+    | DragStarted (DragStart item)
+    | GotElement (DragStart item) (Result Dom.Error Dom.Element)
     | Canceled
 
 
@@ -52,17 +51,17 @@ update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> M
 update toMsg config message model =
     case ( model, message ) of
         ( _, DragStarted dragStart ) ->
-            ( DragStart dragStart
-            , Dom.getElement dragStart.dragItemDomId |> Task.attempt GotElement |> Cmd.map toMsg
+            ( model
+            , Dom.getElement dragStart.dragItemDomId |> Task.attempt (GotElement dragStart) |> Cmd.map toMsg
             )
 
         ( _, Canceled ) ->
             ( NotDragging, Cmd.none )
 
-        ( DragStart { items, dragItem, startPosition }, GotElement result ) ->
+        ( _, GotElement { items, dragItem, startPosition } result ) ->
             case result of
                 Ok dragElement ->
-                    ( Dragging_ items dragItem startPosition dragElement startPosition
+                    ( State items dragItem startPosition dragElement startPosition
                         |> Dragging
                     , Cmd.none
                     )
@@ -126,7 +125,7 @@ view toMsg items model =
             WhenNotDragging
                 { dragHandleAttrs =
                     \item domId ->
-                        (DragStarted << DragStart_ items item domId)
+                        (DragStarted << DragStart items item domId)
                             |> dragHandleAttrs
                             |> mapAttrList
                 , items = items
