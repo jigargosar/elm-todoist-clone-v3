@@ -20,6 +20,7 @@ type Model item
 type alias DragStart_ item =
     { items : List item
     , dragItem : item
+    , dragItemDomId : String
     , startPosition : Position
     }
 
@@ -42,7 +43,7 @@ type Msg item
     = Completed
     | MouseMoved Position
     | DraggedOver item
-    | DragStarted (List item) item String Position
+    | DragStarted (DragStart_ item)
     | GotElement (Result Dom.Error Dom.Element)
     | Canceled
 
@@ -50,10 +51,9 @@ type Msg item
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
     case ( model, message ) of
-        ( _, DragStarted items item domId startPosition ) ->
-            ( DragStart_ items item startPosition
-                |> DragStart
-            , Dom.getElement domId |> Task.attempt GotElement |> Cmd.map toMsg
+        ( _, DragStarted dragStart ) ->
+            ( DragStart dragStart
+            , Dom.getElement dragStart.dragItemDomId |> Task.attempt GotElement |> Cmd.map toMsg
             )
 
         ( _, Canceled ) ->
@@ -126,7 +126,7 @@ view toMsg items model =
             WhenNotDragging
                 { dragHandleAttrs =
                     \item domId ->
-                        DragStarted items item domId
+                        (DragStarted << DragStart_ items item domId)
                             |> dragHandleAttrs
                             |> mapAttrList
                 , items = items
