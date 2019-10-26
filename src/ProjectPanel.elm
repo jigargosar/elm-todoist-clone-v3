@@ -112,17 +112,6 @@ getDND model =
             Nothing
 
 
-viewDNDGhost : (Msg -> msg) -> ProjectPanel -> Maybe (List (Html msg))
-viewDNDGhost toMsg =
-    getDND
-        >> Maybe.andThen DNDList.ghost
-        >> Maybe.map
-            (\( styles, project ) ->
-                [ div [ css styles ] [ text "ghost" ] ]
-                    |> List.map (H.map toMsg)
-            )
-
-
 viewCollapsed : List (Html Msg)
 viewCollapsed =
     []
@@ -171,3 +160,21 @@ viewItemWhenDragActive config project =
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
         ]
+
+
+viewDNDGhost : (Msg -> msg) -> ProjectPanel -> Maybe (List (Html msg))
+viewDNDGhost toMsg =
+    getDND
+        >> Maybe.andThen DNDList.ghost
+        >> Maybe.map
+            (\( styles, project ) ->
+                [ div
+                    [ css [ lh 1.5, flex, batch styles ] ]
+                    [ div
+                        (css [ Px.p2 8 8, pointer ] :: [])
+                        [ text "DRAG_HANDLE" ]
+                    , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
+                    ]
+                ]
+                    |> List.map (H.map toMsg)
+            )
