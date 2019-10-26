@@ -100,7 +100,7 @@ updateProjectPanel config message model =
                         { onComplete = config.projectOrderChanged }
                         msg
                         dnd
-                        |> Tuple.mapBoth ProjectPanelExpanded identity
+                        |> Tuple.mapFirst ProjectPanelExpanded
 
                 _ ->
                     ( model, Cmd.none )
