@@ -8,7 +8,6 @@ import Css
 import DNDList
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
-import DragSort exposing (DragSort)
 import Drawer
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
@@ -43,10 +42,6 @@ import Url exposing (Url)
 
 type alias Position =
     { x : Int, y : Int }
-
-
-type alias ProjectPanelItemsDragSort =
-    DragSort Project
 
 
 type ProjectPanel
