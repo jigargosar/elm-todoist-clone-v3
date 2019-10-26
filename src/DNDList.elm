@@ -39,27 +39,30 @@ init =
 
 
 type Msg item
-    = NoOp
-    | DragStarted (DragStart item)
+    = DragStarted (DragStart item)
     | GotElement (DragStart item) (Result Dom.Error Dom.Element)
     | Canceled
-    | Completed
+    | OnDraggingMsg (DraggingMsg item)
+
+
+type DraggingMsg item
+    = Completed
     | MouseMoved Position
     | DraggedOver item
 
 
 update : (Msg item -> msg) -> { onComplete : List item -> msg } -> Msg item -> Model item -> ( Model item, Cmd msg )
 update toMsg config message model =
-    case ( model, message ) of
-        ( _, DragStarted dragStart ) ->
+    case message of
+        DragStarted dragStart ->
             ( model
             , Dom.getElement dragStart.dragItemDomId |> Task.attempt (GotElement dragStart) |> Cmd.map toMsg
             )
 
-        ( _, Canceled ) ->
+        Canceled ->
             ( NotDragging, Cmd.none )
 
-        ( _, GotElement { items, dragItem, startPosition } result ) ->
+        GotElement { items, dragItem, startPosition } result ->
             case result of
                 Ok dragElement ->
                     ( State items dragItem startPosition dragElement startPosition
@@ -70,32 +73,36 @@ update toMsg config message model =
                 Err (Dom.NotFound domId) ->
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
-        ( Dragging ({ items, dragItem } as state), DraggedOver dragOverItem ) ->
-            ( if dragOverItem == dragItem then
-                model
+        OnDraggingMsg msg ->
+            case model of
+                NotDragging ->
+                    ( model, Cmd.none )
 
-              else
-                Dragging
-                    { state
-                        | items =
-                            rotateListByElem dragItem dragOverItem items
-                                |> Maybe.withDefault items
-                    }
-            , Cmd.none
-            )
+                Dragging ({ items, dragItem } as state) ->
+                    case msg of
+                        Completed ->
+                            ( NotDragging
+                            , config.onComplete items |> msgToCmd
+                            )
 
-        ( Dragging state, MouseMoved currentPosition ) ->
-            ( Dragging { state | currentPosition = currentPosition }
-            , Cmd.none
-            )
+                        MouseMoved currentPosition ->
+                            ( Dragging { state | currentPosition = currentPosition }
+                            , Cmd.none
+                            )
 
-        ( Dragging { items }, Completed ) ->
-            ( NotDragging
-            , config.onComplete items |> msgToCmd
-            )
+                        DraggedOver dragOverItem ->
+                            ( if dragOverItem == dragItem then
+                                model
 
-        _ ->
-            ( model, Cmd.none )
+                              else
+                                Dragging
+                                    { state
+                                        | items =
+                                            rotateListByElem dragItem dragOverItem items
+                                                |> Maybe.withDefault items
+                                    }
+                            , Cmd.none
+                            )
 
 
 dragHandleAttrs : (Position -> msg) -> List (Attribute msg)
@@ -117,7 +124,7 @@ view toMsg items model =
     case model of
         Dragging state ->
             WhenDragging
-                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (DraggedOver item) ]
+                { dragOverAttrs = \item -> mapAttrList [ E.onMouseOver (OnDraggingMsg <| DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
                 }
@@ -159,7 +166,7 @@ subscriptions toMsg model =
                 [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
-                |> Sub.map toMsg
+                |> Sub.map (OnDraggingMsg >> toMsg)
 
         _ ->
             Sub.none
