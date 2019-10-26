@@ -11,7 +11,7 @@ module ProjectPanel exposing
 
 import Css
 import DNDList
-import Html.Styled exposing (Attribute, Html, div, text)
+import Html.Styled as H exposing (Attribute, Html, div, text)
 import Html.Styled.Attributes as A exposing (css)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -112,12 +112,15 @@ getDND model =
             Nothing
 
 
-viewDNDGhost : ProjectPanel -> List (Html Msg)
-viewDNDGhost =
+viewDNDGhost : (Msg -> msg) -> ProjectPanel -> Maybe (List (Html msg))
+viewDNDGhost toMsg =
     getDND
         >> Maybe.andThen DNDList.ghost
-        >> Maybe.map (\( styles, project ) -> [ div [] [ text "ghost" ] ])
-        >> Maybe.withDefault []
+        >> Maybe.map
+            (\( styles, project ) ->
+                [ div [] [ text "ghost" ] ]
+                    |> List.map (H.map toMsg)
+            )
 
 
 viewCollapsed : List (Html Msg)

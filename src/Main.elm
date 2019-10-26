@@ -534,7 +534,13 @@ view model =
             , pageView model
             ]
                 |> List.concat
-        , modal = popupView model ++ dialogView model ++ panelDragView model
+        , modal =
+            popupView model
+                ++ dialogView model
+                ++ panelDragView model
+                ++ (ProjectPanel.viewDNDGhost ProjectPanelMsg model.projectPanel
+                        |> Maybe.withDefault []
+                   )
         }
         model.isDrawerModalOpen
 
