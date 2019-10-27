@@ -134,10 +134,10 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         title =
             Project.title project
     in
-    div (css [ lh 1.5, flex, batch itemStyles ] :: itemAttrs)
-        [ div (css [ flex, itemsCenter, cursorMove ] :: handleAttrs)
+    div (css [ Px.p2 0 4, lh 1.5, flex, batch itemStyles ] :: itemAttrs)
+        [ div (css [ Px.p2 8 4, flex, itemsCenter, cursorMove ] :: handleAttrs)
             [ i [ class "material-icons" ] [ text "folder" ] ]
-        , div [ css [ Px.p2 8 8 ] ] [ text title ]
+        , div [ css [ Px.p2 8 4 ] ] [ text title ]
         ]
 
 
