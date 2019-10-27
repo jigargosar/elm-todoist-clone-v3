@@ -39,9 +39,7 @@ initial =
 
 type Msg
     = HeaderClicked
-    | AddClicked
     | DNDListMsg (DNDList.Msg Project)
-    | MoreClicked ProjectId String
 
 
 subscriptions : ProjectPanel -> Sub Msg
@@ -74,12 +72,6 @@ update config message model =
                     Collapsed
             , Cmd.none
             )
-
-        AddClicked ->
-            ( model, msgToCmd config.addProjectClicked )
-
-        MoreClicked projectId anchorId ->
-            ( model, msgToCmd <| config.projectMoreClicked projectId anchorId )
 
         DNDListMsg msg ->
             case model of
