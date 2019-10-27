@@ -131,11 +131,15 @@ viewItem dragHandleAttrs project =
     let
         domId =
             itemDomId project
+
+        itemAttrs =
+            [A.id domId]
+
     in
     div
-        [ A.id domId
-        , css [ lh 1.5, flex ]
-        ]
+        (
+         css [ lh 1.5, flex  :: itemAttrs
+        )
         [ div
             (css [ Px.p2 8 8, pointer ]
                 :: dragHandleAttrs project domId
