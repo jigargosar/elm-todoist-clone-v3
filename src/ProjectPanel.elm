@@ -126,6 +126,15 @@ viewExpanded =
     []
 
 
+viewItem : ItemProps msg -> Project -> Html msg
+viewItem { itemAttrs, itemStyles, handleAttrs } project =
+    div (css [ lh 1.5, flex, batch itemStyles ] :: itemAttrs)
+        [ div (css [ Px.p2 8 8, pointer ] :: handleAttrs)
+            [ text "DRAG_HANDLE" ]
+        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
+        ]
+
+
 viewItemWhenNotDragging : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
 viewItemWhenNotDragging dragHandleAttrs project =
     let
@@ -138,14 +147,7 @@ viewItemWhenNotDragging dragHandleAttrs project =
         handleAttrs =
             dragHandleAttrs project domId
     in
-    div (css [ lh 1.5, flex ] :: itemAttrs)
-        [ div
-            (css [ Px.p2 8 8, pointer ]
-                :: handleAttrs
-            )
-            [ text "DRAG_HANDLE" ]
-        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
-        ]
+    viewItem { itemAttrs = itemAttrs, itemStyles = [], handleAttrs = handleAttrs } project
 
 
 viewItemWhenDragging : DNDList.DraggingConfig Project msg -> Project -> Html msg
@@ -189,6 +191,6 @@ viewDNDGhost toMsg =
 
 type alias ItemProps msg =
     { itemAttrs : List (Attribute msg)
-    , itemStyle : Style
+    , itemStyles : List Style
     , handleAttrs : List (Attribute msg)
     }
