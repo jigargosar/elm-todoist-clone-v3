@@ -44,7 +44,7 @@ expansionToggleBtn toggle title isExpanded =
 secondaryActionIconBtn : { a | iconName : String, action : msg } -> Html msg
 secondaryActionIconBtn { iconName, action } =
     button
-        [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+        [ css [ secondaryActionIconBtnStyle ]
         , onClick action
         ]
         [ i [ class "material-icons" ] [ text iconName ] ]
