@@ -459,7 +459,11 @@ noSelection =
 
 
 btnReset =
-    batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex ]
+    batch [ noSelection, ma0, pa0, bn, bgInherit, fgInherit, flex, focus [ z_1 ] ]
+
+
+z_1 =
+    z_ 1
 
 
 linkReset =
@@ -498,6 +502,10 @@ cursorMove =
 
 ttu =
     Css.textTransform Css.uppercase
+
+
+tal =
+    Css.textAlign Css.left
 
 
 bold =

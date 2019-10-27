@@ -150,15 +150,15 @@ viewHeader isExpanded =
                 "chevron_right"
     in
     [ div
-        [ css [ bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
+        [ css [ Px.pl 4, Px.pr (4 + 16), bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
-            [ css [ btnReset, pointer, pa 1, flexGrow1, flex ], onClick HeaderClicked ]
-            [ i [ class "material-icons" ] [ text iconName ]
-            , span [ css [ bold, pa 1 ] ] [ text "Projects" ]
+            [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick HeaderClicked ]
+            [ i [ css [ Px.p2 8 4 ], class "material-icons" ] [ text iconName ]
+            , div [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
             ]
         , button
-            [ css [ btnReset, pointer, mr 3 ], onClick AddClicked ]
-            [ i [ class "material-icons" ] [ text "add" ] ]
+            [ css [ btnReset, pointer ], onClick AddClicked ]
+            [ i [ css [ Px.p2 8 4 ], class "material-icons" ] [ text "add" ] ]
         ]
     ]
 
