@@ -1,4 +1,4 @@
-module DrawerUI exposing (viewExpansionPanelHeader)
+module DrawerUI exposing (listItemStyle, viewExpansionPanelHeader)
 
 import Html.Styled exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes exposing (class, css)
@@ -25,7 +25,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
                 "chevron_right"
     in
     [ div
-        [ css [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ] ]
+        [ css [ listItemStyle ] ]
         [ button
             [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggle ]
             [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
@@ -45,7 +45,6 @@ secondaryActionIconBtn { iconName, action } =
         [ i [ class "material-icons" ] [ text iconName ] ]
 
 
-viewListItem : List (Html msg) -> Html msg
-viewListItem =
-    div
-        [ css [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ] ]
+listItemStyle : Style
+listItemStyle =
+    batch [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ]
