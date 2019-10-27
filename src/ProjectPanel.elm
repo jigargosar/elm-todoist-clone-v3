@@ -179,15 +179,11 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
                 [ css [ secondaryActionIconBtnStyle ]
                 , onClick action
                 ]
-                [ secondaryActionIcon iconName ]
+                [ i [ class "material-icons" ] [ text iconName ] ]
 
         secondaryActionIconBtnStyle : Style
         secondaryActionIconBtnStyle =
             batch [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-
-        secondaryActionIcon : String -> Html msg
-        secondaryActionIcon name =
-            i [ class "material-icons" ] [ text name ]
 
         listItemStyle : Style
         listItemStyle =
