@@ -116,6 +116,11 @@ getDND model =
             Nothing
 
 
+getDNDGhost : ProjectPanel -> Maybe ( Style, Project )
+getDNDGhost =
+    getDND >> Maybe.andThen DNDList.ghost
+
+
 viewCollapsed : List (Html Msg)
 viewCollapsed =
     []
@@ -164,8 +169,7 @@ viewItemWhenDragging { isBeingDragged, dragOverAttrs } project =
 
 viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
 viewDNDGhost toMsg =
-    getDND
-        >> Maybe.andThen DNDList.ghost
+    getDNDGhost
         >> Maybe.map
             (\( itemStyle, project ) ->
                 [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
