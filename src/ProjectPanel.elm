@@ -98,9 +98,9 @@ update config message model =
 -- PROJECT PANEL VIEW
 
 
-view : Config msg -> List Project -> ProjectPanel -> List (Html Msg)
+view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view { toMsg } projectList model =
-    case model of
+    (case model of
         Collapsed ->
             viewCollapsed
 
@@ -114,6 +114,8 @@ view { toMsg } projectList model =
                     List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
             ]
                 |> List.concat
+    )
+        |> List.map (H.map toMsg)
 
 
 itemDomId : Project -> String

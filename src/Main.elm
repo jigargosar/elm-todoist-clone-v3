@@ -561,11 +561,9 @@ viewDrawer model =
                 |> List.map (H.map (DrawerPanelMsg panel))
     in
     Drawer.prefixNavItemsView
-        ++ (ProjectPanel.view projectPanelConfig
-                (ProjectCollection.sorted model.projectCollection)
-                model.projectPanel
-                |> List.map (H.map ProjectPanelMsg)
-           )
+        ++ ProjectPanel.view projectPanelConfig
+            (ProjectCollection.sorted model.projectCollection)
+            model.projectPanel
         ++ viewPanel Drawer.labelPanelItemConfig
             Drawer.Labels
             (LabelCollection.sorted model.labelCollection)
