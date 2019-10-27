@@ -144,7 +144,7 @@ viewHeader isExpanded =
         { toggle = HeaderClicked
         , title = "Projects"
         , isExpanded = isExpanded
-        , secondary = Just { iconName = "add", action = AddClicked }
+        , secondary = { iconName = "add", action = AddClicked }
         }
 
 
@@ -152,7 +152,7 @@ viewExpansionPanelHeader :
     { toggle : msg
     , title : String
     , isExpanded : Bool
-    , secondary : Maybe { iconName : String, action : msg }
+    , secondary : { iconName : String, action : msg }
     }
     -> List (Html msg)
 viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
@@ -196,7 +196,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
     [ div
         [ css [ listItemStyle ] ]
         [ expansionToggleBtn
-        , Maybe.map secondaryActionIconBtn secondary |> Maybe.withDefault (text "")
+        , secondaryActionIconBtn secondary
         ]
     ]
 
