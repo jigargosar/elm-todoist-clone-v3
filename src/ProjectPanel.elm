@@ -265,9 +265,9 @@ viewItemWhenNotDragging dragHandleAttrs project =
 
 viewItemWhenDragging :
     (Project -> Bool)
-    -> (Project -> List (Attribute Msg))
+    -> (Project -> List (Attribute msg))
     -> Project
-    -> Html Msg
+    -> Html msg
 viewItemWhenDragging isBeingDragged dragOverAttrs project =
     viewItem
         { itemAttrs = dragOverAttrs project
@@ -278,7 +278,7 @@ viewItemWhenDragging isBeingDragged dragOverAttrs project =
         project
 
 
-viewGhostItem : Style -> Project -> List (Html Msg)
+viewGhostItem : Style -> Project -> List (Html msg)
 viewGhostItem itemStyle project =
     [ viewItem
         { itemAttrs = []
