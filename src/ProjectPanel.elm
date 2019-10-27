@@ -98,8 +98,8 @@ update config message model =
 -- PROJECT PANEL VIEW
 
 
-view : List Project -> ProjectPanel -> List (Html Msg)
-view projectList model =
+view : Config msg -> List Project -> ProjectPanel -> List (Html Msg)
+view { toMsg } projectList model =
     case model of
         Collapsed ->
             viewCollapsed
