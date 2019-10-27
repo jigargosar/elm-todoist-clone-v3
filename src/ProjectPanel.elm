@@ -206,7 +206,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
 
 
 viewItem : ItemProps Msg -> Project -> Html Msg
-viewItem { itemAttrs, itemStyles, handleAttrs } project =
+viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
         title =
             Project.title project
@@ -219,15 +219,6 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
 
         href =
             Route.href (Route.Project projectId)
-
-        moreDomId =
-            itemDomId project ++ "__more-btn"
-
-        moreClicked =
-            MoreClicked projectId moreDomId
-
-        moreAttrs =
-            [ onClick moreClicked, A.id moreDomId ]
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
@@ -253,11 +244,21 @@ viewItemWhenNotDragging dragHandleAttrs project =
     let
         domId =
             itemDomId project
+
+        projectId =
+            Project.id project
+
+        moreDomId =
+            domId ++ "__more-btn"
+
+        moreClicked =
+            MoreClicked projectId moreDomId
     in
     viewItem
         { itemAttrs = [ A.id domId ]
         , itemStyles = []
         , handleAttrs = dragHandleAttrs project domId
+        , moreAttrs = [ A.id moreDomId, onClick moreClicked ]
         }
         project
 
@@ -272,12 +273,21 @@ viewItemWhenDragging isBeingDragged dragOverAttrs project =
         { itemAttrs = dragOverAttrs project
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
         , handleAttrs = []
+        , moreAttrs = []
         }
         project
 
 
+viewGhostItem : Style -> Project -> List (Html Msg)
 viewGhostItem itemStyle project =
-    [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
+    [ viewItem
+        { itemAttrs = []
+        , itemStyles = [ itemStyle ]
+        , handleAttrs = []
+        , moreAttrs = []
+        }
+        project
+    ]
 
 
 viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
@@ -295,4 +305,5 @@ type alias ItemProps msg =
     { itemAttrs : List (Attribute msg)
     , itemStyles : List Style
     , handleAttrs : List (Attribute msg)
+    , moreAttrs : List (Attribute msg)
     }
