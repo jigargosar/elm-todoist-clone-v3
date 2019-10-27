@@ -41,6 +41,7 @@ type Msg
     = HeaderClicked
     | AddClicked
     | DNDListMsg (DNDList.Msg Project)
+    | MoreClicked ProjectId String
 
 
 subscriptions : ProjectPanel -> Sub Msg
@@ -76,6 +77,9 @@ update config message model =
 
         AddClicked ->
             ( model, msgToCmd config.addProjectClicked )
+
+        MoreClicked projectId anchorId ->
+            ( model, msgToCmd <| config.projectMoreClicked projectId anchorId )
 
         DNDListMsg msg ->
             case model of
@@ -210,8 +214,17 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         iconColor =
             Project.cssColor project
 
+        projectId =
+            Project.id project
+
         href =
-            Route.href (Route.Project (Project.id project))
+            Route.href (Route.Project projectId)
+
+        moreDomId =
+            itemDomId project ++ "__more-btn"
+
+        moreClicked =
+            MoreClicked projectId moreDomId
     in
     div (css [ Px.p2 0 4, flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
@@ -224,6 +237,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         , button
             [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
             , class "show_on_parent_hover"
+            , onClick moreClicked
             ]
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
