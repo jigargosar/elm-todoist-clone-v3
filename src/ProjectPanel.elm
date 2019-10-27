@@ -102,18 +102,17 @@ view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view { toMsg } projectList model =
     (case model of
         Collapsed ->
-            viewCollapsed
+            [ viewCollapsed ]
 
         Expanded dndList ->
-            [ viewExpanded
-            , case DNDList.view DNDListMsg projectList dndList of
-                DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                    List.map (viewItemWhenNotDragging dragHandleAttrs) items
+            viewExpanded
+                :: (case DNDList.view DNDListMsg projectList dndList of
+                        DNDList.WhenNotDragging { dragHandleAttrs, items } ->
+                            List.map (viewItemWhenNotDragging dragHandleAttrs) items
 
-                DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                    List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
-            ]
-                |> List.concat
+                        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
+                            List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
+                   )
     )
         |> List.map (H.map toMsg)
 
@@ -138,17 +137,17 @@ getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
 
 
-viewCollapsed : List (Html Msg)
+viewCollapsed : Html Msg
 viewCollapsed =
     viewHeader False
 
 
-viewExpanded : List (Html Msg)
+viewExpanded : Html Msg
 viewExpanded =
     viewHeader True
 
 
-viewHeader : Bool -> List (Html Msg)
+viewHeader : Bool -> Html Msg
 viewHeader isExpanded =
     viewExpansionPanelHeader
         { toggle = HeaderClicked
@@ -164,7 +163,7 @@ viewExpansionPanelHeader :
     , isExpanded : Bool
     , secondary : { iconName : String, action : msg }
     }
-    -> List (Html msg)
+    -> Html msg
 viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
     let
         expansionToggleBtn : Html msg
@@ -199,12 +198,11 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
         listItemStyle =
             batch [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ]
     in
-    [ div
+    div
         [ css [ listItemStyle ] ]
         [ expansionToggleBtn
         , secondaryActionIconBtn secondary
         ]
-    ]
 
 
 viewItem : ItemProps msg -> Project -> Html msg
