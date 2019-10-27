@@ -11,12 +11,13 @@ module ProjectPanel exposing
 
 import Css
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, button, div, i, span, text)
-import Html.Styled.Attributes as A exposing (class, css)
+import Html.Styled as H exposing (Attribute, Html, a, button, div, i, span, text)
+import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
+import Route
 import Styles exposing (..)
 import Theme
 
@@ -205,6 +206,9 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
 
         iconColor =
             Project.cssColor project
+
+        href =
+            Route.href (Route.Project (Project.id project))
     in
     div (css [ Px.p2 0 4, flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
@@ -213,7 +217,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
                 :: handleAttrs
             )
             [ text "folder" ]
-        , div [ css [ Px.p2 8 4, lh 1.5, flexGrow1 ] ] [ text title ]
+        , a [ css [ Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
             [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
             , class "show_on_parent_hover"
