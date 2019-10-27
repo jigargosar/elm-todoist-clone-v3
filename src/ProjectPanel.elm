@@ -40,14 +40,22 @@ type Msg_ subMsg
 
 update_ :
     (Msg_ subMsg -> msg)
+    -> (() -> sub)
     -> (subMsg -> sub -> ( sub, Cmd subMsg ))
     -> Msg_ subMsg
     -> Collapsible sub
     -> ( Collapsible sub, Cmd msg )
-update_ toMsg subUpdate message model =
+update_ toMsg subInit subUpdate message model =
     case message of
         Toggle ->
-            ( model, Cmd.none )
+            ( case model of
+                Collapsed_ ->
+                    Expanded_ (subInit ())
+
+                Expanded_ sub ->
+                    Collapsed_
+            , Cmd.none
+            )
 
         SubMsg subMsg ->
             case model of
