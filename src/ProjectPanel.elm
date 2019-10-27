@@ -23,49 +23,6 @@ import Styles exposing (..)
 import Theme
 
 
-type Collapsible sub
-    = Collapsed_
-    | Expanded_ sub
-
-
-initial_ : sub -> Collapsible sub
-initial_ =
-    impl
-
-
-type Msg_ subMsg
-    = Toggle
-    | SubMsg subMsg
-
-
-update_ :
-    (Msg_ subMsg -> msg)
-    -> (() -> sub)
-    -> (subMsg -> sub -> ( sub, Cmd subMsg ))
-    -> Msg_ subMsg
-    -> Collapsible sub
-    -> ( Collapsible sub, Cmd msg )
-update_ toMsg subInit subUpdate message model =
-    case message of
-        Toggle ->
-            ( case model of
-                Collapsed_ ->
-                    Expanded_ (subInit ())
-
-                Expanded_ sub ->
-                    Collapsed_
-            , Cmd.none
-            )
-
-        SubMsg subMsg ->
-            case model of
-                Collapsed_ ->
-                    ( model, Cmd.none )
-
-                Expanded_ sub ->
-                    subUpdate subMsg sub |> Tuple.mapBoth Expanded_ (Cmd.map (SubMsg >> toMsg))
-
-
 type ProjectPanel
     = Collapsed
     | Expanded (DNDList.Model Project)
