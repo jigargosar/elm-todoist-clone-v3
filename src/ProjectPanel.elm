@@ -141,8 +141,8 @@ view ({ toMsg } as config) projectList model =
                             List.map viewHelp items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            let
-                                viewHelp project =
+                            List.map
+                                (\project ->
                                     viewItem
                                         { itemAttrs = dragOverAttrs project
                                         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
@@ -150,8 +150,8 @@ view ({ toMsg } as config) projectList model =
                                         , moreAttrs = []
                                         }
                                         project
-                            in
-                            List.map viewHelp items
+                                )
+                                items
                    )
 
 
