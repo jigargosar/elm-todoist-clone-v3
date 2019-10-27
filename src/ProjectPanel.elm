@@ -108,10 +108,10 @@ view ({ toMsg } as config) projectList model =
             viewHeader config True
                 :: (case DNDList.view DNDListMsg projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                            List.map (viewItemWhenNotDragging toMsg dragHandleAttrs) items
+                            List.map (viewItemWhenNotDragging config dragHandleAttrs) items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            List.map (viewItemWhenDragging toMsg isBeingDragged dragOverAttrs) items
+                            List.map (viewItemWhenDragging config isBeingDragged dragOverAttrs) items
                    )
 
 
@@ -228,11 +228,11 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
 
 
 viewItemWhenNotDragging :
-    (Msg -> msg)
+    Config msg
     -> (Project -> String -> List (Attribute Msg))
     -> Project
     -> Html msg
-viewItemWhenNotDragging toMsg dragHandleAttrs project =
+viewItemWhenNotDragging { toMsg } dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -253,12 +253,12 @@ viewItemWhenNotDragging toMsg dragHandleAttrs project =
 
 
 viewItemWhenDragging :
-    (Msg -> msg)
+    Config msg
     -> (Project -> Bool)
     -> (Project -> List (Attribute Msg))
     -> Project
     -> Html msg
-viewItemWhenDragging toMsg isBeingDragged dragOverAttrs project =
+viewItemWhenDragging { toMsg } isBeingDragged dragOverAttrs project =
     viewItem
         { itemAttrs = dragOverAttrs project |> List.map (A.map toMsg)
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
