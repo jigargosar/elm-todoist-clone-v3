@@ -157,8 +157,12 @@ viewHeader isExpanded =
             , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
             ]
         , button
-            [ css [ btnReset, pointer ], onClick AddClicked ]
-            [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text "add" ] ]
+            [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+            ]
+            [ i
+                [ class "material-icons" ]
+                [ text "add" ]
+            ]
         ]
     ]
 
