@@ -133,13 +133,9 @@ viewItem dragHandleAttrs project =
             itemDomId project
 
         itemAttrs =
-            [A.id domId]
-
+            [ A.id domId ]
     in
-    div
-        (
-         css [ lh 1.5, flex  :: itemAttrs
-        )
+    div (css [ lh 1.5, flex ] :: itemAttrs)
         [ div
             (css [ Px.p2 8 8, pointer ]
                 :: dragHandleAttrs project domId
