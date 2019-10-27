@@ -95,13 +95,21 @@ view ({ toMsg } as config) projectList model =
     let
         headerConfig =
             { toggle = toMsg HeaderClicked, addClicked = config.addProjectClicked }
+
+        viewHeader isExpanded =
+            viewExpansionPanelHeader
+                { toggle = toMsg HeaderClicked
+                , title = "Projects"
+                , isExpanded = isExpanded
+                , secondary = { iconName = "add", action = config.addProjectClicked }
+                }
     in
     case model of
         Collapsed ->
-            [ viewHeader headerConfig False ]
+            [ viewHeader False ]
 
         Expanded dndList ->
-            viewHeader headerConfig True
+            viewHeader True
                 :: (case DNDList.view (DNDListMsg >> toMsg) projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                             List.map (viewItemWhenNotDragging config dragHandleAttrs) items
@@ -129,16 +137,6 @@ getDND model =
 getDNDGhost : ProjectPanel -> Maybe ( Style, Project )
 getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
-
-
-viewHeader : { toggle : msg, addClicked : msg } -> Bool -> Html msg
-viewHeader { toggle, addClicked } isExpanded =
-    viewExpansionPanelHeader
-        { toggle = toggle
-        , title = "Projects"
-        , isExpanded = isExpanded
-        , secondary = { iconName = "add", action = addClicked }
-        }
 
 
 viewExpansionPanelHeader :
