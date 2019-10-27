@@ -205,7 +205,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
     ]
 
 
-viewItem : ItemProps msg -> Project -> Html msg
+viewItem : ItemProps Msg -> Project -> Html Msg
 viewItem { itemAttrs, itemStyles, handleAttrs } project =
     let
         title =
@@ -244,7 +244,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         ]
 
 
-viewItemWhenNotDragging : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
+viewItemWhenNotDragging : (Project -> String -> List (Attribute Msg)) -> Project -> Html Msg
 viewItemWhenNotDragging dragHandleAttrs project =
     let
         domId =
@@ -260,9 +260,9 @@ viewItemWhenNotDragging dragHandleAttrs project =
 
 viewItemWhenDragging :
     (Project -> Bool)
-    -> (Project -> List (Attribute msg))
+    -> (Project -> List (Attribute Msg))
     -> Project
-    -> Html msg
+    -> Html Msg
 viewItemWhenDragging isBeingDragged dragOverAttrs project =
     viewItem
         { itemAttrs = dragOverAttrs project
