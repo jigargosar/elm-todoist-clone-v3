@@ -226,7 +226,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         moreClicked =
             MoreClicked projectId moreDomId
     in
-    div (css [ Px.p2 0 4, flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
+    div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: class "material-icons"
