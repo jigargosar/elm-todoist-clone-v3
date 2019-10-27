@@ -133,9 +133,12 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
     let
         title =
             Project.title project
+
+        iconColor =
+            Project.cssColor project
     in
     div (css [ Px.p2 0 4, lh 1.5, flex, batch itemStyles ] :: itemAttrs)
-        [ div (css [ Px.p2 8 4, flex, itemsCenter, cursorMove ] :: handleAttrs)
+        [ div (css [ Px.p2 8 4, flex, itemsCenter, cursorMove, c_ iconColor ] :: handleAttrs)
             [ i [ class "material-icons" ] [ text "folder" ] ]
         , div [ css [ Px.p2 8 4 ] ] [ text title ]
         ]
