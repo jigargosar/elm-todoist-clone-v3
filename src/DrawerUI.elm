@@ -43,3 +43,9 @@ secondaryActionIconBtn { iconName, action } =
         , onClick action
         ]
         [ i [ class "material-icons" ] [ text iconName ] ]
+
+
+viewListItem : List (Html msg) -> Html msg
+viewListItem =
+    div
+        [ css [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ] ]
