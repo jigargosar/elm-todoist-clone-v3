@@ -89,9 +89,9 @@ view projectList model =
 
         Expanded dndList ->
             case DNDList.view DNDListMsg projectList dndList of
-                DNDList.WhenNotDragging config ->
+                DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                     [ viewExpanded
-                    , List.map (viewItem config) config.items
+                    , List.map (viewItem dragHandleAttrs) items
                     ]
                         |> List.concat
 
@@ -122,8 +122,8 @@ viewExpanded =
     []
 
 
-viewItem : DNDList.NotDraggingConfig Project msg -> Project -> Html msg
-viewItem config project =
+viewItem : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
+viewItem dragHandleAttrs project =
     let
         domId =
             "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
@@ -134,7 +134,7 @@ viewItem config project =
         ]
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: config.dragHandleAttrs project domId
+                :: dragHandleAttrs project domId
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
