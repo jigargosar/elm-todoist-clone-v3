@@ -185,3 +185,10 @@ viewDNDGhost toMsg =
                 ]
                     |> List.map (H.map toMsg)
             )
+
+
+type alias ItemProps msg =
+    { itemAttrs : List (Attribute msg)
+    , itemStyle : Style
+    , handleAttrs : List (Attribute msg)
+    }
