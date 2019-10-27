@@ -171,14 +171,7 @@ viewDNDGhost toMsg =
         >> Maybe.andThen DNDList.ghost
         >> Maybe.map
             (\( itemStyle, project ) ->
-                [ div
-                    [ css [ lh 1.5, flex, itemStyle ] ]
-                    [ div
-                        (css [ Px.p2 8 8, pointer ] :: [])
-                        [ text "DRAG_HANDLE" ]
-                    , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
-                    ]
-                ]
+                [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
                     |> List.map (H.map toMsg)
             )
 
