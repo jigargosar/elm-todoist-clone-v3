@@ -12,6 +12,7 @@ module ProjectPanel exposing
 import Css
 import Css.Global
 import DNDList
+import DrawerUI
 import Html.Styled as H exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes as A exposing (class, css)
 import Html.Styled.Events exposing (onClick)
@@ -141,24 +142,12 @@ viewExpanded =
 
 viewHeader : Bool -> List (Html Msg)
 viewHeader isExpanded =
-    let
-        iconName =
-            if isExpanded then
-                "expand_more"
-
-            else
-                "chevron_right"
-    in
-    [ div
-        [ css [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ] ]
-        [ button
-            [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick HeaderClicked ]
-            [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
-            , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
-            ]
-        , secondaryActionAddIconBtn
-        ]
-    ]
+    DrawerUI.viewExpansionPanelHeader
+        { toggle = HeaderClicked
+        , title = "Projects"
+        , isExpanded = isExpanded
+        , secondary = Just { iconName = "add", action = AddClicked }
+        }
 
 
 secondaryActionAddIconBtn =

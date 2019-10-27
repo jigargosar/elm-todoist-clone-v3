@@ -13,8 +13,6 @@ viewExpansionPanelHeader :
     , title : String
     , isExpanded : Bool
     , secondary : Maybe { iconName : String, action : msg }
-    , secondaryIcon : String
-    , secondaryAction : msg
     }
     -> List (Html msg)
 viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
