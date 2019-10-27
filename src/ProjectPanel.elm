@@ -130,6 +130,10 @@ viewExpanded =
 
 viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs } project =
+    let
+        title =
+            Project.title project
+    in
     div (css [ lh 1.5, flex, batch itemStyles ] :: itemAttrs)
         [ div (css [ Px.p2 8 8, pointer ] :: handleAttrs)
             [ text "DRAG_HANDLE" ]
