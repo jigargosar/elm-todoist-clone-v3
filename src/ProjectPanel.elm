@@ -11,8 +11,8 @@ module ProjectPanel exposing
 
 import Css
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, div, text)
-import Html.Styled.Attributes as A exposing (css)
+import Html.Styled as H exposing (Attribute, Html, div, i, text)
+import Html.Styled.Attributes as A exposing (class, css)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
@@ -136,8 +136,8 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
     in
     div (css [ lh 1.5, flex, batch itemStyles ] :: itemAttrs)
         [ div (css [ Px.p2 8 8, pointer ] :: handleAttrs)
-            [ text "DRAG_HANDLE" ]
-        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
+            [ i [ class "material_icons" ] [ text "folder" ] ]
+        , div [ css [ Px.p2 8 8 ] ] [ text title ]
         ]
 
 
