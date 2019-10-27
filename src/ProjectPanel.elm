@@ -9,7 +9,7 @@ module ProjectPanel exposing
     , viewDNDGhost
     )
 
-import Basics.More exposing (msgToCmd)
+import Basics.More exposing (impl, msgToCmd)
 import Css
 import DNDList
 import Html.Styled as H exposing (Attribute, Html, a, button, div, i, span, text)
@@ -21,6 +21,41 @@ import Px
 import Route
 import Styles exposing (..)
 import Theme
+
+
+type Collapsible sub
+    = Collapsed_
+    | Expanded_ sub
+
+
+initial_ : sub -> Collapsible sub
+initial_ =
+    impl
+
+
+type Msg_ subMsg
+    = Toggle
+    | SubMsg subMsg
+
+
+update_ :
+    (Msg_ subMsg -> msg)
+    -> (subMsg -> sub -> ( sub, Cmd subMsg ))
+    -> Msg_ subMsg
+    -> Collapsible sub
+    -> ( Collapsible sub, Cmd msg )
+update_ toMsg subUpdate message model =
+    case message of
+        Toggle ->
+            ( model, Cmd.none )
+
+        SubMsg subMsg ->
+            case model of
+                Collapsed_ ->
+                    ( model, Cmd.none )
+
+                Expanded_ sub ->
+                    subUpdate subMsg sub |> Tuple.mapBoth Expanded_ (Cmd.map (SubMsg >> toMsg))
 
 
 type ProjectPanel
