@@ -82,7 +82,7 @@ update config message model =
                         dnd
                         |> Tuple.mapFirst Expanded
 
-                _ ->
+                Collapsed ->
                     ( model, Cmd.none )
 
 
