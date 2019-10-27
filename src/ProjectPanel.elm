@@ -9,7 +9,7 @@ module ProjectPanel exposing
     , viewDNDGhost
     )
 
-import Basics.More exposing (impl, msgToCmd)
+import Basics.More exposing (msgToCmd)
 import Css
 import DNDList
 import Html.Styled as H exposing (Attribute, Html, a, button, div, i, span, text)
@@ -106,15 +106,14 @@ view { toMsg } projectList model =
                 |> List.map (H.map toMsg)
 
         Expanded dndList ->
-            viewExpanded
+            (viewExpanded |> H.map toMsg)
                 :: (case DNDList.view DNDListMsg projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                            List.map (viewItemWhenNotDragging dragHandleAttrs) items
+                            List.map (viewItemWhenNotDragging toMsg dragHandleAttrs) items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
+                            List.map (viewItemWhenDragging toMsg isBeingDragged dragOverAttrs) items
                    )
-                |> List.map (H.map toMsg)
 
 
 itemDomId : Project -> String
@@ -239,8 +238,12 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
         ]
 
 
-viewItemWhenNotDragging : (Project -> String -> List (Attribute Msg)) -> Project -> Html Msg
-viewItemWhenNotDragging dragHandleAttrs project =
+viewItemWhenNotDragging :
+    (Msg -> msg)
+    -> (Project -> String -> List (Attribute Msg))
+    -> Project
+    -> Html msg
+viewItemWhenNotDragging toMsg dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -250,27 +253,25 @@ viewItemWhenNotDragging dragHandleAttrs project =
 
         moreDomId =
             domId ++ "__more-btn"
-
-        moreClicked =
-            MoreClicked projectId moreDomId
     in
     viewItem
         { itemAttrs = [ A.id domId ]
         , itemStyles = []
-        , handleAttrs = dragHandleAttrs project domId
-        , moreAttrs = [ A.id moreDomId, onClick moreClicked ]
+        , handleAttrs = dragHandleAttrs project domId |> List.map (A.map toMsg)
+        , moreAttrs = [ A.id moreDomId, MoreClicked projectId moreDomId |> onClick ] |> List.map (A.map toMsg)
         }
         project
 
 
 viewItemWhenDragging :
-    (Project -> Bool)
-    -> (Project -> List (Attribute msg))
+    (Msg -> msg)
+    -> (Project -> Bool)
+    -> (Project -> List (Attribute Msg))
     -> Project
     -> Html msg
-viewItemWhenDragging isBeingDragged dragOverAttrs project =
+viewItemWhenDragging toMsg isBeingDragged dragOverAttrs project =
     viewItem
-        { itemAttrs = dragOverAttrs project
+        { itemAttrs = dragOverAttrs project |> List.map (A.map toMsg)
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
         , handleAttrs = []
         , moreAttrs = []
