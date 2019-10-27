@@ -106,9 +106,6 @@ view ({ toMsg } as config) projectList model =
                 , isExpanded = isExpanded
                 , secondary = { iconName = "add", action = config.addProjectClicked }
                 }
-
-        moreClicked =
-            config.projectMoreClicked
     in
     case model of
         Collapsed ->
@@ -134,7 +131,10 @@ view ({ toMsg } as config) projectList model =
                                         { itemAttrs = [ A.id domId ]
                                         , itemStyles = []
                                         , handleAttrs = dragHandleAttrs project domId
-                                        , moreAttrs = [ A.id moreDomId, moreClicked projectId moreDomId |> onClick ]
+                                        , moreAttrs =
+                                            [ A.id moreDomId
+                                            , config.projectMoreClicked projectId moreDomId |> onClick
+                                            ]
                                         }
                                         project
                             in
