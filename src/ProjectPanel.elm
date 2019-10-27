@@ -95,9 +95,9 @@ view projectList model =
                     ]
                         |> List.concat
 
-                DNDList.WhenDragging config ->
+                DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
                     [ viewExpanded
-                    , List.map (viewItemWhenDragging config) config.items
+                    , List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
                     ]
                         |> List.concat
 
@@ -149,17 +149,17 @@ viewItemWhenNotDragging dragHandleAttrs project =
         project
 
 
-viewItemWhenDragging : DNDList.DraggingConfig Project msg -> Project -> Html msg
-viewItemWhenDragging config project =
+viewItemWhenDragging :
+    { isBeingDragged : Project -> Bool, dragOverAttrs : Project -> List (Attribute msg) }
+    -> Project
+    -> Html msg
+viewItemWhenDragging { isBeingDragged, dragOverAttrs } project =
     let
-        isBeingDragged =
-            config.isBeingDragged project
-
         itemAttrs =
-            config.dragOverAttrs project
+            dragOverAttrs project
 
         itemStyle =
-            styleIf isBeingDragged [ Css.opacity <| Css.zero ]
+            styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ]
     in
     viewItem { itemAttrs = itemAttrs, itemStyles = [ itemStyle ], handleAttrs = [] } project
 
