@@ -114,9 +114,9 @@ view ({ toMsg } as config) projectList model =
         Collapsed ->
             [ viewHeader False ]
 
-        Expanded dndList ->
+        Expanded dnd ->
             viewHeader True
-                :: (case DNDList.view dndListMsg projectList dndList of
+                :: (case DNDList.view dndListMsg projectList dnd of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                             List.map (viewItemWhenNotDragging moreClicked dragHandleAttrs) items
 
