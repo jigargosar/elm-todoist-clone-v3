@@ -109,6 +109,7 @@ view projectList model =
                 |> List.concat
 
 
+itemDomId : Project -> String
 itemDomId project =
     "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
 
