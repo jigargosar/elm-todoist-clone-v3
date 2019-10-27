@@ -154,7 +154,7 @@ viewHeader isExpanded =
         [ button
             [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick HeaderClicked ]
             [ i [ css [ Px.p2 8 4 ], class "material-icons" ] [ text iconName ]
-            , div [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
+            , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
             ]
         , button
             [ css [ btnReset, pointer ], onClick AddClicked ]
