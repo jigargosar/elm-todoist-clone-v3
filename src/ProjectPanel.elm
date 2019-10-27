@@ -91,13 +91,13 @@ view projectList model =
             case DNDList.view DNDListMsg projectList dndList of
                 DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                     [ viewExpanded
-                    , List.map (viewItem dragHandleAttrs) items
+                    , List.map (viewItemWhenNotDragging dragHandleAttrs) items
                     ]
                         |> List.concat
 
                 DNDList.WhenDragging config ->
                     [ viewExpanded
-                    , List.map (viewItemWhenDragActive config) config.items
+                    , List.map (viewItemWhenDragging config) config.items
                     ]
                         |> List.concat
 
@@ -126,8 +126,8 @@ viewExpanded =
     []
 
 
-viewItem : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
-viewItem dragHandleAttrs project =
+viewItemWhenNotDragging : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
+viewItemWhenNotDragging dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -148,8 +148,8 @@ viewItem dragHandleAttrs project =
         ]
 
 
-viewItemWhenDragActive : DNDList.DraggingConfig Project msg -> Project -> Html msg
-viewItemWhenDragActive config project =
+viewItemWhenDragging : DNDList.DraggingConfig Project msg -> Project -> Html msg
+viewItemWhenDragging config project =
     let
         isBeingDragged =
             config.isBeingDragged project
