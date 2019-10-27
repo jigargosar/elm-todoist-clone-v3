@@ -167,12 +167,16 @@ viewItemWhenDragging { isBeingDragged, dragOverAttrs } project =
         project
 
 
+viewGhostItem itemStyle project =
+    [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
+
+
 viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
 viewDNDGhost toMsg =
     getDNDGhost
         >> Maybe.map
             (\( itemStyle, project ) ->
-                [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
+                viewGhostItem itemStyle project
                     |> List.map (H.map toMsg)
             )
         >> Maybe.withDefault []
