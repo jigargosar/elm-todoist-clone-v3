@@ -190,9 +190,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
              ]
                 ++ handleAttrs
             )
-            [ i
-                [ class "material-icons" ]
-                [ text "more_horiz" ]
+            [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
         ]
 
