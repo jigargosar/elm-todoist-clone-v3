@@ -36,7 +36,7 @@ initial =
 type Msg
     = HeaderClicked
     | AddClicked
-    | DNDList (DNDList.Msg Project)
+    | DNDListMsg (DNDList.Msg Project)
 
 
 subscriptions : ProjectPanel -> Sub Msg
@@ -46,7 +46,7 @@ subscriptions projectPanel =
             Sub.none
 
         Expanded dnd ->
-            DNDList.subscriptions DNDList dnd
+            DNDList.subscriptions DNDListMsg dnd
 
 
 type alias ProjectPanelConfig msg =
@@ -64,10 +64,10 @@ update config message model =
         AddClicked ->
             ( model, Cmd.none )
 
-        DNDList msg ->
+        DNDListMsg msg ->
             case model of
                 Expanded dnd ->
-                    DNDList.update (config.toMsg << DNDList)
+                    DNDList.update (config.toMsg << DNDListMsg)
                         { onComplete = config.projectOrderChanged }
                         msg
                         dnd
@@ -88,7 +88,7 @@ view projectList model =
             viewCollapsed
 
         Expanded dndList ->
-            case DNDList.view DNDList projectList dndList of
+            case DNDList.view DNDListMsg projectList dndList of
                 DNDList.WhenNotDragging config ->
                     [ viewExpanded
                     , List.map (viewItem config) config.items
