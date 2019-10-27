@@ -529,9 +529,7 @@ view model =
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer = viewDrawer model
         , main =
-            [ ProjectPanel.view (ProjectCollection.sorted model.projectCollection) model.projectPanel
-                |> List.map (H.map ProjectPanelMsg)
-            , pageView model
+            [ pageView model
             ]
                 |> List.concat
         , modal =
@@ -559,11 +557,8 @@ viewDrawer model =
                 |> List.map (H.map (DrawerPanelMsg panel))
     in
     Drawer.prefixNavItemsView
-        ++ (Drawer.viewProjectsPanel
-                (\panel -> isPanelExpanded panel model)
-                (\panel -> dragForPanel panel model.panelDrag)
-                (ProjectCollection.sorted model.projectCollection)
-                |> List.map (H.map (DrawerPanelMsg Drawer.Projects))
+        ++ (ProjectPanel.view (ProjectCollection.sorted model.projectCollection) model.projectPanel
+                |> List.map (H.map ProjectPanelMsg)
            )
         ++ viewPanel Drawer.labelPanelItemConfig
             Drawer.Labels
