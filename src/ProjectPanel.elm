@@ -144,7 +144,13 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
                 :: handleAttrs
             )
             [ text "folder" ]
-        , div [ css [ Px.p2 8 4, lh 1.5 ] ] [ text title ]
+        , div [ css [ Px.p2 8 4, lh 1.5, flexGrow1 ] ] [ text title ]
+        , i
+            (css [ Px.p2 8 4, pointer ]
+                :: class "material-icons"
+                :: handleAttrs
+            )
+            [ text "more_horiz" ]
         ]
 
 
