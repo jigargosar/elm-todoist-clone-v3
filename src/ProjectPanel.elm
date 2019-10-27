@@ -201,15 +201,6 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
     ]
 
 
-secondaryActionMoreIconBtn =
-    button
-        [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-        , class "show_on_parent_hover"
-        ]
-        [ i [ class "material-icons" ] [ text "more_horiz" ]
-        ]
-
-
 viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs } project =
     let
@@ -227,7 +218,12 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
             )
             [ text "folder" ]
         , div [ css [ Px.p2 8 4, lh 1.5, flexGrow1 ] ] [ text title ]
-        , secondaryActionMoreIconBtn
+        , button
+            [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+            , class "show_on_parent_hover"
+            ]
+            [ i [ class "material-icons" ] [ text "more_horiz" ]
+            ]
         ]
 
 
