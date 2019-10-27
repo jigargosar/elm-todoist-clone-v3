@@ -154,14 +154,12 @@ viewItemWhenDragging :
     -> Project
     -> Html msg
 viewItemWhenDragging { isBeingDragged, dragOverAttrs } project =
-    let
-        itemAttrs =
-            dragOverAttrs project
-
-        itemStyle =
-            styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ]
-    in
-    viewItem { itemAttrs = itemAttrs, itemStyles = [ itemStyle ], handleAttrs = [] } project
+    viewItem
+        { itemAttrs = dragOverAttrs project
+        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+        , handleAttrs = []
+        }
+        project
 
 
 viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
