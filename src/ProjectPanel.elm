@@ -10,8 +10,9 @@ module ProjectPanel exposing
     )
 
 import Css
+import Css.Global
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, div, i, text)
+import Html.Styled as H exposing (Attribute, Html, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -137,7 +138,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
         iconColor =
             Project.cssColor project
     in
-    div (css [ Px.p2 0 4, flex, batch itemStyles ] :: itemAttrs)
+    div (css [ Px.p2 0 4, flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
             (css [ Px.p2 8 4, cursorMove, c_ iconColor ]
                 :: class "material-icons"
@@ -145,12 +146,15 @@ viewItem { itemAttrs, itemStyles, handleAttrs } project =
             )
             [ text "folder" ]
         , div [ css [ Px.p2 8 4, lh 1.5, flexGrow1 ] ] [ text title ]
-        , i
-            (css [ Px.p2 8 4, pointer ]
-                :: class "material-icons"
-                :: handleAttrs
-            )
-            [ text "more_horiz" ]
+        , button [ css [ btnReset ] ]
+            [ i
+                (css [ Px.p2 8 4, pointer ]
+                    :: class "material-icons"
+                    :: class "show_on_parent_hover"
+                    :: handleAttrs
+                )
+                [ text "more_horiz" ]
+            ]
         ]
 
 
