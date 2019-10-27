@@ -93,16 +93,22 @@ update config message model =
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view ({ toMsg } as config) projectList model =
     let
-        headerConfig =
-            { toggle = toMsg HeaderClicked, addClicked = config.addProjectClicked }
+        toggle =
+            toMsg HeaderClicked
+
+        dndListMsg =
+            DNDListMsg >> toMsg
 
         viewHeader isExpanded =
             viewExpansionPanelHeader
-                { toggle = toMsg HeaderClicked
+                { toggle = toggle
                 , title = "Projects"
                 , isExpanded = isExpanded
                 , secondary = { iconName = "add", action = config.addProjectClicked }
                 }
+
+        moreClicked =
+            config.projectMoreClicked
     in
     case model of
         Collapsed ->
@@ -110,12 +116,12 @@ view ({ toMsg } as config) projectList model =
 
         Expanded dndList ->
             viewHeader True
-                :: (case DNDList.view (DNDListMsg >> toMsg) projectList dndList of
+                :: (case DNDList.view dndListMsg projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                            List.map (viewItemWhenNotDragging config dragHandleAttrs) items
+                            List.map (viewItemWhenNotDragging moreClicked dragHandleAttrs) items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            List.map (viewItemWhenDragging config isBeingDragged dragOverAttrs) items
+                            List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
                    )
 
 
@@ -222,11 +228,11 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
 
 
 viewItemWhenNotDragging :
-    Config msg
+    (ProjectId -> String -> msg)
     -> (Project -> String -> List (Attribute msg))
     -> Project
     -> Html msg
-viewItemWhenNotDragging { projectMoreClicked } dragHandleAttrs project =
+viewItemWhenNotDragging moreClicked dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -241,18 +247,17 @@ viewItemWhenNotDragging { projectMoreClicked } dragHandleAttrs project =
         { itemAttrs = [ A.id domId ]
         , itemStyles = []
         , handleAttrs = dragHandleAttrs project domId
-        , moreAttrs = [ A.id moreDomId, projectMoreClicked projectId moreDomId |> onClick ]
+        , moreAttrs = [ A.id moreDomId, moreClicked projectId moreDomId |> onClick ]
         }
         project
 
 
 viewItemWhenDragging :
-    Config msg
-    -> (Project -> Bool)
+    (Project -> Bool)
     -> (Project -> List (Attribute msg))
     -> Project
     -> Html msg
-viewItemWhenDragging _ isBeingDragged dragOverAttrs project =
+viewItemWhenDragging isBeingDragged dragOverAttrs project =
     viewItem
         { itemAttrs = dragOverAttrs project
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
