@@ -538,9 +538,7 @@ view model =
             popupView model
                 ++ dialogView model
                 ++ panelDragView model
-                ++ (ProjectPanel.viewDNDGhost ProjectPanelMsg model.projectPanel
-                        |> Maybe.withDefault []
-                   )
+                ++ ProjectPanel.viewDNDGhost ProjectPanelMsg model.projectPanel
         }
         model.isDrawerModalOpen
 

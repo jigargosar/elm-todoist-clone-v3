@@ -165,7 +165,7 @@ viewItemWhenDragging config project =
     viewItem { itemAttrs = itemAttrs, itemStyles = [ itemStyle ], handleAttrs = [] } project
 
 
-viewDNDGhost : (Msg -> msg) -> ProjectPanel -> Maybe (List (Html msg))
+viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
 viewDNDGhost toMsg =
     getDND
         >> Maybe.andThen DNDList.ghost
@@ -174,6 +174,7 @@ viewDNDGhost toMsg =
                 [ viewItem { itemAttrs = [], itemStyles = [ itemStyle ], handleAttrs = [] } project ]
                     |> List.map (H.map toMsg)
             )
+        >> Maybe.withDefault []
 
 
 type alias ItemProps msg =
