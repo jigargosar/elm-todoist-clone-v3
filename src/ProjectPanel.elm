@@ -155,10 +155,11 @@ viewItemWhenNotDragging dragHandleAttrs project =
 
 
 viewItemWhenDragging :
-    { isBeingDragged : Project -> Bool, dragOverAttrs : Project -> List (Attribute msg) }
+    (Project -> Bool)
+    -> (Project -> List (Attribute msg))
     -> Project
     -> Html msg
-viewItemWhenDragging { isBeingDragged, dragOverAttrs } project =
+viewItemWhenDragging isBeingDragged dragOverAttrs project =
     viewItem
         { itemAttrs = dragOverAttrs project
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
