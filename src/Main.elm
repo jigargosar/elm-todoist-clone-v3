@@ -374,7 +374,11 @@ update message model =
 
 projectPanelConfig : ProjectPanel.ProjectPanelConfig Msg
 projectPanelConfig =
-    { toMsg = ProjectPanelMsg, projectOrderChanged = ProjectOrderChanged }
+    { toMsg = ProjectPanelMsg
+    , projectOrderChanged = ProjectOrderChanged
+    , addProjectClicked = PanelAddClicked Drawer.Projects
+    , projectMoreClicked = Drawer.ProjectItemId >> PopupTriggered
+    }
 
 
 handleProjectPanelMsg : ProjectPanel.Msg -> Model -> ( Model, Cmd Msg )

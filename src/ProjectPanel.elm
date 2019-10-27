@@ -55,6 +55,8 @@ subscriptions projectPanel =
 type alias ProjectPanelConfig msg =
     { toMsg : Msg -> msg
     , projectOrderChanged : List Project -> msg
+    , addProjectClicked : msg
+    , projectMoreClicked : ProjectId -> String -> msg
     }
 
 
