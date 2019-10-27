@@ -141,7 +141,17 @@ view ({ toMsg } as config) projectList model =
                             List.map viewHelp items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
+                            let
+                                viewHelp project =
+                                    viewItem
+                                        { itemAttrs = dragOverAttrs project
+                                        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+                                        , handleAttrs = []
+                                        , moreAttrs = []
+                                        }
+                                        project
+                            in
+                            List.map viewHelp items
                    )
 
 
@@ -245,21 +255,6 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
         ]
-
-
-viewItemWhenDragging :
-    (Project -> Bool)
-    -> (Project -> List (Attribute msg))
-    -> Project
-    -> Html msg
-viewItemWhenDragging isBeingDragged dragOverAttrs project =
-    viewItem
-        { itemAttrs = dragOverAttrs project
-        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-        , handleAttrs = []
-        , moreAttrs = []
-        }
-        project
 
 
 viewGhostItem : Style -> Project -> List (Html msg)
