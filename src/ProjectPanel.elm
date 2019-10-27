@@ -102,6 +102,10 @@ view projectList model =
                         |> List.concat
 
 
+itemDomId project =
+    "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
+
+
 getDND : ProjectPanel -> Maybe (DNDList.Model Project)
 getDND model =
     case model of
@@ -126,7 +130,7 @@ viewItem : (Project -> String -> List (Attribute msg)) -> Project -> Html msg
 viewItem dragHandleAttrs project =
     let
         domId =
-            "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
+            itemDomId project
     in
     div
         [ A.id domId
