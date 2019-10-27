@@ -12,12 +12,14 @@ module ProjectPanel exposing
 import Css
 import Css.Global
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, button, div, i, text)
+import Html.Styled as H exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes as A exposing (class, css)
+import Html.Styled.Events exposing (onClick)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
 import Styles exposing (..)
+import Theme
 
 
 type ProjectPanel
@@ -60,7 +62,14 @@ update : ProjectPanelConfig msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd ms
 update config message model =
     case message of
         HeaderClicked ->
-            ( model, Cmd.none )
+            ( case model of
+                Collapsed ->
+                    Expanded DNDList.init
+
+                Expanded _ ->
+                    Collapsed
+            , Cmd.none
+            )
 
         AddClicked ->
             ( model, Cmd.none )
@@ -121,12 +130,34 @@ getDNDGhost =
 
 viewCollapsed : List (Html Msg)
 viewCollapsed =
-    []
+    [ div
+        [ css [ bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
+        [ button
+            [ css [ btnReset, pointer, pa 1, flexGrow1 ], onClick HeaderClicked ]
+            [ i [ class "material-icons" ] [ text "expand_more" ]
+            , span [ css [ bold, pa 1 ] ] [ text "Projects" ]
+            ]
+        , button
+            [ css [ btnReset, pointer, mr 3 ], onClick AddClicked ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
+        ]
+    ]
 
 
 viewExpanded : List (Html Msg)
 viewExpanded =
-    []
+    [ div
+        [ css [ bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
+        [ button
+            [ css [ btnReset, pointer, pa 1, flexGrow1 ], onClick HeaderClicked ]
+            [ i [ class "material-icons" ] [ text "expand_more" ]
+            , span [ css [ bold, pa 1 ] ] [ text "Projects" ]
+            ]
+        , button
+            [ css [ btnReset, pointer, mr 3 ], onClick AddClicked ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
+        ]
+    ]
 
 
 viewItem : ItemProps msg -> Project -> Html msg
