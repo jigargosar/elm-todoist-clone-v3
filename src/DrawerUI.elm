@@ -1,4 +1,4 @@
-module DrawerUI exposing (listItemStyle, viewExpansionPanelHeader)
+module DrawerUI exposing (expansionToggleBtn, listItemStyle, secondaryActionIconBtnStyle, viewExpansionPanelHeader)
 
 import Html.Styled exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes exposing (class, css)
@@ -16,6 +16,16 @@ viewExpansionPanelHeader :
     }
     -> List (Html msg)
 viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
+    [ div
+        [ css [ listItemStyle ] ]
+        [ expansionToggleBtn toggle "Projects" isExpanded
+        , Maybe.map secondaryActionIconBtn secondary |> Maybe.withDefault (text "")
+        ]
+    ]
+
+
+expansionToggleBtn : msg -> String -> Bool -> Html msg
+expansionToggleBtn toggle title isExpanded =
     let
         iconName =
             if isExpanded then
@@ -24,16 +34,11 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
             else
                 "chevron_right"
     in
-    [ div
-        [ css [ listItemStyle ] ]
-        [ button
-            [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggle ]
-            [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
-            , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text "Projects" ]
-            ]
-        , Maybe.map secondaryActionIconBtn secondary |> Maybe.withDefault (text "")
+    button
+        [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggle ]
+        [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
+        , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
         ]
-    ]
 
 
 secondaryActionIconBtn : { a | iconName : String, action : msg } -> Html msg
@@ -43,6 +48,16 @@ secondaryActionIconBtn { iconName, action } =
         , onClick action
         ]
         [ i [ class "material-icons" ] [ text iconName ] ]
+
+
+secondaryActionIconBtnStyle : Style
+secondaryActionIconBtnStyle =
+    batch [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+
+
+secondaryActionIcon : String -> Html msg
+secondaryActionIcon name =
+    i [ class "material-icons" ] [ text name ]
 
 
 listItemStyle : Style
