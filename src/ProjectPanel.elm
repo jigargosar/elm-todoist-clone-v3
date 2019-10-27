@@ -100,9 +100,10 @@ update config message model =
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view { toMsg } projectList model =
-    (case model of
+    case model of
         Collapsed ->
             [ viewCollapsed ]
+                |> List.map (H.map toMsg)
 
         Expanded dndList ->
             viewExpanded
@@ -113,8 +114,7 @@ view { toMsg } projectList model =
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
                             List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
                    )
-    )
-        |> List.map (H.map toMsg)
+                |> List.map (H.map toMsg)
 
 
 itemDomId : Project -> String
