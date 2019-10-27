@@ -150,7 +150,7 @@ viewHeader isExpanded =
                 "chevron_right"
     in
     [ div
-        [ css [ Px.pl 4, Px.pr (4 + 16), bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
+        [ css [ Px.pl 4, Px.pr (4 + 16), flex, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ] ]
         [ button
             [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick HeaderClicked ]
             [ i [ css [ Px.p2 8 4 ], class "material-icons" ] [ text iconName ]
