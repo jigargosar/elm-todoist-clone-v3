@@ -492,6 +492,10 @@ pointer =
     Css.cursor Css.pointer
 
 
+cursorMove =
+    Css.cursor Css.move
+
+
 ttu =
     Css.textTransform Css.uppercase
 
