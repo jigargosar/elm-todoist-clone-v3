@@ -159,10 +159,7 @@ viewHeader isExpanded =
         , button
             [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
             ]
-            [ i
-                [ class "material-icons" ]
-                [ text "add" ]
-            ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
         ]
     ]
 
