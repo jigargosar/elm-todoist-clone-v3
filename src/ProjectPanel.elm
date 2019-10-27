@@ -1,7 +1,7 @@
 module ProjectPanel exposing
-    ( Msg
+    ( Config
+    , Msg
     , ProjectPanel
-    , ProjectPanelConfig
     , initial
     , subscriptions
     , update
@@ -54,7 +54,7 @@ subscriptions projectPanel =
             DNDList.subscriptions DNDListMsg dnd
 
 
-type alias ProjectPanelConfig msg =
+type alias Config msg =
     { toMsg : Msg -> msg
     , projectOrderChanged : List Project -> msg
     , addProjectClicked : msg
@@ -62,7 +62,7 @@ type alias ProjectPanelConfig msg =
     }
 
 
-update : ProjectPanelConfig msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
         HeaderClicked ->

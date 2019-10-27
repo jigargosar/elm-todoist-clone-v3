@@ -372,7 +372,7 @@ update message model =
             updateProjectSortOrder projectList model
 
 
-projectPanelConfig : ProjectPanel.ProjectPanelConfig Msg
+projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { toMsg = ProjectPanelMsg
     , projectOrderChanged = ProjectOrderChanged
