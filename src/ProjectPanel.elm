@@ -162,13 +162,7 @@ viewItemWhenDragging config project =
         itemStyle =
             styleIf isBeingDragged [ Css.opacity <| Css.zero ]
     in
-    div
-        (css [ lh 1.5, flex, itemStyle ] :: itemAttrs)
-        [ div
-            (css [ Px.p2 8 8, pointer ] :: [])
-            [ text "DRAG_HANDLE" ]
-        , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
-        ]
+    viewItem { itemAttrs = itemAttrs, itemStyles = [ itemStyle ], handleAttrs = [] } project
 
 
 viewDNDGhost : (Msg -> msg) -> ProjectPanel -> Maybe (List (Html msg))
