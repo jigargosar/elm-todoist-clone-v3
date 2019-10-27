@@ -98,7 +98,7 @@ view ({ toMsg } as config) projectList model =
 
         Expanded dndList ->
             viewHeader config True
-                :: (case DNDList.view DNDListMsg projectList dndList of
+                :: (case DNDList.view (DNDListMsg >> toMsg) projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                             List.map (viewItemWhenNotDragging config dragHandleAttrs) items
 
@@ -221,10 +221,10 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
 
 viewItemWhenNotDragging :
     Config msg
-    -> (Project -> String -> List (Attribute Msg))
+    -> (Project -> String -> List (Attribute msg))
     -> Project
     -> Html msg
-viewItemWhenNotDragging { toMsg, projectMoreClicked } dragHandleAttrs project =
+viewItemWhenNotDragging { projectMoreClicked } dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -238,7 +238,7 @@ viewItemWhenNotDragging { toMsg, projectMoreClicked } dragHandleAttrs project =
     viewItem
         { itemAttrs = [ A.id domId ]
         , itemStyles = []
-        , handleAttrs = dragHandleAttrs project domId |> List.map (A.map toMsg)
+        , handleAttrs = dragHandleAttrs project domId
         , moreAttrs = [ A.id moreDomId, projectMoreClicked projectId moreDomId |> onClick ]
         }
         project
@@ -247,12 +247,12 @@ viewItemWhenNotDragging { toMsg, projectMoreClicked } dragHandleAttrs project =
 viewItemWhenDragging :
     Config msg
     -> (Project -> Bool)
-    -> (Project -> List (Attribute Msg))
+    -> (Project -> List (Attribute msg))
     -> Project
     -> Html msg
-viewItemWhenDragging { toMsg } isBeingDragged dragOverAttrs project =
+viewItemWhenDragging _ isBeingDragged dragOverAttrs project =
     viewItem
-        { itemAttrs = dragOverAttrs project |> List.map (A.map toMsg)
+        { itemAttrs = dragOverAttrs project
         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
         , handleAttrs = []
         , moreAttrs = []
