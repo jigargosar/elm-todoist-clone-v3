@@ -205,7 +205,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
     ]
 
 
-viewItem : ItemProps Msg -> Project -> Html Msg
+viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
         title =
