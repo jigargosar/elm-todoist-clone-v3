@@ -9,6 +9,7 @@ module ProjectPanel exposing
     , viewDNDGhost
     )
 
+import Basics.More exposing (msgToCmd)
 import Css
 import DNDList
 import Html.Styled as H exposing (Attribute, Html, a, button, div, i, span, text)
@@ -74,7 +75,7 @@ update config message model =
             )
 
         AddClicked ->
-            ( model, Cmd.none )
+            ( model, msgToCmd config.addProjectClicked )
 
         DNDListMsg msg ->
             case model of
