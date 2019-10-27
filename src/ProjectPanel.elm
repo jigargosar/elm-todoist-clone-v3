@@ -134,11 +134,14 @@ viewItem dragHandleAttrs project =
 
         itemAttrs =
             [ A.id domId ]
+
+        handleAttrs =
+            dragHandleAttrs project domId
     in
     div (css [ lh 1.5, flex ] :: itemAttrs)
         [ div
             (css [ Px.p2 8 8, pointer ]
-                :: dragHandleAttrs project domId
+                :: handleAttrs
             )
             [ text "DRAG_HANDLE" ]
         , div [ css [ Px.p2 8 8 ] ] [ text <| Project.title project ]
