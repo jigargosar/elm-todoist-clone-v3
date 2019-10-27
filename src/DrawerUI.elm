@@ -47,7 +47,7 @@ secondaryActionIconBtn { iconName, action } =
         [ css [ secondaryActionIconBtnStyle ]
         , onClick action
         ]
-        [ i [ class "material-icons" ] [ text iconName ] ]
+        [ secondaryActionIcon iconName ]
 
 
 secondaryActionIconBtnStyle : Style
