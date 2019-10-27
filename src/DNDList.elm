@@ -20,7 +20,7 @@ import Html.Styled.Attributes as A
 import Html.Styled.Events as E
 import Json.Decode as JD
 import Log exposing (logError)
-import Styles
+import Styles exposing (batch)
 import Task
 
 
@@ -184,7 +184,7 @@ getState model =
             Just state
 
 
-ghost : Model a -> Maybe ( List Css.Style, a )
+ghost : Model a -> Maybe ( Css.Style, a )
 ghost =
     getState
         >> Maybe.map
@@ -196,12 +196,13 @@ ghost =
                     { x, y } =
                         positionAdd (positionDiff currentPosition startPosition) dragElementOffset
                 in
-                ( [ Styles.absolute
-                  , Styles.top_0
-                  , Styles.left_0
-                  , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
-                  , Css.pointerEvents Css.none
-                  ]
+                ( batch
+                    [ Styles.absolute
+                    , Styles.top_0
+                    , Styles.left_0
+                    , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
+                    , Css.pointerEvents Css.none
+                    ]
                 , dragItem
                 )
             )

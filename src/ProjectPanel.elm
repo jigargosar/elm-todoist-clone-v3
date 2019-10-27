@@ -174,9 +174,9 @@ viewDNDGhost toMsg =
     getDND
         >> Maybe.andThen DNDList.ghost
         >> Maybe.map
-            (\( styles, project ) ->
+            (\( itemStyle, project ) ->
                 [ div
-                    [ css [ lh 1.5, flex, batch styles ] ]
+                    [ css [ lh 1.5, flex, itemStyle ] ]
                     [ div
                         (css [ Px.p2 8 8, pointer ] :: [])
                         [ text "DRAG_HANDLE" ]
