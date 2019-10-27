@@ -88,18 +88,15 @@ view projectList model =
             viewCollapsed
 
         Expanded dndList ->
-            case DNDList.view DNDListMsg projectList dndList of
+            [ viewExpanded
+            , case DNDList.view DNDListMsg projectList dndList of
                 DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                    [ viewExpanded
-                    , List.map (viewItemWhenNotDragging dragHandleAttrs) items
-                    ]
-                        |> List.concat
+                    List.map (viewItemWhenNotDragging dragHandleAttrs) items
 
                 DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                    [ viewExpanded
-                    , List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
-                    ]
-                        |> List.concat
+                    List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
+            ]
+                |> List.concat
 
 
 itemDomId project =
