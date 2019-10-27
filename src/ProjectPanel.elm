@@ -99,14 +99,13 @@ update config message model =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view { toMsg } projectList model =
+view ({ toMsg } as config) projectList model =
     case model of
         Collapsed ->
-            [ viewCollapsed ]
-                |> List.map (H.map toMsg)
+            [ viewHeader config False ]
 
         Expanded dndList ->
-            (viewExpanded |> H.map toMsg)
+            viewHeader config True
                 :: (case DNDList.view DNDListMsg projectList dndList of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                             List.map (viewItemWhenNotDragging toMsg dragHandleAttrs) items
@@ -136,23 +135,13 @@ getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
 
 
-viewCollapsed : Html Msg
-viewCollapsed =
-    viewHeader False
-
-
-viewExpanded : Html Msg
-viewExpanded =
-    viewHeader True
-
-
-viewHeader : Bool -> Html Msg
-viewHeader isExpanded =
+viewHeader : Config msg -> Bool -> Html msg
+viewHeader { toMsg, addProjectClicked } isExpanded =
     viewExpansionPanelHeader
-        { toggle = HeaderClicked
+        { toggle = toMsg HeaderClicked
         , title = "Projects"
         , isExpanded = isExpanded
-        , secondary = { iconName = "add", action = AddClicked }
+        , secondary = { iconName = "add", action = addProjectClicked }
         }
 
 
