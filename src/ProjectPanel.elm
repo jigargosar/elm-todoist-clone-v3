@@ -154,14 +154,14 @@ viewItemWhenDragging config project =
         isBeingDragged =
             config.isBeingDragged project
 
-        dragOverAttributes =
+        itemAttrs =
             config.dragOverAttrs project
 
-        dragOverStyle =
+        itemStyle =
             styleIf isBeingDragged [ Css.opacity <| Css.zero ]
     in
     div
-        (css [ lh 1.5, flex, dragOverStyle ] :: dragOverAttributes)
+        (css [ lh 1.5, flex, itemStyle ] :: itemAttrs)
         [ div
             (css [ Px.p2 8 8, pointer ] :: [])
             [ text "DRAG_HANDLE" ]
