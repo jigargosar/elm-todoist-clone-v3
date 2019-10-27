@@ -131,27 +131,29 @@ getDNDGhost =
 
 viewCollapsed : List (Html Msg)
 viewCollapsed =
-    [ div
-        [ css [ bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
-        [ button
-            [ css [ btnReset, pointer, pa 1, flexGrow1 ], onClick HeaderClicked ]
-            [ i [ class "material-icons" ] [ text "expand_more" ]
-            , span [ css [ bold, pa 1 ] ] [ text "Projects" ]
-            ]
-        , button
-            [ css [ btnReset, pointer, mr 3 ], onClick AddClicked ]
-            [ i [ class "material-icons" ] [ text "add" ] ]
-        ]
-    ]
+    viewHeader False
 
 
 viewExpanded : List (Html Msg)
 viewExpanded =
+    viewHeader True
+
+
+viewHeader : Bool -> List (Html Msg)
+viewHeader isExpanded =
+    let
+        iconName =
+            if isExpanded then
+                "expand_more"
+
+            else
+                "chevron_right"
+    in
     [ div
         [ css [ bo_b, boc Theme.borderGray, flex, hover [ bgGrayL 0.95 ] ] ]
         [ button
-            [ css [ btnReset, pointer, pa 1, flexGrow1 ], onClick HeaderClicked ]
-            [ i [ class "material-icons" ] [ text "expand_more" ]
+            [ css [ btnReset, pointer, pa 1, flexGrow1, flex ], onClick HeaderClicked ]
+            [ i [ class "material-icons" ] [ text iconName ]
             , span [ css [ bold, pa 1 ] ] [ text "Projects" ]
             ]
         , button
