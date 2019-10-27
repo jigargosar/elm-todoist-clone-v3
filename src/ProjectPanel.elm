@@ -232,7 +232,7 @@ viewItemWhenNotDragging :
     -> (Project -> String -> List (Attribute Msg))
     -> Project
     -> Html msg
-viewItemWhenNotDragging { toMsg } dragHandleAttrs project =
+viewItemWhenNotDragging { toMsg, projectMoreClicked } dragHandleAttrs project =
     let
         domId =
             itemDomId project
@@ -247,7 +247,7 @@ viewItemWhenNotDragging { toMsg } dragHandleAttrs project =
         { itemAttrs = [ A.id domId ]
         , itemStyles = []
         , handleAttrs = dragHandleAttrs project domId |> List.map (A.map toMsg)
-        , moreAttrs = [ A.id moreDomId, MoreClicked projectId moreDomId |> onClick ] |> List.map (A.map toMsg)
+        , moreAttrs = [ A.id moreDomId, projectMoreClicked projectId moreDomId |> onClick ]
         }
         project
 
