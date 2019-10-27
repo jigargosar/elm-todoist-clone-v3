@@ -68,6 +68,9 @@ html {
   }
 }
 
+.hover_parent .show_on_parent_hover:focus{
+  visibility: visible;
+}
 .hover_parent .show_on_parent_hover{
   visibility: hidden;
 }
