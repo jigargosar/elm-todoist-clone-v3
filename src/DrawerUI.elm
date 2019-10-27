@@ -1,4 +1,4 @@
-module DrawerUI exposing (expansionToggleBtn, listItemStyle, secondaryActionIconBtnStyle, viewExpansionPanelHeader)
+module DrawerUI exposing (expansionToggleBtn, listItemStyle, viewExpansionPanelHeader)
 
 import Html.Styled exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes exposing (class, css)
