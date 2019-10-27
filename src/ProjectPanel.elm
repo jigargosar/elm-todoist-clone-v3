@@ -118,7 +118,27 @@ view ({ toMsg } as config) projectList model =
             viewHeader True
                 :: (case DNDList.view dndListMsg projectList dnd of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                            List.map (viewItemWhenNotDragging moreClicked dragHandleAttrs) items
+                            let
+                                viewHelp project =
+                                    let
+                                        domId =
+                                            itemDomId project
+
+                                        projectId =
+                                            Project.id project
+
+                                        moreDomId =
+                                            domId ++ "__more-btn"
+                                    in
+                                    viewItem
+                                        { itemAttrs = [ A.id domId ]
+                                        , itemStyles = []
+                                        , handleAttrs = dragHandleAttrs project domId
+                                        , moreAttrs = [ A.id moreDomId, moreClicked projectId moreDomId |> onClick ]
+                                        }
+                                        project
+                            in
+                            List.map viewHelp items
 
                         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
                             List.map (viewItemWhenDragging isBeingDragged dragOverAttrs) items
@@ -225,31 +245,6 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
         ]
-
-
-viewItemWhenNotDragging :
-    (ProjectId -> String -> msg)
-    -> (Project -> String -> List (Attribute msg))
-    -> Project
-    -> Html msg
-viewItemWhenNotDragging moreClicked dragHandleAttrs project =
-    let
-        domId =
-            itemDomId project
-
-        projectId =
-            Project.id project
-
-        moreDomId =
-            domId ++ "__more-btn"
-    in
-    viewItem
-        { itemAttrs = [ A.id domId ]
-        , itemStyles = []
-        , handleAttrs = dragHandleAttrs project domId
-        , moreAttrs = [ A.id moreDomId, moreClicked projectId moreDomId |> onClick ]
-        }
-        project
 
 
 viewItemWhenDragging :
