@@ -140,14 +140,13 @@ viewItemWhenNotDragging dragHandleAttrs project =
     let
         domId =
             itemDomId project
-
-        itemAttrs =
-            [ A.id domId ]
-
-        handleAttrs =
-            dragHandleAttrs project domId
     in
-    viewItem { itemAttrs = itemAttrs, itemStyles = [], handleAttrs = handleAttrs } project
+    viewItem
+        { itemAttrs = [ A.id domId ]
+        , itemStyles = []
+        , handleAttrs = dragHandleAttrs project domId
+        }
+        project
 
 
 viewItemWhenDragging : DNDList.DraggingConfig Project msg -> Project -> Html msg
