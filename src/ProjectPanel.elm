@@ -115,8 +115,8 @@ viewItems :
     -> List Project
     -> DNDList.Model Project
     -> List (Html b)
-viewItems config projectList dnd =
-    case DNDList.view config.dndListMsg projectList dnd of
+viewItems config projectList dndList =
+    case DNDList.view config.dndListMsg projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
             List.map
                 (\project ->
