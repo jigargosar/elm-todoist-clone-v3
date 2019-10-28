@@ -6,12 +6,14 @@ module DNDList exposing
     , NotDraggingConfig
     , System
     , View(..)
+    , View2
     , ghost
     , initial
     , subscriptions
     , system
     , update
     , view
+    , view2
     )
 
 import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, positionAdd, positionDiff, rotateListByElem)
@@ -32,6 +34,7 @@ type alias System item msg =
     , update : Msg item -> Model item -> ( Model item, Cmd msg )
     , subscriptions : Model item -> Sub msg
     , view : List item -> Model item -> View item msg
+    , view2 : List item -> Model item -> View2 item msg
     }
 
 
@@ -41,6 +44,7 @@ system config =
     , update = update config
     , subscriptions = subscriptions config
     , view = view config
+    , view2 = view2 config
     }
 
 

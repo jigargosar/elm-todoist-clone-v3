@@ -119,15 +119,10 @@ viewGhost { dnd } =
 
 viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
 viewItems config projectList dndList =
-    case config.dndSystem.view projectList dndList of
-        DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            viewHelp config dragHandleAttrs (\_ -> []) (always False) items
-
-        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-            viewHelp config (\_ _ -> []) dragOverAttrs isBeingDragged items
-
-
-viewHelp config dragHandleAttrs dragOverAttrs isBeingDragged =
+    let
+        { dragHandleAttrs, dragOverAttrs, isBeingDragged, items } =
+            config.dndSystem.view2 projectList dndList
+    in
     List.map
         (\project ->
             let
@@ -148,6 +143,7 @@ viewHelp config dragHandleAttrs dragOverAttrs isBeingDragged =
                 }
                 project
         )
+        items
 
 
 itemDomId : Project -> String
