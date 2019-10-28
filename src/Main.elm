@@ -215,7 +215,7 @@ type Msg
     | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
-    | PopupMsg_ PopupMsg
+    | PopupMsg PopupMsg
     | ProjectMoreMenu PopupView.ProjectMenuItem
     | LabelMoreMenu PopupView.LabelMenuItem
     | FilterMoreMenu PopupView.FilterMenuItem
@@ -299,7 +299,7 @@ update message model =
         ClosePopup ->
             ( closePopup model, Cmd.none )
 
-        PopupMsg_ msg ->
+        PopupMsg msg ->
             let
                 handlePopupMsg popKind =
                     case ( popKind, msg ) of
@@ -603,7 +603,7 @@ popupView model =
                         { onClose = ClosePopup
                         , noOp = NoOp
                         }
-                        (content |> List.map (H.map (toMsg >> PopupMsg_)))
+                        (content |> List.map (H.map (toMsg >> PopupMsg)))
                         popper
             in
             case kind of
