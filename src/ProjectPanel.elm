@@ -54,9 +54,9 @@ subscriptions projectPanel =
 
 type alias Config msg =
     { toMsg : Msg -> msg
-    , projectOrderChanged : List Project -> msg
-    , addProjectClicked : msg
-    , projectMoreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
     }
 
 
@@ -77,7 +77,7 @@ update config message model =
             case model of
                 Expanded dnd ->
                     DNDList.update (config.toMsg << DNDListMsg)
-                        { onComplete = config.projectOrderChanged }
+                        { onComplete = config.sorted }
                         msg
                         dnd
                         |> Tuple.mapFirst Expanded
@@ -104,7 +104,7 @@ view ({ toMsg } as config) projectList model =
                 { toggle = toggle
                 , title = "Projects"
                 , isExpanded = isExpanded
-                , secondary = { iconName = "add", action = config.addProjectClicked }
+                , secondary = { iconName = "add", action = config.addClicked }
                 }
     in
     case model of
@@ -133,7 +133,7 @@ view ({ toMsg } as config) projectList model =
                                         , handleAttrs = dragHandleAttrs project domId
                                         , moreAttrs =
                                             [ A.id moreDomId
-                                            , config.projectMoreClicked projectId moreDomId |> onClick
+                                            , config.moreClicked projectId moreDomId |> onClick
                                             ]
                                         }
                                         project
