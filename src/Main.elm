@@ -579,7 +579,7 @@ popupView model =
         Nothing ->
             []
 
-        Just ( kind, popper ) ->
+        Just ( popup, popper ) ->
             let
                 viewHelp : List (Html msg) -> (msg -> PopupMsg) -> List (Html Msg)
                 viewHelp content toMsg =
@@ -590,7 +590,7 @@ popupView model =
                         (content |> List.map (H.map (toMsg >> PopupMsg)))
                         popper
             in
-            case kind of
+            case popup of
                 ProjectMoreMenu _ ->
                     viewHelp PopupView.projectContent ProjectMoreMenuMsg
 
