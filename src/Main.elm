@@ -68,9 +68,6 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , projectsExpanded : Bool
-    , labelsExpanded : Bool
-    , filtersExpanded : Bool
     , panelDrag : Maybe ( Drawer.Panel, Drag )
     , popup : Maybe ( PopupKind, Popper )
     , dialog : Maybe Dialog
@@ -92,9 +89,6 @@ init flags url navKey =
             , labelCollection = LabelCollection.initial
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
-            , projectsExpanded = True
-            , labelsExpanded = True
-            , filtersExpanded = True
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
@@ -220,7 +214,6 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | TogglePanel Drawer.Panel
     | PanelAddClicked Drawer.Panel
     | DrawerPanelDrag Drawer.Panel Drag.Msg
     | DrawerPanelDragComplete Drawer.Panel Drag.Info
@@ -280,19 +273,6 @@ update message model =
 
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
-
-        TogglePanel panel ->
-            ( case panel of
-                Drawer.Projects ->
-                    { model | projectsExpanded = not model.projectsExpanded }
-
-                Drawer.Labels ->
-                    { model | labelsExpanded = not model.labelsExpanded }
-
-                Drawer.Filters ->
-                    { model | filtersExpanded = not model.filtersExpanded }
-            , Cmd.none
-            )
 
         PanelAddClicked panel ->
             case panel of
@@ -368,9 +348,6 @@ update message model =
 
         DrawerPanelMsg panel panelMsg ->
             case panelMsg of
-                Drawer.Toggle ->
-                    update (TogglePanel panel) model
-
                 Drawer.Add ->
                     update (PanelAddClicked panel) model
 

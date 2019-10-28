@@ -5,25 +5,17 @@ module Drawer exposing
     , PanelMsg(..)
     , filterPanelItemConfig
     , labelPanelItemConfig
-    , panelTitle
     , prefixNavItemsView
     , projectPanelItemConfig
-    , viewPanel
     , viewPanelItemGhost
-    , viewPanelItems
-    , viewProjectsPanel
     , viewSimpleNavItem
     )
 
-import Css
-import Css.Transitions as Transitions exposing (transition)
 import Drag exposing (Drag)
 import DrawerItem as DI
 import Filter exposing (Filter)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as A exposing (class, css)
-import Html.Styled.Events as E
 import Json.Decode as JD
 import Label exposing (Label)
 import LabelId exposing (LabelId)
@@ -48,88 +40,11 @@ type Panel
     | Filters
 
 
-panelTitle : Panel -> String
-panelTitle panel =
-    case panel of
-        Projects ->
-            "Projects"
-
-        Labels ->
-            "Labels"
-
-        Filters ->
-            "Filters"
-
-
 type PanelMsg
-    = Toggle
-    | Add
+    = Add
     | DragMsg Drag.Msg
     | DragComplete Drag.Info
     | More String PanelItemId
-
-
-viewProjectsPanel : (Panel -> Bool) -> (Panel -> Drag) -> List Project -> List (Html PanelMsg)
-viewProjectsPanel isPanelExpanded dragForPanel projects =
-    viewPanel
-        Projects
-        (isPanelExpanded Projects)
-        (\_ ->
-            viewPanelItems projectPanelItemConfig
-                projects
-                (dragForPanel Projects)
-        )
-
-
-viewPanel : Panel -> Bool -> (() -> List (Html PanelMsg)) -> List (Html PanelMsg)
-viewPanel panel isExpanded lazyContentView =
-    let
-        title =
-            panelTitle panel
-    in
-    viewPanelHeader title isExpanded
-        :: (if isExpanded then
-                lazyContentView ()
-
-            else
-                []
-           )
-
-
-viewPanelHeader :
-    String
-    -> Bool
-    -> Html PanelMsg
-viewPanelHeader title isExpanded =
-    let
-        isCollapsed =
-            not isExpanded
-
-        iBtnStyle =
-            batch [ btnReset, pointer ]
-    in
-    div
-        [ css [ bo_b, boc (grayL 0.9), flex, hover [ bgGrayL 0.95 ] ] ]
-        [ button
-            [ css [ iBtnStyle, pa 1, flexGrow1 ], E.onClick Toggle ]
-            [ span
-                [ css
-                    [ c_grayL 0.6
-                    , batch
-                        [ styleIf isCollapsed [ Css.transforms [ Css.rotate (Css.deg -90) ] ]
-                        , transition [ Transitions.transform 200 ]
-                        ]
-                    ]
-                ]
-                [ i [ class "material-icons" ] [ text "expand_more" ] ]
-            , styled span [ bold, pa 1 ] [] [ text title ]
-            ]
-        , button
-            [ css [ iBtnStyle, mr 3 ]
-            , E.onClick Add
-            ]
-            [ i [ class "material-icons" ] [ text "add" ] ]
-        ]
 
 
 type PanelItemId
@@ -205,73 +120,6 @@ filterPanelItemConfig =
     }
 
 
-viewPanelItems : PanelItemConfig id item -> List item -> Drag -> List (Html PanelMsg)
-viewPanelItems config items drag =
-    items
-        |> Drag.rotate drag
-        |> List.indexedMap (viewPanelItem config drag)
-
-
-panelItemDomId : PanelItemConfig id item -> id -> String
-panelItemDomId config id =
-    "drawer-panel__ " ++ config.panelId ++ "__item__" ++ config.idToString id
-
-
-panelItemMoreBtnDomId : PanelItemConfig id item -> id -> String
-panelItemMoreBtnDomId config id =
-    panelItemDomId config id ++ "__more-btn"
-
-
-viewPanelItem :
-    PanelItemConfig id item
-    -> Drag
-    -> Int
-    -> item
-    -> Html PanelMsg
-viewPanelItem config drag idx item =
-    let
-        id =
-            config.id item
-
-        domId =
-            panelItemDomId config id
-
-        rootSA =
-            let
-                dragOverStyle =
-                    Styles.styleIf (Drag.eqDragOverIdx idx drag) [ Css.opacity <| Css.zero ]
-            in
-            StyleAttrs
-                [ hover [ bgGrayL 0.9 ]
-                , noSelection
-                , dragOverStyle
-                ]
-                (A.id domId :: Drag.dropEvents config.dragMsg idx drag)
-
-        primaryIcon : { name : String, sa : StyleAttrs PanelMsg }
-        primaryIcon =
-            let
-                dragEvents =
-                    Drag.dragEvents config.dragMsg idx domId drag
-            in
-            { name = config.iconName
-            , sa = StyleAttrs [ Css.cursor Css.move, config.iconStyle item ] dragEvents
-            }
-
-        link : { title : String, sa : StyleAttrs msg }
-        link =
-            { title = config.title item, sa = StyleAttrs [] [ Route.href <| config.route item ] }
-
-        moreDomId =
-            panelItemMoreBtnDomId config id
-
-        moreSA : StyleAttrs PanelMsg
-        moreSA =
-            StyleAttrs [] [ A.id moreDomId, E.on "click" (config.moreClicked moreDomId id) ]
-    in
-    viewPanelItemHelp rootSA primaryIcon link moreSA
-
-
 viewPanelItemGhost : PanelItemConfig id item -> List item -> Drag -> List (Html msg)
 viewPanelItemGhost config items drag =
     Drag.ghostItemWithStyles items drag
@@ -304,20 +152,6 @@ viewSimpleNavItemHelp rootSA icon title =
     DI.initLink rootSA
         |> DI.withPrimaryIcon icon.name icon.sa
         |> DI.withContentText title
-        |> DI.render
-
-
-viewPanelItemHelp :
-    StyleAttrs msg
-    -> { a | name : String, sa : StyleAttrs msg }
-    -> { b | title : String, sa : StyleAttrs msg }
-    -> StyleAttrs msg
-    -> Html msg
-viewPanelItemHelp rootSA icon linkContent moreSA =
-    DI.init rootSA
-        |> DI.withPrimaryIcon icon.name icon.sa
-        |> DI.withContentAsLink linkContent.title linkContent.sa
-        |> DI.withSecondaryMoreAction moreSA
         |> DI.render
 
 
