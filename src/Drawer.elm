@@ -1,7 +1,6 @@
 module Drawer exposing
     ( Panel(..)
     , PanelItemId(..)
-    , PanelMsg(..)
     , prefixNavItemsView
     , viewSimpleNavItem
     )
@@ -29,11 +28,6 @@ type Panel
     = Projects
     | Labels
     | Filters
-
-
-type PanelMsg
-    = Add
-    | More String PanelItemId
 
 
 type PanelItemId
