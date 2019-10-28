@@ -87,7 +87,7 @@ onDNDMsg config msg model =
 -- PROJECT PANEL VIEW
 
 
-view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
+view : Config msg -> List Project -> ProjectPanel -> ( List (Html msg), List (Html msg) )
 view config projectList model =
     let
         viewHeader isExpanded =
@@ -100,11 +100,14 @@ view config projectList model =
     in
     case model of
         Collapsed ->
-            [ viewHeader False ]
+            ( [ viewHeader False ], [] )
 
         Expanded dnd ->
-            viewHeader True
-                :: viewItems config projectList dnd
+            let
+                ( items, ghost ) =
+                    viewItems config projectList dnd
+            in
+            ( viewHeader True :: items, ghost )
 
 
 viewItems :
@@ -114,11 +117,11 @@ viewItems :
     }
     -> List Project
     -> DNDList.Model Project
-    -> List (Html msg)
+    -> ( List (Html msg), List (Html msg) )
 viewItems config projectList dndList =
     case DNDList.view config.dndListMsg projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            List.map
+            ( List.map
                 (\project ->
                     let
                         domId =
@@ -139,9 +142,11 @@ viewItems config projectList dndList =
                         project
                 )
                 items
+            , []
+            )
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-            List.map
+            ( List.map
                 (\project ->
                     viewItem
                         { itemAttrs = dragOverAttrs project
@@ -152,6 +157,13 @@ viewItems config projectList dndList =
                         project
                 )
                 items
+            , DNDList.ghost dndList
+                |> Maybe.map
+                    (\( itemStyle, project ) ->
+                        viewGhostItem itemStyle project
+                    )
+                |> Maybe.withDefault []
+            )
 
 
 itemDomId : Project -> String

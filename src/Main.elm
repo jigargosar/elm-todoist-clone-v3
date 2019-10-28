@@ -532,24 +532,6 @@ onDrawerPanelDragComplete panel info model =
 
 view : Model -> Html Msg
 view model =
-    Layout.view { closeDrawerModal = CloseDrawerModal }
-        { appbar = Appbar.view { menuClicked = OpenDrawerModal }
-        , drawer = viewDrawer model
-        , main =
-            [ pageView model
-            ]
-                |> List.concat
-        , modal =
-            popupView model
-                ++ dialogView model
-                ++ panelDragView model
-                ++ ProjectPanel.viewDNDGhost model.projectPanel
-        }
-        model.isDrawerModalOpen
-
-
-viewDrawer : Model -> List (Html Msg)
-viewDrawer model =
     let
         viewPanel : Drawer.PanelItemConfig id item -> Drawer.Panel -> List item -> List (Html Msg)
         viewPanel config panel items =
@@ -562,17 +544,34 @@ viewDrawer model =
                         (dragForPanel panel model.panelDrag)
                 )
                 |> List.map (H.map (DrawerPanelMsg panel))
+
+        ( projectPanelView, projectPanelGhostView ) =
+            ProjectPanel.view projectPanelConfig
+                (ProjectCollection.sorted model.projectCollection)
+                model.projectPanel
     in
-    Drawer.prefixNavItemsView
-        ++ ProjectPanel.view projectPanelConfig
-            (ProjectCollection.sorted model.projectCollection)
-            model.projectPanel
-        ++ viewPanel Drawer.labelPanelItemConfig
-            Drawer.Labels
-            (LabelCollection.sorted model.labelCollection)
-        ++ viewPanel Drawer.filterPanelItemConfig
-            Drawer.Filters
-            (FilterCollection.sorted model.filterCollection)
+    Layout.view { closeDrawerModal = CloseDrawerModal }
+        { appbar = Appbar.view { menuClicked = OpenDrawerModal }
+        , drawer =
+            Drawer.prefixNavItemsView
+                ++ projectPanelView
+                ++ viewPanel Drawer.labelPanelItemConfig
+                    Drawer.Labels
+                    (LabelCollection.sorted model.labelCollection)
+                ++ viewPanel Drawer.filterPanelItemConfig
+                    Drawer.Filters
+                    (FilterCollection.sorted model.filterCollection)
+        , main =
+            [ pageView model
+            ]
+                |> List.concat
+        , modal =
+            popupView model
+                ++ dialogView model
+                ++ panelDragView model
+                ++ projectPanelGhostView
+        }
+        model.isDrawerModalOpen
 
 
 panelDragView : Model -> List (Html Msg)
