@@ -92,7 +92,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
-            , projectPanel = ProjectPanel.initial
+            , projectPanel = projectPanelSystem.initial
             }
     in
     Return.singleton initial
@@ -371,7 +371,7 @@ update message model =
             updateProjectSortOrder projectList model
 
         ToggleProjectsPanel ->
-            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
+            ( mapProjectPanel projectPanelSystem.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             projectPanelSystem.onDNDMsg msg model.projectPanel

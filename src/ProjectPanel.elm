@@ -2,13 +2,7 @@ module ProjectPanel exposing
     ( Config
     , ProjectPanel
     , System
-    , initial
-    , onDNDMsg
-    , onToggle
-    , subscriptions
     , system
-    , view
-    , viewGhost
     )
 
 import Css
@@ -30,6 +24,7 @@ type alias System msg =
     , onDNDMsg : DNDList.Msg Project -> ProjectPanel -> ( ProjectPanel, Cmd msg )
     , view : List Project -> ProjectPanel -> List (Html msg)
     , subscriptions : ProjectPanel -> Sub msg
+    , viewGhost : ProjectPanel -> List (Html msg)
     }
 
 
@@ -40,6 +35,7 @@ system config =
     , onDNDMsg = onDNDMsg config
     , view = view config
     , subscriptions = subscriptions config
+    , viewGhost = viewGhost
     }
 
 
