@@ -215,7 +215,7 @@ type Msg
     | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
-    | PopupMsg PopupMsg
+    | PopupMsg_ PopupMsg
     | ProjectMoreMenu PopupView.ProjectMenuItem
     | LabelMoreMenu PopupView.LabelMenuItem
     | FilterMoreMenu PopupView.FilterMenuItem
@@ -299,7 +299,7 @@ update message model =
         ClosePopup ->
             ( closePopup model, Cmd.none )
 
-        PopupMsg msg ->
+        PopupMsg_ msg ->
             let
                 handlePopupMsg popKind =
                     case ( popKind, msg ) of
@@ -597,24 +597,24 @@ popupView model =
 
         Just ( kind, popper ) ->
             let
-                viewHelp : List (Html msg) -> (msg -> Msg) -> List (Html Msg)
+                viewHelp : List (Html msg) -> (msg -> PopupMsg) -> List (Html Msg)
                 viewHelp content toMsg =
                     PopupView.container
                         { onClose = ClosePopup
                         , noOp = NoOp
                         }
-                        (content |> List.map (H.map toMsg))
+                        (content |> List.map (H.map (toMsg >> PopupMsg_)))
                         popper
             in
             case kind of
                 Drawer.ProjectItemId _ ->
-                    viewHelp PopupView.projectContent ProjectMoreMenu
+                    viewHelp PopupView.projectContent ProjectMoreMenuMsg
 
                 Drawer.LabelItemId _ ->
-                    viewHelp PopupView.labelContent LabelMoreMenu
+                    viewHelp PopupView.labelContent LabelMoreMenuMsg
 
                 Drawer.FilterItemId _ ->
-                    viewHelp PopupView.filterContent FilterMoreMenu
+                    viewHelp PopupView.filterContent FilterMoreMenuMsg
 
 
 dialogView : Model -> List (Html Msg)
