@@ -12,6 +12,7 @@ import FilterId exposing (FilterId)
 import Html.Styled as H exposing (Attribute, Html, toUnstyled)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
+import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
@@ -198,6 +199,7 @@ subscriptions model =
             Nothing ->
                 Sub.none
         , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
+        , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         ]
 
 
@@ -226,9 +228,12 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
-    | ProjectOrderChanged (List Project)
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
+    | ProjectOrderChanged (List Project)
+    | ToggleLabelsPanel
+    | LabelPanelDNDListMsg (DNDList.Msg Label)
+    | LabelOrderChanged (List Label)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -370,15 +375,25 @@ update message model =
                 Drawer.More anchorId panelItemId ->
                     update (PopupTriggered panelItemId anchorId) model
 
-        ProjectOrderChanged projectList ->
-            updateProjectSortOrder projectList model
-
         ToggleProjectsPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
+
+        ProjectOrderChanged projectList ->
+            updateProjectSortOrder projectList model
+
+        ToggleLabelsPanel ->
+            ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
+
+        LabelPanelDNDListMsg msg ->
+            LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
+                |> Tuple.mapFirst (\labelPanel -> mapLabelPanel (always labelPanel) model)
+
+        LabelOrderChanged labelList ->
+            updateLabelSortOrder labelList model
 
 
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
@@ -401,6 +416,30 @@ mapProjectCollection func model =
 
 updateProjectSortOrder projectList model =
     ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
+    , Cmd.none
+    )
+
+
+mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
+mapLabelPanel func model =
+    { model | labelPanel = func model.labelPanel }
+
+
+labelPanelConfig : LabelPanel.Config Msg
+labelPanelConfig =
+    { toggled = ToggleLabelsPanel
+    , addClicked = PanelAddClicked Drawer.Labels
+    , moreClicked = Drawer.LabelItemId >> PopupTriggered
+    , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
+    }
+
+
+mapLabelCollection func model =
+    { model | labelCollection = func model.labelCollection }
+
+
+updateLabelSortOrder labelList model =
+    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
     , Cmd.none
     )
 
