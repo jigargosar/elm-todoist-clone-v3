@@ -177,6 +177,40 @@ dragHandleAttrs dragStartMsg =
     ]
 
 
+type alias View2 item msg =
+    { dragHandleAttrs : item -> String -> List (Attribute msg)
+    , dragOverAttrs : item -> List (Attribute msg)
+    , isBeingDragged : item -> Bool
+    , items : List item
+    }
+
+
+view2 : Config item msg -> List item -> Model item -> View2 item msg
+view2 config items model =
+    let
+        attrsToMsg =
+            List.map (A.map config.toMsg)
+    in
+    case model of
+        Dragging state ->
+            { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (DraggedOver item) ]
+            , dragHandleAttrs = \_ _ -> []
+            , isBeingDragged = eq_ state.dragItem
+            , items = state.items
+            }
+
+        NotDragging ->
+            { dragOverAttrs = \_ -> []
+            , dragHandleAttrs =
+                \item domId ->
+                    (DragStarted << DragStart items item domId)
+                        |> dragHandleAttrs
+                        |> attrsToMsg
+            , isBeingDragged = always False
+            , items = items
+            }
+
+
 view : Config item msg -> List item -> Model item -> View item msg
 view config items model =
     let
