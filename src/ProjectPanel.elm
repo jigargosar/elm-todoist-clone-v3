@@ -190,21 +190,18 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
                 , onClick action
                 ]
                 [ i [ class "material-icons" ] [ text iconName ] ]
-
-        listItemStyle : Style
-        listItemStyle =
-            batch
-                [ Px.pl 4
-                , Px.pr (4 + 16)
-                , flex
-                , itemsCenter
-                , bo_b
-                , boc Theme.borderGray
-                , hover [ bgGrayL 0.95 ]
-                ]
     in
     div
-        [ css [ listItemStyle ] ]
+        [ css
+            [ Px.pl 4
+            , Px.pr (4 + 16)
+            , flex
+            , itemsCenter
+            , bo_b
+            , boc Theme.borderGray
+            , hover [ bgGrayL 0.95 ]
+            ]
+        ]
         [ let
             iconName =
                 if isExpanded then
