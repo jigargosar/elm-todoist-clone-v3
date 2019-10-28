@@ -110,8 +110,8 @@ view config projectList model =
 viewItems config projectList dnd =
     case DNDList.view config.dndListMsg projectList dnd of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            let
-                viewHelp project =
+            List.map
+                (\project ->
                     let
                         domId =
                             itemDomId project
@@ -129,8 +129,8 @@ viewItems config projectList dnd =
                             ]
                         }
                         project
-            in
-            List.map viewHelp items
+                )
+                items
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
             List.map
