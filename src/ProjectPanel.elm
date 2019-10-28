@@ -111,35 +111,35 @@ viewItems :
     -> DNDList.Model Project
     -> List (Html msg)
 viewItems config projectList dndList =
-    let
-        viewHelp dragHandleAttrs dragOverAttrs isBeingDragged =
-            List.map
-                (\project ->
-                    let
-                        domId =
-                            itemDomId project
-
-                        moreDomId =
-                            domId ++ "__more-btn"
-                    in
-                    viewItem
-                        { itemAttrs = A.id domId :: dragOverAttrs project
-                        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-                        , handleAttrs = dragHandleAttrs project domId
-                        , moreAttrs =
-                            [ A.id moreDomId
-                            , onClick (config.moreClicked (Project.id project) moreDomId)
-                            ]
-                        }
-                        project
-                )
-    in
     case DNDList.view config.dndListMsg projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            viewHelp dragHandleAttrs (\_ -> []) (always False) items
+            viewHelp config dragHandleAttrs (\_ -> []) (always False) items
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-            viewHelp (\_ _ -> []) dragOverAttrs isBeingDragged items
+            viewHelp config (\_ _ -> []) dragOverAttrs isBeingDragged items
+
+
+viewHelp config dragHandleAttrs dragOverAttrs isBeingDragged =
+    List.map
+        (\project ->
+            let
+                domId =
+                    itemDomId project
+
+                moreDomId =
+                    domId ++ "__more-btn"
+            in
+            viewItem
+                { itemAttrs = A.id domId :: dragOverAttrs project
+                , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+                , handleAttrs = dragHandleAttrs project domId
+                , moreAttrs =
+                    [ A.id moreDomId
+                    , onClick (config.moreClicked (Project.id project) moreDomId)
+                    ]
+                }
+                project
+        )
 
 
 itemDomId : Project -> String
