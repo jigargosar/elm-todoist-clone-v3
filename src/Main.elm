@@ -280,13 +280,13 @@ update message model =
 
         PanelAddClicked panel ->
             case panel of
-                Drawer.Projects ->
+                ProjectPanel ->
                     ( { model | dialog = Dialog.initAddProject }, Cmd.none )
 
-                Drawer.Labels ->
+                LabelPanel ->
                     ( { model | dialog = Dialog.AddLabel }, Cmd.none )
 
-                Drawer.Filters ->
+                FilterPanel ->
                     ( { model | dialog = Dialog.AddFilter }, Cmd.none )
 
         Popper msg ->
