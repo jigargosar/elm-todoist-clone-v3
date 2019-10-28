@@ -2,7 +2,13 @@ module ProjectPanel exposing
     ( Config
     , ProjectPanel
     , System
+    , initial
+    , onDNDMsg
+    , onToggle
+    , subscriptions
     , system
+    , view
+    , viewGhost
     )
 
 import Css
@@ -80,10 +86,6 @@ onDNDMsg config msg model =
         msg
         model.dnd
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
-
-
-
--- PROJECT PANEL VIEW
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
