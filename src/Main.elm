@@ -539,19 +539,6 @@ dragForPanel panel panelDrag =
                 Drag.initial
 
 
-isPanelExpanded : Drawer.Panel -> { a | projectsExpanded : c, labelsExpanded : c, filtersExpanded : c } -> c
-isPanelExpanded panel model =
-    case panel of
-        Drawer.Projects ->
-            model.projectsExpanded
-
-        Drawer.Labels ->
-            model.labelsExpanded
-
-        Drawer.Filters ->
-            model.filtersExpanded
-
-
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
     let
