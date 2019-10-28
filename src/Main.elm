@@ -374,7 +374,7 @@ update message model =
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
-            ProjectPanel.onDNDMsg ProjectPanelDNDListMsg ProjectOrderChanged msg model.projectPanel
+            ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
 
 
