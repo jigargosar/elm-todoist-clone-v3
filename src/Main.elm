@@ -9,6 +9,7 @@ import Drag exposing (Drag)
 import Drawer
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
+import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, toUnstyled)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
@@ -74,6 +75,7 @@ type alias Model =
     , dialog : Maybe Dialog
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
+    , filterPanel : FilterPanel
     }
 
 
@@ -97,6 +99,7 @@ init flags url navKey =
             , dialog = Nothing
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
+            , filterPanel = FilterPanel.initial
             }
     in
     Return.singleton initial
