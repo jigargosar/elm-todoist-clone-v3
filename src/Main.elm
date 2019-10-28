@@ -216,9 +216,6 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | ProjectMoreMenu PopupView.ProjectMenuItem
-    | LabelMoreMenu PopupView.LabelMenuItem
-    | FilterMoreMenu PopupView.FilterMenuItem
     | OpenDialog Dialog
     | CloseDialog
     | ToggleProjectsPanel
@@ -318,30 +315,6 @@ update message model =
             model.popup
                 |> Maybe.map (Tuple.first >> handlePopupMsg)
                 |> Maybe.withDefault ( model, Cmd.none )
-
-        ProjectMoreMenu action ->
-            case model.popup of
-                Just ( Drawer.ProjectItemId projectId, _ ) ->
-                    onProjectMoreMenuAction projectId action model
-
-                _ ->
-                    ( model, Cmd.none )
-
-        LabelMoreMenu action ->
-            case model.popup of
-                Just ( Drawer.LabelItemId labelId, _ ) ->
-                    onLabelMoreMenuAction labelId action model
-
-                _ ->
-                    ( model, Cmd.none )
-
-        FilterMoreMenu action ->
-            case model.popup of
-                Just ( Drawer.FilterItemId filterId, _ ) ->
-                    onFilterMoreMenuAction filterId action model
-
-                _ ->
-                    ( model, Cmd.none )
 
         OpenDialog dialog ->
             ( { model | dialog = Just dialog }, Cmd.none )
