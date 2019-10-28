@@ -52,6 +52,16 @@ type PopupMsg
 
 
 
+-- PANEL
+
+
+type Panel
+    = ProjectPanel
+    | LabelPanel
+    | FilterPanel
+
+
+
 -- Flags
 
 
