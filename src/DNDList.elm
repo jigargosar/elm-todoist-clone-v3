@@ -235,14 +235,14 @@ stateToGhost { dragItem, dragElement, startPosition, currentPosition } =
 
 
 subscriptions : Config item msg -> Model item -> Sub msg
-subscriptions config model =
+subscriptions { toMsg } model =
     case model of
         Dragging _ ->
             Sub.batch
                 [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
-                |> Sub.map config.toMsg
+                |> Sub.map toMsg
 
         _ ->
             Sub.none
