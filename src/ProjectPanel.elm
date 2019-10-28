@@ -58,12 +58,11 @@ initial =
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
 subscriptions config { dnd } =
-    DNDList.subscriptions config.dndConfig dnd
+    config.dndSystem.subscriptions dnd
 
 
 type alias Config msg =
-    { dndConfig : DNDList.Config Project msg
-    , toggled : msg
+    { toggled : msg
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg
     , dndSystem : DNDList.System Project msg
@@ -81,7 +80,7 @@ onDNDMsg :
     -> ProjectPanel
     -> ( ProjectPanel, Cmd msg )
 onDNDMsg config msg model =
-    DNDList.update config.dndConfig
+    config.dndSystem.update
         msg
         model.dnd
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
@@ -124,7 +123,7 @@ viewGhost { dnd } =
 
 viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
 viewItems config projectList dndList =
-    case DNDList.view config.dndConfig projectList dndList of
+    case config.dndSystem.view projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
             viewHelp config dragHandleAttrs (\_ -> []) (always False) items
 
