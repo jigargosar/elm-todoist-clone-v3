@@ -211,7 +211,7 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
                     "chevron_right"
           in
           button
-            [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggled ]
+            [ css [ btnReset, pointer, flex, itemsCenter, flexGrow1, tal ], onClick toggled ]
             [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
             , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
             ]
