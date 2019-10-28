@@ -30,16 +30,23 @@ type alias System msg =
     , onDNDMsg : DNDList.Msg Project -> ProjectPanel -> ( ProjectPanel, Cmd msg )
     , view : List Project -> ProjectPanel -> List (Html msg)
     , subscriptions : ProjectPanel -> Sub msg
+    , dndSystem : DNDList.System Project msg
     }
 
 
 system : Config msg -> System msg
 system config =
+    let
+        dndSystem : DNDList.System Project msg
+        dndSystem =
+            DNDList.system config.dndConfig
+    in
     { initial = initial
     , onToggle = onToggle
     , onDNDMsg = onDNDMsg config
     , view = view config
     , subscriptions = subscriptions config
+    , dndSystem = dndSystem
     }
 
 
