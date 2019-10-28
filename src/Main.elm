@@ -214,7 +214,6 @@ type Msg
     | FilterMoreMenu PopupView.FilterMenuItem
     | OpenDialog Dialog
     | CloseDialog
-    | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
     | ProjectOrderChanged (List Project)
@@ -322,14 +321,6 @@ update message model =
 
         CloseDialog ->
             ( { model | dialog = Nothing }, Cmd.none )
-
-        DrawerPanelMsg panel panelMsg ->
-            case panelMsg of
-                Drawer.Add ->
-                    update (PanelAddClicked panel) model
-
-                Drawer.More anchorId panelItemId ->
-                    update (PopupTriggered panelItemId anchorId) model
 
         ToggleProjectsPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
