@@ -61,6 +61,12 @@ type Panel
     | FilterPanel
 
 
+type PanelDNDListMsg
+    = ProjectPanelDNDListMsg (DNDList.Msg Project)
+    | LabelPanelDNDListMsg (DNDList.Msg Label)
+    | FilterPanelDNDListMsg (DNDList.Msg Filter)
+
+
 
 -- Flags
 
@@ -230,11 +236,9 @@ type Msg
     | CloseDialog
     | PanelAddClicked Panel
     | TogglePanel Panel
-    | ProjectPanelDNDListMsg (DNDList.Msg Project)
+    | PanelDNDListMsg PanelDNDListMsg
     | ProjectOrderChanged (List Project)
-    | LabelPanelDNDListMsg (DNDList.Msg Label)
     | LabelOrderChanged (List Label)
-    | FilterPanelDNDListMsg (DNDList.Msg Filter)
     | FilterOrderChanged (List Filter)
 
 
@@ -314,23 +318,25 @@ update message model =
                 FilterPanel ->
                     ( { model | dialog = Dialog.AddFilter }, Cmd.none )
 
-        ProjectPanelDNDListMsg msg ->
-            ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
-                |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
+        PanelDNDListMsg msg_ ->
+            case msg_ of
+                ProjectPanelDNDListMsg msg ->
+                    ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
+                        |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
+
+                LabelPanelDNDListMsg msg ->
+                    LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
+                        |> Tuple.mapFirst (\labelPanel -> mapLabelPanel (always labelPanel) model)
+
+                FilterPanelDNDListMsg msg ->
+                    FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
+                        |> Tuple.mapFirst (\filterPanel -> mapFilterPanel (always filterPanel) model)
 
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
 
-        LabelPanelDNDListMsg msg ->
-            LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
-                |> Tuple.mapFirst (\labelPanel -> mapLabelPanel (always labelPanel) model)
-
         LabelOrderChanged labelList ->
             updateLabelSortOrder labelList model
-
-        FilterPanelDNDListMsg msg ->
-            FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
-                |> Tuple.mapFirst (\filterPanel -> mapFilterPanel (always filterPanel) model)
 
         FilterOrderChanged filterList ->
             updateFilterSortOrder filterList model
@@ -385,7 +391,7 @@ projectPanelConfig =
     { toggled = TogglePanel ProjectPanel
     , addClicked = PanelAddClicked ProjectPanel
     , moreClicked = ProjectMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
+    , dndConfig = { toMsg = PanelDNDListMsg << ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     }
 
 
@@ -409,7 +415,7 @@ labelPanelConfig =
     { toggled = TogglePanel LabelPanel
     , addClicked = PanelAddClicked LabelPanel
     , moreClicked = LabelMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
+    , dndConfig = { toMsg = PanelDNDListMsg << LabelPanelDNDListMsg, sorted = LabelOrderChanged }
     }
 
 
@@ -433,7 +439,7 @@ filterPanelConfig =
     { toggled = TogglePanel FilterPanel
     , addClicked = PanelAddClicked FilterPanel
     , moreClicked = FilterMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
+    , dndConfig = { toMsg = PanelDNDListMsg << FilterPanelDNDListMsg, sorted = FilterOrderChanged }
     }
 
 
