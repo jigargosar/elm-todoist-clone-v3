@@ -123,8 +123,8 @@ viewItems config projectList dndList =
                             domId ++ "__more-btn"
                     in
                     viewItem
-                        { itemAttrs = [ A.id domId, dragOverAttrs project ]
-                        , itemStyles = [ styleIf isBeingDragged [ Css.opacity <| Css.zero ] ]
+                        { itemAttrs = A.id domId :: dragOverAttrs project
+                        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
                         , handleAttrs = dragHandleAttrs project domId
                         , moreAttrs =
                             [ A.id moreDomId
@@ -136,53 +136,10 @@ viewItems config projectList dndList =
     in
     case DNDList.view config.dndListMsg projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            List.map
-                (\project ->
-                    let
-                        domId =
-                            itemDomId project
+            viewHelp dragHandleAttrs (\_ -> []) (always False) items
 
-                        moreDomId =
-                            domId ++ "__more-btn"
-                    in
-                    viewItem
-                        { itemAttrs = [ A.id domId ]
-                        , itemStyles = []
-                        , handleAttrs = dragHandleAttrs project domId
-                        , moreAttrs =
-                            [ A.id moreDomId
-                            , onClick (config.moreClicked (Project.id project) moreDomId)
-                            ]
-                        }
-                        project
-                )
-                items
-
-        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items, ghost } ->
-            List.foldr
-                (\project itemViews ->
-                    if isBeingDragged project then
-                        viewItem
-                            { itemAttrs = dragOverAttrs project
-                            , itemStyles = [ Css.opacity <| Css.zero ]
-                            , handleAttrs = []
-                            , moreAttrs = []
-                            }
-                            project
-                            :: itemViews
-
-                    else
-                        viewItem
-                            { itemAttrs = dragOverAttrs project
-                            , itemStyles = []
-                            , handleAttrs = []
-                            , moreAttrs = []
-                            }
-                            project
-                            :: itemViews
-                )
-                []
-                items
+        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
+            viewHelp (\_ _ -> []) dragOverAttrs isBeingDragged items
 
 
 itemDomId : Project -> String
