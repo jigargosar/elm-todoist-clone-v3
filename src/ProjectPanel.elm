@@ -175,36 +175,26 @@ getDNDGhost =
 
 
 viewPanelItem config =
-    let
-        root =
-            config.root
-
-        link =
-            config.link
-
-        primary =
-            config.primary
-
-        secondary =
-            config.secondary
-    in
     div
-        (css [ Px.pl 4, Px.pr (4 + 16), flex, batch root.styles ]
+        (css [ Px.pl 4, Px.pr (4 + 16), flex, batch config.root.styles ]
             :: class "hover_parent"
-            :: root.attrs
+            :: config.root.attrs
         )
         [ i
-            (css [ Px.pa 4, Px.m2 4 0, cursorMove, batch primary.styles ]
+            (css [ Px.pa 4, Px.m2 4 0, cursorMove, batch config.primary.styles ]
                 :: class "material-icons"
-                :: primary.attrs
+                :: config.primary.attrs
             )
-            [ text primary.iconName ]
-        , a (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ] :: link.attrs) [ text link.title ]
+            [ text config.primary.iconName ]
+        , a
+            (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ]
+                :: config.link.attrs
+            )
+            [ text config.link.title ]
         , button
-            ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-             , class "show_on_parent_hover"
-             ]
-                ++ secondary.attrs
+            (css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+                :: class "show_on_parent_hover"
+                :: config.secondary.attrs
             )
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
