@@ -5,7 +5,6 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DNDList
 import Dialog exposing (Dialog)
-import Drag exposing (Drag)
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
@@ -68,7 +67,6 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , panelDrag : Maybe ( Drawer.Panel, Drag )
     , popup : Maybe ( PopupKind, Popper )
     , dialog : Maybe Dialog
     , projectPanel : ProjectPanel
@@ -90,7 +88,6 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , popup = Nothing
-            , panelDrag = Nothing
             , dialog = Nothing
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
@@ -184,13 +181,7 @@ initTodoDict encodedTodoList model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ case model.panelDrag of
-            Just ( panel, drag ) ->
-                Drag.subscriptions (DrawerPanelMsg panel << Drawer.DragMsg) drag
-
-            Nothing ->
-                Sub.none
-        , case model.popup of
+        [ case model.popup of
             Just ( _, popper ) ->
                 Popper.subscriptions Popper popper
 
@@ -215,8 +206,6 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | PanelAddClicked Drawer.Panel
-    | DrawerPanelDrag Drawer.Panel Drag.Msg
-    | DrawerPanelDragComplete Drawer.Panel Drag.Info
     | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
@@ -285,18 +274,6 @@ update message model =
                 Drawer.Filters ->
                     ( { model | dialog = Just Dialog.AddFilter }, Cmd.none )
 
-        DrawerPanelDrag panel msg ->
-            Drag.update
-                (DrawerPanelMsg panel << Drawer.DragMsg)
-                (DrawerPanelMsg panel << Drawer.DragComplete)
-                msg
-                (dragForPanel panel model.panelDrag)
-                |> Tuple.mapFirst
-                    (\newDrag -> { model | panelDrag = Just ( panel, newDrag ) })
-
-        DrawerPanelDragComplete panel info ->
-            onDrawerPanelDragComplete panel info model
-
         Popper msg ->
             case model.popup of
                 Just ( kind, popper ) ->
@@ -350,12 +327,6 @@ update message model =
             case panelMsg of
                 Drawer.Add ->
                     update (PanelAddClicked panel) model
-
-                Drawer.DragMsg msg ->
-                    update (DrawerPanelDrag panel msg) model
-
-                Drawer.DragComplete info ->
-                    update (DrawerPanelDragComplete panel info) model
 
                 Drawer.More anchorId panelItemId ->
                     update (PopupTriggered panelItemId anchorId) model
@@ -502,20 +473,6 @@ closePopup model =
     { model | popup = Nothing }
 
 
-dragForPanel : a -> Maybe ( a, Drag ) -> Drag
-dragForPanel panel panelDrag =
-    case panelDrag of
-        Nothing ->
-            Drag.initial
-
-        Just ( panel_, drag ) ->
-            if panel_ == panel then
-                drag
-
-            else
-                Drag.initial
-
-
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
     let
@@ -527,50 +484,6 @@ onUrlChanged url model =
 
     else
         ( model, Cmd.none )
-
-
-onDrawerPanelDragComplete : Drawer.Panel -> Drag.Info -> Model -> ( Model, Cmd Msg )
-onDrawerPanelDragComplete panel info model =
-    let
-        rotate =
-            Drag.rotateFromInfo info
-    in
-    case panel of
-        Drawer.Projects ->
-            let
-                projectList =
-                    ProjectCollection.sorted model.projectCollection
-            in
-            ( { model
-                | projectCollection =
-                    ProjectCollection.updateSortOrder (rotate projectList) model.projectCollection
-              }
-            , Cmd.none
-            )
-
-        Drawer.Labels ->
-            let
-                labelList =
-                    LabelCollection.sorted model.labelCollection
-            in
-            ( { model
-                | labelCollection =
-                    LabelCollection.updateSortOrder (rotate labelList) model.labelCollection
-              }
-            , Cmd.none
-            )
-
-        Drawer.Filters ->
-            let
-                filterList =
-                    FilterCollection.sorted model.filterCollection
-            in
-            ( { model
-                | filterCollection =
-                    FilterCollection.updateSortOrder (rotate filterList) model.filterCollection
-              }
-            , Cmd.none
-            )
 
 
 
@@ -606,36 +519,11 @@ view model =
         , modal =
             popupView model
                 ++ dialogView model
-                ++ panelDragView model
                 ++ ProjectPanel.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
         }
         model.isDrawerModalOpen
-
-
-panelDragView : Model -> List (Html Msg)
-panelDragView model =
-    model.panelDrag
-        |> Maybe.map
-            (\( panel, drag ) ->
-                case panel of
-                    Drawer.Projects ->
-                        Drawer.viewPanelItemGhost Drawer.projectPanelItemConfig
-                            (ProjectCollection.sorted model.projectCollection)
-                            drag
-
-                    Drawer.Labels ->
-                        Drawer.viewPanelItemGhost Drawer.labelPanelItemConfig
-                            (LabelCollection.sorted model.labelCollection)
-                            drag
-
-                    Drawer.Filters ->
-                        Drawer.viewPanelItemGhost Drawer.filterPanelItemConfig
-                            (FilterCollection.sorted model.filterCollection)
-                            drag
-            )
-        |> Maybe.withDefault []
 
 
 pageView : Model -> List (Html Msg)
