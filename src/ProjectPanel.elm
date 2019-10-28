@@ -183,33 +183,13 @@ viewExpansionPanelHeader :
     -> Html msg
 viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
     let
-        expansionToggleBtn : Html msg
-        expansionToggleBtn =
-            let
-                iconName =
-                    if isExpanded then
-                        "expand_more"
-
-                    else
-                        "chevron_right"
-            in
-            button
-                [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggled ]
-                [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
-                , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
-                ]
-
         secondaryActionIconBtn : { a | iconName : String, action : msg } -> Html msg
         secondaryActionIconBtn { iconName, action } =
             button
-                [ css [ secondaryActionIconBtnStyle ]
+                [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
                 , onClick action
                 ]
                 [ i [ class "material-icons" ] [ text iconName ] ]
-
-        secondaryActionIconBtnStyle : Style
-        secondaryActionIconBtnStyle =
-            batch [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
 
         listItemStyle : Style
         listItemStyle =
@@ -225,7 +205,19 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
     in
     div
         [ css [ listItemStyle ] ]
-        [ expansionToggleBtn
+        [ let
+            iconName =
+                if isExpanded then
+                    "expand_more"
+
+                else
+                    "chevron_right"
+          in
+          button
+            [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggled ]
+            [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
+            , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
+            ]
         , secondaryActionIconBtn secondary
         ]
 
