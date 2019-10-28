@@ -590,15 +590,18 @@ view model =
             ProjectPanel.view projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
+
+        labelPanelView =
+            LabelPanel.view labelPanelConfig
+                (LabelCollection.sorted model.labelCollection)
+                model.labelPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
             Drawer.prefixNavItemsView
                 ++ projectPanelView
-                ++ viewPanel Drawer.labelPanelItemConfig
-                    Drawer.Labels
-                    (LabelCollection.sorted model.labelCollection)
+                ++ labelPanelView
                 ++ viewPanel Drawer.filterPanelItemConfig
                     Drawer.Filters
                     (FilterCollection.sorted model.filterCollection)
@@ -611,6 +614,7 @@ view model =
                 ++ dialogView model
                 ++ panelDragView model
                 ++ ProjectPanel.viewGhost model.projectPanel
+                ++ LabelPanel.viewGhost model.labelPanel
         }
         model.isDrawerModalOpen
 
