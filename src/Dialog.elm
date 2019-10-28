@@ -31,6 +31,7 @@ type Dialog
     | EditLabel LabelId
     | AddFilter
     | EditFilter FilterId
+    | None
 
 
 overlayStyles =
