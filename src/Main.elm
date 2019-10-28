@@ -392,6 +392,11 @@ projectPanelConfig =
     }
 
 
+projectPanelSystem : ProjectPanel.System Msg
+projectPanelSystem =
+    ProjectPanel.system projectPanelConfig
+
+
 mapProjectCollection func model =
     { model | projectCollection = func model.projectCollection }
 
