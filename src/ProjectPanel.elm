@@ -213,7 +213,15 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
 
         listItemStyle : Style
         listItemStyle =
-            batch [ Px.pl 4, Px.pr (4 + 16), flex, itemsCenter, bo_b, boc Theme.borderGray, hover [ bgGrayL 0.95 ] ]
+            batch
+                [ Px.pl 4
+                , Px.pr (4 + 16)
+                , flex
+                , itemsCenter
+                , bo_b
+                , boc Theme.borderGray
+                , hover [ bgGrayL 0.95 ]
+                ]
     in
     div
         [ css [ listItemStyle ] ]
