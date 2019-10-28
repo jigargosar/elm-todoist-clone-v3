@@ -107,6 +107,14 @@ view config projectList model =
                 :: viewItems config projectList dnd
 
 
+viewItems :
+    { a
+        | dndListMsg : DNDList.Msg Project -> msg
+        , moreClicked : ProjectId -> String -> msg
+    }
+    -> List Project
+    -> DNDList.Model Project
+    -> List (Html b)
 viewItems config projectList dnd =
     case DNDList.view config.dndListMsg projectList dnd of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
