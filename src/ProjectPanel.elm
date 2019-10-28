@@ -2,9 +2,9 @@ module ProjectPanel exposing
     ( Config
     , ProjectPanel
     , initial
+    , onDNDMsg
+    , onToggle
     , subscriptions
-    , toggle
-    , updateDNDList
     , view
     , viewDNDGhost
     )
@@ -47,7 +47,7 @@ subscriptions config projectPanel =
 
 
 type alias Config msg =
-    { toggle : msg
+    { toggled : msg
     , dndListMsg : DNDList.Msg Project -> msg
     , sorted : List Project -> msg
     , addClicked : msg
@@ -55,8 +55,8 @@ type alias Config msg =
     }
 
 
-toggle : ProjectPanel -> ProjectPanel
-toggle model =
+onToggle : ProjectPanel -> ProjectPanel
+onToggle model =
     case model of
         Collapsed ->
             Expanded DNDList.init
@@ -65,12 +65,12 @@ toggle model =
             Collapsed
 
 
-updateDNDList :
+onDNDMsg :
     Config msg
     -> DNDList.Msg Project
     -> ProjectPanel
     -> ( ProjectPanel, Cmd msg )
-updateDNDList config msg model =
+onDNDMsg config msg model =
     case model of
         Expanded dnd ->
             DNDList.update config.dndListMsg
@@ -92,7 +92,7 @@ view ({ dndListMsg } as config) projectList model =
     let
         viewHeader isExpanded =
             viewExpansionPanelHeader
-                { toggled = config.toggle
+                { toggled = config.toggled
                 , title = "Projects"
                 , isExpanded = isExpanded
                 , secondary = { iconName = "add", action = config.addClicked }

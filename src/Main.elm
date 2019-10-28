@@ -371,10 +371,10 @@ update message model =
             updateProjectSortOrder projectList model
 
         ToggleProjectsPanel ->
-            ( mapProjectPanel ProjectPanel.toggle model, Cmd.none )
+            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
-            ProjectPanel.updateDNDList ProjectPanelDNDListMsg ProjectOrderChanged msg model.projectPanel
+            ProjectPanel.onDNDMsg ProjectPanelDNDListMsg ProjectOrderChanged msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
 
 
@@ -386,7 +386,7 @@ mapProjectPanel func model =
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { dndListMsg = ProjectPanelDNDListMsg
-    , toggle = ToggleProjectsPanel
+    , toggled = ToggleProjectsPanel
     , sorted = ProjectOrderChanged
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = Drawer.ProjectItemId >> PopupTriggered
