@@ -145,30 +145,37 @@ viewItems config projectList dndList =
             )
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items, ghost } ->
-            ( List.map
+            List.map
                 (\project ->
-                    viewItem
+                    ( viewItem
                         { itemAttrs = dragOverAttrs project
                         , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
                         , handleAttrs = []
                         , moreAttrs = []
                         }
                         project
+                    , if isBeingDragged project then
+                        [ viewItem
+                            { itemAttrs = []
+                            , itemStyles = [ Tuple.first ghost ]
+                            , handleAttrs = []
+                            , moreAttrs = []
+                            }
+                            project
+                        ]
+
+                      else
+                        []
+                    )
                 )
                 items
-            , let
-                ( ghostStyles, ghostProject ) =
-                    ghost
-              in
-              [ viewItem
-                    { itemAttrs = []
-                    , itemStyles = [ ghostStyles ]
-                    , handleAttrs = []
-                    , moreAttrs = []
-                    }
-                    ghostProject
-              ]
-            )
+                |> List.foldr
+                    (\( item, ghostList ) ( items_, ghostItems ) ->
+                        ( item :: items_
+                        , ghostList ++ ghostItems
+                        )
+                    )
+                    ( [], [] )
 
 
 itemDomId : Project -> String
