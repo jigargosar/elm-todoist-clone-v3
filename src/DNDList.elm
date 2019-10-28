@@ -14,7 +14,7 @@ module DNDList exposing
 import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, positionAdd, positionDiff, rotateListByElem)
 import Browser.Dom as Dom
 import Browser.Events
-import Css
+import Css exposing (Style)
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as A
 import Html.Styled.Events as E
@@ -162,6 +162,7 @@ view toMsg items model =
                 { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (DraggedOver item) ]
                 , items = state.items
                 , isBeingDragged = eq_ state.dragItem
+                , ghost = stateToGhost state
                 }
 
         _ ->
@@ -187,25 +188,26 @@ getState model =
 ghost : Model a -> Maybe ( Css.Style, a )
 ghost =
     getState
-        >> Maybe.map
-            (\{ dragItem, dragElement, startPosition, currentPosition } ->
-                let
-                    dragElementOffset =
-                        dragElement.element
+        >> Maybe.map stateToGhost
 
-                    { x, y } =
-                        positionAdd (positionDiff currentPosition startPosition) dragElementOffset
-                in
-                ( batch
-                    [ Styles.absolute
-                    , Styles.top_0
-                    , Styles.left_0
-                    , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
-                    , Css.pointerEvents Css.none
-                    ]
-                , dragItem
-                )
-            )
+
+stateToGhost { dragItem, dragElement, startPosition, currentPosition } =
+    let
+        dragElementOffset =
+            dragElement.element
+
+        { x, y } =
+            positionAdd (positionDiff currentPosition startPosition) dragElementOffset
+    in
+    ( batch
+        [ Styles.absolute
+        , Styles.top_0
+        , Styles.left_0
+        , Css.transform (Css.translate2 (Css.px dragElementOffset.x) (Css.px y))
+        , Css.pointerEvents Css.none
+        ]
+    , dragItem
+    )
 
 
 type alias NotDraggingConfig item msg =
@@ -218,6 +220,7 @@ type alias DraggingConfig item msg =
     { dragOverAttrs : item -> List (Attribute msg)
     , isBeingDragged : item -> Bool
     , items : List item
+    , ghost : ( Style, item )
     }
 
 
