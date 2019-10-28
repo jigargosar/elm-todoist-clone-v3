@@ -4,10 +4,12 @@ module DNDList exposing
     , Model
     , Msg
     , NotDraggingConfig
+    , System
     , View(..)
     , ghost
     , initial
     , subscriptions
+    , system
     , update
     , view
     )
@@ -23,6 +25,23 @@ import Json.Decode as JD
 import Log exposing (logError)
 import Styles exposing (batch)
 import Task
+
+
+type alias System item msg =
+    { initial : Model item
+    , update : Msg item -> Model item -> ( Model item, Cmd msg )
+    , subscriptions : Model item -> Sub msg
+    , view : List item -> Model item -> View item msg
+    }
+
+
+system : Config msg item -> System item msg
+system config =
+    { initial = initial
+    , update = update config
+    , subscriptions = subscriptions config
+    , view = view config
+    }
 
 
 type alias Config msg item =
