@@ -297,24 +297,7 @@ update message model =
             ( closePopup model, Cmd.none )
 
         PopupMsg msg ->
-            let
-                handlePopupMsg popKind =
-                    case ( popKind, msg ) of
-                        ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
-                            onProjectMoreMenuAction projectId action model
-
-                        ( Drawer.LabelItemId labelId, LabelMoreMenuMsg action ) ->
-                            onLabelMoreMenuAction labelId action model
-
-                        ( Drawer.FilterItemId filterId, FilterMoreMenuMsg action ) ->
-                            onFilterMoreMenuAction filterId action model
-
-                        _ ->
-                            ( model, Cmd.none )
-            in
-            model.popup
-                |> Maybe.map (Tuple.first >> handlePopupMsg)
-                |> Maybe.withDefault ( model, Cmd.none )
+            updateWithPopupKind (handlePopupMsg msg) model
 
         OpenDialog dialog ->
             ( { model | dialog = Just dialog }, Cmd.none )
@@ -351,6 +334,32 @@ update message model =
 
         FilterOrderChanged filterList ->
             updateFilterSortOrder filterList model
+
+
+updateWithPopupKind : (PopupKind -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
+updateWithPopupKind func model =
+    case model.popup of
+        Just ( popKind, _ ) ->
+            func popKind model
+
+        Nothing ->
+            ( model, Cmd.none )
+
+
+handlePopupMsg : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
+handlePopupMsg message popKind model =
+    case ( popKind, message ) of
+        ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
+            onProjectMoreMenuAction projectId action model
+
+        ( Drawer.LabelItemId labelId, LabelMoreMenuMsg action ) ->
+            onLabelMoreMenuAction labelId action model
+
+        ( Drawer.FilterItemId filterId, FilterMoreMenuMsg action ) ->
+            onFilterMoreMenuAction filterId action model
+
+        _ ->
+            ( model, Cmd.none )
 
 
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
