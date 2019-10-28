@@ -43,6 +43,12 @@ type alias PopupKind =
     Drawer.PanelItemId
 
 
+type Popup
+    = ProjectMoreMenu ProjectId
+    | LabelMoreMenu LabelId
+    | FilterMoreMenu FilterId
+
+
 type PopupMsg
     = ProjectMoreMenuMsg PopupView.ProjectMenuItem
     | LabelMoreMenuMsg PopupView.LabelMenuItem
