@@ -167,7 +167,7 @@ dragHandleAttrs dragStartMsg =
 
 
 type alias View item msg =
-    { dragHandleAttrs : item -> String -> List (Attribute msg)
+    { dragStartAttrs : item -> String -> List (Attribute msg)
     , dragOverAttrs : item -> List (Attribute msg)
     , isBeingDragged : item -> Bool
     , items : List item
@@ -183,14 +183,14 @@ view { toMsg } items model =
     case model of
         Dragging state ->
             { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (DraggedOver item) ]
-            , dragHandleAttrs = \_ _ -> []
+            , dragStartAttrs = \_ _ -> []
             , isBeingDragged = eq_ state.dragItem
             , items = state.items
             }
 
         NotDragging ->
             { dragOverAttrs = \_ -> []
-            , dragHandleAttrs =
+            , dragStartAttrs =
                 \item domId ->
                     (DragStarted << DragStarted_ items item domId)
                         |> dragHandleAttrs
