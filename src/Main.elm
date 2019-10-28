@@ -7,6 +7,7 @@ import DNDList
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
+import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
@@ -203,6 +204,7 @@ subscriptions model =
                 Sub.none
         , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
+        , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         ]
 
 
@@ -237,6 +239,9 @@ type Msg
     | ToggleLabelsPanel
     | LabelPanelDNDListMsg (DNDList.Msg Label)
     | LabelOrderChanged (List Label)
+    | ToggleFiltersPanel
+    | FilterPanelDNDListMsg (DNDList.Msg Filter)
+    | FilterOrderChanged (List Filter)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -398,6 +403,16 @@ update message model =
         LabelOrderChanged labelList ->
             updateLabelSortOrder labelList model
 
+        ToggleFiltersPanel ->
+            ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
+
+        FilterPanelDNDListMsg msg ->
+            FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
+                |> Tuple.mapFirst (\filterPanel -> mapFilterPanel (always filterPanel) model)
+
+        FilterOrderChanged filterList ->
+            updateFilterSortOrder filterList model
+
 
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
 mapProjectPanel func model =
@@ -443,6 +458,30 @@ mapLabelCollection func model =
 
 updateLabelSortOrder labelList model =
     ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
+    , Cmd.none
+    )
+
+
+mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
+mapFilterPanel func model =
+    { model | filterPanel = func model.filterPanel }
+
+
+filterPanelConfig : FilterPanel.Config Msg
+filterPanelConfig =
+    { toggled = ToggleFiltersPanel
+    , addClicked = PanelAddClicked Drawer.Filters
+    , moreClicked = Drawer.FilterItemId >> PopupTriggered
+    , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
+    }
+
+
+mapFilterCollection func model =
+    { model | filterCollection = func model.filterCollection }
+
+
+updateFilterSortOrder filterList model =
+    ( mapFilterCollection (FilterCollection.updateSortOrder filterList) model
     , Cmd.none
     )
 
@@ -598,6 +637,11 @@ view model =
             LabelPanel.view labelPanelConfig
                 (LabelCollection.sorted model.labelCollection)
                 model.labelPanel
+
+        filterPanelView =
+            FilterPanel.view filterPanelConfig
+                (FilterCollection.sorted model.filterCollection)
+                model.filterPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
@@ -605,9 +649,7 @@ view model =
             Drawer.prefixNavItemsView
                 ++ projectPanelView
                 ++ labelPanelView
-                ++ viewPanel Drawer.filterPanelItemConfig
-                    Drawer.Filters
-                    (FilterCollection.sorted model.filterCollection)
+                ++ filterPanelView
         , main = pageView model
         , modal =
             popupView model
@@ -615,6 +657,7 @@ view model =
                 ++ panelDragView model
                 ++ ProjectPanel.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
+                ++ FilterPanel.viewGhost model.filterPanel
         }
         model.isDrawerModalOpen
 
