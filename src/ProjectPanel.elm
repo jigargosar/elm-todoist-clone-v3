@@ -66,6 +66,7 @@ type alias Config msg =
     , toggled : msg
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg
+    , dndSystem : DNDList.System Project msg
     }
 
 

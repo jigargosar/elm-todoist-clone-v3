@@ -389,6 +389,7 @@ projectPanelConfig =
     , toggled = ToggleProjectsPanel
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = Drawer.ProjectItemId >> PopupTriggered
+    , dndSystem = DNDList.system { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     }
 
 
