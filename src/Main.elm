@@ -591,13 +591,13 @@ popupView model =
                         popper
             in
             case kind of
-                Drawer.ProjectItemId _ ->
+                ProjectMoreMenu _ ->
                     viewHelp PopupView.projectContent ProjectMoreMenuMsg
 
-                Drawer.LabelItemId _ ->
+                LabelMoreMenu _ ->
                     viewHelp PopupView.labelContent LabelMoreMenuMsg
 
-                Drawer.FilterItemId _ ->
+                FilterMoreMenu _ ->
                     viewHelp PopupView.filterContent FilterMoreMenuMsg
 
 
