@@ -1,13 +1,11 @@
 module Drawer exposing
     ( Panel(..)
-    , PanelItemConfig
     , PanelItemId(..)
     , PanelMsg(..)
     , prefixNavItemsView
     , viewSimpleNavItem
     )
 
-import Drag exposing (Drag)
 import DrawerItem as DI
 import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
@@ -42,19 +40,6 @@ type PanelItemId
     = ProjectItemId ProjectId
     | LabelItemId LabelId
     | FilterItemId FilterId
-
-
-type alias PanelItemConfig id item =
-    { moreClicked : String -> id -> JD.Decoder PanelMsg
-    , dragMsg : Drag.Msg -> PanelMsg
-    , panelId : String
-    , id : item -> id
-    , idToString : id -> String
-    , title : item -> String
-    , route : item -> Route.Route
-    , iconName : String
-    , iconStyle : item -> Style
-    }
 
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
