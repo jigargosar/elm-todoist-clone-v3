@@ -104,7 +104,7 @@ update { toMsg, sorted } message model =
                     ( model, logError <| "Dom.NotFound domId: " ++ domId )
 
         Completed ->
-            updateDragging
+            updateState
                 (\{ items } ->
                     ( NotDragging
                     , sorted items |> msgToCmd
@@ -113,12 +113,12 @@ update { toMsg, sorted } message model =
                 model
 
         MouseMoved currentPosition ->
-            ( map (\state -> { state | currentPosition = currentPosition }) model
+            ( mapState (\state -> { state | currentPosition = currentPosition }) model
             , Cmd.none
             )
 
         DraggedOver dragOverItem ->
-            ( map (sortItemsOnDragOver dragOverItem) model
+            ( mapState (sortItemsOnDragOver dragOverItem) model
             , Cmd.none
             )
 
@@ -136,8 +136,8 @@ sortItemsOnDragOver dragOverItem state =
         }
 
 
-updateDragging : (State item -> ( Model item, Cmd msg )) -> Model item -> ( Model item, Cmd msg )
-updateDragging func model =
+updateState : (State item -> ( Model item, Cmd msg )) -> Model item -> ( Model item, Cmd msg )
+updateState func model =
     case model of
         NotDragging ->
             ( model, Cmd.none )
@@ -146,8 +146,8 @@ updateDragging func model =
             func state
 
 
-map : (State item -> State item) -> Model item -> Model item
-map func model =
+mapState : (State item -> State item) -> Model item -> Model item
+mapState func model =
     case model of
         Dragging state ->
             func state |> Dragging
