@@ -35,11 +35,6 @@ type alias System msg =
 
 system : Config msg -> System msg
 system config =
-    let
-        dndSystem : DNDList.System Project msg
-        dndSystem =
-            DNDList.system config.dndConfig
-    in
     { initial = initial
     , onToggle = onToggle
     , onDNDMsg = onDNDMsg config
