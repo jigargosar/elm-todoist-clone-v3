@@ -215,6 +215,7 @@ type Msg
     | PopupTriggered PopupKind String
     | Popper Popper.Msg
     | ClosePopup
+    | PopupMsg PopupMsg
     | ProjectMoreMenu PopupView.ProjectMenuItem
     | LabelMoreMenu PopupView.LabelMenuItem
     | FilterMoreMenu PopupView.FilterMenuItem
@@ -297,6 +298,26 @@ update message model =
 
         ClosePopup ->
             ( closePopup model, Cmd.none )
+
+        PopupMsg msg ->
+            let
+                handlePopupMsg popKind =
+                    case ( popKind, msg ) of
+                        ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
+                            onProjectMoreMenuAction projectId action model
+
+                        ( Drawer.LabelItemId labelId, LabelMoreMenuMsg action ) ->
+                            onLabelMoreMenuAction labelId action model
+
+                        ( Drawer.FilterItemId filterId, FilterMoreMenuMsg action ) ->
+                            onFilterMoreMenuAction filterId action model
+
+                        _ ->
+                            ( model, Cmd.none )
+            in
+            model.popup
+                |> Maybe.map (Tuple.first >> handlePopupMsg)
+                |> Maybe.withDefault ( model, Cmd.none )
 
         ProjectMoreMenu action ->
             case model.popup of
