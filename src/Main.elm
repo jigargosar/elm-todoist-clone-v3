@@ -194,7 +194,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
+        , projectPanelSystem.subscriptions model.projectPanel
         ]
 
 
@@ -374,7 +374,7 @@ update message model =
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
-            ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
+            projectPanelSystem.onDNDMsg msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
 
 
@@ -383,17 +383,17 @@ mapProjectPanel func model =
     { model | projectPanel = func model.projectPanel }
 
 
-projectPanelConfig : ProjectPanel.Config Msg
-projectPanelConfig =
-    { toggled = ToggleProjectsPanel
-    , addClicked = PanelAddClicked Drawer.Projects
-    , moreClicked = Drawer.ProjectItemId >> PopupTriggered
-    , dndSystem = DNDList.system { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
-    }
-
-
 projectPanelSystem : ProjectPanel.System Msg
 projectPanelSystem =
+    let
+        projectPanelConfig : ProjectPanel.Config Msg
+        projectPanelConfig =
+            { toggled = ToggleProjectsPanel
+            , addClicked = PanelAddClicked Drawer.Projects
+            , moreClicked = Drawer.ProjectItemId >> PopupTriggered
+            , dndSystem = DNDList.system { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
+            }
+    in
     ProjectPanel.system projectPanelConfig
 
 
@@ -550,7 +550,7 @@ view model =
                 |> List.map (H.map (DrawerPanelMsg panel))
 
         projectPanelView =
-            ProjectPanel.view projectPanelConfig
+            projectPanelSystem.view
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
     in
