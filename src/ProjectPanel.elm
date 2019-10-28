@@ -104,46 +104,53 @@ view config projectList model =
 
         Expanded dnd ->
             viewHeader True
-                :: (case DNDList.view config.dndListMsg projectList dnd of
-                        DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-                            let
-                                viewHelp project =
-                                    let
-                                        domId =
-                                            itemDomId project
+                :: viewItems config (DNDList.view config.dndListMsg projectList dnd)
 
-                                        projectId =
-                                            Project.id project
 
-                                        moreDomId =
-                                            domId ++ "__more-btn"
-                                    in
-                                    viewItem
-                                        { itemAttrs = [ A.id domId ]
-                                        , itemStyles = []
-                                        , handleAttrs = dragHandleAttrs project domId
-                                        , moreAttrs =
-                                            [ A.id moreDomId
-                                            , config.moreClicked projectId moreDomId |> onClick
-                                            ]
-                                        }
-                                        project
-                            in
-                            List.map viewHelp items
+viewItems :
+    { a | moreClicked : ProjectId -> String -> msg }
+    -> DNDList.View Project msg
+    -> List (Html msg)
+viewItems config dndView =
+    case dndView of
+        DNDList.WhenNotDragging { dragHandleAttrs, items } ->
+            let
+                viewHelp project =
+                    let
+                        domId =
+                            itemDomId project
 
-                        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
-                            List.map
-                                (\project ->
-                                    viewItem
-                                        { itemAttrs = dragOverAttrs project
-                                        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-                                        , handleAttrs = []
-                                        , moreAttrs = []
-                                        }
-                                        project
-                                )
-                                items
-                   )
+                        projectId =
+                            Project.id project
+
+                        moreDomId =
+                            domId ++ "__more-btn"
+                    in
+                    viewItem
+                        { itemAttrs = [ A.id domId ]
+                        , itemStyles = []
+                        , handleAttrs = dragHandleAttrs project domId
+                        , moreAttrs =
+                            [ A.id moreDomId
+                            , config.moreClicked projectId moreDomId |> onClick
+                            ]
+                        }
+                        project
+            in
+            List.map viewHelp items
+
+        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
+            List.map
+                (\project ->
+                    viewItem
+                        { itemAttrs = dragOverAttrs project
+                        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+                        , handleAttrs = []
+                        , moreAttrs = []
+                        }
+                        project
+                )
+                items
 
 
 itemDomId : Project -> String
