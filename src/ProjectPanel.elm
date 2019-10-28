@@ -6,6 +6,7 @@ module ProjectPanel exposing
     , subscriptions
     , toggle
     , update
+    , updateDNDList
     , view
     , viewDNDGhost
     )
@@ -55,6 +56,7 @@ subscriptions projectPanel =
 type alias Config msg =
     { toMsg : Msg -> msg
     , toggle : msg
+    , dndListMsg : DNDList.Msg Project -> msg
     , sorted : List Project -> msg
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg
@@ -69,6 +71,25 @@ toggle model =
 
         Expanded _ ->
             Collapsed
+
+
+updateDNDList :
+    (DNDList.Msg Project -> msg)
+    -> (List Project -> msg)
+    -> DNDList.Msg Project
+    -> ProjectPanel
+    -> ( ProjectPanel, Cmd msg )
+updateDNDList toMsg sorted msg model =
+    case model of
+        Expanded dnd ->
+            DNDList.update toMsg
+                { onComplete = sorted }
+                msg
+                dnd
+                |> Tuple.mapFirst Expanded
+
+        Collapsed ->
+            ( model, Cmd.none )
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )

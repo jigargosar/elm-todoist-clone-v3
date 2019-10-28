@@ -3,6 +3,7 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import DNDList
 import Dialog exposing (Dialog)
 import Drag exposing (Drag)
 import Drawer
@@ -225,6 +226,7 @@ type Msg
     | ProjectPanelMsg ProjectPanel.Msg
     | ProjectOrderChanged (List Project)
     | ToggleProjectsPanel
+    | ProjectPanelDNDListMsg (DNDList.Msg Project)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -375,6 +377,10 @@ update message model =
         ToggleProjectsPanel ->
             ( mapProjectPanel ProjectPanel.toggle model, Cmd.none )
 
+        ProjectPanelDNDListMsg msg ->
+            ProjectPanel.updateDNDList ProjectPanelDNDListMsg ProjectOrderChanged msg model.projectPanel
+                |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
+
 
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
 mapProjectPanel func model =
@@ -384,6 +390,7 @@ mapProjectPanel func model =
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { toMsg = ProjectPanelMsg
+    , dndListMsg = ProjectPanelDNDListMsg
     , toggle = ToggleProjectsPanel
     , sorted = ProjectOrderChanged
     , addClicked = PanelAddClicked Drawer.Projects
