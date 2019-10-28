@@ -1,5 +1,6 @@
 module DNDList exposing
-    ( DraggingConfig
+    ( Config
+    , DraggingConfig
     , Model
     , Msg
     , NotDraggingConfig
@@ -67,16 +68,17 @@ type Msg item
 
 
 update :
-    (Msg item -> msg)
-    -> { onComplete : List item -> msg }
+    Config msg item
     -> Msg item
     -> Model item
     -> ( Model item, Cmd msg )
-update toMsg config message model =
+update config message model =
     case message of
         DragStarted payload ->
             ( model
-            , Dom.getElement payload.dragItemDomId |> Task.attempt (GotElement payload) |> Cmd.map toMsg
+            , Dom.getElement payload.dragItemDomId
+                |> Task.attempt (GotElement payload)
+                |> Cmd.map config.toMsg
             )
 
         Canceled ->
@@ -97,7 +99,7 @@ update toMsg config message model =
             updateDragging
                 (\{ items } ->
                     ( NotDragging
-                    , config.onComplete items |> msgToCmd
+                    , config.sorted items |> msgToCmd
                     )
                 )
                 model

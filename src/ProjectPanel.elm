@@ -60,8 +60,7 @@ onDNDMsg :
     -> ProjectPanel
     -> ( ProjectPanel, Cmd msg )
 onDNDMsg config msg model =
-    DNDList.update config.dndListMsg
-        { onComplete = config.sorted }
+    DNDList.update { toMsg = config.dndListMsg, sorted = config.sorted }
         msg
         model.dnd
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
