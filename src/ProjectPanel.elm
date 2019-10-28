@@ -182,15 +182,6 @@ viewExpansionPanelHeader :
     }
     -> Html msg
 viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
-    let
-        iconBtn : { a | iconName : String, action : msg } -> Html msg
-        iconBtn { iconName, action } =
-            button
-                [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-                , onClick action
-                ]
-                [ i [ class "material-icons" ] [ text iconName ] ]
-    in
     div
         [ css
             [ Px.pl 4
@@ -215,7 +206,11 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
             [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
             , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
             ]
-        , iconBtn secondary
+        , button
+            [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+            , onClick secondary.action
+            ]
+            [ i [ class "material-icons" ] [ text secondary.iconName ] ]
         ]
 
 
