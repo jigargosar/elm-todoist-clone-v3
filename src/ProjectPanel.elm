@@ -182,7 +182,7 @@ viewPanelItem config =
         { linkAttrs, title } =
             config
 
-        { iconColor, handleAttrs } =
+        { iconColor, iconName, handleAttrs } =
             config
 
         { moreAttrs } =
@@ -194,7 +194,7 @@ viewPanelItem config =
                 :: class "material-icons"
                 :: handleAttrs
             )
-            [ text "folder" ]
+            [ text iconName ]
         , a (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ] :: linkAttrs) [ text title ]
         , button
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
