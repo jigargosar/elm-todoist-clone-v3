@@ -11,7 +11,7 @@ module ProjectPanel exposing
 
 import Css
 import DNDList
-import Html.Styled exposing (Attribute, Html, a, button, div, i, span, text)
+import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Project exposing (Project)
@@ -19,7 +19,7 @@ import ProjectId exposing (ProjectId)
 import Px
 import Route
 import Styles exposing (..)
-import Theme
+import UI
 
 
 type ProjectPanel
@@ -91,7 +91,7 @@ view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view config projectList model =
     let
         viewHeader isExpanded =
-            viewExpansionPanelHeader
+            UI.viewExpansionPanelHeader
                 { toggled = config.toggled
                 , title = "Projects"
                 , isExpanded = isExpanded
@@ -172,46 +172,6 @@ getDND model =
 getDNDGhost : ProjectPanel -> Maybe ( Style, Project )
 getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
-
-
-viewExpansionPanelHeader :
-    { toggled : msg
-    , title : String
-    , isExpanded : Bool
-    , secondary : { iconName : String, action : msg }
-    }
-    -> Html msg
-viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
-    div
-        [ css
-            [ Px.pl 4
-            , Px.pr (4 + 16)
-            , flex
-            , itemsCenter
-            , bo_b
-            , boc Theme.borderGray
-            , hover [ bgGrayL 0.95 ]
-            ]
-        ]
-        [ let
-            iconName =
-                if isExpanded then
-                    "expand_more"
-
-                else
-                    "chevron_right"
-          in
-          button
-            [ css [ btnReset, pointer, flex, itemsCenter, flexGrow1, tal ], onClick toggled ]
-            [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
-            , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
-            ]
-        , button
-            [ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-            , onClick secondary.action
-            ]
-            [ i [ class "material-icons" ] [ text secondary.iconName ] ]
-        ]
 
 
 viewItem : ItemProps msg -> Project -> Html msg
