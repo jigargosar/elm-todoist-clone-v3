@@ -125,7 +125,7 @@ viewItems config projectList dnd =
                         , handleAttrs = dragHandleAttrs project domId
                         , moreAttrs =
                             [ A.id moreDomId
-                            , config.moreClicked (Project.id project) moreDomId |> onClick
+                            , onClick (config.moreClicked (Project.id project) moreDomId)
                             ]
                         }
                         project
