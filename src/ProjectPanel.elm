@@ -88,7 +88,7 @@ onDNDMsg config msg model =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view ({ dndListMsg } as config) projectList model =
+view config projectList model =
     let
         viewHeader isExpanded =
             viewExpansionPanelHeader
@@ -104,7 +104,7 @@ view ({ dndListMsg } as config) projectList model =
 
         Expanded dnd ->
             viewHeader True
-                :: (case DNDList.view dndListMsg projectList dnd of
+                :: (case DNDList.view config.dndListMsg projectList dnd of
                         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
                             let
                                 viewHelp project =
