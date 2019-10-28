@@ -385,9 +385,8 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { dndListMsg = ProjectPanelDNDListMsg
+    { dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     , toggled = ToggleProjectsPanel
-    , sorted = ProjectOrderChanged
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = Drawer.ProjectItemId >> PopupTriggered
     }

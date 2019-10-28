@@ -158,11 +158,11 @@ dragHandleAttrs dragStartMsg =
     ]
 
 
-view : (Msg item -> msg) -> List item -> Model item -> View item msg
-view toMsg items model =
+view : Config msg item -> List item -> Model item -> View item msg
+view config items model =
     let
         attrsToMsg =
-            List.map (A.map toMsg)
+            List.map (A.map config.toMsg)
     in
     case model of
         Dragging state ->
@@ -237,15 +237,15 @@ type View item msg
     | WhenDragging (DraggingConfig item msg)
 
 
-subscriptions : (Msg item -> msg) -> Model item -> Sub msg
-subscriptions toMsg model =
+subscriptions : Config msg item -> Model item -> Sub msg
+subscriptions config model =
     case model of
         Dragging _ ->
             Sub.batch
                 [ Browser.Events.onMouseUp (JD.succeed Completed)
                 , Browser.Events.onMouseMove (JD.map MouseMoved pageXYAsPositionDecoder)
                 ]
-                |> Sub.map toMsg
+                |> Sub.map config.toMsg
 
         _ ->
             Sub.none
