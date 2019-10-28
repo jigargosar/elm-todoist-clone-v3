@@ -39,10 +39,6 @@ import Url exposing (Url)
 -- POPUP
 
 
-type alias PopupKind =
-    Drawer.PanelItemId
-
-
 type Popup
     = ProjectMoreMenu ProjectId
     | LabelMoreMenu LabelId
@@ -79,7 +75,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , popup : Maybe ( PopupKind, Popper )
+    , popup : Maybe ( Popup, Popper )
     , dialog : Maybe Dialog
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
@@ -218,7 +214,7 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | PanelAddClicked Drawer.Panel
-    | PopupTriggered PopupKind String
+    | PopupTriggered Popup String
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
@@ -342,7 +338,7 @@ update message model =
             updateFilterSortOrder filterList model
 
 
-updateWithPopupKind : (PopupKind -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
+updateWithPopupKind : (Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
 updateWithPopupKind func model =
     case model.popup of
         Just ( popupKind, _ ) ->
@@ -352,16 +348,16 @@ updateWithPopupKind func model =
             ( model, Cmd.none )
 
 
-updatePopup : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
+updatePopup : PopupMsg -> Popup -> Model -> ( Model, Cmd Msg )
 updatePopup message popupKind model =
     case ( popupKind, message ) of
-        ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
+        ( ProjectMoreMenu projectId, ProjectMoreMenuMsg action ) ->
             updateProjectPopup projectId action model
 
-        ( Drawer.LabelItemId labelId, LabelMoreMenuMsg action ) ->
+        ( LabelMoreMenu labelId, LabelMoreMenuMsg action ) ->
             updateLabelPopup labelId action model
 
-        ( Drawer.FilterItemId filterId, FilterMoreMenuMsg action ) ->
+        ( FilterMoreMenu filterId, FilterMoreMenuMsg action ) ->
             updateFilterPopup filterId action model
 
         _ ->
@@ -377,7 +373,7 @@ projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { toggled = ToggleProjectsPanel
     , addClicked = PanelAddClicked Drawer.Projects
-    , moreClicked = Drawer.ProjectItemId >> PopupTriggered
+    , moreClicked = ProjectMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     }
 
@@ -401,7 +397,7 @@ labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
     { toggled = ToggleLabelsPanel
     , addClicked = PanelAddClicked Drawer.Labels
-    , moreClicked = Drawer.LabelItemId >> PopupTriggered
+    , moreClicked = LabelMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
     }
 
@@ -425,7 +421,7 @@ filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
     { toggled = ToggleFiltersPanel
     , addClicked = PanelAddClicked Drawer.Filters
-    , moreClicked = Drawer.FilterItemId >> PopupTriggered
+    , moreClicked = FilterMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
     }
 
