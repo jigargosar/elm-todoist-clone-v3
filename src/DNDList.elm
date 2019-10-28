@@ -5,18 +5,26 @@ module DNDList exposing
     , Msg
     , NotDraggingConfig
     , System
-    , View(..)
     , View2
     , ghost
     , initial
     , subscriptions
     , system
     , update
-    , view
     , view2
     )
 
-import Basics.More exposing (Position, eq_, flip, msgToCmd, pageXYAsPositionDecoder, positionAdd, positionDiff, rotateListByElem)
+import Basics.More
+    exposing
+        ( Position
+        , eq_
+        , flip
+        , msgToCmd
+        , pageXYAsPositionDecoder
+        , positionAdd
+        , positionDiff
+        , rotateListByElem
+        )
 import Browser.Dom as Dom
 import Browser.Events
 import Css exposing (Style)
@@ -33,8 +41,7 @@ type alias System item msg =
     { initial : Model item
     , update : Msg item -> Model item -> ( Model item, Cmd msg )
     , subscriptions : Model item -> Sub msg
-    , view : List item -> Model item -> View item msg
-    , view2 : List item -> Model item -> View2 item msg
+    , view : List item -> Model item -> View2 item msg
     }
 
 
@@ -43,8 +50,7 @@ system config =
     { initial = initial
     , update = update config
     , subscriptions = subscriptions config
-    , view = view config
-    , view2 = view2 config
+    , view = view2 config
     }
 
 
@@ -215,32 +221,6 @@ view2 config items model =
             }
 
 
-view : Config item msg -> List item -> Model item -> View item msg
-view config items model =
-    let
-        attrsToMsg =
-            List.map (A.map config.toMsg)
-    in
-    case model of
-        Dragging state ->
-            WhenDragging
-                { dragOverAttrs = \item -> attrsToMsg [ E.onMouseOver (DraggedOver item) ]
-                , items = state.items
-                , isBeingDragged = eq_ state.dragItem
-                , ghost = stateToGhost state
-                }
-
-        _ ->
-            WhenNotDragging
-                { dragHandleAttrs =
-                    \item domId ->
-                        (DragStarted << DragStart items item domId)
-                            |> dragHandleAttrs
-                            |> attrsToMsg
-                , items = items
-                }
-
-
 getState model =
     case model of
         NotDragging ->
@@ -287,11 +267,6 @@ type alias DraggingConfig item msg =
     , items : List item
     , ghost : ( Style, item )
     }
-
-
-type View item msg
-    = WhenNotDragging (NotDraggingConfig item msg)
-    | WhenDragging (DraggingConfig item msg)
 
 
 subscriptions : Config item msg -> Model item -> Sub msg

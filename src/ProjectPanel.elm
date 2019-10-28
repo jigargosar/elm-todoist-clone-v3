@@ -121,7 +121,7 @@ viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html ms
 viewItems config projectList dndList =
     let
         { dragHandleAttrs, dragOverAttrs, isBeingDragged, items } =
-            config.dndSystem.view2 projectList dndList
+            config.dndSystem.view projectList dndList
     in
     List.map
         (\project ->
