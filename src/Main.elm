@@ -339,16 +339,16 @@ update message model =
 updateWithPopupKind : (PopupKind -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
 updateWithPopupKind func model =
     case model.popup of
-        Just ( popKind, _ ) ->
-            func popKind model
+        Just ( popupKind, _ ) ->
+            func popupKind model
 
         Nothing ->
             ( model, Cmd.none )
 
 
 updatePopup : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
-updatePopup message popKind model =
-    case ( popKind, message ) of
+updatePopup message popupKind model =
+    case ( popupKind, message ) of
         ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
             onProjectMoreMenuAction projectId action model
 
