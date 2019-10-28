@@ -144,7 +144,7 @@ viewItems config projectList dndList =
             , []
             )
 
-        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items } ->
+        DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items, ghost } ->
             ( List.map
                 (\project ->
                     viewItem
@@ -156,40 +156,24 @@ viewItems config projectList dndList =
                         project
                 )
                 items
-            , DNDList.ghost dndList
-                |> Maybe.map
-                    (\( itemStyle, project ) ->
-                        [ viewItem
-                            { itemAttrs = []
-                            , itemStyles = [ itemStyle ]
-                            , handleAttrs = []
-                            , moreAttrs = []
-                            }
-                            project
-                        ]
-                    )
-                |> Maybe.withDefault []
+            , let
+                ( ghostStyles, ghostProject ) =
+                    ghost
+              in
+              [ viewItem
+                    { itemAttrs = []
+                    , itemStyles = [ ghostStyles ]
+                    , handleAttrs = []
+                    , moreAttrs = []
+                    }
+                    ghostProject
+              ]
             )
 
 
 itemDomId : Project -> String
 itemDomId project =
     "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
-
-
-getDND : ProjectPanel -> Maybe (DNDList.Model Project)
-getDND model =
-    case model of
-        Expanded dnd ->
-            Just dnd
-
-        Collapsed ->
-            Nothing
-
-
-getDNDGhost : ProjectPanel -> Maybe ( Style, Project )
-getDNDGhost =
-    getDND >> Maybe.andThen DNDList.ghost
 
 
 viewItem : ItemProps msg -> Project -> Html msg
