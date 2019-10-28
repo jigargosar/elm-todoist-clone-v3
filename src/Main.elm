@@ -14,6 +14,7 @@ import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
+import LabelPanel exposing (LabelPanel)
 import Layout
 import Log exposing (logError)
 import Page exposing (Page)
@@ -71,6 +72,7 @@ type alias Model =
     , popup : Maybe ( PopupKind, Popper )
     , dialog : Maybe Dialog
     , projectPanel : ProjectPanel
+    , labelPanel : LabelPanel
     }
 
 
@@ -93,6 +95,7 @@ init flags url navKey =
             , panelDrag = Nothing
             , dialog = Nothing
             , projectPanel = ProjectPanel.initial
+            , labelPanel = LabelPanel.initial
             }
     in
     Return.singleton initial
