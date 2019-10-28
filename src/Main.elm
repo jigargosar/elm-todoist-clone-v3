@@ -350,13 +350,13 @@ updatePopup : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
 updatePopup message popupKind model =
     case ( popupKind, message ) of
         ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
-            onProjectMoreMenuAction projectId action model
+            updateProjectPopup projectId action model
 
         ( Drawer.LabelItemId labelId, LabelMoreMenuMsg action ) ->
-            onLabelMoreMenuAction labelId action model
+            updateLabelPopup labelId action model
 
         ( Drawer.FilterItemId filterId, FilterMoreMenuMsg action ) ->
-            onFilterMoreMenuAction filterId action model
+            updateFilterPopup filterId action model
 
         _ ->
             ( model, Cmd.none )
@@ -434,8 +434,8 @@ updateFilterSortOrder filterList model =
     )
 
 
-onProjectMoreMenuAction : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
-onProjectMoreMenuAction projectId action model =
+updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
+updateProjectPopup projectId action model =
     case action of
         PopupView.EditProject ->
             ( { model | dialog = Dialog.EditProject projectId |> Just }
@@ -448,8 +448,8 @@ onProjectMoreMenuAction projectId action model =
                 |> Return.map closePopup
 
 
-onLabelMoreMenuAction : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd Msg )
-onLabelMoreMenuAction labelId action model =
+updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd Msg )
+updateLabelPopup labelId action model =
     case action of
         PopupView.EditLabel ->
             ( { model | dialog = Dialog.EditLabel labelId |> Just }
@@ -458,8 +458,8 @@ onLabelMoreMenuAction labelId action model =
                 |> Return.map closePopup
 
 
-onFilterMoreMenuAction : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cmd Msg )
-onFilterMoreMenuAction filterId action model =
+updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cmd Msg )
+updateFilterPopup filterId action model =
     case action of
         PopupView.EditFilter ->
             ( { model | dialog = Dialog.EditFilter filterId |> Just }
