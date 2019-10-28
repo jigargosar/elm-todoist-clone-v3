@@ -92,7 +92,7 @@ init flags url navKey =
             , popup = Nothing
             , panelDrag = Nothing
             , dialog = Nothing
-            , projectPanel = projectPanelSystem.initial
+            , projectPanel = ProjectPanel.initial
             }
     in
     Return.singleton initial
@@ -194,7 +194,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , projectPanelSystem.subscriptions model.projectPanel
+        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         ]
 
 
@@ -371,10 +371,10 @@ update message model =
             updateProjectSortOrder projectList model
 
         ToggleProjectsPanel ->
-            ( mapProjectPanel projectPanelSystem.onToggle model, Cmd.none )
+            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
-            projectPanelSystem.onDNDMsg msg model.projectPanel
+            ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
 
 
@@ -383,18 +383,13 @@ mapProjectPanel func model =
     { model | projectPanel = func model.projectPanel }
 
 
-projectPanelSystem : ProjectPanel.System Msg
-projectPanelSystem =
-    let
-        projectPanelConfig : ProjectPanel.Config Msg
-        projectPanelConfig =
-            { toggled = ToggleProjectsPanel
-            , addClicked = PanelAddClicked Drawer.Projects
-            , moreClicked = Drawer.ProjectItemId >> PopupTriggered
-            , dndSystem = DNDList.system { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
-            }
-    in
-    ProjectPanel.system projectPanelConfig
+projectPanelConfig : ProjectPanel.Config Msg
+projectPanelConfig =
+    { toggled = ToggleProjectsPanel
+    , addClicked = PanelAddClicked Drawer.Projects
+    , moreClicked = Drawer.ProjectItemId >> PopupTriggered
+    , dndSystem = DNDList.system { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
+    }
 
 
 mapProjectCollection func model =
@@ -550,7 +545,7 @@ view model =
                 |> List.map (H.map (DrawerPanelMsg panel))
 
         projectPanelView =
-            projectPanelSystem.view
+            ProjectPanel.view projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
     in
@@ -573,7 +568,7 @@ view model =
             popupView model
                 ++ dialogView model
                 ++ panelDragView model
-                ++ projectPanelSystem.viewGhost model.projectPanel
+                ++ ProjectPanel.viewGhost model.projectPanel
         }
         model.isDrawerModalOpen
 
