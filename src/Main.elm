@@ -224,6 +224,7 @@ type Msg
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
     | ProjectPanelMsg ProjectPanel.Msg
     | ProjectOrderChanged (List Project)
+    | ToggleProjectsPanel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -371,10 +372,19 @@ update message model =
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
 
+        ToggleProjectsPanel ->
+            ( mapProjectPanel ProjectPanel.toggle model, Cmd.none )
+
+
+mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
+mapProjectPanel func model =
+    { model | projectPanel = func model.projectPanel }
+
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { toMsg = ProjectPanelMsg
+    , toggle = ToggleProjectsPanel
     , sorted = ProjectOrderChanged
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = Drawer.ProjectItemId >> PopupTriggered

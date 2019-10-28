@@ -4,6 +4,7 @@ module ProjectPanel exposing
     , ProjectPanel
     , initial
     , subscriptions
+    , toggle
     , update
     , view
     , viewDNDGhost
@@ -38,8 +39,7 @@ initial =
 
 
 type Msg
-    = HeaderClicked
-    | DNDListMsg (DNDList.Msg Project)
+    = DNDListMsg (DNDList.Msg Project)
 
 
 subscriptions : ProjectPanel -> Sub Msg
@@ -54,6 +54,7 @@ subscriptions projectPanel =
 
 type alias Config msg =
     { toMsg : Msg -> msg
+    , toggle : msg
     , sorted : List Project -> msg
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg
@@ -73,16 +74,6 @@ toggle model =
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
-        HeaderClicked ->
-            ( case model of
-                Collapsed ->
-                    Expanded DNDList.init
-
-                Expanded _ ->
-                    Collapsed
-            , Cmd.none
-            )
-
         DNDListMsg msg ->
             case model of
                 Expanded dnd ->
@@ -103,15 +94,12 @@ update config message model =
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view ({ toMsg } as config) projectList model =
     let
-        toggle =
-            toMsg HeaderClicked
-
         dndListMsg =
             DNDListMsg >> toMsg
 
         viewHeader isExpanded =
             viewExpansionPanelHeader
-                { toggle = toggle
+                { toggled = config.toggle
                 , title = "Projects"
                 , isExpanded = isExpanded
                 , secondary = { iconName = "add", action = config.addClicked }
@@ -186,13 +174,13 @@ getDNDGhost =
 
 
 viewExpansionPanelHeader :
-    { toggle : msg
+    { toggled : msg
     , title : String
     , isExpanded : Bool
     , secondary : { iconName : String, action : msg }
     }
     -> Html msg
-viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
+viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
     let
         expansionToggleBtn : Html msg
         expansionToggleBtn =
@@ -205,7 +193,7 @@ viewExpansionPanelHeader { toggle, isExpanded, title, secondary } =
                         "chevron_right"
             in
             button
-                [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggle ]
+                [ css [ btnReset, pointer, flexGrow1, flex, itemsCenter, tal ], onClick toggled ]
                 [ i [ css [ Px.pa 4 ], class "material-icons" ] [ text iconName ]
                 , span [ css [ Px.p2 8 4, bold, flexGrow1 ] ] [ text title ]
                 ]
