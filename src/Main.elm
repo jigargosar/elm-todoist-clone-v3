@@ -573,7 +573,7 @@ view model =
             popupView model
                 ++ dialogView model
                 ++ panelDragView model
-                ++ ProjectPanel.viewGhost model.projectPanel
+                ++ projectPanelSystem.viewGhost model.projectPanel
         }
         model.isDrawerModalOpen
 
