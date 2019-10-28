@@ -3,13 +3,13 @@ module DNDList exposing
     , Model
     , Msg
     , System
-    , View2
+    , View
     , ghost
     , initial
     , subscriptions
     , system
     , update
-    , view2
+    , view
     )
 
 import Basics.More
@@ -39,7 +39,7 @@ type alias System item msg =
     { initial : Model item
     , update : Msg item -> Model item -> ( Model item, Cmd msg )
     , subscriptions : Model item -> Sub msg
-    , view : List item -> Model item -> View2 item msg
+    , view : List item -> Model item -> View item msg
     }
 
 
@@ -48,7 +48,7 @@ system config =
     { initial = initial
     , update = update config
     , subscriptions = subscriptions config
-    , view = view2 config
+    , view = view config
     }
 
 
@@ -185,7 +185,7 @@ dragHandleAttrs dragStartMsg =
     ]
 
 
-type alias View2 item msg =
+type alias View item msg =
     { dragHandleAttrs : item -> String -> List (Attribute msg)
     , dragOverAttrs : item -> List (Attribute msg)
     , isBeingDragged : item -> Bool
@@ -193,8 +193,8 @@ type alias View2 item msg =
     }
 
 
-view2 : Config item msg -> List item -> Model item -> View2 item msg
-view2 config items model =
+view : Config item msg -> List item -> Model item -> View item msg
+view config items model =
     let
         attrsToMsg =
             List.map (A.map config.toMsg)
