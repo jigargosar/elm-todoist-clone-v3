@@ -218,7 +218,6 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | OpenDialog Dialog
     | CloseDialog
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
@@ -300,9 +299,6 @@ update message model =
 
         PopupMsg msg ->
             updateWithPopupKind (updatePopup msg) model
-
-        OpenDialog dialog ->
-            ( { model | dialog = dialog }, Cmd.none )
 
         CloseDialog ->
             ( { model | dialog = Dialog.None }, Cmd.none )
