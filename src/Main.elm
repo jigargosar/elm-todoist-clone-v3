@@ -223,12 +223,12 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | PanelAddClicked Drawer.Panel
     | PopupTriggered Popup String
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
     | CloseDialog
+    | PanelAddClicked Panel
     | TogglePanel Panel
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
@@ -395,7 +395,7 @@ mapProjectPanel func model =
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
     { toggled = TogglePanel ProjectPanel
-    , addClicked = PanelAddClicked Drawer.Projects
+    , addClicked = PanelAddClicked ProjectPanel
     , moreClicked = ProjectMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     }
@@ -419,7 +419,7 @@ mapLabelPanel func model =
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
     { toggled = ToggleLabelsPanel
-    , addClicked = PanelAddClicked Drawer.Labels
+    , addClicked = PanelAddClicked LabelPanel
     , moreClicked = LabelMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
     }
@@ -443,7 +443,7 @@ mapFilterPanel func model =
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
     { toggled = ToggleFiltersPanel
-    , addClicked = PanelAddClicked Drawer.Filters
+    , addClicked = PanelAddClicked FilterPanel
     , moreClicked = FilterMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
     }
