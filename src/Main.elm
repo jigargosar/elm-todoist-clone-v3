@@ -278,17 +278,6 @@ update message model =
         CloseDrawerModal ->
             ( { model | isDrawerModalOpen = False }, Cmd.none )
 
-        PanelAddClicked panel ->
-            case panel of
-                ProjectPanel ->
-                    ( { model | dialog = Dialog.initAddProject }, Cmd.none )
-
-                LabelPanel ->
-                    ( { model | dialog = Dialog.AddLabel }, Cmd.none )
-
-                FilterPanel ->
-                    ( { model | dialog = Dialog.AddFilter }, Cmd.none )
-
         Popper msg ->
             case model.popup of
                 Just ( kind, popper ) ->
@@ -316,6 +305,17 @@ update message model =
 
         TogglePanel panel ->
             ( togglePanel panel model, Cmd.none )
+
+        PanelAddClicked panel ->
+            case panel of
+                ProjectPanel ->
+                    ( { model | dialog = Dialog.initAddProject }, Cmd.none )
+
+                LabelPanel ->
+                    ( { model | dialog = Dialog.AddLabel }, Cmd.none )
+
+                FilterPanel ->
+                    ( { model | dialog = Dialog.AddFilter }, Cmd.none )
 
         ToggleProjectsPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
