@@ -229,6 +229,7 @@ type Msg
     | ClosePopup
     | PopupMsg PopupMsg
     | CloseDialog
+    | TogglePanel Panel
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
     | ProjectOrderChanged (List Project)
@@ -313,6 +314,9 @@ update message model =
         CloseDialog ->
             ( { model | dialog = Dialog.None }, Cmd.none )
 
+        TogglePanel panel ->
+            ( togglePanel panel model, Cmd.none )
+
         ToggleProjectsPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
@@ -390,7 +394,7 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { toggled = ToggleProjectsPanel
+    { toggled = TogglePanel ProjectPanel
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = ProjectMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
