@@ -80,13 +80,13 @@ update :
     -> Msg item
     -> Model item
     -> ( Model item, Cmd msg )
-update config message model =
+update { toMsg, sorted } message model =
     case message of
         DragStarted payload ->
             ( model
             , Dom.getElement payload.dragItemDomId
                 |> Task.attempt (GotElement payload)
-                |> Cmd.map config.toMsg
+                |> Cmd.map toMsg
             )
 
         Canceled ->
@@ -107,7 +107,7 @@ update config message model =
             updateDragging
                 (\{ items } ->
                     ( NotDragging
-                    , config.sorted items |> msgToCmd
+                    , sorted items |> msgToCmd
                     )
                 )
                 model
@@ -174,11 +174,11 @@ type alias View item msg =
     }
 
 
-view : Config item msg -> List item -> Model item -> View item msg
-view config items model =
+view : { a | toMsg : Msg item -> msg } -> List item -> Model item -> View item msg
+view { toMsg } items model =
     let
         attrsToMsg =
-            List.map (A.map config.toMsg)
+            List.map (A.map toMsg)
     in
     case model of
         Dragging state ->
