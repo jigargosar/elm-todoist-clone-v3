@@ -234,7 +234,7 @@ stateToGhost { dragItem, dragElement, startPosition, currentPosition } =
     )
 
 
-subscriptions : Config item msg -> Model item -> Sub msg
+subscriptions : { a | toMsg : Msg item -> msg } -> Model item -> Sub msg
 subscriptions { toMsg } model =
     case model of
         Dragging _ ->
