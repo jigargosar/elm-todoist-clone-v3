@@ -179,11 +179,11 @@ viewPanelItem config =
         root =
             config.root
 
-        { linkAttrs, title } =
-            config
+        link =
+            config.link
 
-        { iconColor, iconName, handleAttrs } =
-            config
+        primary =
+            config.primary
 
         { moreAttrs } =
             config
@@ -194,12 +194,12 @@ viewPanelItem config =
             :: root.attrs
         )
         [ i
-            (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
+            (css [ Px.pa 4, Px.m2 4 0, cursorMove, batch primary.styles ]
                 :: class "material-icons"
-                :: handleAttrs
+                :: primary.attrs
             )
-            [ text iconName ]
-        , a (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ] :: linkAttrs) [ text title ]
+            [ text primary.iconName ]
+        , a (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ] :: link.attrs) [ text link.title ]
         , button
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
              , class "show_on_parent_hover"
