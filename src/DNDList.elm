@@ -1,9 +1,7 @@
 module DNDList exposing
     ( Config
-    , DraggingConfig
     , Model
     , Msg
-    , NotDraggingConfig
     , System
     , View2
     , ghost
@@ -253,20 +251,6 @@ stateToGhost { dragItem, dragElement, startPosition, currentPosition } =
         ]
     , dragItem
     )
-
-
-type alias NotDraggingConfig item msg =
-    { dragHandleAttrs : item -> String -> List (Attribute msg)
-    , items : List item
-    }
-
-
-type alias DraggingConfig item msg =
-    { dragOverAttrs : item -> List (Attribute msg)
-    , isBeingDragged : item -> Bool
-    , items : List item
-    , ghost : ( Style, item )
-    }
 
 
 subscriptions : Config item msg -> Model item -> Sub msg
