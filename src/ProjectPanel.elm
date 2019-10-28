@@ -41,7 +41,7 @@ subscriptions config { dnd } =
 
 
 type alias Config msg =
-    { dndConfig : DNDList.Config msg Project
+    { dndConfig : DNDList.Config Project msg
     , toggled : msg
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg

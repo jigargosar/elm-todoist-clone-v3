@@ -35,7 +35,7 @@ type alias System item msg =
     }
 
 
-system : Config msg item -> System item msg
+system : Config item msg -> System item msg
 system config =
     { initial = initial
     , update = update config
@@ -44,7 +44,7 @@ system config =
     }
 
 
-type alias Config msg item =
+type alias Config item msg =
     { toMsg : Msg item -> msg
     , sorted : List item -> msg
     }
@@ -87,7 +87,7 @@ type Msg item
 
 
 update :
-    Config msg item
+    Config item msg
     -> Msg item
     -> Model item
     -> ( Model item, Cmd msg )
@@ -177,7 +177,7 @@ dragHandleAttrs dragStartMsg =
     ]
 
 
-view : Config msg item -> List item -> Model item -> View item msg
+view : Config item msg -> List item -> Model item -> View item msg
 view config items model =
     let
         attrsToMsg =
@@ -256,7 +256,7 @@ type View item msg
     | WhenDragging (DraggingConfig item msg)
 
 
-subscriptions : Config msg item -> Model item -> Sub msg
+subscriptions : Config item msg -> Model item -> Sub msg
 subscriptions config model =
     case model of
         Dragging _ ->
