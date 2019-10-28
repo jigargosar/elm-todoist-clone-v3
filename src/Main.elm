@@ -605,10 +605,7 @@ view model =
                 ++ viewPanel Drawer.filterPanelItemConfig
                     Drawer.Filters
                     (FilterCollection.sorted model.filterCollection)
-        , main =
-            [ pageView model
-            ]
-                |> List.concat
+        , main = pageView model
         , modal =
             popupView model
                 ++ dialogView model
