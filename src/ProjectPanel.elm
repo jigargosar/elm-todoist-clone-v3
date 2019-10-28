@@ -21,14 +21,13 @@ import Styles exposing (..)
 import UI
 
 
-type ProjectPanel
-    = Collapsed
-    | Expanded (DNDList.Model Project)
+type alias ProjectPanel =
+    { collapsed : Bool, dnd : DNDList.Model Project }
 
 
 initial : ProjectPanel
 initial =
-    Expanded DNDList.init
+    { collapsed = False, dnd = DNDList.init }
 
 
 
@@ -36,13 +35,8 @@ initial =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config projectPanel =
-    case projectPanel of
-        Collapsed ->
-            Sub.none
-
-        Expanded dnd ->
-            DNDList.subscriptions config.dndListMsg dnd
+subscriptions config { dnd } =
+    DNDList.subscriptions config.dndListMsg dnd
 
 
 type alias Config msg =
@@ -56,12 +50,7 @@ type alias Config msg =
 
 onToggle : ProjectPanel -> ProjectPanel
 onToggle model =
-    case model of
-        Collapsed ->
-            Expanded DNDList.init
-
-        Expanded _ ->
-            Collapsed
+    { model | collapsed = not model.collapsed }
 
 
 onDNDMsg :
@@ -70,16 +59,11 @@ onDNDMsg :
     -> ProjectPanel
     -> ( ProjectPanel, Cmd msg )
 onDNDMsg config msg model =
-    case model of
-        Expanded dnd ->
-            DNDList.update config.dndListMsg
-                { onComplete = config.sorted }
-                msg
-                dnd
-                |> Tuple.mapFirst Expanded
-
-        Collapsed ->
-            ( model, Cmd.none )
+    DNDList.update config.dndListMsg
+        { onComplete = config.sorted }
+        msg
+        model.dnd
+        |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
 
 
 
@@ -89,24 +73,18 @@ onDNDMsg config msg model =
 view : Config msg -> List Project -> ProjectPanel -> ( List (Html msg), List (Html msg) )
 view config projectList model =
     let
-        viewHeader isExpanded =
+        viewHeader =
             UI.viewExpansionPanelHeader
                 { toggled = config.toggled
                 , title = "Projects"
-                , isExpanded = isExpanded
+                , isExpanded = not model.collapsed
                 , secondary = { iconName = "add", action = config.addClicked }
                 }
-    in
-    case model of
-        Collapsed ->
-            ( [ viewHeader False ], [] )
 
-        Expanded dnd ->
-            let
-                ( items, ghost ) =
-                    viewItems config projectList dnd
-            in
-            ( viewHeader True :: items, ghost )
+        ( items, ghost ) =
+            viewItems config projectList model.dnd
+    in
+    ( viewHeader :: items, ghost )
 
 
 viewItems :
