@@ -44,7 +44,7 @@ type Model item
     | Dragging (State item)
 
 
-type alias DragStart item =
+type alias DragStarted_ item =
     { items : List item
     , dragItem : item
     , dragItemDomId : String
@@ -67,8 +67,8 @@ initial =
 
 
 type Msg item
-    = DragStarted (DragStart item)
-    | GotElement (DragStart item) (Result Dom.Error Dom.Element)
+    = DragStarted (DragStarted_ item)
+    | GotElement (DragStarted_ item) (Result Dom.Error Dom.Element)
     | Canceled
     | Completed
     | MouseMoved Position
@@ -192,7 +192,7 @@ view { toMsg } items model =
             { dragOverAttrs = \_ -> []
             , dragHandleAttrs =
                 \item domId ->
-                    (DragStarted << DragStart items item domId)
+                    (DragStarted << DragStarted_ items item domId)
                         |> dragHandleAttrs
                         |> attrsToMsg
             , isBeingDragged = always False
