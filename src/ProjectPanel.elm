@@ -174,42 +174,6 @@ getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
 
 
-viewPanelItem :
-    { a
-        | root :
-            { b | styles : List Style, attrs : List (Attribute msg) }
-        , primary : { c | styles : List Style, attrs : List (Attribute msg), iconName : String }
-        , link : { d | attrs : List (Attribute msg), title : String }
-        , secondary : { e | attrs : List (Attribute msg) }
-    }
-    -> Html msg
-viewPanelItem config =
-    div
-        (css [ Px.pl 4, Px.pr (4 + 16), flex, batch config.root.styles ]
-            :: class "hover_parent"
-            :: config.root.attrs
-        )
-        [ i
-            (css [ Px.pa 4, Px.m2 4 0, cursorMove, batch config.primary.styles ]
-                :: class "material-icons"
-                :: config.primary.attrs
-            )
-            [ text config.primary.iconName ]
-        , a
-            (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ]
-                :: config.link.attrs
-            )
-            [ text config.link.title ]
-        , button
-            (css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
-                :: class "show_on_parent_hover"
-                :: config.secondary.attrs
-            )
-            [ i [ class "material-icons" ] [ text "more_horiz" ]
-            ]
-        ]
-
-
 viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
