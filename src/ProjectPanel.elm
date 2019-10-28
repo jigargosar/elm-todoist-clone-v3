@@ -60,6 +60,16 @@ type alias Config msg =
     }
 
 
+toggle : ProjectPanel -> ProjectPanel
+toggle model =
+    case model of
+        Collapsed ->
+            Expanded DNDList.init
+
+        Expanded _ ->
+            Collapsed
+
+
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
