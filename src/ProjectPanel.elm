@@ -185,8 +185,8 @@ viewPanelItem config =
         primary =
             config.primary
 
-        { moreAttrs } =
-            config
+        secondary =
+            config.secondary
     in
     div
         (css [ Px.pl 4, Px.pr (4 + 16), flex, batch root.styles ]
@@ -204,7 +204,7 @@ viewPanelItem config =
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
              , class "show_on_parent_hover"
              ]
-                ++ moreAttrs
+                ++ secondary.attrs
             )
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
