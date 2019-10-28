@@ -230,13 +230,10 @@ type Msg
     | CloseDialog
     | PanelAddClicked Panel
     | TogglePanel Panel
-    | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
     | ProjectOrderChanged (List Project)
-    | ToggleLabelsPanel
     | LabelPanelDNDListMsg (DNDList.Msg Label)
     | LabelOrderChanged (List Label)
-    | ToggleFiltersPanel
     | FilterPanelDNDListMsg (DNDList.Msg Filter)
     | FilterOrderChanged (List Filter)
 
@@ -317,9 +314,6 @@ update message model =
                 FilterPanel ->
                     ( { model | dialog = Dialog.AddFilter }, Cmd.none )
 
-        ToggleProjectsPanel ->
-            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
-
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
@@ -327,18 +321,12 @@ update message model =
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
 
-        ToggleLabelsPanel ->
-            ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
-
         LabelPanelDNDListMsg msg ->
             LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
                 |> Tuple.mapFirst (\labelPanel -> mapLabelPanel (always labelPanel) model)
 
         LabelOrderChanged labelList ->
             updateLabelSortOrder labelList model
-
-        ToggleFiltersPanel ->
-            ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         FilterPanelDNDListMsg msg ->
             FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
@@ -418,7 +406,7 @@ mapLabelPanel func model =
 
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
-    { toggled = ToggleLabelsPanel
+    { toggled = TogglePanel LabelPanel
     , addClicked = PanelAddClicked LabelPanel
     , moreClicked = LabelMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
@@ -442,7 +430,7 @@ mapFilterPanel func model =
 
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
-    { toggled = ToggleFiltersPanel
+    { toggled = TogglePanel FilterPanel
     , addClicked = PanelAddClicked FilterPanel
     , moreClicked = FilterMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
