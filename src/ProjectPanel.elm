@@ -1,20 +1,17 @@
 module ProjectPanel exposing
     ( Config
-    , Msg
     , ProjectPanel
     , initial
     , subscriptions
     , toggle
-    , update
     , updateDNDList
     , view
     , viewDNDGhost
     )
 
-import Basics.More exposing (msgToCmd)
 import Css
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, a, button, div, i, span, text)
+import Html.Styled exposing (Attribute, Html, a, button, div, i, span, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Project exposing (Project)
@@ -39,23 +36,18 @@ initial =
 -- PROJECT PANEL UPDATE
 
 
-type Msg
-    = DNDListMsg (DNDList.Msg Project)
-
-
-subscriptions : ProjectPanel -> Sub Msg
-subscriptions projectPanel =
+subscriptions : Config msg -> ProjectPanel -> Sub msg
+subscriptions config projectPanel =
     case projectPanel of
         Collapsed ->
             Sub.none
 
         Expanded dnd ->
-            DNDList.subscriptions DNDListMsg dnd
+            DNDList.subscriptions config.dndListMsg dnd
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg
-    , toggle : msg
+    { toggle : msg
     , dndListMsg : DNDList.Msg Project -> msg
     , sorted : List Project -> msg
     , addClicked : msg
@@ -92,32 +84,13 @@ updateDNDList toMsg sorted msg model =
             ( model, Cmd.none )
 
 
-update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update config message model =
-    case message of
-        DNDListMsg msg ->
-            case model of
-                Expanded dnd ->
-                    DNDList.update (config.toMsg << DNDListMsg)
-                        { onComplete = config.sorted }
-                        msg
-                        dnd
-                        |> Tuple.mapFirst Expanded
-
-                Collapsed ->
-                    ( model, Cmd.none )
-
-
 
 -- PROJECT PANEL VIEW
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view ({ toMsg } as config) projectList model =
+view ({ dndListMsg } as config) projectList model =
     let
-        dndListMsg =
-            DNDListMsg >> toMsg
-
         viewHeader isExpanded =
             viewExpansionPanelHeader
                 { toggled = config.toggle
@@ -288,13 +261,12 @@ viewGhostItem itemStyle project =
     ]
 
 
-viewDNDGhost : (Msg -> msg) -> ProjectPanel -> List (Html msg)
-viewDNDGhost toMsg =
+viewDNDGhost : ProjectPanel -> List (Html msg)
+viewDNDGhost =
     getDNDGhost
         >> Maybe.map
             (\( itemStyle, project ) ->
                 viewGhostItem itemStyle project
-                    |> List.map (H.map toMsg)
             )
         >> Maybe.withDefault []
 

@@ -23,7 +23,7 @@ import PopupView
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
-import ProjectPanel exposing (Msg, ProjectPanel)
+import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Return
 import TodoDict exposing (TodoDict)
@@ -194,7 +194,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions model.projectPanel |> Sub.map ProjectPanelMsg
+        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         ]
 
 
@@ -223,7 +223,6 @@ type Msg
     | OpenDialog Dialog
     | CloseDialog
     | DrawerPanelMsg Drawer.Panel Drawer.PanelMsg
-    | ProjectPanelMsg ProjectPanel.Msg
     | ProjectOrderChanged (List Project)
     | ToggleProjectsPanel
     | ProjectPanelDNDListMsg (DNDList.Msg Project)
@@ -368,9 +367,6 @@ update message model =
                 Drawer.More anchorId panelItemId ->
                     update (PopupTriggered panelItemId anchorId) model
 
-        ProjectPanelMsg msg ->
-            handleProjectPanelMsg msg model
-
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
 
@@ -389,22 +385,12 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { toMsg = ProjectPanelMsg
-    , dndListMsg = ProjectPanelDNDListMsg
+    { dndListMsg = ProjectPanelDNDListMsg
     , toggle = ToggleProjectsPanel
     , sorted = ProjectOrderChanged
     , addClicked = PanelAddClicked Drawer.Projects
     , moreClicked = Drawer.ProjectItemId >> PopupTriggered
     }
-
-
-handleProjectPanelMsg : ProjectPanel.Msg -> Model -> ( Model, Cmd Msg )
-handleProjectPanelMsg msg model =
-    ProjectPanel.update
-        projectPanelConfig
-        msg
-        model.projectPanel
-        |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
 mapProjectCollection func model =
@@ -557,7 +543,7 @@ view model =
             popupView model
                 ++ dialogView model
                 ++ panelDragView model
-                ++ ProjectPanel.viewDNDGhost ProjectPanelMsg model.projectPanel
+                ++ ProjectPanel.viewDNDGhost model.projectPanel
         }
         model.isDrawerModalOpen
 
