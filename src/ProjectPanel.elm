@@ -1,10 +1,12 @@
 module ProjectPanel exposing
     ( Config
     , ProjectPanel
+    , System
     , initial
     , onDNDMsg
     , onToggle
     , subscriptions
+    , system
     , view
     , viewGhost
     )
@@ -20,6 +22,25 @@ import Px
 import Route
 import Styles exposing (..)
 import UI
+
+
+type alias System msg =
+    { initial : ProjectPanel
+    , onToggle : ProjectPanel -> ProjectPanel
+    , onDNDMsg : DNDList.Msg Project -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+    , view : List Project -> ProjectPanel -> List (Html msg)
+    , subscriptions : ProjectPanel -> Sub msg
+    }
+
+
+system : Config msg -> System msg
+system config =
+    { initial = initial
+    , onToggle = onToggle
+    , onDNDMsg = onDNDMsg config
+    , view = view config
+    , subscriptions = subscriptions config
+    }
 
 
 type alias ProjectPanel =
