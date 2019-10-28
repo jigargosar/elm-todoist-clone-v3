@@ -5,7 +5,7 @@ module DNDList exposing
     , NotDraggingConfig
     , View(..)
     , ghost
-    , init
+    , initial
     , subscriptions
     , update
     , view
@@ -22,6 +22,12 @@ import Json.Decode as JD
 import Log exposing (logError)
 import Styles exposing (batch)
 import Task
+
+
+type alias Config msg item =
+    { toMsg : Msg item -> msg
+    , sorted : List item -> msg
+    }
 
 
 type Model item
@@ -46,8 +52,8 @@ type alias State item =
     }
 
 
-init : Model item
-init =
+initial : Model item
+initial =
     NotDragging
 
 

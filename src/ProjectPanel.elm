@@ -28,7 +28,7 @@ type alias ProjectPanel =
 
 initial : ProjectPanel
 initial =
-    { collapsed = False, dnd = DNDList.init }
+    { collapsed = False, dnd = DNDList.initial }
 
 
 
