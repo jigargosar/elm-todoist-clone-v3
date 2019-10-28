@@ -616,18 +616,6 @@ onDrawerPanelDragComplete panel info model =
 view : Model -> Html Msg
 view model =
     let
-        viewPanel : Drawer.PanelItemConfig id item -> Drawer.Panel -> List item -> List (Html Msg)
-        viewPanel config panel items =
-            Drawer.viewPanel
-                panel
-                (isPanelExpanded panel model)
-                (\_ ->
-                    Drawer.viewPanelItems config
-                        items
-                        (dragForPanel panel model.panelDrag)
-                )
-                |> List.map (H.map (DrawerPanelMsg panel))
-
         projectPanelView =
             ProjectPanel.view projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
