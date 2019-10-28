@@ -6,7 +6,6 @@ module ProjectPanel exposing
     , onToggle
     , subscriptions
     , view
-    , viewDNDGhost
     )
 
 import Css
@@ -160,7 +159,14 @@ viewItems config projectList dndList =
             , DNDList.ghost dndList
                 |> Maybe.map
                     (\( itemStyle, project ) ->
-                        viewGhostItem itemStyle project
+                        [ viewItem
+                            { itemAttrs = []
+                            , itemStyles = [ itemStyle ]
+                            , handleAttrs = []
+                            , moreAttrs = []
+                            }
+                            project
+                        ]
                     )
                 |> Maybe.withDefault []
             )
@@ -218,28 +224,6 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             [ i [ class "material-icons" ] [ text "more_horiz" ]
             ]
         ]
-
-
-viewGhostItem : Style -> Project -> List (Html msg)
-viewGhostItem itemStyle project =
-    [ viewItem
-        { itemAttrs = []
-        , itemStyles = [ itemStyle ]
-        , handleAttrs = []
-        , moreAttrs = []
-        }
-        project
-    ]
-
-
-viewDNDGhost : ProjectPanel -> List (Html msg)
-viewDNDGhost =
-    getDNDGhost
-        >> Maybe.map
-            (\( itemStyle, project ) ->
-                viewGhostItem itemStyle project
-            )
-        >> Maybe.withDefault []
 
 
 type alias ItemProps msg =
