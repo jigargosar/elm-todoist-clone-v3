@@ -176,7 +176,16 @@ getDNDGhost =
 
 viewPanelItem config =
     let
-        { linkAttrs, title, itemStyles, itemAttrs, iconColor, handleAttrs, moreAttrs } =
+        { itemStyles, itemAttrs } =
+            config
+
+        { linkAttrs, title } =
+            config
+
+        { iconColor, handleAttrs } =
+            config
+
+        { moreAttrs } =
             config
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
