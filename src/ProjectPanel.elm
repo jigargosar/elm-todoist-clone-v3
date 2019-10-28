@@ -174,6 +174,30 @@ getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
 
 
+viewPanelItem config =
+    let
+        { linkAttrs, title, itemStyles, itemAttrs, iconColor, handleAttrs, moreAttrs } =
+            config
+    in
+    div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
+        [ i
+            (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
+                :: class "material-icons"
+                :: handleAttrs
+            )
+            [ text "folder" ]
+        , a (css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ] :: linkAttrs) [ text title ]
+        , button
+            ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+             , class "show_on_parent_hover"
+             ]
+                ++ moreAttrs
+            )
+            [ i [ class "material-icons" ] [ text "more_horiz" ]
+            ]
+        ]
+
+
 viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
