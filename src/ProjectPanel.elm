@@ -104,24 +104,17 @@ view config projectList model =
 
         Expanded dnd ->
             viewHeader True
-                :: viewItems config (DNDList.view config.dndListMsg projectList dnd)
+                :: viewItems config projectList dnd
 
 
-viewItems :
-    { a | moreClicked : ProjectId -> String -> msg }
-    -> DNDList.View Project msg
-    -> List (Html msg)
-viewItems config dndView =
-    case dndView of
+viewItems config projectList dnd =
+    case DNDList.view config.dndListMsg projectList dnd of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
             let
                 viewHelp project =
                     let
                         domId =
                             itemDomId project
-
-                        projectId =
-                            Project.id project
 
                         moreDomId =
                             domId ++ "__more-btn"
@@ -132,7 +125,7 @@ viewItems config dndView =
                         , handleAttrs = dragHandleAttrs project domId
                         , moreAttrs =
                             [ A.id moreDomId
-                            , config.moreClicked projectId moreDomId |> onClick
+                            , config.moreClicked (Project.id project) moreDomId |> onClick
                             ]
                         }
                         project
