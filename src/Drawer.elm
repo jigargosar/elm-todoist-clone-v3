@@ -1,6 +1,5 @@
 module Drawer exposing
     ( Panel(..)
-    , PanelItemId(..)
     , prefixNavItemsView
     , viewSimpleNavItem
     )
@@ -28,12 +27,6 @@ type Panel
     = Projects
     | Labels
     | Filters
-
-
-type PanelItemId
-    = ProjectItemId ProjectId
-    | LabelItemId LabelId
-    | FilterItemId FilterId
 
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
