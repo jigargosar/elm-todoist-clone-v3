@@ -6,6 +6,7 @@ module ProjectPanel exposing
     , onToggle
     , subscriptions
     , view
+    , viewGhost
     )
 
 import Css
@@ -70,7 +71,7 @@ onDNDMsg config msg model =
 -- PROJECT PANEL VIEW
 
 
-view : Config msg -> List Project -> ProjectPanel -> ( List (Html msg), List (Html msg) )
+view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view config projectList model =
     let
         viewHeader =
@@ -80,11 +81,25 @@ view config projectList model =
                 , isExpanded = not model.collapsed
                 , secondary = { iconName = "add", action = config.addClicked }
                 }
-
-        ( items, ghost ) =
-            viewItems config projectList model.dnd
     in
-    ( viewHeader :: items, ghost )
+    viewHeader :: viewItems config projectList model.dnd
+
+
+viewGhost : ProjectPanel -> List (Html msg)
+viewGhost { dnd } =
+    case DNDList.ghost dnd of
+        Just ( style, project ) ->
+            [ viewItem
+                { itemAttrs = []
+                , itemStyles = [ style ]
+                , handleAttrs = []
+                , moreAttrs = []
+                }
+                project
+            ]
+
+        Nothing ->
+            []
 
 
 viewItems :
@@ -94,11 +109,11 @@ viewItems :
     }
     -> List Project
     -> DNDList.Model Project
-    -> ( List (Html msg), List (Html msg) )
+    -> List (Html msg)
 viewItems config projectList dndList =
     case DNDList.view config.dndListMsg projectList dndList of
         DNDList.WhenNotDragging { dragHandleAttrs, items } ->
-            ( List.map
+            List.map
                 (\project ->
                     let
                         domId =
@@ -119,14 +134,12 @@ viewItems config projectList dndList =
                         project
                 )
                 items
-            , []
-            )
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items, ghost } ->
             List.foldr
-                (\project ( itemViews, ghostViews ) ->
+                (\project itemViews ->
                     if isBeingDragged project then
-                        ( viewItem
+                        viewItem
                             { itemAttrs = dragOverAttrs project
                             , itemStyles = [ Css.opacity <| Css.zero ]
                             , handleAttrs = []
@@ -134,18 +147,9 @@ viewItems config projectList dndList =
                             }
                             project
                             :: itemViews
-                        , viewItem
-                            { itemAttrs = []
-                            , itemStyles = [ Tuple.first ghost ]
-                            , handleAttrs = []
-                            , moreAttrs = []
-                            }
-                            project
-                            :: ghostViews
-                        )
 
                     else
-                        ( viewItem
+                        viewItem
                             { itemAttrs = dragOverAttrs project
                             , itemStyles = []
                             , handleAttrs = []
@@ -153,10 +157,8 @@ viewItems config projectList dndList =
                             }
                             project
                             :: itemViews
-                        , ghostViews
-                        )
                 )
-                ( [], [] )
+                []
                 items
 
 

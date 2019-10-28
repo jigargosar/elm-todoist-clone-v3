@@ -545,7 +545,7 @@ view model =
                 )
                 |> List.map (H.map (DrawerPanelMsg panel))
 
-        ( projectPanelView, projectPanelGhostView ) =
+        projectPanelView =
             ProjectPanel.view projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
@@ -569,7 +569,7 @@ view model =
             popupView model
                 ++ dialogView model
                 ++ panelDragView model
-                ++ projectPanelGhostView
+                ++ ProjectPanel.viewGhost model.projectPanel
         }
         model.isDrawerModalOpen
 
