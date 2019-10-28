@@ -145,38 +145,41 @@ viewItems config projectList dndList =
             )
 
         DNDList.WhenDragging { isBeingDragged, dragOverAttrs, items, ghost } ->
-            List.map
-                (\project ->
-                    ( [ viewItem
+            List.foldr
+                (\project ( itemViews, ghostViews ) ->
+                    if isBeingDragged project then
+                        ( viewItem
                             { itemAttrs = dragOverAttrs project
-                            , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+                            , itemStyles = [ Css.opacity <| Css.zero ]
                             , handleAttrs = []
                             , moreAttrs = []
                             }
                             project
-                      ]
-                    , if isBeingDragged project then
-                        [ viewItem
+                            :: itemViews
+                        , viewItem
                             { itemAttrs = []
                             , itemStyles = [ Tuple.first ghost ]
                             , handleAttrs = []
                             , moreAttrs = []
                             }
                             project
-                        ]
-
-                      else
-                        []
-                    )
-                )
-                items
-                |> List.foldl
-                    (\( i, g ) ( accI, accG ) ->
-                        ( accI ++ i
-                        , accG ++ g
+                            :: ghostViews
                         )
-                    )
-                    ( [], [] )
+
+                    else
+                        ( viewItem
+                            { itemAttrs = dragOverAttrs project
+                            , itemStyles = []
+                            , handleAttrs = []
+                            , moreAttrs = []
+                            }
+                            project
+                            :: itemViews
+                        , ghostViews
+                        )
+                )
+                ( [], [] )
+                items
 
 
 itemDomId : Project -> String
