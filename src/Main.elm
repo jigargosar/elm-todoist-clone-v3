@@ -370,6 +370,19 @@ updatePopup message popupKind model =
             ( model, Cmd.none )
 
 
+togglePanel : Panel -> Model -> Model
+togglePanel panel =
+    case panel of
+        ProjectPanel ->
+            mapProjectPanel ProjectPanel.onToggle
+
+        LabelPanel ->
+            mapLabelPanel LabelPanel.onToggle
+
+        FilterPanel ->
+            mapFilterPanel FilterPanel.onToggle
+
+
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
 mapProjectPanel func model =
     { model | projectPanel = func model.projectPanel }
