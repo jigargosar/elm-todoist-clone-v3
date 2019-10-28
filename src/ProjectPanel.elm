@@ -66,16 +66,15 @@ toggle model =
 
 
 updateDNDList :
-    (DNDList.Msg Project -> msg)
-    -> (List Project -> msg)
+    Config msg
     -> DNDList.Msg Project
     -> ProjectPanel
     -> ( ProjectPanel, Cmd msg )
-updateDNDList toMsg sorted msg model =
+updateDNDList config msg model =
     case model of
         Expanded dnd ->
-            DNDList.update toMsg
-                { onComplete = sorted }
+            DNDList.update config.dndListMsg
+                { onComplete = config.sorted }
                 msg
                 dnd
                 |> Tuple.mapFirst Expanded
