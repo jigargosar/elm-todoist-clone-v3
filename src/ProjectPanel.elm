@@ -174,6 +174,15 @@ getDNDGhost =
     getDND >> Maybe.andThen DNDList.ghost
 
 
+viewPanelItem :
+    { a
+        | root :
+            { b | styles : List Style, attrs : List (Attribute msg) }
+        , primary : { c | styles : List Style, attrs : List (Attribute msg), iconName : String }
+        , link : { d | attrs : List (Attribute msg), title : String }
+        , secondary : { e | attrs : List (Attribute msg) }
+    }
+    -> Html msg
 viewPanelItem config =
     div
         (css [ Px.pl 4, Px.pr (4 + 16), flex, batch config.root.styles ]
