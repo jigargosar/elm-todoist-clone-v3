@@ -297,7 +297,7 @@ update message model =
             ( closePopup model, Cmd.none )
 
         PopupMsg msg ->
-            updateWithPopupKind (onPopupMsg msg) model
+            updateWithPopupKind (updatePopup msg) model
 
         OpenDialog dialog ->
             ( { model | dialog = Just dialog }, Cmd.none )
@@ -346,8 +346,8 @@ updateWithPopupKind func model =
             ( model, Cmd.none )
 
 
-onPopupMsg : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
-onPopupMsg message popKind model =
+updatePopup : PopupMsg -> PopupKind -> Model -> ( Model, Cmd Msg )
+updatePopup message popKind model =
     case ( popKind, message ) of
         ( Drawer.ProjectItemId projectId, ProjectMoreMenuMsg action ) ->
             onProjectMoreMenuAction projectId action model
