@@ -55,12 +55,6 @@ type PopupMsg
 -- PANEL
 
 
-type Panel
-    = ProjectPanel
-    | LabelPanel
-    | FilterPanel
-
-
 type PanelDNDListMsg
     = ProjectPanelDNDListMsg (DNDList.Msg Project)
     | LabelPanelDNDListMsg (DNDList.Msg Label)
@@ -234,8 +228,12 @@ type Msg
     | ClosePopup
     | PopupMsg PopupMsg
     | CloseDialog
-    | PanelAddClicked Panel
-    | TogglePanel Panel
+    | AddProjectClicked
+    | AddLabelClicked
+    | AddFilterClicked
+    | ToggleProjectPanel
+    | ToggleLabelPanel
+    | ToggleFilterPanel
     | PanelDNDListMsg PanelDNDListMsg
     | ProjectOrderChanged (List Project)
     | LabelOrderChanged (List Label)
@@ -304,19 +302,23 @@ update message model =
         CloseDialog ->
             ( { model | dialog = Dialog.None }, Cmd.none )
 
-        TogglePanel panel ->
-            ( togglePanel panel model, Cmd.none )
+        ToggleProjectPanel ->
+            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
-        PanelAddClicked panel ->
-            case panel of
-                ProjectPanel ->
-                    ( { model | dialog = Dialog.initAddProject }, Cmd.none )
+        ToggleLabelPanel ->
+            ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
 
-                LabelPanel ->
-                    ( { model | dialog = Dialog.AddLabel }, Cmd.none )
+        ToggleFilterPanel ->
+            ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
-                FilterPanel ->
-                    ( { model | dialog = Dialog.AddFilter }, Cmd.none )
+        AddProjectClicked ->
+            ( { model | dialog = Dialog.initAddProject }, Cmd.none )
+
+        AddLabelClicked ->
+            ( { model | dialog = Dialog.AddLabel }, Cmd.none )
+
+        AddFilterClicked ->
+            ( { model | dialog = Dialog.AddFilter }, Cmd.none )
 
         PanelDNDListMsg msg_ ->
             case msg_ of
@@ -368,19 +370,6 @@ updatePopup message popupKind model =
             ( model, Cmd.none )
 
 
-togglePanel : Panel -> Model -> Model
-togglePanel panel =
-    case panel of
-        ProjectPanel ->
-            mapProjectPanel ProjectPanel.onToggle
-
-        LabelPanel ->
-            mapLabelPanel LabelPanel.onToggle
-
-        FilterPanel ->
-            mapFilterPanel FilterPanel.onToggle
-
-
 mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
 mapProjectPanel func model =
     { model | projectPanel = func model.projectPanel }
@@ -388,8 +377,8 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { toggled = TogglePanel ProjectPanel
-    , addClicked = PanelAddClicked ProjectPanel
+    { toggled = ToggleProjectPanel
+    , addClicked = AddProjectClicked
     , moreClicked = ProjectMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = PanelDNDListMsg << ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
     }
@@ -412,8 +401,8 @@ mapLabelPanel func model =
 
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
-    { toggled = TogglePanel LabelPanel
-    , addClicked = PanelAddClicked LabelPanel
+    { toggled = ToggleLabelPanel
+    , addClicked = AddLabelClicked
     , moreClicked = LabelMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = PanelDNDListMsg << LabelPanelDNDListMsg, sorted = LabelOrderChanged }
     }
@@ -436,8 +425,8 @@ mapFilterPanel func model =
 
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
-    { toggled = TogglePanel FilterPanel
-    , addClicked = PanelAddClicked FilterPanel
+    { toggled = ToggleFilterPanel
+    , addClicked = AddFilterClicked
     , moreClicked = FilterMoreMenu >> PopupTriggered
     , dndConfig = { toMsg = PanelDNDListMsg << FilterPanelDNDListMsg, sorted = FilterOrderChanged }
     }
