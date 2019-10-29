@@ -1,6 +1,7 @@
 module Dialog exposing (Dialog(..), addProjectContent, initAddProject, viewDialog)
 
 import Css
+import Dialog.AddProject
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
@@ -13,19 +14,13 @@ import Styles exposing (..)
 import Theme
 
 
-type alias AddProjectState =
-    { title : String
-    , color : String
-    }
-
-
 initAddProject : Dialog
 initAddProject =
-    AddProject <| AddProjectState "" ""
+    AddProject <| Dialog.AddProject.initial
 
 
 type Dialog
-    = AddProject AddProjectState
+    = AddProject Dialog.AddProject.Model
     | EditProject ProjectId
     | AddLabel
     | EditLabel LabelId
@@ -48,7 +43,7 @@ overlayStyles =
         ]
 
 
-addProjectContent : Config msg -> AddProjectState -> List (Html msg)
+addProjectContent : Config msg -> Dialog.AddProject.Model -> List (Html msg)
 addProjectContent config state =
     [ div
         [ css
