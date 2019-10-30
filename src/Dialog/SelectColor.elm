@@ -77,7 +77,10 @@ update ({ toMsg } as config) message model =
 
         Open ->
             ( { model | dropdown = DropdownOpened {} }
-            , focus config selectDropdownDomId
+            , Cmd.batch
+                [ focus config selectDropdownDomId
+                , Focus.onFocusOrClickOutSide (selectDropdownDomId config)
+                ]
             )
 
         Focused result ->

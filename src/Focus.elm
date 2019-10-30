@@ -1,4 +1,4 @@
-port module Focus exposing (FocusResult, attempt, logError, logIfError)
+port module Focus exposing (FocusResult, attempt, logError, logIfError, onFocusOrClickOutSide)
 
 import Browser.Dom as Dom
 import Log
