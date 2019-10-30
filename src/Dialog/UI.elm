@@ -69,11 +69,11 @@ actions { submitTitle, canceled, submitted } =
 
 
 type alias ContainerConfig msg =
-    { submitted : msg, canceled : msg, title : String }
+    { submitted : msg, canceled : msg, title : String, content : List (Html msg), footer : Html msg }
 
 
-container : ContainerConfig msg -> List (Html msg) -> Html msg
-container { submitted, canceled, title } children =
+container : ContainerConfig msg -> Html msg
+container { submitted, canceled, title, content, footer } =
     let
         formAttrs =
             [ css
@@ -97,11 +97,11 @@ container { submitted, canceled, title } children =
                     ]
                 ]
                 [ text title ]
-            , div [ css [ ph 3 ] ] children
+            , div [ css [ ph 3 ] ] content
             ]
     in
     div [ css [ overlayStyles ] ]
-        [ H.form formAttrs formChildren ]
+        [ H.form formAttrs formChildren, footer ]
 
 
 overlayStyles =

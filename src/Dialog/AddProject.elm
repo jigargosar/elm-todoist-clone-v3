@@ -85,40 +85,32 @@ view { toMsg } model =
             , Key.onKeyDown [ Key.escape Cancel ]
             , onSubmit Save
             ]
-
-        formChildren =
-            [ div
-                [ css
-                    [ Css.fontSize Css.larger
-                    , pa 3
-                    , bo_b
-                    , boc <| Theme.borderGray
-                    ]
-                ]
-                [ text "Add Project" ]
-            , div [ css [ ph 3 ] ]
-                [ Dialog.UI.input
-                    { labelText = "Project name"
-                    , value = model.title
-                    , changed = Title
-                    , attrs = [ A.id "add-project-dialog-autofocus", autofocus True ]
-                    }
-                , Dialog.UI.input
-                    { labelText = "Project color"
-                    , value = model.color
-                    , changed = Color
-                    , attrs = []
-                    }
-                , Dialog.UI.checkbox
-                    { labelText = "Add to favorites"
-                    , value = model.favorite
-                    , changed = Favorite
-                    }
-                ]
-            , Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
-            ]
     in
-    Dialog.UI.container { submitted = Save, canceled = Cancel, title = "Add Project" } formChildren
+    Dialog.UI.container
+        { submitted = Save
+        , canceled = Cancel
+        , title = "Add Project"
+        , content =
+            [ Dialog.UI.input
+                { labelText = "Project name"
+                , value = model.title
+                , changed = Title
+                , attrs = [ A.id "add-project-dialog-autofocus", autofocus True ]
+                }
+            , Dialog.UI.input
+                { labelText = "Project color"
+                , value = model.color
+                , changed = Color
+                , attrs = []
+                }
+            , Dialog.UI.checkbox
+                { labelText = "Add to favorites"
+                , value = model.favorite
+                , changed = Favorite
+                }
+            ]
+        , footer = Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
+        }
         |> H.map toMsg
 
 
