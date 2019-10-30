@@ -147,6 +147,15 @@ view ({ toMsg } as config) model =
 
 viewDropdown : Config msg -> DropdownState -> Html Msg
 viewDropdown config state =
+    let
+        viewItem : CColor -> Html Msg
+        viewItem color =
+            div [ css [ flex, Px.pa 4 ], onClick <| Selected color ]
+                [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ]
+                    [ text "folder" ]
+                , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
+                ]
+    in
     div
         [ A.id <| dropdownDomId config
         , css
@@ -198,14 +207,6 @@ viewSelectInput config model =
             [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ] [ text "folder" ]
             , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
             ]
-        ]
-
-
-viewItem : CColor -> Html Msg
-viewItem color =
-    div [ css [ flex, Px.pa 4 ], onClick <| Selected color ]
-        [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
-        , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
 
 
