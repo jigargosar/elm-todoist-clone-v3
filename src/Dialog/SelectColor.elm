@@ -51,10 +51,10 @@ colorCssValue =
 colorInfo color =
     case color of
         Blue ->
-            ( hex "#ddd", "Blue" )
+            ( hex "#4073ff", "Blue" )
 
         Green ->
-            ( hex "#ddd", "Green" )
+            ( hex "#299438", "Green" )
 
         Yellow ->
-            ( hex "#ddd", "Yellow" )
+            ( hex "#fad000", "Yellow" )
