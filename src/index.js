@@ -24,7 +24,7 @@ const mockTodoList = [
   isCompleted: Math.random() > 0.3,
   idx,
   projectRef: null,
-  labelIdList: []
+  labelIdList: [],
 }))
 
 const mockProjectList = [
@@ -100,9 +100,28 @@ const app = Module.Elm.Main.init({
   },
 })
 
+const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
   [],
   { logError: err => console.error('Elm Error', err) },
+  {
+    onFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
+  },
   app,
 )
 console.debug(pubs)
+
+function MonitorFocusOrClickOutside() {
+  const domIdList = []
+  const listener = e => {
+    const target = e.target
+    console.log(target, e.path, domIdList)
+  }
+  document.addEventListener('focusin', listener)
+  document.addEventListener('click', listener)
+  return {
+    add(domId) {
+      domIdList.push(domId)
+    },
+  }
+}
