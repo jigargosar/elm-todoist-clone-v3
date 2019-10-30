@@ -2,7 +2,7 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, 
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
-import Dialog.SelectColor
+import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
@@ -14,7 +14,7 @@ type alias Model =
     { title : String
     , color : String
     , favorite : Bool
-    , selectColor : Dialog.SelectColor.Model
+    , selectColor : SelectColor.Model
     }
 
 
@@ -24,7 +24,7 @@ type alias SavedWith =
 
 initial : Model
 initial =
-    Model "" "" False Dialog.SelectColor.initial
+    Model "" "" False SelectColor.initial
 
 
 init : Config msg -> ( Model, Cmd msg )
@@ -41,7 +41,7 @@ type Msg
     | Cancel
     | Title String
     | Color String
-    | SelectColor Dialog.SelectColor.Msg
+    | SelectColor SelectColor.Msg
     | Favorite Bool
     | AutoFocus (Result Dom.Error ())
 
@@ -73,7 +73,8 @@ update { saved, canceled, toMsg } message model =
             ( { model | color = color }, Cmd.none )
 
         SelectColor msg ->
-            SelectColor.update
+            SelectColor.update selectColorConfig msg model.selectColor
+                |> Tuple.mapFirst (\selectColor -> { model | selectColor = selectColor })
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -91,7 +92,7 @@ autofocusDomId =
     "add-project-dialog-autofocus"
 
 
-selectColorConfig : Dialog.SelectColor.Config Msg
+selectColorConfig : SelectColor.Config Msg
 selectColorConfig =
     { toMsg = SelectColor }
 
@@ -116,7 +117,7 @@ view { toMsg } model =
                 , changed = Color
                 , attrs = []
                 }
-            , Dialog.SelectColor.view selectColorConfig model.selectColor
+            , SelectColor.view selectColorConfig model.selectColor
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite

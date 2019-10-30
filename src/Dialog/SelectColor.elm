@@ -1,4 +1,4 @@
-module Dialog.SelectColor exposing (Config, Model, Msg, initial, view)
+module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
 import Css exposing (hex)
 import Html.Styled as H exposing (Html, div, i, text)
