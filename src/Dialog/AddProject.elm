@@ -3,9 +3,9 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, 
 import Basics.More exposing (msgToCmd)
 import Css
 import Dialog.UI
-import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
-import Html.Styled.Attributes as A exposing (autofocus, css, type_, value)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Html.Styled as H exposing (Attribute, Html, div, form, span, text)
+import Html.Styled.Attributes as A exposing (autofocus, css)
+import Html.Styled.Events exposing (onSubmit)
 import Key
 import Px as PX
 import Styles exposing (..)
@@ -115,10 +115,7 @@ view { toMsg } model =
                     , changed = Favorite
                     }
                 ]
-            , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
-                [ btnSubmit "Add"
-                , btnCancel
-                ]
+            , Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
             ]
     in
     [ div [ css [ overlayStyles ] ]
@@ -138,44 +135,4 @@ overlayStyles =
 
         --                 , bg (Css.hsla 0 1 1 0.6)
         , z_ 10
-        ]
-
-
-btnSubmit title =
-    button [ css [ plainBtnStyles ] ] [ text title ]
-
-
-btnCancel =
-    button [ css [ plainBtnStyles ], onClick Cancel ] [ text "Cancel" ]
-
-
-plainBtnStyles =
-    batch
-        [ btnReset
-        , PX.p2 4 8
-        , bor 1
-        , hover [ bgGrayL 0.95 ]
-        , focus [ bgGrayL 0.9, z_ 1 ]
-        ]
-
-
-ipt val oi id af =
-    H.input
-        [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
-        , A.id id
-        , value val
-        , onInput oi
-        , autofocus af
-        ]
-        []
-
-
-lbl title =
-    span [ css [ lh 1.5, bold ] ] [ text title ]
-
-
-formTextIpt title i =
-    label [ css [ flex, flexColumn, pv 2 ] ]
-        [ lbl title
-        , i
         ]

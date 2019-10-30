@@ -1,8 +1,9 @@
-module Dialog.UI exposing (CheckboxConfig, InputConfig, checkbox, input)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, InputConfig, actions, checkbox, input)
 
-import Html.Styled as H exposing (Attribute, Html, div, label, span, text)
+import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events as E exposing (onInput)
+import Html.Styled.Events as E exposing (onClick, onInput)
+import Px as PX
 import Styles exposing (..)
 import Theme
 
@@ -50,4 +51,34 @@ checkbox { labelText, value, changed } =
                 []
             ]
         , text labelText
+        ]
+
+
+type alias ActionsConfig msg =
+    { submitTitle : String, canceled : msg, submitted : msg }
+
+
+actions : ActionsConfig msg -> Html msg
+actions { submitTitle, canceled, submitted } =
+    div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
+        [ btnSubmit "Add" submitted
+        , btnCancel canceled
+        ]
+
+
+btnSubmit title action =
+    button [ css [ plainBtnStyles ], onClick action ] [ text title ]
+
+
+btnCancel canceled =
+    button [ css [ plainBtnStyles ], onClick canceled ] [ text "Cancel" ]
+
+
+plainBtnStyles =
+    batch
+        [ btnReset
+        , PX.p2 4 8
+        , bor 1
+        , hover [ bgGrayL 0.95 ]
+        , focus [ bgGrayL 0.9, z_ 1 ]
         ]
