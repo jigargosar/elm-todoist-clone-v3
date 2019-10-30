@@ -103,7 +103,6 @@ view { toMsg } model =
                     , changed = Color
                     , attrs = []
                     }
-                , formTextIpt "Project color" (ipt model.color Color "" False)
                 , label [ css [ flex, itemsCenter, pv 2 ] ]
                     [ div [ css [ pa 1 ] ] [ H.input [ css [], type_ "checkbox" ] [] ]
                     , text "Add to favorites"
