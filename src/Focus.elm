@@ -1,4 +1,4 @@
-port module Focus exposing (FocusResult, attempt, logError, logIfError, onFocusOrClickOutSide)
+port module Focus exposing (FocusResult, attempt, logError, logIfError, registerOnFocusOrClickOutSide)
 
 import Browser.Dom as Dom
 import Log
@@ -29,4 +29,4 @@ logIfError result =
             logError error
 
 
-port onFocusOrClickOutSide : String -> Cmd msg
+port registerOnFocusOrClickOutSide : String -> Cmd msg

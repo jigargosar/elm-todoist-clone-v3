@@ -105,7 +105,7 @@ const pubs = ports(
   [],
   {
     logError: err => console.error('Elm Error', err),
-    onFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
+    registerOnFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
   },
   app,
 )
