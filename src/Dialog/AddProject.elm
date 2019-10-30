@@ -95,7 +95,7 @@ autofocusDomId =
 
 selectColorConfig : SelectColor.Config Msg
 selectColorConfig =
-    { toMsg = SelectColor }
+    { toMsg = SelectColor, domIdPrefix = "add-project-dialog" }
 
 
 view : Config msg -> Model -> Html msg

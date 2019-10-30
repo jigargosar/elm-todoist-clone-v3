@@ -1,18 +1,14 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
-import Basics.More exposing (apply, attrIf, viewIf)
-import Browser.Dom as Dom
+import Basics.More exposing (apply, viewIf)
 import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onBlur)
-import Json.Decode as JD
 import Key
-import Log exposing (logError)
 import Px
 import Styles exposing (..)
-import Task
 import Theme
 
 
@@ -42,50 +38,55 @@ type Msg
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg }
+    { toMsg : Msg -> msg, domIdPrefix : String }
 
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
-update { toMsg } message model =
+update ({ toMsg } as config) message model =
     case message of
         Close ->
             ( { model | popupOpen = False }
-            , Focus.attempt selectInputDomId (toMsg << Focused)
+            , focus config selectInputDomId
             )
 
         Open ->
             ( { model | popupOpen = True }
-            , Focus.attempt selectPopupDomId (toMsg << Focused)
+            , focus config selectPopupDomId
             )
 
         Focused result ->
             ( model, Focus.logIfError result )
 
 
-selectPopupDomId : String
-selectPopupDomId =
-    "select-color-popup"
+focus : Config msg -> (Config msg -> String) -> Cmd msg
+focus config domIdFromConfig =
+    Focus.attempt (domIdFromConfig config) (config.toMsg << Focused)
 
 
-selectInputDomId : String
-selectInputDomId =
-    "select-color-input"
+selectPopupDomId : Config msg -> String
+selectPopupDomId { domIdPrefix } =
+    domIdPrefix ++ "__select-color-popup"
+
+
+selectInputDomId : Config msg -> String
+selectInputDomId { domIdPrefix } =
+    domIdPrefix ++ "__select-color-input"
 
 
 view : Config msg -> Model -> Html msg
-view { toMsg } model =
+view ({ toMsg } as config) model =
     div
         [ css [ relative, lh 1.5 ] ]
-        [ viewSelectInput model
-        , viewIf model.popupOpen viewPopup
+        [ viewSelectInput config model
+        , viewIf model.popupOpen (\_ -> viewPopup config)
         ]
         |> H.map toMsg
 
 
-viewPopup : () -> Html Msg
-viewPopup _ =
+viewPopup : Config msg -> Html Msg
+viewPopup config =
     div
-        [ A.id selectPopupDomId
+        [ A.id <| selectPopupDomId config
         , css
             [ absolute
             , bgWhite
@@ -103,8 +104,8 @@ viewPopup _ =
         (List.map viewItem allColors)
 
 
-viewSelectInput : Model -> Html Msg
-viewSelectInput model =
+viewSelectInput : Config msg -> Model -> Html Msg
+viewSelectInput config model =
     let
         keydownDecoders =
             [ Key.enter
@@ -121,7 +122,7 @@ viewSelectInput model =
                 [ tabindex 0, Key.preventDefaultOnKeyDown keydownDecoders ]
     in
     div
-        (A.id selectInputDomId
+        (A.id (selectInputDomId config)
             :: css [ boAll, boColor Theme.borderGray ]
             :: attrsWhenPopupClosed
         )
