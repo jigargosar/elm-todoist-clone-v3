@@ -26,7 +26,11 @@ initial =
 
 init : Config msg -> ( Model, Cmd msg )
 init { toMsg } =
-    ( initial, Dom.focus autofocusDomId |> Task.attempt AutoFocus |> Cmd.map toMsg )
+    ( initial
+    , Dom.focus autofocusDomId
+        |> Task.attempt AutoFocus
+        |> Cmd.map toMsg
+    )
 
 
 type Msg
