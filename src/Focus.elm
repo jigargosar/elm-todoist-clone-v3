@@ -1,6 +1,7 @@
-module Focus exposing (FocusResult, attempt)
+module Focus exposing (FocusResult, attempt, logError)
 
 import Browser.Dom as Dom
+import Log
 import Task
 
 
@@ -11,3 +12,8 @@ type alias FocusResult =
 attempt : String -> (FocusResult -> msg) -> Cmd msg
 attempt domId msg =
     Dom.focus domId |> Task.attempt msg
+
+
+logError : Dom.Error -> Cmd msg
+logError (Dom.NotFound domId) =
+    Log.logError <| "focus failed: " ++ domId

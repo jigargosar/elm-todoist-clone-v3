@@ -2,6 +2,7 @@ module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
 import Browser.Dom as Dom
 import Css exposing (hex)
+import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onBlur)
@@ -49,9 +50,7 @@ update { toMsg } message model =
 
         Open ->
             ( { model | open = True }
-            , Dom.focus selectPopupDomId
-                |> Task.attempt PopupFocused
-                |> Cmd.map toMsg
+            , Focus.attempt selectPopupDomId (toMsg << PopupFocused)
             )
 
         PopupFocused result ->
@@ -59,8 +58,8 @@ update { toMsg } message model =
                 Ok () ->
                     ( model, Cmd.none )
 
-                Err (Dom.NotFound domId) ->
-                    ( model, logError <| "focus failed: " ++ domId )
+                Err error ->
+                    ( model, Focus.logError error )
 
 
 selectPopupDomId : String
