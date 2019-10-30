@@ -107,6 +107,7 @@ view { toMsg } model =
                 , changed = Color
                 , attrs = []
                 }
+            , Dialog.SelectColor.view model.selectColor
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
