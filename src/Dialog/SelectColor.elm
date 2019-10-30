@@ -198,16 +198,24 @@ viewDropdown config state =
         , Key.stopPropagationOnKeyDown [ Key.escape ( CloseAndRestoreFocus, True ) ]
         , tabindex 0
         ]
-        (List.map viewItem allColors)
+        (List.indexedMap (viewItem state) allColors)
 
 
-viewItem : CColor -> Html Msg
-viewItem color =
+viewItem : DropdownState -> Int -> CColor -> Html Msg
+viewItem state index color =
     let
         ( cssColor, colorLabel ) =
             colorInfo color
+
+        highlightedStyles =
+            case state.index == index of
+                True ->
+                    []
+
+                False ->
+                    []
     in
-    div [ css [ flex, Px.pa 4 ], onClick <| Selected color ]
+    div [ css [ flex, Px.pa 4, batch highlightedStyles ], onClick <| Selected color ]
         [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ]
             [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
