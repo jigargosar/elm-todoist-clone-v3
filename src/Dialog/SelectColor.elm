@@ -128,8 +128,24 @@ update ({ toMsg } as config) message model =
 
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
-            , unregisterDropdownFocusMonitor config
+            , Cmd.batch
+                [ focus config inputDomId
+                , unregisterDropdownFocusMonitor config
+                ]
             )
+
+        SelectHighlighted ->
+            case getHighlightedColor model of
+                Just color ->
+                    ( { model | color = color, dropdown = DropdownClosed }
+                    , Cmd.batch
+                        [ focus config inputDomId
+                        , unregisterDropdownFocusMonitor config
+                        ]
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         HighlightNext ->
             ( mapDropdownState
@@ -148,16 +164,6 @@ update ({ toMsg } as config) message model =
                 model
             , Cmd.none
             )
-
-        SelectHighlighted ->
-            case getHighlightedColor model of
-                Just color ->
-                    ( { model | color = color, dropdown = DropdownClosed }
-                    , unregisterDropdownFocusMonitor config
-                    )
-
-                Nothing ->
-                    ( model, Cmd.none )
 
         OnFocusOrClickOutside domId ->
             case domId == dropdownDomId config of
