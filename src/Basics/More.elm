@@ -1,7 +1,7 @@
 module Basics.More exposing (..)
 
 import Browser.Dom as Dom
-import Html.Styled exposing (Attribute)
+import Html.Styled exposing (Attribute, Html, text)
 import Html.Styled.Attributes exposing (class)
 import Json.Decode as JD exposing (Decoder)
 import List.Extra as List
@@ -94,3 +94,12 @@ attrIf bool attr =
 
     else
         class ""
+
+
+viewIf : Bool -> (() -> Html msg) -> Html msg
+viewIf bool view_ =
+    if bool then
+        view_ ()
+
+    else
+        text ""
