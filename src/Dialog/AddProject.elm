@@ -3,7 +3,7 @@ module Dialog.AddProject exposing (Config, Model, Msg, Saved, init, update, view
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events exposing (onSubmit)
+import Html.Styled.Events exposing (onClick, onSubmit)
 import Key
 import Px as PX
 import Styles exposing (..)
@@ -76,7 +76,7 @@ view { toMsg } model =
                 ]
             , A.class "shadow-1"
             , Key.onKeyDown [ Key.escape Cancel ]
-            , onSubmit Cancel
+            , onSubmit Save
             ]
 
         innerView =
@@ -99,7 +99,7 @@ view { toMsg } model =
                 ]
             , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
                 [ btnSubmit "Add"
-                , btnSubmit "Cancel"
+                , btnCancel
                 ]
             ]
     in
@@ -125,6 +125,10 @@ overlayStyles =
 
 btnSubmit title =
     button [ css [ plainBtnStyles ] ] [ text title ]
+
+
+btnCancel =
+    button [ css [ plainBtnStyles ], onClick Cancel ] [ text "Cancel" ]
 
 
 plainBtnStyles =
