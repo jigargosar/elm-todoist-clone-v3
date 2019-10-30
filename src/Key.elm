@@ -1,4 +1,4 @@
-module Key exposing (enter, enterOrSpace, escape, onKeyDown, space)
+module Key exposing (enter, enterOrSpace, escape, onKeyDown, preventDefaultOnKeyDown, space)
 
 import Basics.More exposing (apply)
 import Html.Styled exposing (Attribute, Html)
@@ -42,3 +42,8 @@ keyEq expectedKey msg =
 onKeyDown : List (JD.Decoder msg) -> Attribute msg
 onKeyDown decoders =
     E.on "keydown" (JD.oneOf decoders)
+
+
+preventDefaultOnKeyDown : List (JD.Decoder ( msg, Bool )) -> Attribute msg
+preventDefaultOnKeyDown decoders =
+    E.preventDefaultOn "keydown" (JD.oneOf decoders)
