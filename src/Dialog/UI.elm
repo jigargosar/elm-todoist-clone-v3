@@ -1,8 +1,10 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, InputConfig, actions, checkbox, input)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, ContainerConfig, InputConfig, actions, checkbox, container, input)
 
+import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events as E exposing (onClick, onInput)
+import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
+import Key
 import Px as PX
 import Styles exposing (..)
 import Theme
@@ -64,6 +66,38 @@ actions { submitTitle, canceled, submitted } =
         [ btnSubmit "Add" submitted
         , btnCancel canceled
         ]
+
+
+type alias ContainerConfig msg =
+    { submitted : msg, canceled : msg, title : String }
+
+
+container : ContainerConfig msg -> List (Html msg) -> List (Html msg)
+container { submitted, canceled, title } children =
+    let
+        formAttrs =
+            [ css
+                [ bgWhite
+                , Styles.bor 3
+                , w_ 300
+                , max_w_pct 100
+                ]
+            , A.class "shadow-1"
+            , Key.onKeyDown [ Key.escape canceled ]
+            , onSubmit submitted
+            ]
+    in
+    [ div
+        [ css
+            [ Css.fontSize Css.larger
+            , pa 3
+            , bo_b
+            , boc <| Theme.borderGray
+            ]
+        ]
+        [ text title ]
+    , div [ css [ ph 3 ] ] children
+    ]
 
 
 btnSubmit title action =
