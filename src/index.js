@@ -1,5 +1,5 @@
 import ports from './ports'
-import { append, reject, times, uniq, equals } from 'ramda'
+import { append, equals, isEmpty, reject, times, uniq } from 'ramda'
 
 const nanoid = require('nanoid')
 const Module = require('./Main.elm')
@@ -117,6 +117,7 @@ console.debug(pubs)
 function MonitorFocusOrClickOutside() {
   let domIdList = []
   const listener = e => {
+    if(isEmpty(domIdList)) return
     const target = e.target
     console.log(target, e.path, domIdList)
     domIdList.forEach(domId => {
