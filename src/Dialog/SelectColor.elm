@@ -66,7 +66,7 @@ selectPopupDomId =
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
     let
-        vv _ =
+        viewPopup _ =
             div
                 [ A.id selectPopupDomId
                 , css
@@ -91,7 +91,7 @@ view { toMsg } model =
             , attrIf (not model.open) (tabindex 0)
             ]
             [ viewItem model.color ]
-        , viewIf model.open vv
+        , viewIf model.open viewPopup
         ]
         |> H.map toMsg
 
