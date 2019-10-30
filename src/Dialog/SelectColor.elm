@@ -140,13 +140,13 @@ view ({ toMsg } as config) model =
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewSelectInput config model
-        , viewMaybe (\_ -> viewDropdown config) (getDropdownState model)
+        , viewMaybe (viewDropdown config) (getDropdownState model)
         ]
         |> H.map toMsg
 
 
-viewDropdown : Config msg -> Html Msg
-viewDropdown config =
+viewDropdown : Config msg -> DropdownState -> Html Msg
+viewDropdown config state =
     div
         [ A.id <| dropdownDomId config
         , css
