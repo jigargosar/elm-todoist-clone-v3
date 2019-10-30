@@ -4,7 +4,8 @@ import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DNDList
-import Dialog exposing (Dialog)
+import Dialog exposing (Dialog(..), DialogConfig)
+import Dialog.AddProject
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
@@ -33,6 +34,24 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
 import Url exposing (Url)
+
+
+
+-- DIALOG
+
+
+viewDialog : Dialog -> List (Html Msg)
+viewDialog dialog =
+    let
+        config =
+            { cancel = CloseDialog }
+    in
+    case dialog of
+        AddProjectDialog model ->
+            Dialog.AddProject.view config model
+
+        _ ->
+            []
 
 
 
@@ -600,7 +619,7 @@ popupView model =
 
 dialogView : Model -> List (Html Msg)
 dialogView model =
-    Dialog.view { cancel = CloseDialog } model.dialog
+    viewDialog model.dialog
 
 
 

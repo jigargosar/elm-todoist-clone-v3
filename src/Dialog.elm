@@ -1,4 +1,4 @@
-module Dialog exposing (Dialog(..), initAddProjectDialog, view)
+module Dialog exposing (Dialog(..), DialogConfig, initAddProjectDialog, view)
 
 import Dialog.AddProject
 import FilterId exposing (FilterId)
