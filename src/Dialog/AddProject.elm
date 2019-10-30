@@ -73,20 +73,7 @@ update { saved, canceled, toMsg } message model =
 
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
-    let
-        formAttrs =
-            [ css
-                [ bgWhite
-                , Styles.bor 3
-                , w_ 300
-                , max_w_pct 100
-                ]
-            , A.class "shadow-1"
-            , Key.onKeyDown [ Key.escape Cancel ]
-            , onSubmit Save
-            ]
-    in
-    Dialog.UI.container
+    Dialog.UI.viewForm
         { submitted = Save
         , canceled = Cancel
         , title = "Add Project"

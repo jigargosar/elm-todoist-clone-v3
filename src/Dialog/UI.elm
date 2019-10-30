@@ -1,4 +1,4 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, ContainerConfig, InputConfig, actions, checkbox, container, input)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, actions, checkbox, input, viewForm)
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
@@ -68,12 +68,12 @@ actions { submitTitle, canceled, submitted } =
         ]
 
 
-type alias ContainerConfig msg =
+type alias FormContainer msg =
     { submitted : msg, canceled : msg, title : String, content : List (Html msg), footer : Html msg }
 
 
-container : ContainerConfig msg -> Html msg
-container { submitted, canceled, title, content, footer } =
+viewForm : FormContainer msg -> Html msg
+viewForm { submitted, canceled, title, content, footer } =
     let
         formAttrs =
             [ css
