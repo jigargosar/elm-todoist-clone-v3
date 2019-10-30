@@ -1,5 +1,6 @@
 module Dialog.AddProject exposing (Config, Model, Msg, Saved, init, update, view)
 
+import Basics.More exposing (msgToCmd)
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (autofocus, css, type_, value)
@@ -52,16 +53,20 @@ update { saved, canceled, toMsg } message model =
     in
     case message of
         Save ->
-            ret
+            ( model
+            , Saved model.title model.color False
+                |> saved
+                |> msgToCmd
+            )
 
         Cancel ->
-            ret
+            ( model, msgToCmd canceled )
 
-        Title _ ->
-            ret
+        Title title ->
+            ( { model | title = title }, Cmd.none )
 
-        Color _ ->
-            ret
+        Color color ->
+            ( { model | color = color }, Cmd.none )
 
 
 view : Config msg -> Model -> List (Html msg)
