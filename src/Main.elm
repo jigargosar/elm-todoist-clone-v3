@@ -262,7 +262,7 @@ type Msg
     | PopupMsg PopupMsg
     | DialogMsg DialogMsg
     | DialogCanceled
-    | AddProjectDialogSaved Dialog.AddProject.Saved
+    | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked

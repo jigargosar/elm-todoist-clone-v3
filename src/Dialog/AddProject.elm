@@ -1,4 +1,4 @@
-module Dialog.AddProject exposing (Config, Model, Msg, Saved, init, update, view)
+module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, view)
 
 import Basics.More exposing (msgToCmd)
 import Css
@@ -17,7 +17,7 @@ type alias Model =
     }
 
 
-type alias Saved =
+type alias SavedWith =
     { title : String, color : String, isFavorite : Bool }
 
 
@@ -40,7 +40,7 @@ type Msg
 
 type alias Config msg =
     { toMsg : Msg -> msg
-    , saved : Saved -> msg
+    , saved : SavedWith -> msg
     , canceled : msg
     }
 
@@ -50,7 +50,7 @@ update { saved, canceled, toMsg } message model =
     case message of
         Save ->
             ( model
-            , Saved model.title model.color False
+            , SavedWith model.title model.color False
                 |> saved
                 |> msgToCmd
             )
