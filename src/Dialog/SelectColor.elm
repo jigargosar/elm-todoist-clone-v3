@@ -70,7 +70,7 @@ update ({ toMsg } as config) message model =
 
         Open ->
             ( { model | dropdown = DropdownOpened {} }
-            , focus config selectPopupDomId
+            , focus config selectDropdownDomId
             )
 
         Focused result ->
@@ -82,9 +82,9 @@ focus config domIdFromConfig =
     Focus.attempt (domIdFromConfig config) (config.toMsg << Focused)
 
 
-selectPopupDomId : Config msg -> String
-selectPopupDomId { domIdPrefix } =
-    domIdPrefix ++ "__select-color-popup"
+selectDropdownDomId : Config msg -> String
+selectDropdownDomId { domIdPrefix } =
+    domIdPrefix ++ "__select-color-dropdown"
 
 
 selectInputDomId : Config msg -> String
@@ -105,7 +105,7 @@ view ({ toMsg } as config) model =
 viewPopup : Config msg -> Html Msg
 viewPopup config =
     div
-        [ A.id <| selectPopupDomId config
+        [ A.id <| selectDropdownDomId config
         , css
             [ absolute
             , bgWhite
