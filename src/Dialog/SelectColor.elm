@@ -28,7 +28,7 @@ view model =
         [ css [ Px.pa 4, lh 1.5, boAll, boColor Theme.borderGray ]
         , tabindex 0
         ]
-        [ text "select colors" ]
+        [ text <| colorText model.color ]
 
 
 colorText color =
