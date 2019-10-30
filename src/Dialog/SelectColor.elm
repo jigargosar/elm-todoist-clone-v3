@@ -79,7 +79,7 @@ update ({ toMsg } as config) message model =
         CloseAndRestoreFocus ->
             ( { model | dropdown = DropdownClosed }
             , Cmd.batch
-                [ focus config selectInputDomId
+                [ focus config inputDomId
                 , unregisterDropdownFocusMonitor config
                 ]
             )
@@ -87,8 +87,8 @@ update ({ toMsg } as config) message model =
         Open ->
             ( { model | dropdown = DropdownOpened {} }
             , Cmd.batch
-                [ focus config selectDropdownDomId
-                , Focus.registerOnFocusOrClickOutSide (selectDropdownDomId config)
+                [ focus config dropdownDomId
+                , Focus.registerOnFocusOrClickOutSide (dropdownDomId config)
                 ]
             )
 
@@ -101,7 +101,7 @@ update ({ toMsg } as config) message model =
             )
 
         OnFocusOrClickOutside domId ->
-            case domId == selectDropdownDomId config of
+            case domId == dropdownDomId config of
                 True ->
                     ( { model | dropdown = DropdownClosed }
                     , unregisterDropdownFocusMonitor config
@@ -112,7 +112,7 @@ update ({ toMsg } as config) message model =
 
 
 unregisterDropdownFocusMonitor config =
-    Focus.unRegisterOnFocusOrClickOutSide (selectDropdownDomId config)
+    Focus.unRegisterOnFocusOrClickOutSide (dropdownDomId config)
 
 
 focus : Config msg -> (Config msg -> String) -> Cmd msg
@@ -120,13 +120,13 @@ focus config domIdFromConfig =
     Focus.attempt (domIdFromConfig config) (config.toMsg << Focused)
 
 
-selectDropdownDomId : Config msg -> String
-selectDropdownDomId { domIdPrefix } =
+dropdownDomId : Config msg -> String
+dropdownDomId { domIdPrefix } =
     domIdPrefix ++ "__select-color-dropdown"
 
 
-selectInputDomId : Config msg -> String
-selectInputDomId { domIdPrefix } =
+inputDomId : Config msg -> String
+inputDomId { domIdPrefix } =
     domIdPrefix ++ "__select-color-input"
 
 
@@ -135,15 +135,15 @@ view ({ toMsg } as config) model =
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewSelectInput config model
-        , viewMaybe (\_ -> viewPopup config) (getDropdownState model)
+        , viewMaybe (\_ -> viewDropdown config) (getDropdownState model)
         ]
         |> H.map toMsg
 
 
-viewPopup : Config msg -> Html Msg
-viewPopup config =
+viewDropdown : Config msg -> Html Msg
+viewDropdown config =
     div
-        [ A.id <| selectDropdownDomId config
+        [ A.id <| dropdownDomId config
         , css
             [ absolute
             , bgWhite
@@ -182,7 +182,7 @@ viewSelectInput config model =
                     []
     in
     div
-        (A.id (selectInputDomId config)
+        (A.id (inputDomId config)
             :: css [ boAll, boColor Theme.borderGray ]
             :: attrsWhenDropdownClosed
         )
