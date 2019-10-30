@@ -67,12 +67,15 @@ update ({ toMsg } as config) message model =
     case message of
         Close ->
             ( { model | dropdown = DropdownClosed }
-            , unregister config
+            , unregisterDropdownFocusMonitor config
             )
 
         CloseAndRestoreFocus ->
             ( { model | dropdown = DropdownClosed }
-            , Cmd.batch [ focus config selectInputDomId, unregister config ]
+            , Cmd.batch
+                [ focus config selectInputDomId
+                , unregisterDropdownFocusMonitor config
+                ]
             )
 
         Open ->
@@ -88,11 +91,11 @@ update ({ toMsg } as config) message model =
 
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
-            , unregister config
+            , unregisterDropdownFocusMonitor config
             )
 
 
-unregister config =
+unregisterDropdownFocusMonitor config =
     Focus.unRegisterOnFocusOrClickOutSide (selectDropdownDomId config)
 
 
