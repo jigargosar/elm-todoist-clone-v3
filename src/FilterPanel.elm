@@ -151,7 +151,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } filter =
                 :: class "material-icons"
                 :: handleAttrs
             )
-            [ text "folder" ]
+            [ text "filter_list" ]
         , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
