@@ -33,12 +33,14 @@ view model =
         [ css
             [ relative
             , lh 1.5
-            , boAll
-            , boColor Theme.borderGray
             ]
         ]
         [ div
-            [ case model.open of
+            [ css
+                [ boAll
+                , boColor Theme.borderGray
+                ]
+            , case model.open of
                 True ->
                     class ""
 
