@@ -1,9 +1,11 @@
 module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, view)
 
 import Basics.More exposing (msgToCmd)
+import Browser.Dom as Dom
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
+import Task
 
 
 type alias Model =
@@ -23,8 +25,8 @@ initial =
 
 
 init : Config msg -> ( Model, Cmd msg )
-init _ =
-    ( initial, Cmd.none )
+init { toMsg } =
+    ( initial, Dom.focus autofocusDomId |> Task.attempt AutoFocus |> Cmd.map toMsg )
 
 
 type Msg
@@ -33,6 +35,7 @@ type Msg
     | Title String
     | Color String
     | Favorite Bool
+    | AutoFocus (Result Dom.Error ())
 
 
 type alias Config msg =
@@ -63,6 +66,9 @@ update { saved, canceled, toMsg } message model =
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
+
+        AutoFocus _ ->
+            ( model, Cmd.none )
 
 
 autofocusDomId =
