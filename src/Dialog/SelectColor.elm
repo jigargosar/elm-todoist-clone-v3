@@ -7,6 +7,7 @@ import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onBlur)
+import Key
 import Log exposing (logError)
 import Px
 import Styles exposing (..)
@@ -89,6 +90,7 @@ view { toMsg } model =
         [ div
             [ css [ boAll, boColor Theme.borderGray ]
             , attrIf (not model.open) (tabindex 0)
+            , attrIf (not model.open) (Key.onKeyDown [ Key.enter Open ])
             ]
             [ viewItem model.color ]
         , viewIf model.open viewPopup

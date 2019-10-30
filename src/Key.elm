@@ -1,4 +1,4 @@
-module Key exposing (escape, onKeyDown)
+module Key exposing (enter, escape, onKeyDown, space)
 
 import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Events as E
@@ -8,6 +8,16 @@ import Json.Decode as JD
 escape : a -> JD.Decoder a
 escape =
     keyEq "Escape"
+
+
+enter : a -> JD.Decoder a
+enter =
+    keyEq "Enter"
+
+
+space : a -> JD.Decoder a
+space =
+    keyEq " "
 
 
 keyEq : String -> a -> JD.Decoder a
