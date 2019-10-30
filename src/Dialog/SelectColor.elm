@@ -94,8 +94,21 @@ view { toMsg } model =
                         else
                             [ tabindex 0
                             , [ Key.enter, Key.space, Key.arrowDown ]
-                                |> List.map (apply ( Open, True ))
-                                |> Key.preventDefaultOnKeyDown
+                                |> List.map
+                                    (apply
+                                        { message = Open
+                                        , preventDefault = True
+                                        , stopPropagation = False
+                                        }
+                                    )
+                                |> (::)
+                                    (Key.escape
+                                        { message = Open
+                                        , preventDefault = True
+                                        , stopPropagation = False
+                                        }
+                                    )
+                                |> Key.onKeyDownCustom
                             ]
                        )
                 )
