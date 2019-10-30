@@ -65,6 +65,10 @@ update { saved, canceled, toMsg } message model =
             ( { model | favorite = favorite }, Cmd.none )
 
 
+autofocusDomId =
+    "add-project-dialog-autofocus"
+
+
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
     Dialog.UI.viewForm
@@ -77,7 +81,7 @@ view { toMsg } model =
                 { labelText = "Project name"
                 , value = model.title
                 , changed = Title
-                , attrs = [ A.id "add-project-dialog-autofocus", autofocus True ]
+                , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.input
                 { labelText = "Project color"
