@@ -147,6 +147,16 @@ update ({ toMsg } as config) message model =
                 Nothing ->
                     ( model, Cmd.none )
 
+        OnFocusOrClickOutside domId ->
+            case domId == dropdownDomId config of
+                True ->
+                    ( { model | dropdown = DropdownClosed }
+                    , unregisterDropdownFocusMonitor config
+                    )
+
+                False ->
+                    ( model, Cmd.none )
+
         HighlightNext ->
             ( mapDropdownState
                 (\state ->
@@ -164,16 +174,6 @@ update ({ toMsg } as config) message model =
                 model
             , Cmd.none
             )
-
-        OnFocusOrClickOutside domId ->
-            case domId == dropdownDomId config of
-                True ->
-                    ( { model | dropdown = DropdownClosed }
-                    , unregisterDropdownFocusMonitor config
-                    )
-
-                False ->
-                    ( model, Cmd.none )
 
         Highlighted index ->
             ( mapDropdownState (\state -> { state | index = index }) model
