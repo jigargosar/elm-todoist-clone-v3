@@ -18,6 +18,7 @@ type CColor
     | Yellow
 
 
+allColors : List CColor
 allColors =
     [ Blue, Green, Yellow ]
 
