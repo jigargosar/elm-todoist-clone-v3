@@ -1,5 +1,6 @@
 module Dialog.SelectColor exposing (Model, initial, view)
 
+import Css exposing (hex)
 import Html.Styled exposing (Html, div, i, text)
 import Html.Styled.Attributes exposing (class, css, tabindex)
 import Px
@@ -34,18 +35,26 @@ view model =
 viewItem : CColor -> Html msg
 viewItem color =
     div [ css [ flex ] ]
-        [ i [ css [ Px.p2 0 4 ], class "material-icons" ] [ text "folder" ]
+        [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
 
 
-colorText color =
+colorText =
+    colorInfo >> Tuple.second
+
+
+colorCssValue =
+    colorInfo >> Tuple.first
+
+
+colorInfo color =
     case color of
         Blue ->
-            "Blue"
+            ( hex "#ddd", "Blue" )
 
         Green ->
-            "Green"
+            ( hex "#ddd", "Green" )
 
         Yellow ->
-            "Yellow"
+            ( hex "#ddd", "Yellow" )
