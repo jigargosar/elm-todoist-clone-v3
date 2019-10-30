@@ -97,7 +97,7 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , popup = Nothing
-            , dialog = Dialog.None
+            , dialog = Dialog.NoDialog
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
@@ -293,7 +293,7 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         CloseDialog ->
-            ( { model | dialog = Dialog.None }, Cmd.none )
+            ( { model | dialog = Dialog.NoDialog }, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
@@ -305,13 +305,13 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            ( { model | dialog = Dialog.initAddProject }, Cmd.none )
+            ( { model | dialog = Dialog.initAddProjectDialog }, Cmd.none )
 
         AddLabelClicked ->
-            ( { model | dialog = Dialog.AddLabel }, Cmd.none )
+            ( { model | dialog = Dialog.AddLabelDialog }, Cmd.none )
 
         AddFilterClicked ->
-            ( { model | dialog = Dialog.AddFilter }, Cmd.none )
+            ( { model | dialog = Dialog.AddFilterDialog }, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
@@ -437,7 +437,7 @@ updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model,
 updateProjectPopup projectId action model =
     case action of
         PopupView.EditProject ->
-            ( { model | dialog = Dialog.EditProject projectId }
+            ( { model | dialog = Dialog.EditProjectDialog projectId }
             , Cmd.none
             )
                 |> Return.map closePopup
@@ -451,7 +451,7 @@ updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd M
 updateLabelPopup labelId action model =
     case action of
         PopupView.EditLabel ->
-            ( { model | dialog = Dialog.EditLabel labelId }
+            ( { model | dialog = Dialog.EditLabelDialog labelId }
             , Cmd.none
             )
                 |> Return.map closePopup
@@ -461,7 +461,7 @@ updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cm
 updateFilterPopup filterId action model =
     case action of
         PopupView.EditFilter ->
-            ( { model | dialog = Dialog.EditFilter filterId }
+            ( { model | dialog = Dialog.EditFilterDialog filterId }
             , Cmd.none
             )
                 |> Return.map closePopup

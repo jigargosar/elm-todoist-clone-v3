@@ -1,4 +1,4 @@
-module Dialog exposing (Dialog(..), initAddProject, view)
+module Dialog exposing (Dialog(..), initAddProjectDialog, view)
 
 import Dialog.AddProject
 import FilterId exposing (FilterId)
@@ -7,19 +7,19 @@ import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 
 
-initAddProject : Dialog
-initAddProject =
-    AddProject <| Dialog.AddProject.initial
+initAddProjectDialog : Dialog
+initAddProjectDialog =
+    AddProjectDialog <| Dialog.AddProject.initial
 
 
 type Dialog
-    = AddProject Dialog.AddProject.Model
-    | EditProject ProjectId
-    | AddLabel
-    | EditLabel LabelId
-    | AddFilter
-    | EditFilter FilterId
-    | None
+    = AddProjectDialog Dialog.AddProject.Model
+    | EditProjectDialog ProjectId
+    | AddLabelDialog
+    | EditLabelDialog LabelId
+    | AddFilterDialog
+    | EditFilterDialog FilterId
+    | NoDialog
 
 
 type alias Config msg =
@@ -29,7 +29,7 @@ type alias Config msg =
 view : Config msg -> Dialog -> List (Html msg)
 view config dialog =
     case dialog of
-        AddProject model ->
+        AddProjectDialog model ->
             Dialog.AddProject.view config model
 
         _ ->
