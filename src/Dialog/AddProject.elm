@@ -1,4 +1,4 @@
-module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, view)
+module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, subscriptions, update, view)
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
@@ -51,6 +51,12 @@ type alias Config msg =
     , saved : SavedWith -> msg
     , canceled : msg
     }
+
+
+subscriptions : Config msg -> Model -> Sub msg
+subscriptions { toMsg } model =
+    SelectColor.subscriptions selectColorConfig model.selectColor
+        |> Sub.map toMsg
 
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
