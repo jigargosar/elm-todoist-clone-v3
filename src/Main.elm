@@ -4,7 +4,6 @@ import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DNDList
-import Dialog exposing (Dialog(..), DialogConfig)
 import Dialog.AddProject
 import Drawer
 import Filter exposing (Filter)
@@ -38,6 +37,21 @@ import Url exposing (Url)
 
 
 -- DIALOG
+
+
+type Dialog
+    = AddProjectDialog Dialog.AddProject.Model
+    | EditProjectDialog ProjectId
+    | AddLabelDialog
+    | EditLabelDialog LabelId
+    | AddFilterDialog
+    | EditFilterDialog FilterId
+    | NoDialog
+
+
+initAddProjectDialog : Dialog
+initAddProjectDialog =
+    AddProjectDialog <| Dialog.AddProject.initial
 
 
 viewDialog : Dialog -> List (Html Msg)
@@ -116,7 +130,7 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , popup = Nothing
-            , dialog = Dialog.NoDialog
+            , dialog = NoDialog
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
@@ -312,7 +326,7 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         CloseDialog ->
-            ( { model | dialog = Dialog.NoDialog }, Cmd.none )
+            ( { model | dialog = NoDialog }, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
@@ -324,13 +338,13 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            ( { model | dialog = Dialog.initAddProjectDialog }, Cmd.none )
+            ( { model | dialog = initAddProjectDialog }, Cmd.none )
 
         AddLabelClicked ->
-            ( { model | dialog = Dialog.AddLabelDialog }, Cmd.none )
+            ( { model | dialog = AddLabelDialog }, Cmd.none )
 
         AddFilterClicked ->
-            ( { model | dialog = Dialog.AddFilterDialog }, Cmd.none )
+            ( { model | dialog = AddFilterDialog }, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
@@ -456,7 +470,7 @@ updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model,
 updateProjectPopup projectId action model =
     case action of
         PopupView.EditProject ->
-            ( { model | dialog = Dialog.EditProjectDialog projectId }
+            ( { model | dialog = EditProjectDialog projectId }
             , Cmd.none
             )
                 |> Return.map closePopup
@@ -470,7 +484,7 @@ updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd M
 updateLabelPopup labelId action model =
     case action of
         PopupView.EditLabel ->
-            ( { model | dialog = Dialog.EditLabelDialog labelId }
+            ( { model | dialog = EditLabelDialog labelId }
             , Cmd.none
             )
                 |> Return.map closePopup
@@ -480,7 +494,7 @@ updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cm
 updateFilterPopup filterId action model =
     case action of
         PopupView.EditFilter ->
-            ( { model | dialog = Dialog.EditFilterDialog filterId }
+            ( { model | dialog = EditFilterDialog filterId }
             , Cmd.none
             )
                 |> Return.map closePopup
