@@ -5,7 +5,7 @@ import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
-import Html.Styled.Events exposing (onBlur)
+import Html.Styled.Events exposing (onBlur, onClick)
 import Key
 import Px
 import Styles exposing (..)
@@ -119,7 +119,10 @@ viewSelectInput config model =
                 []
 
             else
-                [ tabindex 0, Key.preventDefaultOnKeyDown keydownDecoders ]
+                [ tabindex 0
+                , Key.preventDefaultOnKeyDown keydownDecoders
+                , onClick Open
+                ]
     in
     div
         (A.id (selectInputDomId config)
