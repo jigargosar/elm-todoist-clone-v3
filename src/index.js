@@ -102,11 +102,13 @@ const app = Module.Elm.Main.init({
 
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
-  [],
+  ["focusOrClickOutside"],
   {
     logError: err => console.error('Elm Error', err),
-    registerOnFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
-    unregisterOnFocusOrClickOutSide: domId => monitorFocusOrClickOutside.remove(domId),
+    registerOnFocusOrClickOutSide: domId =>
+      monitorFocusOrClickOutside.add(domId),
+    unRegisterOnFocusOrClickOutSide: domId =>
+      monitorFocusOrClickOutside.remove(domId),
   },
   app,
 )
@@ -117,6 +119,15 @@ function MonitorFocusOrClickOutside() {
   const listener = e => {
     const target = e.target
     console.log(target, e.path, domIdList)
+    domIdList.forEach(domId => {
+      const monitorEl = document.getElementById(domId)
+      if (
+        monitorEl &&
+        (monitorEl === target || monitorEl.contains(target))
+      ) {
+        pubs.focusOrClickOutside(domId)
+      }
+    })
   }
   document.addEventListener('focusin', listener)
   document.addEventListener('click', listener)
@@ -124,8 +135,8 @@ function MonitorFocusOrClickOutside() {
     add(domId) {
       domIdList = uniq(append(domId, domIdList))
     },
-    remove(domId){
+    remove(domId) {
       domIdList = reject(equals(domId), domIdList)
-    }
+    },
   }
 }
