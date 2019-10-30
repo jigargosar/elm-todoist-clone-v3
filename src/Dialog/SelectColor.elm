@@ -94,39 +94,22 @@ view { toMsg } model =
         |> H.map toMsg
 
 
-selectInputKeyDownDecoder :
-    List
-        (JD.Decoder
-            { message : Msg
-            , preventDefault : Bool
-            , stopPropagation : Bool
-            }
-        )
-selectInputKeyDownDecoder =
-    [ Key.enter Open
-    , Key.space Open
-    , Key.arrowDown Open
-    , Key.escape Close
-    ]
-        |> List.map
-            (JD.map
-                (\message ->
-                    { message = message
-                    , preventDefault = True
-                    , stopPropagation = False
-                    }
-                )
-            )
-
-
 viewSelectInput model =
+    let
+        keydownDecoders =
+            [ Key.enter
+            , Key.space
+            , Key.arrowDown
+            ]
+                |> List.map (apply ( Open, True ))
+    in
     div
         (css [ boAll, boColor Theme.borderGray ]
             :: (if model.open then
                     []
 
                 else
-                    [ tabindex 0, Key.onKeyDownCustom selectInputKeyDownDecoder ]
+                    [ tabindex 0, Key.preventDefaultOnKeyDown keydownDecoders ]
                )
         )
         [ viewItem model.color ]
