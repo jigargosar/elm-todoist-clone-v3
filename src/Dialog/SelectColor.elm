@@ -1,6 +1,6 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
-import Basics.More exposing (attrIf, viewIf)
+import Basics.More exposing (apply, attrIf, viewIf)
 import Browser.Dom as Dom
 import Css exposing (hex)
 import Focus
@@ -93,7 +93,9 @@ view { toMsg } model =
 
                         else
                             [ tabindex 0
-                            , Key.preventDefaultOnKeyDown [ Key.enterOrSpace ( Open, True ) ]
+                            , [ Key.enter, Key.space, Key.arrowDown ]
+                                |> List.map (apply ( Open, True ))
+                                |> Key.preventDefaultOnKeyDown
                             ]
                        )
                 )

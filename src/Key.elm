@@ -1,4 +1,4 @@
-module Key exposing (enter, enterOrSpace, escape, onKeyDown, preventDefaultOnKeyDown, space)
+module Key exposing (arrowDown, enter, enterOrSpace, escape, onKeyDown, preventDefaultOnKeyDown, space)
 
 import Basics.More exposing (apply)
 import Html.Styled exposing (Attribute, Html)
@@ -19,6 +19,11 @@ enter =
 space : a -> JD.Decoder a
 space =
     keyEq " "
+
+
+arrowDown : a -> JD.Decoder a
+arrowDown =
+    keyEq "ArrowDown"
 
 
 enterOrSpace : a -> JD.Decoder a
