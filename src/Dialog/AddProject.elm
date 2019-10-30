@@ -2,8 +2,8 @@ module Dialog.AddProject exposing (Config, Model, Msg, Saved, init, update, view
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
-import Html.Styled.Attributes as A exposing (css, type_, value)
-import Html.Styled.Events exposing (onClick, onSubmit)
+import Html.Styled.Attributes as A exposing (autofocus, css, type_, value)
+import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Key
 import Px as PX
 import Styles exposing (..)
@@ -90,8 +90,8 @@ view { toMsg } model =
                 ]
                 [ text "Add Project" ]
             , div [ css [ ph 3 ] ]
-                [ formTextIpt "Project name" model.title
-                , formTextIpt "Project color" model.color
+                [ formTextIpt "Project name" (ipt model.title Title True)
+                , formTextIpt "Project color" (ipt model.color Color False)
                 , label [ css [ flex, itemsCenter, pv 2 ] ]
                     [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
                     , text "Add to favorites"
@@ -141,10 +141,12 @@ plainBtnStyles =
         ]
 
 
-ipt val =
+ipt val oi af =
     input
         [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
         , value val
+        , onInput oi
+        , autofocus af
         ]
         []
 
@@ -153,8 +155,8 @@ lbl title =
     span [ css [ lh 1.5, bold ] ] [ text title ]
 
 
-formTextIpt title val =
+formTextIpt title i =
     label [ css [ flex, flexColumn, pv 2 ] ]
         [ lbl title
-        , ipt val
+        , i
         ]
