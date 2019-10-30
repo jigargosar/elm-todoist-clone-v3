@@ -94,7 +94,7 @@ view { toMsg } model =
                 [ formTextIpt "Project name" (ipt model.title Title "add-project-dialog-autofocus" True)
                 , formTextIpt "Project color" (ipt model.color Color "" False)
                 , label [ css [ flex, itemsCenter, pv 2 ] ]
-                    [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
+                    [ div [ css [ pa 1 ] ] [ H.input [ css [], type_ "checkbox" ] [] ]
                     , text "Add to favorites"
                     ]
                 ]
@@ -124,6 +124,28 @@ overlayStyles =
         ]
 
 
+type alias InputConfig msg =
+    { labelText : String
+    , value : String
+    , changed : String -> msg
+    , attrs : List (Attribute msg)
+    }
+
+
+input { labelText, value, changed, attrs } =
+    label [ css [ flex, flexColumn, pv 2 ] ]
+        [ lbl labelText
+        , H.input
+            ([ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
+             , A.value value
+             , onInput changed
+             ]
+                ++ attrs
+            )
+            []
+        ]
+
+
 btnSubmit title =
     button [ css [ plainBtnStyles ] ] [ text title ]
 
@@ -143,7 +165,7 @@ plainBtnStyles =
 
 
 ipt val oi id af =
-    input
+    H.input
         [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
         , A.id id
         , value val
