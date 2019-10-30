@@ -80,38 +80,42 @@ update ({ toMsg } as config) message model =
             ( { model | dropdown = DropdownClosed }
             , Cmd.batch
                 [ focus config inputDomId
-                , unregisterFocusMonitor config
+                , unregisterDropdownFocusMonitor config
                 ]
             )
 
         Open ->
             ( { model | dropdown = DropdownOpened {} }
-            , Cmd.batch
-                [ focus config dropdownDomId
-                , Focus.registerOnFocusOrClickOutSide (dropdownDomId config)
-                ]
+            , focus config dropdownDomId
             )
 
         Focused result ->
-            ( model, Focus.logIfError result )
+            ( model
+            , case result of
+                Ok () ->
+                    Focus.registerOnFocusOrClickOutSide (dropdownDomId config)
+
+                Err focusError ->
+                    Focus.logError focusError
+            )
 
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
-            , unregisterFocusMonitor config
+            , unregisterDropdownFocusMonitor config
             )
 
         OnFocusOrClickOutside domId ->
             case domId == dropdownDomId config of
                 True ->
                     ( { model | dropdown = DropdownClosed }
-                    , unregisterFocusMonitor config
+                    , unregisterDropdownFocusMonitor config
                     )
 
                 False ->
                     ( model, Cmd.none )
 
 
-unregisterFocusMonitor config =
+unregisterDropdownFocusMonitor config =
     Focus.unRegisterOnFocusOrClickOutSide (dropdownDomId config)
 
 
