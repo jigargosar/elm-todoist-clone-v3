@@ -186,8 +186,8 @@ viewSelectInput config model =
                 DropdownOpened _ ->
                     []
 
-        color =
-            model.color
+        ( cssColor, colorLabel ) =
+            colorInfo model.color
     in
     div
         (A.id (inputDomId config)
@@ -195,8 +195,8 @@ viewSelectInput config model =
             :: attrsWhenDropdownClosed
         )
         [ div [ css [ flex, Px.pa 4 ] ]
-            [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
-            , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
+            [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ] [ text "folder" ]
+            , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
             ]
         ]
 
