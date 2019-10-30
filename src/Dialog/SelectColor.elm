@@ -133,7 +133,7 @@ viewSelectInput config model =
             ]
                 |> List.map (apply ( Open, True ))
 
-        attrsWhenPopupClosed =
+        attrsWhenDropdownClosed =
             case model.dropdown of
                 DropdownClosed ->
                     [ tabindex 0
@@ -147,7 +147,7 @@ viewSelectInput config model =
     div
         (A.id (selectInputDomId config)
             :: css [ boAll, boColor Theme.borderGray ]
-            :: attrsWhenPopupClosed
+            :: attrsWhenDropdownClosed
         )
         [ viewItem model.color ]
 
