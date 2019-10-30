@@ -22,11 +22,11 @@ type Dialog
     | NoDialog
 
 
-type alias Config msg =
+type alias DialogConfig msg =
     { cancel : msg }
 
 
-view : Config msg -> Dialog -> List (Html msg)
+view : DialogConfig msg -> Dialog -> List (Html msg)
 view config dialog =
     case dialog of
         AddProjectDialog model ->
