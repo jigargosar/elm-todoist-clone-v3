@@ -47,6 +47,8 @@ type Msg
     | Focused Focus.FocusResult
     | Selected CColor
     | SelectHighlighted
+    | HighlightPrevious
+    | HighlightNext
     | Highlighted Int
     | OnFocusOrClickOutside String
 
@@ -127,6 +129,24 @@ update ({ toMsg } as config) message model =
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
             , unregisterDropdownFocusMonitor config
+            )
+
+        HighlightNext ->
+            ( mapDropdownState
+                (\state ->
+                    { state | index = state.index + 1 |> modBy (List.length allColors) }
+                )
+                model
+            , Cmd.none
+            )
+
+        HighlightPrevious ->
+            ( mapDropdownState
+                (\state ->
+                    { state | index = state.index - 1 |> modBy (List.length allColors) }
+                )
+                model
+            , Cmd.none
             )
 
         SelectHighlighted ->
@@ -237,6 +257,8 @@ viewDropdown config state =
         , Key.stopPropagationOnKeyDown
             [ Key.escape ( CloseAndRestoreFocus, True )
             , Key.enter ( SelectHighlighted, True )
+            , Key.arrowDown ( HighlightPrevious, True )
+            , Key.arrowUp ( HighlightNext, True )
             ]
         , tabindex 0
         ]
