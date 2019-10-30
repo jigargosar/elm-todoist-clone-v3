@@ -185,13 +185,20 @@ viewSelectInput config model =
 
                 DropdownOpened _ ->
                     []
+
+        color =
+            model.color
     in
     div
         (A.id (inputDomId config)
             :: css [ boAll, boColor Theme.borderGray ]
             :: attrsWhenDropdownClosed
         )
-        [ viewItem model.color ]
+        [ div [ css [ flex, Px.pa 4 ] ]
+            [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
+            , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
+            ]
+        ]
 
 
 viewItem : CColor -> Html Msg
