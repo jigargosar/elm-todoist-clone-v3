@@ -41,8 +41,7 @@ type alias Model =
 
 
 type Msg
-    = Close
-    | CloseAndRestoreFocus
+    = CloseAndRestoreFocus
     | Open
     | Focused Focus.FocusResult
     | Selected CColor
@@ -77,11 +76,6 @@ subscriptions { toMsg } model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     case message of
-        Close ->
-            ( { model | dropdown = DropdownClosed }
-            , unregisterDropdownFocusMonitor config
-            )
-
         CloseAndRestoreFocus ->
             ( { model | dropdown = DropdownClosed }
             , Cmd.batch
@@ -160,8 +154,7 @@ viewPopup config =
             , boColor Theme.borderGray
             , z_ 1
             ]
-        , onBlur Close
-        , Key.stopPropagationOnKeyDown [ Key.escape ( Close, True ) ]
+        , Key.stopPropagationOnKeyDown [ Key.escape ( CloseAndRestoreFocus, True ) ]
         , tabindex 0
         ]
         (List.map viewItem allColors)
