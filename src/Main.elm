@@ -49,9 +49,10 @@ type Dialog
     | NoDialog
 
 
-initAddProjectDialog : Dialog
+initAddProjectDialog : ( Dialog, Cmd msg )
 initAddProjectDialog =
-    AddProjectDialog <| Dialog.AddProject.initial
+    Dialog.AddProject.init
+        |> Tuple.mapFirst AddProjectDialog
 
 
 viewDialog : Dialog -> List (Html Msg)
@@ -338,7 +339,8 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            ( { model | dialog = initAddProjectDialog }, Cmd.none )
+            initAddProjectDialog
+                |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
 
         AddLabelClicked ->
             ( { model | dialog = AddLabelDialog }, Cmd.none )

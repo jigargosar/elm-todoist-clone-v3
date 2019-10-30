@@ -1,4 +1,4 @@
-module Dialog.AddProject exposing (Model, initial, view)
+module Dialog.AddProject exposing (Model, init, initial, view)
 
 import Css
 import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
@@ -19,6 +19,11 @@ type alias Model =
 initial : Model
 initial =
     Model "" ""
+
+
+init : ( Model, Cmd msg )
+init =
+    ( initial, Cmd.none )
 
 
 view : { a | cancel : msg } -> Model -> List (Html msg)
