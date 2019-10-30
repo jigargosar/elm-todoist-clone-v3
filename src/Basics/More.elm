@@ -103,3 +103,7 @@ viewIf bool view_ =
 
     else
         text ""
+
+
+apply =
+    (|>)

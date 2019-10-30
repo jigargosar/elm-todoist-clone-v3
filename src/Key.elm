@@ -1,5 +1,6 @@
-module Key exposing (enter, escape, onKeyDown, space)
+module Key exposing (enter, enterOrSpace, escape, onKeyDown, space)
 
+import Basics.More exposing (apply)
 import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Events as E
 import Json.Decode as JD
@@ -18,6 +19,11 @@ enter =
 space : a -> JD.Decoder a
 space =
     keyEq " "
+
+
+enterOrSpace : a -> JD.Decoder a
+enterOrSpace msg =
+    [ enter, space ] |> List.map (apply msg) |> JD.oneOf
 
 
 keyEq : String -> a -> JD.Decoder a

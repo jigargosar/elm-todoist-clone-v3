@@ -90,7 +90,7 @@ view { toMsg } model =
         [ div
             [ css [ boAll, boColor Theme.borderGray ]
             , attrIf (not model.open) (tabindex 0)
-            , attrIf (not model.open) (Key.onKeyDown [ Key.enter Open ])
+            , attrIf (not model.open) (Key.onKeyDown [ Key.enterOrSpace Open ])
             ]
             [ viewItem model.color ]
         , viewIf model.open viewPopup
