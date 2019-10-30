@@ -60,6 +60,7 @@ view model =
                         , boAll
                         , boColor Theme.borderGray
                         ]
+                    , tabindex 0
                     ]
                     (List.map viewItem allColors)
 
