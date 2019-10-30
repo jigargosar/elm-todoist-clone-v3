@@ -82,6 +82,7 @@ view { toMsg } model =
         |> H.map toMsg
 
 
+viewPopup : () -> Html Msg
 viewPopup _ =
     div
         [ A.id selectPopupDomId
