@@ -103,8 +103,8 @@ const app = Module.Elm.Main.init({
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
   [],
-  { logError: err => console.error('Elm Error', err) },
   {
+    logError: err => console.error('Elm Error', err),
     onFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
   },
   app,
