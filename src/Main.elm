@@ -55,8 +55,8 @@ type DialogMsg
 
 addProjectDialogConfig : Dialog.AddProject.Config Msg
 addProjectDialogConfig =
-    { canceled = CloseDialog
-    , saved = AddProjectDialogSaveClicked
+    { canceled = DialogCanceled
+    , saved = AddProjectDialogSaved
     , toMsg = DialogMsg << AddProjectDialogMsg
     }
 
@@ -261,8 +261,8 @@ type Msg
     | ClosePopup
     | PopupMsg PopupMsg
     | DialogMsg DialogMsg
-    | CloseDialog
-    | AddProjectDialogSaveClicked Dialog.AddProject.Saved
+    | DialogCanceled
+    | AddProjectDialogSaved Dialog.AddProject.Saved
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked
@@ -340,7 +340,7 @@ update message model =
         PopupMsg msg ->
             updateWithPopupKind (updatePopup msg) model
 
-        CloseDialog ->
+        DialogCanceled ->
             ( { model | dialog = NoDialog }, Cmd.none )
 
         DialogMsg msg ->
@@ -351,7 +351,7 @@ update message model =
                 _ ->
                     ret
 
-        AddProjectDialogSaveClicked _ ->
+        AddProjectDialogSaved _ ->
             ret
 
         ToggleProjectPanel ->
