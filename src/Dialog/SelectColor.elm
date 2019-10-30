@@ -67,31 +67,32 @@ selectPopupDomId =
 
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
-    let
-        viewPopup _ =
-            div
-                [ A.id selectPopupDomId
-                , css
-                    [ absolute
-                    , bgWhite
-                    , w_100
-                    , left_0
-                    , top_0
-                    , boAll
-                    , boColor Theme.borderGray
-                    , z_ 1
-                    ]
-                , onBlur Close
-                , tabindex 0
-                ]
-                (List.map viewItem allColors)
-    in
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewSelectInput model
         , viewIf model.open viewPopup
         ]
         |> H.map toMsg
+
+
+viewPopup _ =
+    div
+        [ A.id selectPopupDomId
+        , css
+            [ absolute
+            , bgWhite
+            , w_100
+            , left_0
+            , top_0
+            , boAll
+            , boColor Theme.borderGray
+            , z_ 1
+            ]
+        , onBlur Close
+        , Key.stopPropagationOnKeyDown [ Key.escape ( Close, True ) ]
+        , tabindex 0
+        ]
+        (List.map viewItem allColors)
 
 
 viewSelectInput model =
