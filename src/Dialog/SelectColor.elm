@@ -48,7 +48,7 @@ update { toMsg } message model =
 
 
 view : Config msg -> Model -> Html msg
-view config model =
+view { toMsg } model =
     div
         [ css
             [ relative
@@ -89,7 +89,7 @@ view config model =
             False ->
                 text ""
         ]
-        |> H.map config.toMsg
+        |> H.map toMsg
 
 
 viewItem : CColor -> Html msg

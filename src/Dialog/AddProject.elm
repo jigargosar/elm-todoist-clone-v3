@@ -74,7 +74,8 @@ update { saved, canceled, toMsg } message model =
 
         SelectColor msg ->
             SelectColor.update selectColorConfig msg model.selectColor
-                |> Tuple.mapFirst (\selectColor -> { model | selectColor = selectColor })
+                |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
+                    (Cmd.map toMsg)
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
