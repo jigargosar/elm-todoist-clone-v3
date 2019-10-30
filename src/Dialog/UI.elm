@@ -72,7 +72,7 @@ type alias ContainerConfig msg =
     { submitted : msg, canceled : msg, title : String }
 
 
-container : ContainerConfig msg -> List (Html msg) -> List (Html msg)
+container : ContainerConfig msg -> List (Html msg) -> Html msg
 container { submitted, canceled, title } children =
     let
         formAttrs =
@@ -86,18 +86,36 @@ container { submitted, canceled, title } children =
             , Key.onKeyDown [ Key.escape canceled ]
             , onSubmit submitted
             ]
-    in
-    [ div
-        [ css
-            [ Css.fontSize Css.larger
-            , pa 3
-            , bo_b
-            , boc <| Theme.borderGray
+
+        formChildren =
+            [ div
+                [ css
+                    [ Css.fontSize Css.larger
+                    , pa 3
+                    , bo_b
+                    , boc <| Theme.borderGray
+                    ]
+                ]
+                [ text title ]
+            , div [ css [ ph 3 ] ] children
             ]
+    in
+    div [ css [ overlayStyles ] ]
+        [ H.form formAttrs formChildren ]
+
+
+overlayStyles =
+    batch
+        [ fixed
+        , absFill
+        , flex
+        , itemsCenter
+        , justifyCenter
+        , bg (Css.hsla 0 0 0 0.2)
+
+        --                 , bg (Css.hsla 0 1 1 0.6)
+        , z_ 10
         ]
-        [ text title ]
-    , div [ css [ ph 3 ] ] children
-    ]
 
 
 btnSubmit title action =

@@ -118,8 +118,7 @@ view { toMsg } model =
             , Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
             ]
     in
-    [ div [ css [ overlayStyles ] ]
-        [ form formAttrs formChildren ]
+    [ Dialog.UI.container { submitted = Save, canceled = Cancel, title = "Add Project" } formChildren
         |> H.map toMsg
     ]
 
