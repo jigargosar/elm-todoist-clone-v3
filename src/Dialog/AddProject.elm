@@ -2,6 +2,7 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, 
 
 import Basics.More exposing (msgToCmd)
 import Css
+import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (autofocus, css, type_, value)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -91,13 +92,13 @@ view { toMsg } model =
                 ]
                 [ text "Add Project" ]
             , div [ css [ ph 3 ] ]
-                [ input
+                [ Dialog.UI.input
                     { labelText = "Project name"
                     , value = model.title
                     , changed = Title
                     , attrs = [ A.id "add-project-dialog-autofocus", autofocus True ]
                     }
-                , input
+                , Dialog.UI.input
                     { labelText = "Project color"
                     , value = model.color
                     , changed = Color
@@ -131,28 +132,6 @@ overlayStyles =
 
         --                 , bg (Css.hsla 0 1 1 0.6)
         , z_ 10
-        ]
-
-
-type alias InputConfig msg =
-    { labelText : String
-    , value : String
-    , changed : String -> msg
-    , attrs : List (Attribute msg)
-    }
-
-
-input { labelText, value, changed, attrs } =
-    label [ css [ flex, flexColumn, pv 2 ] ]
-        [ lbl labelText
-        , H.input
-            ([ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
-             , A.value value
-             , onInput changed
-             ]
-                ++ attrs
-            )
-            []
         ]
 
 
