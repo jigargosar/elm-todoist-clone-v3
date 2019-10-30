@@ -139,10 +139,46 @@ view : Config msg -> Model -> Html msg
 view ({ toMsg } as config) model =
     div
         [ css [ relative, lh 1.5 ] ]
-        [ viewSelectInput config model
+        [ viewInput config model
         , viewMaybe (viewDropdown config) (getDropdownState model)
         ]
         |> H.map toMsg
+
+
+viewInput : Config msg -> Model -> Html Msg
+viewInput config model =
+    let
+        keydownDecoders =
+            [ Key.enter
+            , Key.space
+            , Key.arrowDown
+            ]
+                |> List.map (apply ( Open, True ))
+
+        attrsWhenDropdownClosed =
+            case model.dropdown of
+                DropdownClosed ->
+                    [ Key.preventDefaultOnKeyDown keydownDecoders
+                    , onClick Open
+                    , tabindex 0
+                    ]
+
+                DropdownOpened _ ->
+                    []
+
+        ( cssColor, colorLabel ) =
+            colorInfo model.color
+    in
+    div
+        (A.id (inputDomId config)
+            :: css [ boAll, boColor Theme.borderGray ]
+            :: attrsWhenDropdownClosed
+        )
+        [ div [ css [ flex, Px.pa 4 ] ]
+            [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ] [ text "folder" ]
+            , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
+            ]
+        ]
 
 
 viewDropdown : Config msg -> DropdownState -> Html Msg
@@ -175,42 +211,6 @@ viewItem color =
         [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ]
             [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
-        ]
-
-
-viewSelectInput : Config msg -> Model -> Html Msg
-viewSelectInput config model =
-    let
-        keydownDecoders =
-            [ Key.enter
-            , Key.space
-            , Key.arrowDown
-            ]
-                |> List.map (apply ( Open, True ))
-
-        attrsWhenDropdownClosed =
-            case model.dropdown of
-                DropdownClosed ->
-                    [ Key.preventDefaultOnKeyDown keydownDecoders
-                    , onClick Open
-                    , tabindex 0
-                    ]
-
-                DropdownOpened _ ->
-                    []
-
-        ( cssColor, colorLabel ) =
-            colorInfo model.color
-    in
-    div
-        (A.id (inputDomId config)
-            :: css [ boAll, boColor Theme.borderGray ]
-            :: attrsWhenDropdownClosed
-        )
-        [ div [ css [ flex, Px.pa 4 ] ]
-            [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ] [ text "folder" ]
-            , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
-            ]
         ]
 
 
