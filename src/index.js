@@ -121,7 +121,10 @@ function MonitorFocusOrClickOutside() {
   document.addEventListener('click', listener)
   return {
     add(domId) {
-      domIdList.push(domId)
+      if(domIdList.indexOf(domId) === -1)
+      {
+        domIdList.push(domId)
+      }
     },
   }
 }
