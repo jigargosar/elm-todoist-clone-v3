@@ -352,7 +352,7 @@ update message model =
                     ret
 
         AddProjectDialogSaved _ ->
-            ret
+            ( { model | dialog = NoDialog }, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
