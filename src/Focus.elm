@@ -1,4 +1,4 @@
-module Focus exposing (FocusResult, attempt, logError)
+module Focus exposing (FocusResult, attempt, logError, logIfError)
 
 import Browser.Dom as Dom
 import Log
@@ -17,3 +17,13 @@ attempt domId msg =
 logError : Dom.Error -> Cmd msg
 logError (Dom.NotFound domId) =
     Log.logError <| "focus failed: " ++ domId
+
+
+logIfError : FocusResult -> Cmd msg
+logIfError result =
+    case result of
+        Ok () ->
+            Cmd.none
+
+        Err error ->
+            logError error

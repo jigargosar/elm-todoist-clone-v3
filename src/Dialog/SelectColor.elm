@@ -54,12 +54,7 @@ update { toMsg } message model =
             )
 
         PopupFocused result ->
-            case result of
-                Ok () ->
-                    ( model, Cmd.none )
-
-                Err error ->
-                    ( model, Focus.logError error )
+            ( model, Focus.logIfError result )
 
 
 selectPopupDomId : String
