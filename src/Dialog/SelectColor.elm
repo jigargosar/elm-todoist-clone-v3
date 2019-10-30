@@ -1,6 +1,6 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
-import Basics.More exposing (apply, viewIf)
+import Basics.More exposing (apply, viewIf, viewMaybe)
 import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
@@ -24,11 +24,20 @@ allColors =
 
 initial : Model
 initial =
-    Model Blue True
+    Model Blue DropdownClosed
+
+
+type Dropdown
+    = DropdownClosed
+    | DropdownOpened DropdownState
+
+
+type alias DropdownState =
+    {}
 
 
 type alias Model =
-    { color : CColor, popupOpen : Bool }
+    { color : CColor, dropdown : Dropdown }
 
 
 type Msg
@@ -41,16 +50,26 @@ type alias Config msg =
     { toMsg : Msg -> msg, domIdPrefix : String }
 
 
+getDropdownState : Model -> Maybe DropdownState
+getDropdownState model =
+    case model.dropdown of
+        DropdownClosed ->
+            Nothing
+
+        DropdownOpened state ->
+            Just state
+
+
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     case message of
         Close ->
-            ( { model | popupOpen = False }
+            ( { model | dropdown = DropdownClosed }
             , focus config selectInputDomId
             )
 
         Open ->
-            ( { model | popupOpen = True }
+            ( { model | dropdown = DropdownOpened {} }
             , focus config selectPopupDomId
             )
 
@@ -78,7 +97,7 @@ view ({ toMsg } as config) model =
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewSelectInput config model
-        , viewIf model.popupOpen (\_ -> viewPopup config)
+        , viewMaybe (\_ -> viewPopup config) (getDropdownState model)
         ]
         |> H.map toMsg
 
@@ -115,14 +134,15 @@ viewSelectInput config model =
                 |> List.map (apply ( Open, True ))
 
         attrsWhenPopupClosed =
-            if model.popupOpen then
-                []
+            case model.dropdown of
+                DropdownClosed ->
+                    [ tabindex 0
+                    , Key.preventDefaultOnKeyDown keydownDecoders
+                    , onClick Open
+                    ]
 
-            else
-                [ tabindex 0
-                , Key.preventDefaultOnKeyDown keydownDecoders
-                , onClick Open
-                ]
+                DropdownOpened _ ->
+                    []
     in
     div
         (A.id (selectInputDomId config)

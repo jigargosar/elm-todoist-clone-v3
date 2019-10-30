@@ -105,5 +105,16 @@ viewIf bool view_ =
         text ""
 
 
+viewMaybe : (a -> Html msg) -> Maybe a -> Html msg
+viewMaybe func maybe =
+    case maybe of
+        Just value ->
+            func value
+
+        Nothing ->
+            text ""
+
+
+apply : a -> (a -> b) -> b
 apply =
     (|>)
