@@ -148,7 +148,7 @@ fgWhite =
 
 
 b__main =
-    boc (grayL 0.95)
+    boColor (grayL 0.95)
 
 
 headerHeightPx =

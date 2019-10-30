@@ -201,7 +201,7 @@ viewDivider =
     div
         [ css
             [ bo_b
-            , boc <| grayL 0.9
+            , boColor <| grayL 0.9
             , Css.marginTop <| Css.px 8
             , Css.marginBottom <| Css.px 8
             ]

@@ -23,7 +23,7 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
             , flex
             , itemsCenter
             , bo_b
-            , boc Theme.borderGray
+            , boColor Theme.borderGray
             , hover [ bgGrayL 0.95 ]
             ]
         ]

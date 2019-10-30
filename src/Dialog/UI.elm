@@ -23,7 +23,7 @@ input { labelText, value, changed, attrs } =
     label [ css [ flex, flexColumn, pv 2 ] ]
         [ span [ css [ lh 1.5, bold ] ] [ text labelText ]
         , H.input
-            ([ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
+            ([ css [ lh 1.5, pa 1, boAll, boColor <| Theme.borderGray ]
              , A.value value
              , onInput changed
              ]
@@ -90,7 +90,7 @@ viewForm { submit, submitTitle, cancel, title, content } =
                     [ Css.fontSize Css.larger
                     , pa 3
                     , bo_b
-                    , boc <| Theme.borderGray
+                    , boColor <| Theme.borderGray
                     ]
                 ]
                 [ text title ]
@@ -102,7 +102,7 @@ viewForm { submit, submitTitle, cancel, title, content } =
             ]
 
         footer =
-            div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
+            div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
                 [ btnSubmit "Add" submit
                 , btnCancel cancel
                 ]

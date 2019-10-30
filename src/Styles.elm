@@ -394,8 +394,8 @@ bo_r =
     Css.batch [ Css.borderRightStyle Css.solid, Css.borderRightWidth (Css.px 1) ]
 
 
-bo_a : Css.Style
-bo_a =
+boAll : Css.Style
+boAll =
     Css.batch [ Css.borderStyle Css.solid, Css.borderWidth (Css.px 1) ]
 
 
@@ -418,7 +418,7 @@ bo_t =
     Css.batch [ Css.borderTopStyle Css.solid, Css.borderTopWidth (Css.px 1) ]
 
 
-boc =
+boColor =
     Css.borderColor
 
 
