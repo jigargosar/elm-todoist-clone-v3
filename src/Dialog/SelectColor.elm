@@ -210,7 +210,7 @@ viewItem state index color =
         highlightedStyles =
             case state.index == index of
                 True ->
-                    []
+                    [ bgGrayL 0.8 ]
 
                 False ->
                     []
