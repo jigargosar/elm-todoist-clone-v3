@@ -150,6 +150,7 @@ viewSelectInput config model =
                 DropdownClosed ->
                     [ Key.preventDefaultOnKeyDown keydownDecoders
                     , onClick Open
+                    , tabindex 0
                     ]
 
                 DropdownOpened _ ->
@@ -157,7 +158,6 @@ viewSelectInput config model =
     in
     div
         (A.id (selectInputDomId config)
-            :: tabindex 0
             :: css [ boAll, boColor Theme.borderGray ]
             :: attrsWhenDropdownClosed
         )
