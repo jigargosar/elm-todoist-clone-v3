@@ -71,7 +71,7 @@ update { saved, canceled, toMsg } message model =
             ( { model | favorite = favorite }, Cmd.none )
 
 
-view : Config msg -> Model -> List (Html msg)
+view : Config msg -> Model -> Html msg
 view { toMsg } model =
     let
         formAttrs =
@@ -118,9 +118,8 @@ view { toMsg } model =
             , Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
             ]
     in
-    [ Dialog.UI.container { submitted = Save, canceled = Cancel, title = "Add Project" } formChildren
+    Dialog.UI.container { submitted = Save, canceled = Cancel, title = "Add Project" } formChildren
         |> H.map toMsg
-    ]
 
 
 overlayStyles =

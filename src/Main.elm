@@ -71,7 +71,7 @@ viewDialog : Dialog -> List (Html Msg)
 viewDialog dialog =
     case dialog of
         AddProjectDialog model ->
-            Dialog.AddProject.view addProjectDialogConfig model
+            [ Dialog.AddProject.view addProjectDialogConfig model ]
 
         _ ->
             []
