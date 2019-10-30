@@ -158,9 +158,9 @@ viewSelectInput config model =
         [ viewItem model.color ]
 
 
-viewItem : CColor -> Html msg
+viewItem : CColor -> Html Msg
 viewItem color =
-    div [ css [ flex, Px.pa 4 ] ]
+    div [ css [ flex, Px.pa 4 ], onClick <| Selected color ]
         [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
