@@ -34,7 +34,7 @@ view model =
 
 viewItem : CColor -> Html msg
 viewItem color =
-    div [ css [ flex, relative ] ]
+    div [ css [ flex ] ]
         [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
