@@ -1,6 +1,6 @@
 module Dialog.SelectColor exposing (Model, initial, view)
 
-import Html.Styled exposing (div, text)
+import Html.Styled exposing (Html, div, text)
 import Html.Styled.Attributes exposing (css, tabindex)
 import Px
 import Styles exposing (..)
@@ -22,7 +22,7 @@ type alias Model =
     { color : CColor, open : Bool }
 
 
-view : Model -> Html.Styled.Html msg
+view : Model -> Html msg
 view model =
     div
         [ css [ Px.pa 4, lh 1.5, boAll, boColor Theme.borderGray ]
@@ -31,7 +31,7 @@ view model =
         [ viewItem model.color ]
 
 
-viewItem : CColor -> Html.Styled.Html msg
+viewItem : CColor -> Html msg
 viewItem color =
     div [] [ text <| colorText color ]
 
