@@ -80,7 +80,7 @@ view { toMsg } model =
             , onSubmit Save
             ]
 
-        innerView =
+        formChildren =
             [ div
                 [ css
                     [ Css.fontSize Css.larger
@@ -105,7 +105,7 @@ view { toMsg } model =
             ]
     in
     [ div [ css [ overlayStyles ] ]
-        [ form formAttrs innerView ]
+        [ form formAttrs formChildren ]
         |> H.map toMsg
     ]
 
