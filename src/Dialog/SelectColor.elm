@@ -65,16 +65,9 @@ selectPopupDomId =
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
     div
-        [ css
-            [ relative
-            , lh 1.5
-            ]
-        ]
+        [ css [ relative, lh 1.5 ] ]
         [ div
-            [ css
-                [ boAll
-                , boColor Theme.borderGray
-                ]
+            [ css [ boAll, boColor Theme.borderGray ]
             , case model.open of
                 True ->
                     class ""
