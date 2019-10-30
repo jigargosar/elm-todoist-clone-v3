@@ -47,10 +47,6 @@ type alias Config msg =
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update { saved, canceled, toMsg } message model =
-    let
-        ret =
-            ( model, Cmd.none )
-    in
     case message of
         Save ->
             ( model
