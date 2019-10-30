@@ -91,8 +91,8 @@ view { toMsg } model =
                 ]
                 [ text "Add Project" ]
             , div [ css [ ph 3 ] ]
-                [ formTextIpt "Project name" (ipt model.title Title True)
-                , formTextIpt "Project color" (ipt model.color Color False)
+                [ formTextIpt "Project name" (ipt model.title Title "add-project-dialog-autofocus" True)
+                , formTextIpt "Project color" (ipt model.color Color "" False)
                 , label [ css [ flex, itemsCenter, pv 2 ] ]
                     [ div [ css [ pa 1 ] ] [ input [ css [], type_ "checkbox" ] [] ]
                     , text "Add to favorites"
@@ -142,7 +142,7 @@ plainBtnStyles =
         ]
 
 
-ipt val oi af =
+ipt val oi id af =
     input
         [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
         , value val
