@@ -600,7 +600,7 @@ popupView model =
 
 dialogView : Model -> List (Html Msg)
 dialogView model =
-    Dialog.viewDialog { cancel = CloseDialog } model.dialog
+    Dialog.view { cancel = CloseDialog } model.dialog
 
 
 
