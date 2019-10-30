@@ -87,8 +87,8 @@ container { submitted, canceled, title, content, footer } =
             , onSubmit submitted
             ]
 
-        formChildren =
-            [ div
+        header =
+            div
                 [ css
                     [ Css.fontSize Css.larger
                     , pa 3
@@ -97,11 +97,15 @@ container { submitted, canceled, title, content, footer } =
                     ]
                 ]
                 [ text title ]
+
+        formContent =
+            [ header
             , div [ css [ ph 3 ] ] content
+            , footer
             ]
     in
     div [ css [ overlayStyles ] ]
-        [ H.form formAttrs formChildren, footer ]
+        [ H.form formAttrs formContent ]
 
 
 overlayStyles =
