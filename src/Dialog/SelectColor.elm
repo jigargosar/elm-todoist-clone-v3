@@ -103,14 +103,6 @@ subscriptions { toMsg } model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     case message of
-        CloseAndRestoreFocus ->
-            ( { model | dropdown = DropdownClosed }
-            , Cmd.batch
-                [ focus config inputDomId
-                , unregisterDropdownFocusMonitor config
-                ]
-            )
-
         Open ->
             ( { model | dropdown = DropdownOpened { index = 0 } }
             , focus config dropdownDomId
@@ -124,6 +116,14 @@ update ({ toMsg } as config) message model =
 
                 Err focusError ->
                     Focus.logError focusError
+            )
+
+        CloseAndRestoreFocus ->
+            ( { model | dropdown = DropdownClosed }
+            , Cmd.batch
+                [ focus config inputDomId
+                , unregisterDropdownFocusMonitor config
+                ]
             )
 
         Selected color ->
