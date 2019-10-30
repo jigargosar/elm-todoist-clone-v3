@@ -69,7 +69,7 @@ view { toMsg } model =
         [ css [ relative, lh 1.5 ] ]
         [ div
             [ css [ boAll, boColor Theme.borderGray ]
-            , attrIf (not model.open) <| tabindex 0
+            , attrIf (not model.open) (tabindex 0)
             ]
             [ viewItem model.color ]
         , case model.open of
