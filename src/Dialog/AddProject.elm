@@ -41,6 +41,7 @@ type Msg
     | Cancel
     | Title String
     | Color String
+    | SelectColor Dialog.SelectColor.Msg
     | Favorite Bool
     | AutoFocus (Result Dom.Error ())
 
@@ -71,6 +72,9 @@ update { saved, canceled, toMsg } message model =
         Color color ->
             ( { model | color = color }, Cmd.none )
 
+        SelectColor msg ->
+            SelectColor.update
+
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
 
@@ -85,6 +89,11 @@ update { saved, canceled, toMsg } message model =
 
 autofocusDomId =
     "add-project-dialog-autofocus"
+
+
+selectColorConfig : Dialog.SelectColor.Config Msg
+selectColorConfig =
+    { toMsg = SelectColor }
 
 
 view : Config msg -> Model -> Html msg
@@ -107,7 +116,7 @@ view { toMsg } model =
                 , changed = Color
                 , attrs = []
                 }
-            , Dialog.SelectColor.view model.selectColor
+            , Dialog.SelectColor.view selectColorConfig model.selectColor
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite

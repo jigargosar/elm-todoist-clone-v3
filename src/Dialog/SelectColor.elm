@@ -1,4 +1,4 @@
-module Dialog.SelectColor exposing (Model, Msg, initial, view)
+module Dialog.SelectColor exposing (Config, Model, Msg, initial, view)
 
 import Css exposing (hex)
 import Html.Styled as H exposing (Html, div, i, text)
@@ -35,6 +35,16 @@ type Msg
 
 type alias Config msg =
     { toMsg : Msg -> msg }
+
+
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update { toMsg } message model =
+    case message of
+        Close ->
+            ( { model | open = False }, Cmd.none )
+
+        Open ->
+            ( { model | open = True }, Cmd.none )
 
 
 view : Config msg -> Model -> Html msg
