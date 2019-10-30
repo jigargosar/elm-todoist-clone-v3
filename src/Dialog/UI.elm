@@ -1,4 +1,4 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, actions, checkbox, input, viewForm)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, viewForm)
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
@@ -60,20 +60,18 @@ type alias ActionsConfig msg =
     { submitTitle : String, canceled : msg, submitted : msg }
 
 
-actions : ActionsConfig msg -> Html msg
-actions { submitTitle, canceled, submitted } =
-    div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
-        [ btnSubmit "Add" submitted
-        , btnCancel canceled
-        ]
-
-
 type alias FormContainer msg =
-    { submitted : msg, canceled : msg, title : String, content : List (Html msg), footer : Html msg }
+    { submitted : msg
+    , canceled : msg
+    , title : String
+    , submitTitle : String
+    , content : List (Html msg)
+    , footer : Html msg
+    }
 
 
 viewForm : FormContainer msg -> Html msg
-viewForm { submitted, canceled, title, content, footer } =
+viewForm { submitted, submitTitle, canceled, title, content } =
     let
         formAttrs =
             [ css
@@ -103,6 +101,12 @@ viewForm { submitted, canceled, title, content, footer } =
             , div [ css [ ph 3 ] ] content
             , footer
             ]
+
+        footer =
+            div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
+                [ btnSubmit "Add" submitted
+                , btnCancel canceled
+                ]
     in
     div [ css [ overlayStyles ] ]
         [ H.form formAttrs formContent ]

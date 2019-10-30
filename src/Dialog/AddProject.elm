@@ -77,6 +77,7 @@ view { toMsg } model =
         { submitted = Save
         , canceled = Cancel
         , title = "Add Project"
+        , submitTitle = "add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
@@ -96,7 +97,6 @@ view { toMsg } model =
                 , changed = Favorite
                 }
             ]
-        , footer = Dialog.UI.actions { submitTitle = "add", submitted = Save, canceled = Cancel }
         }
         |> H.map toMsg
 
