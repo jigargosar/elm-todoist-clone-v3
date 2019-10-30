@@ -93,7 +93,9 @@ view { toMsg } model =
                         []
 
                     else
-                        [ tabindex 0, Key.preventDefaultOnKeyDown [ Key.enterOrSpace ( Open, True ) ] ]
+                        [ tabindex 0
+                        , Key.preventDefaultOnKeyDown [ Key.enterOrSpace ( Open, True ) ]
+                        ]
                    )
             )
             [ viewItem model.color ]
