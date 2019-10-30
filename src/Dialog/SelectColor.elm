@@ -1,6 +1,6 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
-import Basics.More exposing (attrIf)
+import Basics.More exposing (attrIf, viewIf)
 import Browser.Dom as Dom
 import Css exposing (hex)
 import Focus
@@ -65,6 +65,25 @@ selectPopupDomId =
 
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
+    let
+        vv _ =
+            div
+                [ A.id selectPopupDomId
+                , css
+                    [ absolute
+                    , bgWhite
+                    , w_100
+                    , left_0
+                    , top_0
+                    , boAll
+                    , boColor Theme.borderGray
+                    , z_ 1
+                    ]
+                , onBlur Close
+                , tabindex 0
+                ]
+                (List.map viewItem allColors)
+    in
     div
         [ css [ relative, lh 1.5 ] ]
         [ div
@@ -72,27 +91,7 @@ view { toMsg } model =
             , attrIf (not model.open) (tabindex 0)
             ]
             [ viewItem model.color ]
-        , case model.open of
-            True ->
-                div
-                    [ A.id selectPopupDomId
-                    , css
-                        [ absolute
-                        , bgWhite
-                        , w_100
-                        , left_0
-                        , top_0
-                        , boAll
-                        , boColor Theme.borderGray
-                        , z_ 1
-                        ]
-                    , onBlur Close
-                    , tabindex 0
-                    ]
-                    (List.map viewItem allColors)
-
-            False ->
-                text ""
+        , viewIf model.open vv
         ]
         |> H.map toMsg
 
