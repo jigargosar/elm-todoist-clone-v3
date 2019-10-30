@@ -34,7 +34,7 @@ type Dropdown
 
 
 type alias DropdownState =
-    {}
+    { index : Int }
 
 
 type alias Model =
@@ -86,7 +86,7 @@ update ({ toMsg } as config) message model =
             )
 
         Open ->
-            ( { model | dropdown = DropdownOpened {} }
+            ( { model | dropdown = DropdownOpened { index = 0 } }
             , focus config dropdownDomId
             )
 
