@@ -38,7 +38,7 @@ type alias Model =
 type Msg
     = Close
     | Open
-    | PopupFocused (Result Dom.Error ())
+    | Focused Focus.FocusResult
 
 
 type alias Config msg =
@@ -49,20 +49,27 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update { toMsg } message model =
     case message of
         Close ->
-            ( { model | open = False }, Cmd.none )
+            ( { model | open = False }
+            , Focus.attempt selectInputDomId (toMsg << Focused)
+            )
 
         Open ->
             ( { model | open = True }
-            , Focus.attempt selectPopupDomId (toMsg << PopupFocused)
+            , Focus.attempt selectPopupDomId (toMsg << Focused)
             )
 
-        PopupFocused result ->
+        Focused result ->
             ( model, Focus.logIfError result )
 
 
 selectPopupDomId : String
 selectPopupDomId =
     "select-color-popup"
+
+
+selectInputDomId : String
+selectInputDomId =
+    "select-color-input"
 
 
 view : Config msg -> Model -> Html msg
