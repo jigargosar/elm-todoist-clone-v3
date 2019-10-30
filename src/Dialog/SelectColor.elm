@@ -80,8 +80,8 @@ view config model =
                         , boAll
                         , boColor Theme.borderGray
                         , z_ 1
-                        , onBlur Close
                         ]
+                    , onBlur Close
                     , tabindex 0
                     ]
                     (List.map viewItem allColors)
