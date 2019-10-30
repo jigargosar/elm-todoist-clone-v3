@@ -44,6 +44,7 @@ type Msg
     = Close
     | Open
     | Focused Focus.FocusResult
+    | Selected CColor
 
 
 type alias Config msg =
@@ -75,6 +76,11 @@ update ({ toMsg } as config) message model =
 
         Focused result ->
             ( model, Focus.logIfError result )
+
+        Selected color ->
+            ( { model | color = color, dropdown = DropdownClosed }
+            , Cmd.none
+            )
 
 
 focus : Config msg -> (Config msg -> String) -> Cmd msg
