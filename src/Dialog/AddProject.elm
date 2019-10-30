@@ -1,15 +1,9 @@
 module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, view)
 
 import Basics.More exposing (msgToCmd)
-import Css
 import Dialog.UI
-import Html.Styled as H exposing (Attribute, Html, div, form, span, text)
-import Html.Styled.Attributes as A exposing (autofocus, css)
-import Html.Styled.Events exposing (onSubmit)
-import Key
-import Px as PX
-import Styles exposing (..)
-import Theme
+import Html.Styled as H exposing (Attribute, Html)
+import Html.Styled.Attributes as A exposing (autofocus)
 
 
 type alias Model =
