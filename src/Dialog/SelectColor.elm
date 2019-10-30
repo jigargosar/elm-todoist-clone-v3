@@ -85,41 +85,42 @@ view { toMsg } model =
                 , tabindex 0
                 ]
                 (List.map viewItem allColors)
-
-        viewSelectInput =
-            div
-                (css [ boAll, boColor Theme.borderGray ]
-                    :: (if model.open then
-                            []
-
-                        else
-                            [ tabindex 0
-                            , [ Key.enter Open
-                              , Key.space Open
-                              , Key.arrowDown Open
-                              , Key.escape Close
-                              ]
-                                |> List.map
-                                    (JD.map
-                                        (\message ->
-                                            { message = message
-                                            , preventDefault = True
-                                            , stopPropagation = False
-                                            }
-                                        )
-                                    )
-                                |> Key.onKeyDownCustom
-                            ]
-                       )
-                )
-                [ viewItem model.color ]
     in
     div
         [ css [ relative, lh 1.5 ] ]
-        [ viewSelectInput
+        [ viewSelectInput model
         , viewIf model.open viewPopup
         ]
         |> H.map toMsg
+
+
+viewSelectInput model =
+    div
+        (css [ boAll, boColor Theme.borderGray ]
+            :: (if model.open then
+                    []
+
+                else
+                    [ tabindex 0
+                    , [ Key.enter Open
+                      , Key.space Open
+                      , Key.arrowDown Open
+                      , Key.escape Close
+                      ]
+                        |> List.map
+                            (JD.map
+                                (\message ->
+                                    { message = message
+                                    , preventDefault = True
+                                    , stopPropagation = False
+                                    }
+                                )
+                            )
+                        |> Key.onKeyDownCustom
+                    ]
+               )
+        )
+        [ viewItem model.color ]
 
 
 viewItem : CColor -> Html msg
