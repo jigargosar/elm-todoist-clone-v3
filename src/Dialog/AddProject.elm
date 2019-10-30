@@ -145,6 +145,7 @@ plainBtnStyles =
 ipt val oi id af =
     input
         [ css [ lh 1.5, pa 1, bo_a, boc <| Theme.borderGray ]
+        , A.id id
         , value val
         , onInput oi
         , autofocus af
