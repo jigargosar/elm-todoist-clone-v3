@@ -111,16 +111,18 @@ viewSelectInput model =
             , Key.arrowDown
             ]
                 |> List.map (apply ( Open, True ))
+
+        attrsWhenPopupClosed =
+            if model.open then
+                []
+
+            else
+                [ tabindex 0, Key.preventDefaultOnKeyDown keydownDecoders ]
     in
     div
         (A.id selectInputDomId
             :: css [ boAll, boColor Theme.borderGray ]
-            :: (if model.open then
-                    []
-
-                else
-                    [ tabindex 0, Key.preventDefaultOnKeyDown keydownDecoders ]
-               )
+            :: attrsWhenPopupClosed
         )
         [ viewItem model.color ]
 
