@@ -2,6 +2,7 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, update, 
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
+import Dialog.SelectColor
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
@@ -13,6 +14,7 @@ type alias Model =
     { title : String
     , color : String
     , favorite : Bool
+    , selectColor : Dialog.SelectColor.Model
     }
 
 
@@ -22,7 +24,7 @@ type alias SavedWith =
 
 initial : Model
 initial =
-    Model "" "" False
+    Model "" "" False Dialog.SelectColor.initial
 
 
 init : Config msg -> ( Model, Cmd msg )
