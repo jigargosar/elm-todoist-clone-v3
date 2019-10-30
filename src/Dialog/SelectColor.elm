@@ -29,3 +29,15 @@ view model =
         , tabindex 0
         ]
         [ text "select colors" ]
+
+
+colorText color =
+    case color of
+        Blue ->
+            "Blue"
+
+        Green ->
+            "Green"
+
+        Yellow ->
+            "Yellow"
