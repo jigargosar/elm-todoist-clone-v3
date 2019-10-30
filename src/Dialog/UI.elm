@@ -61,17 +61,16 @@ type alias ActionsConfig msg =
 
 
 type alias FormContainer msg =
-    { submitted : msg
-    , canceled : msg
+    { submit : msg
+    , cancel : msg
     , title : String
     , submitTitle : String
     , content : List (Html msg)
-    , footer : Html msg
     }
 
 
 viewForm : FormContainer msg -> Html msg
-viewForm { submitted, submitTitle, canceled, title, content } =
+viewForm { submit, submitTitle, cancel, title, content } =
     let
         formAttrs =
             [ css
@@ -81,8 +80,8 @@ viewForm { submitted, submitTitle, canceled, title, content } =
                 , max_w_pct 100
                 ]
             , A.class "shadow-1"
-            , Key.onKeyDown [ Key.escape canceled ]
-            , onSubmit submitted
+            , Key.onKeyDown [ Key.escape cancel ]
+            , onSubmit submit
             ]
 
         header =
@@ -104,8 +103,8 @@ viewForm { submitted, submitTitle, canceled, title, content } =
 
         footer =
             div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
-                [ btnSubmit "Add" submitted
-                , btnCancel canceled
+                [ btnSubmit "Add" submit
+                , btnCancel cancel
                 ]
     in
     div [ css [ overlayStyles ] ]

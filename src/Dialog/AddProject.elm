@@ -74,8 +74,8 @@ update { saved, canceled, toMsg } message model =
 view : Config msg -> Model -> Html msg
 view { toMsg } model =
     Dialog.UI.viewForm
-        { submitted = Save
-        , canceled = Cancel
+        { submit = Save
+        , cancel = Cancel
         , title = "Add Project"
         , submitTitle = "add"
         , content =
