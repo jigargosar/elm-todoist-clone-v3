@@ -123,7 +123,7 @@ function MonitorFocusOrClickOutside() {
       const monitorEl = document.getElementById(domId)
       if (
         monitorEl &&
-        (monitorEl === target || monitorEl.contains(target))
+        (monitorEl !== target && !monitorEl.contains(target))
       ) {
         pubs.onFocusOrClickOutside(domId)
       }
