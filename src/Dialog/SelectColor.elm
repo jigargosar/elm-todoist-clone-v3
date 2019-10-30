@@ -28,7 +28,12 @@ view model =
         [ css [ Px.pa 4, lh 1.5, boAll, boColor Theme.borderGray ]
         , tabindex 0
         ]
-        [ text <| colorText model.color ]
+        [ viewItem model.color ]
+
+
+viewItem : CColor -> Html.Styled.Html msg
+viewItem color =
+    div [] [ text <| colorText color ]
 
 
 colorText color =
