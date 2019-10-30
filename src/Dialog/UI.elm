@@ -1,8 +1,8 @@
-module Dialog.UI exposing (InputConfig, input)
+module Dialog.UI exposing (CheckboxConfig, InputConfig, checkbox, input)
 
-import Html.Styled as H exposing (Attribute, Html, label, span, text)
-import Html.Styled.Attributes as A exposing (css, value)
-import Html.Styled.Events exposing (onInput)
+import Html.Styled as H exposing (Attribute, Html, div, label, span, text)
+import Html.Styled.Attributes as A exposing (css, type_, value)
+import Html.Styled.Events as E exposing (onInput)
 import Styles exposing (..)
 import Theme
 
@@ -27,4 +27,27 @@ input { labelText, value, changed, attrs } =
                 ++ attrs
             )
             []
+        ]
+
+
+type alias CheckboxConfig msg =
+    { labelText : String
+    , value : Bool
+    , changed : Bool -> msg
+    }
+
+
+checkbox : CheckboxConfig msg -> Html msg
+checkbox { labelText, value, changed } =
+    label [ css [ flex, itemsCenter, pv 2 ] ]
+        [ div [ css [ pa 1 ] ]
+            [ H.input
+                [ css []
+                , type_ "checkbox"
+                , A.checked value
+                , E.onCheck changed
+                ]
+                []
+            ]
+        , text labelText
         ]

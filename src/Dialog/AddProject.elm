@@ -15,16 +15,17 @@ import Theme
 type alias Model =
     { title : String
     , color : String
+    , favorite : Bool
     }
 
 
 type alias SavedWith =
-    { title : String, color : String, isFavorite : Bool }
+    { title : String, color : String, favorite : Bool }
 
 
 initial : Model
 initial =
-    Model "" ""
+    Model "" "" False
 
 
 init : Config msg -> ( Model, Cmd msg )
@@ -37,6 +38,7 @@ type Msg
     | Cancel
     | Title String
     | Color String
+    | Favorite Bool
 
 
 type alias Config msg =
@@ -64,6 +66,9 @@ update { saved, canceled, toMsg } message model =
 
         Color color ->
             ( { model | color = color }, Cmd.none )
+
+        Favorite favorite ->
+            ( { model | favorite = favorite }, Cmd.none )
 
 
 view : Config msg -> Model -> List (Html msg)
@@ -104,10 +109,11 @@ view { toMsg } model =
                     , changed = Color
                     , attrs = []
                     }
-                , label [ css [ flex, itemsCenter, pv 2 ] ]
-                    [ div [ css [ pa 1 ] ] [ H.input [ css [], type_ "checkbox" ] [] ]
-                    , text "Add to favorites"
-                    ]
+                , Dialog.UI.checkbox
+                    { labelText = "Add to favorites"
+                    , value = model.favorite
+                    , changed = Favorite
+                    }
                 ]
             , div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boc <| Theme.borderGray ] ]
                 [ btnSubmit "Add"
