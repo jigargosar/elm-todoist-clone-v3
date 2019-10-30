@@ -1,5 +1,5 @@
 import ports from './ports'
-import { times } from 'ramda'
+import { append, reject, times, uniq, equals } from 'ramda'
 
 const nanoid = require('nanoid')
 const Module = require('./Main.elm')
@@ -106,13 +106,14 @@ const pubs = ports(
   {
     logError: err => console.error('Elm Error', err),
     registerOnFocusOrClickOutSide: domId => monitorFocusOrClickOutside.add(domId),
+    unregisterOnFocusOrClickOutSide: domId => monitorFocusOrClickOutside.remove(domId),
   },
   app,
 )
 console.debug(pubs)
 
 function MonitorFocusOrClickOutside() {
-  const domIdList = []
+  let domIdList = []
   const listener = e => {
     const target = e.target
     console.log(target, e.path, domIdList)
@@ -121,10 +122,10 @@ function MonitorFocusOrClickOutside() {
   document.addEventListener('click', listener)
   return {
     add(domId) {
-      if(domIdList.indexOf(domId) === -1)
-      {
-        domIdList.push(domId)
-      }
+      domIdList = uniq(append(domId, domIdList))
     },
+    remove(domId){
+      domIdList = reject(equals(domId), domIdList)
+    }
   }
 }
