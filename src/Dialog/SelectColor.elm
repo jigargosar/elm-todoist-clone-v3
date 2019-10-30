@@ -257,8 +257,8 @@ viewDropdown config state =
         , Key.stopPropagationOnKeyDown
             [ Key.escape ( CloseAndRestoreFocus, True )
             , Key.enter ( SelectHighlighted, True )
-            , Key.arrowDown ( HighlightPrevious, True )
-            , Key.arrowUp ( HighlightNext, True )
+            , Key.arrowUp ( HighlightPrevious, True )
+            , Key.arrowDown ( HighlightNext, True )
             ]
         , tabindex 0
         ]
