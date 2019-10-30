@@ -112,7 +112,8 @@ viewSelectInput model =
                 |> List.map (apply ( Open, True ))
     in
     div
-        (css [ boAll, boColor Theme.borderGray ]
+        (A.id selectInputDomId
+            :: css [ boAll, boColor Theme.borderGray ]
             :: (if model.open then
                     []
 
