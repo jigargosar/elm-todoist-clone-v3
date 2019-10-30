@@ -14,6 +14,10 @@ type CColor
     | Yellow
 
 
+allColors =
+    [ Blue, Green, Yellow ]
+
+
 initial : Model
 initial =
     Model Blue True
@@ -26,15 +30,45 @@ type alias Model =
 view : Model -> Html msg
 view model =
     div
-        [ css [ Px.pa 4, lh 1.5, boAll, boColor Theme.borderGray ]
-        , tabindex 0
+        [ css
+            [ relative
+            , lh 1.5
+            , boAll
+            , boColor Theme.borderGray
+            ]
         ]
-        [ viewItem model.color ]
+        [ div
+            [ case model.open of
+                True ->
+                    class ""
+
+                False ->
+                    tabindex 0
+            ]
+            [ viewItem model.color ]
+        , case model.open of
+            True ->
+                div
+                    [ css
+                        [ absolute
+                        , bgWhite
+                        , w_100
+                        , left_0
+                        , top_0
+                        , boAll
+                        , boColor Theme.borderGray
+                        ]
+                    ]
+                    (List.map viewItem allColors)
+
+            False ->
+                text ""
+        ]
 
 
 viewItem : CColor -> Html msg
 viewItem color =
-    div [ css [ flex ] ]
+    div [ css [ flex, Px.pa 4 ] ]
         [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
