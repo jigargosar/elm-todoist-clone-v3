@@ -1,8 +1,9 @@
-module Dialog.SelectColor exposing (Model, initial, view)
+module Dialog.SelectColor exposing (Model, Msg, initial, view)
 
 import Css exposing (hex)
-import Html.Styled exposing (Html, div, i, text)
+import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes exposing (class, css, tabindex)
+import Html.Styled.Events exposing (onBlur)
 import Px
 import Styles exposing (..)
 import Theme
@@ -27,8 +28,17 @@ type alias Model =
     { color : CColor, open : Bool }
 
 
-view : Model -> Html msg
-view model =
+type Msg
+    = Close
+    | Open
+
+
+type alias Config msg =
+    { toMsg : Msg -> msg }
+
+
+view : Config msg -> Model -> Html msg
+view config model =
     div
         [ css
             [ relative
@@ -46,7 +56,6 @@ view model =
 
                 False ->
                     tabindex 0
-            , tabindex 0
             ]
             [ viewItem model.color ]
         , case model.open of
@@ -61,6 +70,7 @@ view model =
                         , boAll
                         , boColor Theme.borderGray
                         , z_ 1
+                        , onBlur Close
                         ]
                     , tabindex 0
                     ]
@@ -69,6 +79,7 @@ view model =
             False ->
                 text ""
         ]
+        |> H.map config.toMsg
 
 
 viewItem : CColor -> Html msg
