@@ -16,7 +16,7 @@ type CColor
 
 initial : Model
 initial =
-    Model Blue False
+    Model Blue True
 
 
 type alias Model =
@@ -34,20 +34,23 @@ view model =
 
 viewItem : CColor -> Html msg
 viewItem color =
-    div [ css [ flex ] ]
+    div [ css [ flex, relative ] ]
         [ i [ css [ Px.p2 0 4, c_ <| colorCssValue color ], class "material-icons" ] [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
         ]
 
 
+colorText : CColor -> String
 colorText =
     colorInfo >> Tuple.second
 
 
+colorCssValue : CColor -> Css.Color
 colorCssValue =
     colorInfo >> Tuple.first
 
 
+colorInfo : CColor -> ( Css.Color, String )
 colorInfo color =
     case color of
         Blue ->
