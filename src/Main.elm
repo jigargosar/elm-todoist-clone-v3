@@ -77,6 +77,16 @@ viewDialog dialog =
             []
 
 
+dialogSubscriptions : Dialog -> Sub Msg
+dialogSubscriptions dialog =
+    case dialog of
+        AddProjectDialog model ->
+            Dialog.AddProject.subscriptions addProjectDialogConfig model
+
+        _ ->
+            Sub.none
+
+
 
 -- POPUP
 
@@ -240,6 +250,7 @@ subscriptions model =
         , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
+        , dialogSubscriptions model.dialog
         ]
 
 
