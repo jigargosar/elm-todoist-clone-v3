@@ -99,17 +99,3 @@ view { toMsg } model =
             ]
         }
         |> H.map toMsg
-
-
-overlayStyles =
-    batch
-        [ fixed
-        , absFill
-        , flex
-        , itemsCenter
-        , justifyCenter
-        , bg (Css.hsla 0 0 0 0.2)
-
-        --                 , bg (Css.hsla 0 1 1 0.6)
-        , z_ 10
-        ]
