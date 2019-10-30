@@ -5,7 +5,7 @@ import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
-import Html.Styled.Events exposing (onBlur, onClick)
+import Html.Styled.Events exposing (onBlur, onClick, onMouseOver)
 import Key
 import Px
 import Styles exposing (..)
@@ -46,6 +46,7 @@ type Msg
     | Open
     | Focused Focus.FocusResult
     | Selected CColor
+    | Highlighted Int
     | OnFocusOrClickOutside String
 
 
@@ -61,6 +62,16 @@ getDropdownState model =
 
         DropdownOpened state ->
             Just state
+
+
+mapDropdownState : (DropdownState -> DropdownState) -> Model -> Model
+mapDropdownState func model =
+    case model.dropdown of
+        DropdownClosed ->
+            model
+
+        DropdownOpened state ->
+            { model | dropdown = DropdownOpened (func state) }
 
 
 subscriptions : Config msg -> Model -> Sub msg
@@ -114,6 +125,11 @@ update ({ toMsg } as config) message model =
 
                 False ->
                     ( model, Cmd.none )
+
+        Highlighted index ->
+            ( mapDropdownState (\state -> { state | index = index }) model
+            , Cmd.none
+            )
 
 
 unregisterDropdownFocusMonitor config =
@@ -215,7 +231,11 @@ viewItem state index color =
                 False ->
                     []
     in
-    div [ css [ flex, Px.pa 4, batch highlightedStyles ], onClick <| Selected color ]
+    div
+        [ css [ flex, Px.pa 4, batch highlightedStyles ]
+        , onClick <| Selected color
+        , onMouseOver (Highlighted index)
+        ]
         [ i [ css [ Px.p2 0 4, c_ cssColor ], class "material-icons" ]
             [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
