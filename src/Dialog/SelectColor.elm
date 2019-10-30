@@ -1,11 +1,11 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, subscriptions, update, view)
 
-import Basics.More exposing (apply, viewIf, viewMaybe)
+import Basics.More exposing (apply, viewMaybe)
 import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
-import Html.Styled.Events exposing (onBlur, onClick, onMouseOver)
+import Html.Styled.Events exposing (onClick, onMouseOver)
 import Key
 import Px
 import Styles exposing (..)
@@ -46,6 +46,7 @@ type Msg
     | Open
     | Focused Focus.FocusResult
     | Selected CColor
+    | SelectHighlighted
     | Highlighted Int
     | OnFocusOrClickOutside String
 
@@ -62,6 +63,18 @@ getDropdownState model =
 
         DropdownOpened state ->
             Just state
+
+
+getHighlightedColor : Model -> Maybe CColor
+getHighlightedColor =
+    getDropdownState
+        >> Maybe.andThen
+            (.index
+                >> (\index ->
+                        List.drop index allColors
+                            |> List.head
+                   )
+            )
 
 
 mapDropdownState : (DropdownState -> DropdownState) -> Model -> Model
@@ -115,6 +128,16 @@ update ({ toMsg } as config) message model =
             ( { model | color = color, dropdown = DropdownClosed }
             , unregisterDropdownFocusMonitor config
             )
+
+        SelectHighlighted ->
+            case getHighlightedColor model of
+                Just color ->
+                    ( { model | color = color, dropdown = DropdownClosed }
+                    , unregisterDropdownFocusMonitor config
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         OnFocusOrClickOutside domId ->
             case domId == dropdownDomId config of
@@ -211,7 +234,10 @@ viewDropdown config state =
             , boColor Theme.borderGray
             , z_ 1
             ]
-        , Key.stopPropagationOnKeyDown [ Key.escape ( CloseAndRestoreFocus, True ) ]
+        , Key.stopPropagationOnKeyDown
+            [ Key.escape ( CloseAndRestoreFocus, True )
+            , Key.enter ( SelectHighlighted, True )
+            ]
         , tabindex 0
         ]
         (List.indexedMap (viewItem state) allColors)
