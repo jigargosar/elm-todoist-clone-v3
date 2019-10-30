@@ -1,4 +1,4 @@
-module Dialog.AddProject exposing (Model, init, initial, view)
+module Dialog.AddProject exposing (Model, init, view)
 
 import Css
 import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
