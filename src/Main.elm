@@ -344,9 +344,14 @@ update message model =
             ( { model | dialog = NoDialog }, Cmd.none )
 
         DialogMsg msg ->
+            let
+                setDialog dialog =
+                    { model | dialog = dialog }
+            in
             case ( model.dialog, msg ) of
-                ( AddProjectDialog _, AddProjectDialogMsg _ ) ->
-                    ret
+                ( AddProjectDialog dialogModel, AddProjectDialogMsg dialogMsg ) ->
+                    Dialog.AddProject.update addProjectDialogConfig dialogMsg dialogModel
+                        |> Tuple.mapFirst (AddProjectDialog >> setDialog)
 
                 _ ->
                     ret
