@@ -91,7 +91,12 @@ view { toMsg } model =
                 ]
                 [ text "Add Project" ]
             , div [ css [ ph 3 ] ]
-                [ formTextIpt "Project name" (ipt model.title Title "add-project-dialog-autofocus" True)
+                [ input
+                    { labelText = "Project name"
+                    , value = model.title
+                    , changed = Title
+                    , attrs = [ A.id "add-project-dialog-autofocus", autofocus True ]
+                    }
                 , formTextIpt "Project color" (ipt model.color Color "" False)
                 , label [ css [ flex, itemsCenter, pv 2 ] ]
                     [ div [ css [ pa 1 ] ] [ H.input [ css [], type_ "checkbox" ] [] ]
