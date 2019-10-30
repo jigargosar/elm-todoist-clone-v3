@@ -1,6 +1,8 @@
 module Dialog.SelectColor exposing (Model, initial, view)
 
 import Html.Styled exposing (div, text)
+import Html.Styled.Attributes exposing (css, tabindex)
+import Styles exposing (..)
 
 
 type CColor
@@ -20,9 +22,4 @@ type alias Model =
 
 view : Model -> Html.Styled.Html msg
 view model =
-    case model.open of
-        True ->
-            div [] [ text "open" ]
-
-        False ->
-            div [] [ text "closed" ]
+    div [ css [ lh 1.5 ], tabindex 0 ] [ text "select colors" ]
