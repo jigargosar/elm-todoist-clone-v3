@@ -5,6 +5,7 @@ import Browser.Dom as Dom
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
+import Log exposing (logError)
 import Task
 
 
@@ -71,8 +72,13 @@ update { saved, canceled, toMsg } message model =
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
 
-        AutoFocus _ ->
-            ( model, Cmd.none )
+        AutoFocus result ->
+            case result of
+                Err (Dom.NotFound domId) ->
+                    ( model, logError <| "autofocus failed: " ++ domId )
+
+                Ok () ->
+                    ( model, Cmd.none )
 
 
 autofocusDomId =
