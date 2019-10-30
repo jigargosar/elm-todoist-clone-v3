@@ -42,6 +42,7 @@ type alias Model =
 
 type Msg
     = Close
+    | CloseAndRestoreFocus
     | Open
     | Focused Focus.FocusResult
     | Selected CColor
@@ -65,6 +66,11 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     case message of
         Close ->
+            ( { model | dropdown = DropdownClosed }
+            , Cmd.none
+            )
+
+        CloseAndRestoreFocus ->
             ( { model | dropdown = DropdownClosed }
             , focus config selectInputDomId
             )
