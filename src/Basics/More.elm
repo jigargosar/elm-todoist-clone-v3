@@ -1,6 +1,8 @@
 module Basics.More exposing (..)
 
 import Browser.Dom as Dom
+import Html.Styled exposing (Attribute)
+import Html.Styled.Attributes exposing (class)
 import Json.Decode as JD exposing (Decoder)
 import List.Extra as List
 import SelectList
@@ -83,3 +85,12 @@ positionDiff p1 p2 =
 positionAdd : { a | x : Float, y : Float } -> { b | x : Float, y : Float } -> Position
 positionAdd p1 p2 =
     Position (p1.x + p2.x) (p1.y + p2.y)
+
+
+attrIf : Bool -> Attribute msg -> Attribute msg
+attrIf bool attr =
+    if bool then
+        attr
+
+    else
+        class ""

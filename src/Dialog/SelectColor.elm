@@ -1,5 +1,6 @@
 module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
 
+import Basics.More exposing (attrIf)
 import Browser.Dom as Dom
 import Css exposing (hex)
 import Focus
@@ -68,12 +69,7 @@ view { toMsg } model =
         [ css [ relative, lh 1.5 ] ]
         [ div
             [ css [ boAll, boColor Theme.borderGray ]
-            , case model.open of
-                True ->
-                    class ""
-
-                False ->
-                    tabindex 0
+            , attrIf (not model.open) <| tabindex 0
             ]
             [ viewItem model.color ]
         , case model.open of
