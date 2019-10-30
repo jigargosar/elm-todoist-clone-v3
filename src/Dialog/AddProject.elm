@@ -1,7 +1,7 @@
-module Dialog.AddProject exposing (Model, init, view)
+module Dialog.AddProject exposing (Config, Model, Msg, Saved, init, update, view)
 
 import Css
-import Html.Styled exposing (Attribute, Html, button, div, form, input, label, span, text)
+import Html.Styled as H exposing (Attribute, Html, button, div, form, input, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events exposing (onSubmit)
 import Key
@@ -16,18 +16,56 @@ type alias Model =
     }
 
 
+type alias Saved =
+    { title : String, color : String, isFavorite : Bool }
+
+
 initial : Model
 initial =
     Model "" ""
 
 
-init : ( Model, Cmd msg )
-init =
+init : Config msg -> ( Model, Cmd msg )
+init _ =
     ( initial, Cmd.none )
 
 
-view : { a | cancel : msg } -> Model -> List (Html msg)
-view config model =
+type Msg
+    = Save
+    | Cancel
+    | Title String
+    | Color String
+
+
+type alias Config msg =
+    { toMsg : Msg -> msg
+    , saved : Saved -> msg
+    , canceled : msg
+    }
+
+
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update { saved, canceled, toMsg } message model =
+    let
+        ret =
+            ( model, Cmd.none )
+    in
+    case message of
+        Save ->
+            ret
+
+        Cancel ->
+            ret
+
+        Title _ ->
+            ret
+
+        Color _ ->
+            ret
+
+
+view : Config msg -> Model -> List (Html msg)
+view { toMsg } model =
     let
         formAttrs =
             [ css
@@ -37,8 +75,8 @@ view config model =
                 , max_w_pct 100
                 ]
             , A.class "shadow-1"
-            , Key.onKeyDown [ Key.escape config.cancel ]
-            , onSubmit config.cancel
+            , Key.onKeyDown [ Key.escape Cancel ]
+            , onSubmit Cancel
             ]
 
         innerView =
@@ -67,6 +105,7 @@ view config model =
     in
     [ div [ css [ overlayStyles ] ]
         [ form formAttrs innerView ]
+        |> H.map toMsg
     ]
 
 

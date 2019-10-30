@@ -49,21 +49,29 @@ type Dialog
     | NoDialog
 
 
-initAddProjectDialog : ( Dialog, Cmd msg )
+type DialogMsg
+    = AddProjectDialogMsg Dialog.AddProject.Msg
+
+
+addProjectDialogConfig : Dialog.AddProject.Config Msg
+addProjectDialogConfig =
+    { canceled = CloseDialog
+    , saved = AddProjectDialogSaveClicked
+    , toMsg = DialogMsg << AddProjectDialogMsg
+    }
+
+
+initAddProjectDialog : ( Dialog, Cmd Msg )
 initAddProjectDialog =
-    Dialog.AddProject.init
+    Dialog.AddProject.init addProjectDialogConfig
         |> Tuple.mapFirst AddProjectDialog
 
 
 viewDialog : Dialog -> List (Html Msg)
 viewDialog dialog =
-    let
-        config =
-            { cancel = CloseDialog }
-    in
     case dialog of
         AddProjectDialog model ->
-            Dialog.AddProject.view config model
+            Dialog.AddProject.view addProjectDialogConfig model
 
         _ ->
             []
@@ -252,7 +260,9 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
+    | DialogMsg DialogMsg
     | CloseDialog
+    | AddProjectDialogSaveClicked Dialog.AddProject.Saved
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked
@@ -269,6 +279,10 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
+    let
+        ret =
+            ( model, Cmd.none )
+    in
     case message of
         NoOp ->
             Return.singleton model
@@ -328,6 +342,17 @@ update message model =
 
         CloseDialog ->
             ( { model | dialog = NoDialog }, Cmd.none )
+
+        DialogMsg msg ->
+            case ( model.dialog, msg ) of
+                ( AddProjectDialog _, AddProjectDialogMsg _ ) ->
+                    ret
+
+                _ ->
+                    ret
+
+        AddProjectDialogSaveClicked _ ->
+            ret
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
