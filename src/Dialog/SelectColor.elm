@@ -1,7 +1,7 @@
 module Dialog.SelectColor exposing (Model, initial, view)
 
-import Html.Styled exposing (Html, div, text)
-import Html.Styled.Attributes exposing (css, tabindex)
+import Html.Styled exposing (Html, div, i, text)
+import Html.Styled.Attributes exposing (class, css, tabindex)
 import Px
 import Styles exposing (..)
 import Theme
@@ -33,7 +33,10 @@ view model =
 
 viewItem : CColor -> Html msg
 viewItem color =
-    div [] [ text <| colorText color ]
+    div [ css [ flex ] ]
+        [ i [ css [ Px.p2 0 4 ], class "material-icons" ] [ text "folder" ]
+        , div [ css [ Px.p2 0 4 ] ] [ text <| colorText color ]
+        ]
 
 
 colorText color =
