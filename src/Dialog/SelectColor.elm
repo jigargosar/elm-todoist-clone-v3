@@ -46,6 +46,7 @@ view model =
 
                 False ->
                     tabindex 0
+            , tabindex 0
             ]
             [ viewItem model.color ]
         , case model.open of
@@ -59,6 +60,7 @@ view model =
                         , top_0
                         , boAll
                         , boColor Theme.borderGray
+                        , z_ 1
                         ]
                     , tabindex 0
                     ]
