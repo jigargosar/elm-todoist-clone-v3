@@ -32,7 +32,7 @@ initial =
 
 
 type alias Model =
-    { color : CColor, open : Bool }
+    { color : CColor, popupOpen : Bool }
 
 
 type Msg
@@ -49,12 +49,12 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update { toMsg } message model =
     case message of
         Close ->
-            ( { model | open = False }
+            ( { model | popupOpen = False }
             , Focus.attempt selectInputDomId (toMsg << Focused)
             )
 
         Open ->
-            ( { model | open = True }
+            ( { model | popupOpen = True }
             , Focus.attempt selectPopupDomId (toMsg << Focused)
             )
 
@@ -77,7 +77,7 @@ view { toMsg } model =
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewSelectInput model
-        , viewIf model.open viewPopup
+        , viewIf model.popupOpen viewPopup
         ]
         |> H.map toMsg
 
@@ -103,6 +103,7 @@ viewPopup _ =
         (List.map viewItem allColors)
 
 
+viewSelectInput : Model -> Html Msg
 viewSelectInput model =
     let
         keydownDecoders =
@@ -113,7 +114,7 @@ viewSelectInput model =
                 |> List.map (apply ( Open, True ))
 
         attrsWhenPopupClosed =
-            if model.open then
+            if model.popupOpen then
                 []
 
             else
