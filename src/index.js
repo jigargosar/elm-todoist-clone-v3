@@ -102,7 +102,7 @@ const app = Module.Elm.Main.init({
 
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
-  ["focusOrClickOutside"],
+  ["onFocusOrClickOutside"],
   {
     logError: err => console.error('Elm Error', err),
     registerOnFocusOrClickOutSide: domId =>
@@ -125,7 +125,7 @@ function MonitorFocusOrClickOutside() {
         monitorEl &&
         (monitorEl === target || monitorEl.contains(target))
       ) {
-        pubs.focusOrClickOutside(domId)
+        pubs.onFocusOrClickOutside(domId)
       }
     })
   }

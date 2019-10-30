@@ -1,4 +1,4 @@
-module Dialog.SelectColor exposing (Config, Model, Msg, initial, update, view)
+module Dialog.SelectColor exposing (Config, Model, Msg, initial, subscriptions, update, view)
 
 import Basics.More exposing (apply, viewIf, viewMaybe)
 import Css exposing (hex)
@@ -46,6 +46,7 @@ type Msg
     | Open
     | Focused Focus.FocusResult
     | Selected CColor
+    | OnFocusOrClickOutside String
 
 
 type alias Config msg =
@@ -60,6 +61,17 @@ getDropdownState model =
 
         DropdownOpened state ->
             Just state
+
+
+subscriptions : Config msg -> Model -> Sub msg
+subscriptions { toMsg } model =
+    case getDropdownState model of
+        Just _ ->
+            Focus.onFocusOrClickOutside OnFocusOrClickOutside
+                |> Sub.map toMsg
+
+        Nothing ->
+            Sub.none
 
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
@@ -93,6 +105,16 @@ update ({ toMsg } as config) message model =
             ( { model | color = color, dropdown = DropdownClosed }
             , unregisterDropdownFocusMonitor config
             )
+
+        OnFocusOrClickOutside domId ->
+            case domId == selectDropdownDomId config of
+                True ->
+                    ( { model | dropdown = DropdownClosed }
+                    , unregisterDropdownFocusMonitor config
+                    )
+
+                False ->
+                    ( model, Cmd.none )
 
 
 unregisterDropdownFocusMonitor config =
