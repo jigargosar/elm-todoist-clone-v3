@@ -7,6 +7,7 @@ import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onBlur)
+import Json.Decode as JD
 import Key
 import Log exposing (logError)
 import Px
@@ -93,20 +94,19 @@ view { toMsg } model =
 
                         else
                             [ tabindex 0
-                            , [ Key.enter, Key.space, Key.arrowDown ]
+                            , [ Key.enter Open
+                              , Key.space Open
+                              , Key.arrowDown Open
+                              , Key.escape Close
+                              ]
                                 |> List.map
-                                    (apply
-                                        { message = Open
-                                        , preventDefault = True
-                                        , stopPropagation = False
-                                        }
-                                    )
-                                |> (::)
-                                    (Key.escape
-                                        { message = Open
-                                        , preventDefault = True
-                                        , stopPropagation = False
-                                        }
+                                    (JD.map
+                                        (\message ->
+                                            { message = message
+                                            , preventDefault = True
+                                            , stopPropagation = False
+                                            }
+                                        )
                                     )
                                 |> Key.onKeyDownCustom
                             ]
