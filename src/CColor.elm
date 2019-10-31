@@ -48,24 +48,7 @@ toColor model =
 
 fromInt : Int -> CColor
 fromInt idx =
-    case idx of
-        1 ->
-            Blue
-
-        2 ->
-            Green
-
-        3 ->
-            Yellow
-
-        4 ->
-            Red
-
-        5 ->
-            Orange
-
-        _ ->
-            default
+    List.drop idx list |> List.head |> Maybe.withDefault default
 
 
 toName : CColor -> String
