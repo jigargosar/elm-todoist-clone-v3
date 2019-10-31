@@ -101,6 +101,11 @@ mapDropdownState func model =
             { model | dropdown = DropdownOpened (func state) }
 
 
+mapHighlightIndex : (Int -> Int) -> Model -> Model
+mapHighlightIndex func =
+    mapDropdownState (\state -> { state | index = func state.index })
+
+
 subscriptions : Config msg -> Model -> Sub msg
 subscriptions { toMsg } model =
     case getDropdownState model of
@@ -167,10 +172,7 @@ update ({ toMsg } as config) message model =
             )
 
         HighlightNext ->
-            ( mapDropdownState
-                (\state ->
-                    { state | index = state.index + 1 |> modBy (List.length cColorsList) }
-                )
+            ( mapHighlightIndex ((+) 1 >> modBy (List.length cColorsList))
                 model
             , Cmd.none
             )
