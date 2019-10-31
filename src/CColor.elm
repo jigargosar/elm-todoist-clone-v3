@@ -93,4 +93,6 @@ encoder =
 
 toColor : CColor -> Color
 toColor cColor =
-    toHexString cColor |> Color.fromHex |> Result.withDefault Palette.X11.blue
+    toHexString cColor
+        |> Color.fromHex
+        |> Result.withDefault Palette.X11.black
