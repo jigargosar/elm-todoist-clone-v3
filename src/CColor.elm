@@ -1,4 +1,4 @@
-module CColor exposing (CColor(..), decoder, infoOld, orderedByHSL, toColor, toCssColor, toName)
+module CColor exposing (CColor(..), decoder, infoOld, name, orderedByHSL, toColor, toCssColor)
 
 import Color exposing (Color)
 import Compare exposing (Comparator)
@@ -27,6 +27,11 @@ list =
     ]
 
 
+default : CColor
+default =
+    Blue
+
+
 comparator : Comparator CColor
 comparator =
     let
@@ -42,11 +47,6 @@ comparator =
 orderedByHSL : List CColor
 orderedByHSL =
     List.sortWith comparator list
-
-
-default : CColor
-default =
-    Blue
 
 
 toColor : CColor -> Color
@@ -76,8 +76,8 @@ fromInt idx =
     List.drop idx list |> List.head |> Maybe.withDefault default
 
 
-toName : CColor -> String
-toName model =
+name : CColor -> String
+name model =
     case model of
         Blue ->
             "Blue"
@@ -100,7 +100,7 @@ toName model =
 
 infoOld : CColor -> ( Css.Color, String )
 infoOld model =
-    ( toCssColor model, toName model )
+    ( toCssColor model, name model )
 
 
 decoder : Decoder CColor

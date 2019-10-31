@@ -7,7 +7,6 @@
     "dependencies": {
         "direct": {
             "Fresheyeball/elm-return": "7.1.0",
-            "Herteby/enum": "1.0.0",
             "NoRedInk/elm-compare": "2.0.0",
             "TSFoster/elm-tuple-extra": "2.0.0",
             "annaghi/dnd-list": "5.0.0",
