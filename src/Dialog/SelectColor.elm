@@ -1,4 +1,13 @@
-module Dialog.SelectColor exposing (Config, Model, Msg, initial, subscriptions, update, view)
+module Dialog.SelectColor exposing
+    ( CColor
+    , Config
+    , Model
+    , Msg
+    , initial
+    , subscriptions
+    , update
+    , view
+    )
 
 import Basics.More exposing (apply, viewMaybe)
 import Css exposing (hex)
@@ -54,7 +63,10 @@ type Msg
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg, domIdPrefix : String }
+    { toMsg : Msg -> msg
+    , domIdPrefix : String
+    , changed : CColor -> msg
+    }
 
 
 getDropdownState : Model -> Maybe DropdownState

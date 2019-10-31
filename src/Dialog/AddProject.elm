@@ -2,7 +2,7 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, subscrip
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
-import Dialog.SelectColor as SelectColor
+import Dialog.SelectColor as SelectColor exposing (CColor)
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
@@ -42,6 +42,7 @@ type Msg
     | Title String
     | Color String
     | SelectColor SelectColor.Msg
+    | CColorChanged SelectColor.CColor
     | Favorite Bool
     | AutoFocus (Result Dom.Error ())
 
@@ -94,6 +95,9 @@ update { saved, canceled, toMsg } message model =
                 Ok () ->
                     ( model, Cmd.none )
 
+        CColorChanged cColor ->
+            ( model, Cmd.none )
+
 
 autofocusDomId =
     "add-project-dialog-autofocus"
@@ -101,7 +105,10 @@ autofocusDomId =
 
 selectColorConfig : SelectColor.Config Msg
 selectColorConfig =
-    { toMsg = SelectColor, domIdPrefix = "add-project-dialog" }
+    { toMsg = SelectColor
+    , domIdPrefix = "add-project-dialog"
+    , changed = CColorChanged
+    }
 
 
 view : Config msg -> Model -> Html msg
