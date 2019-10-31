@@ -153,18 +153,14 @@ update ({ toMsg } as config) message model =
 
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
-            , Cmd.batch
-                [ focusInput config
-                ]
+            , focusInput config
             )
 
         SelectHighlighted ->
             case getHighlightedColor model of
                 Just color ->
                     ( { model | color = color, dropdown = DropdownClosed }
-                    , Cmd.batch
-                        [ focusInput config
-                        ]
+                    , focusInput config
                     )
 
                 Nothing ->
