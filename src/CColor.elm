@@ -1,8 +1,11 @@
 module CColor exposing (CColor(..), decoder, infoOld, orderedByHSL, toColor, toCssColor, toName)
 
+import Basics.More exposing (impl)
 import Color exposing (Color)
+import Compare exposing (Comparator)
 import Css
 import Json.Decode as JD exposing (Decoder)
+import Tuple3
 
 
 type CColor
@@ -25,13 +28,21 @@ list =
     ]
 
 
+comparator : Comparator CColor
+comparator =
+    let
+        hslComparator : Comparator ( Float, Float, Float )
+        hslComparator =
+            [ Tuple3.first, Tuple3.second, Tuple3.third ]
+                |> List.map Compare.by
+                |> Compare.concat
+    in
+    Compare.compose (toColor >> Color.toHSL) hslComparator
+
+
 orderedByHSL : List CColor
 orderedByHSL =
-    let
-        toHSLOrder ( h, s, l ) =
-            h * 1000 + s * 100 + l
-    in
-    List.sortBy (toColor >> Color.toHSL >> toHSLOrder) list
+    List.sortWith comparator list
 
 
 default : CColor
