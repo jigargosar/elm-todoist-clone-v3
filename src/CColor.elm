@@ -27,6 +27,11 @@ list =
     ]
 
 
+fromInt : Int -> CColor
+fromInt idx =
+    List.drop idx list |> List.head |> Maybe.withDefault default
+
+
 default : CColor
 default =
     Blue
@@ -69,11 +74,6 @@ toColor model =
 
         Orange ->
             rgb ( 255, 153, 51 )
-
-
-fromInt : Int -> CColor
-fromInt idx =
-    List.drop idx list |> List.head |> Maybe.withDefault default
 
 
 name : CColor -> String
