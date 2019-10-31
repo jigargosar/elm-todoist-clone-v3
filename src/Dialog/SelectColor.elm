@@ -58,7 +58,8 @@ selected =
 type Msg
     = CloseAndRestoreFocus
     | Open
-    | Focused Focus.FocusResult
+    | InputFocused Focus.FocusResult
+    | DropdownFocused Focus.FocusResult
     | Selected CColor
     | SelectHighlighted
     | HighlightPrevious
@@ -127,10 +128,15 @@ update ({ toMsg } as config) message model =
     (case message of
         Open ->
             ( { model | dropdown = DropdownOpened { index = 0 } }
-            , focus config dropdownDomId
+            , focusDropdown config
             )
 
-        Focused result ->
+        InputFocused result ->
+            ( model
+            , Focus.logIfError result
+            )
+
+        DropdownFocused result ->
             ( model
             , case result of
                 Ok () ->
@@ -142,9 +148,7 @@ update ({ toMsg } as config) message model =
 
         CloseAndRestoreFocus ->
             ( { model | dropdown = DropdownClosed }
-            , Cmd.batch
-                [ focus config inputDomId
-                ]
+            , focusInput config
             )
 
         Selected color ->
@@ -203,9 +207,14 @@ unregisterFocusMonitorOnDropdownCloseEffect config oldModel newModel =
         Cmd.none
 
 
-focus : Config msg -> (Config msg -> String) -> Cmd msg
-focus config domIdFromConfig =
-    Focus.attempt (domIdFromConfig config) (config.toMsg << Focused)
+focusInput : Config msg -> Cmd msg
+focusInput config =
+    Focus.attempt (inputDomId config) (config.toMsg << InputFocused)
+
+
+focusDropdown : Config msg -> Cmd msg
+focusDropdown config =
+    Focus.attempt (dropdownDomId config) (config.toMsg << DropdownFocused)
 
 
 dropdownDomId : Config msg -> String
