@@ -23,7 +23,7 @@ import Theme
 
 rollListIndexBy : Int -> List a -> Int -> Int
 rollListIndexBy offset list index =
-    index + offset |> modBy (List.length list)
+    index + offset |> modBy (max 1 (List.length list))
 
 
 cColorList : List CColor
