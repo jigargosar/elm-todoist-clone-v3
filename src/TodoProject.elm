@@ -33,7 +33,7 @@ inbox : TodoProject
 inbox =
     TodoProject (Just ProjectRef.inbox)
         "Inbox"
-        (Color.fromHSL ( 123, 70, 50 ))
+        (CColor.toColor CColor.Charcoal)
 
 
 notFound : TodoProject
