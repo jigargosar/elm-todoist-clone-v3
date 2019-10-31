@@ -10,6 +10,7 @@ type CColor
     = Blue
     | Green
     | Yellow
+    | Charcoal
 
 
 default : CColor
@@ -17,17 +18,28 @@ default =
     Blue
 
 
-toHexString : CColor -> String
-toHexString color =
-    case color of
+toColor : CColor -> Color
+toColor model =
+    case model of
         Blue ->
-            "#4073ff"
+            rgb ( 128, 128, 128 )
 
         Green ->
-            "#299438"
+            rgb ( 128, 128, 128 )
 
         Yellow ->
-            "#fad000"
+            rgb ( 128, 128, 128 )
+
+        Charcoal ->
+            rgb ( 128, 128, 128 )
+
+
+rgb =
+    Color.fromRGB
+
+
+type alias RGB =
+    ( Int, Int, Int )
 
 
 fromInt : Int -> CColor
@@ -56,7 +68,7 @@ infoOld model =
     let
         cssColor : Css.Color
         cssColor =
-            hex (toHexString model)
+            hex (toColor model)
     in
     case model of
         Blue ->
@@ -74,13 +86,10 @@ decoder =
     JD.int |> JD.map fromInt
 
 
-toColor : CColor -> Color
-toColor cColor =
-    toHexString cColor
-        |> Color.fromHex
-        |> Result.withDefault Palette.X11.black
-
-
 toCssColor : CColor -> Css.Color
-toCssColor =
-    toHexString >> Css.hex
+toCssColor model =
+    let
+        ( r, g, b ) =
+            Color.toRGB (toColor model)
+    in
+    Css.rgb (round r) (round g) (round b)
