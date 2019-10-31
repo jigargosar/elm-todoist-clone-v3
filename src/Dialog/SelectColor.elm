@@ -4,6 +4,7 @@ module Dialog.SelectColor exposing
     , Model
     , Msg
     , initial
+    , selected
     , subscriptions
     , update
     , view
@@ -48,6 +49,11 @@ type alias DropdownState =
 
 type alias Model =
     { color : CColor, dropdown : Dropdown }
+
+
+selected : Model -> CColor
+selected =
+    .color
 
 
 type Msg
