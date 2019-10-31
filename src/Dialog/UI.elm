@@ -1,4 +1,13 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, labelFor, labeled, viewForm)
+module Dialog.UI exposing
+    ( ActionsConfig
+    , CheckboxConfig
+    , FormContainer
+    , InputConfig
+    , checkbox
+    , input
+    , labeled
+    , viewForm
+    )
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
