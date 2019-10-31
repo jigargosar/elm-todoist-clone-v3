@@ -1,9 +1,8 @@
 module CColor exposing (CColor(..), decoder, infoOld, list, toColor, toCssColor, toName)
 
 import Color exposing (Color)
-import Css exposing (hex)
+import Css
 import Json.Decode as JD exposing (Decoder)
-import Palette.X11
 
 
 type CColor
