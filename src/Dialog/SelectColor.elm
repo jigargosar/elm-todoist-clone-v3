@@ -137,9 +137,7 @@ update ({ toMsg } as config) message model =
             )
 
         CloseDropdownAndRestoreFocus ->
-            ( Closed
-            , focusInput config
-            )
+            ( Closed, focusInput config )
 
         Selected color ->
             ( Closed
