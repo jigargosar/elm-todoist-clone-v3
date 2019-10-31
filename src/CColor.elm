@@ -1,4 +1,4 @@
-module CColor exposing (CColor(..), decoder, infoOld, list, toColor)
+module CColor exposing (CColor(..), decoder, infoOld, list, toColor, toCssColor)
 
 import Color exposing (Color)
 import Css exposing (hex)
@@ -92,3 +92,8 @@ toColor cColor =
     toHexString cColor
         |> Color.fromHex
         |> Result.withDefault Palette.X11.black
+
+
+toCssColor : CColor -> Css.Color
+toCssColor =
+    toHexString >> Css.hex

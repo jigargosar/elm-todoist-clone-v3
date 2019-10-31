@@ -1,4 +1,4 @@
-module Project exposing (Project, cColor, cssColor, decoder, hue, id, idx, setIdx, title)
+module Project exposing (Project, cColor, cssColor, decoder, id, idx, setIdx, title)
 
 import CColor exposing (CColor)
 import Css
@@ -49,14 +49,10 @@ title =
     unwrap >> .title
 
 
-hue : Project -> Int
-hue =
-    unwrap >> .hue
-
-
 cssColor : Project -> Css.Color
-cssColor project =
-    Css.hsl (toFloat (hue project)) 0.7 0.5
+cssColor =
+    -- Css.hsl (toFloat (hue project)) 0.7 0.5
+    cColor >> CColor.toCssColor
 
 
 cColor : Project -> CColor

@@ -7,7 +7,7 @@ require('tachyons')
 require('./style.css')
 
 function randomCColor() {
-  return Math.round(Math.random() * 30)
+  return Math.round(Math.random() * 3) + 1
 }
 
 const mockTodoList = [
