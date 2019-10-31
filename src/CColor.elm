@@ -1,4 +1,4 @@
-module CColor exposing (..)
+module CColor exposing (CColor(..), decoder, infoOld, list, toColor)
 
 import Color exposing (Color)
 import Css exposing (hex)
