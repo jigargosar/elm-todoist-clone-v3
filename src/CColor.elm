@@ -31,13 +31,13 @@ list =
 comparator : Comparator CColor
 comparator =
     let
-        hslComparator : Comparator ( Float, Float, Float )
-        hslComparator =
+        hslT3Comparator : Comparator ( Float, Float, Float )
+        hslT3Comparator =
             [ Tuple3.first, Tuple3.second, Tuple3.third ]
                 |> List.map Compare.by
                 |> Compare.concat
     in
-    Compare.compose (toColor >> Color.toHSL) hslComparator
+    Compare.compose (toColor >> Color.toHSL) hslT3Comparator
 
 
 orderedByHSL : List CColor
