@@ -46,8 +46,8 @@ type alias DropdownState =
 
 
 type Msg
-    = CloseAndRestoreFocus
-    | Open
+    = CloseDropdownAndRestoreFocus
+    | OpenDropdown
     | InputFocused Focus.FocusResult
     | DropdownFocused Focus.FocusResult
     | Selected CColor
@@ -116,7 +116,7 @@ subscriptions { toMsg } model =
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     (case message of
-        Open ->
+        OpenDropdown ->
             ( Opened { index = 0 }
             , focusDropdown config
             )
@@ -136,7 +136,7 @@ update ({ toMsg } as config) message model =
                     Focus.logError focusError
             )
 
-        CloseAndRestoreFocus ->
+        CloseDropdownAndRestoreFocus ->
             ( Closed
             , focusInput config
             )
@@ -237,13 +237,13 @@ viewInput config cColor model =
             , Key.space
             , Key.arrowDown
             ]
-                |> List.map (apply ( Open, True ))
+                |> List.map (apply ( OpenDropdown, True ))
 
         attrsWhenDropdownClosed =
             case model of
                 Closed ->
                     [ Key.preventDefaultOnKeyDown keydownDecoders
-                    , onClick Open
+                    , onClick OpenDropdown
                     , tabindex 0
                     ]
 
@@ -280,7 +280,7 @@ viewDropdown config state =
             , z_ 1
             ]
         , Key.stopPropagationOnKeyDown
-            [ Key.escape ( CloseAndRestoreFocus, True )
+            [ Key.escape ( CloseDropdownAndRestoreFocus, True )
             , Key.enter ( SelectHighlighted, True )
             , Key.arrowUp ( HighlightPrevious, True )
             , Key.arrowDown ( HighlightNext, True )
