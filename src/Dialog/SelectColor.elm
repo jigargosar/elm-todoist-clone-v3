@@ -56,7 +56,7 @@ type Msg
 
 type alias Config msg =
     { toMsg : Msg -> msg
-    , rootDomId : String
+    , domIdPrefix : String
     , changed : CColor -> msg
     }
 
@@ -199,13 +199,13 @@ focusDropdown config =
 
 
 dropdownDomId : Config msg -> String
-dropdownDomId { rootDomId } =
-    rootDomId ++ "__select-color-dropdown"
+dropdownDomId { domIdPrefix } =
+    domIdPrefix ++ "__select-color-dropdown"
 
 
 inputDomId : Config msg -> String
-inputDomId { rootDomId } =
-    rootDomId ++ "__select-color-input"
+inputDomId { domIdPrefix } =
+    domIdPrefix ++ "__select-color-input"
 
 
 view : Config msg -> CColor -> Model -> Html msg

@@ -106,7 +106,7 @@ autofocusDomId =
 selectColorConfig : SelectColor.Config Msg
 selectColorConfig =
     { toMsg = SelectColor
-    , rootDomId = "add-project-dialog"
+    , domIdPrefix = "add-project-dialog"
     , changed = CColorChanged
     }
 
