@@ -22,6 +22,11 @@ import Styles exposing (..)
 import Theme
 
 
+rollListIndexBy : Int -> List a -> Int -> Int
+rollListIndexBy offset list index =
+    index + offset |> modBy (List.length list)
+
+
 cColorsList : List CColor
 cColorsList =
     CColor.list
@@ -172,17 +177,12 @@ update ({ toMsg } as config) message model =
             )
 
         HighlightNext ->
-            ( mapHighlightIndex ((+) 1 >> modBy (List.length cColorsList))
-                model
+            ( mapHighlightIndex (rollListIndexBy 1 cColorsList) model
             , Cmd.none
             )
 
         HighlightPrevious ->
-            ( mapDropdownState
-                (\state ->
-                    { state | index = state.index - 1 |> modBy (List.length cColorsList) }
-                )
-                model
+            ( mapHighlightIndex (rollListIndexBy -1 cColorsList) model
             , Cmd.none
             )
 
