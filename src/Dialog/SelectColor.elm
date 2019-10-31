@@ -11,6 +11,7 @@ module Dialog.SelectColor exposing
     )
 
 import Basics.More exposing (apply, viewMaybe)
+import CColor exposing (CColor)
 import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
@@ -22,20 +23,9 @@ import Styles exposing (..)
 import Theme
 
 
-type CColor
-    = Blue
-    | Green
-    | Yellow
-
-
-allColors : List CColor
-allColors =
-    [ Blue, Green, Yellow ]
-
-
 initial : Model
 initial =
-    Model Blue DropdownClosed
+    Model CColor.Blue DropdownClosed
 
 
 type Dropdown
@@ -91,7 +81,7 @@ getHighlightedColor =
         >> Maybe.andThen
             (.index
                 >> (\index ->
-                        List.drop index allColors
+                        List.drop index CColor.list
                             |> List.head
                    )
             )
@@ -178,7 +168,7 @@ update ({ toMsg } as config) message model =
         HighlightNext ->
             ( mapDropdownState
                 (\state ->
-                    { state | index = state.index + 1 |> modBy (List.length allColors) }
+                    { state | index = state.index + 1 |> modBy (List.length CColor.list) }
                 )
                 model
             , Cmd.none
@@ -187,7 +177,7 @@ update ({ toMsg } as config) message model =
         HighlightPrevious ->
             ( mapDropdownState
                 (\state ->
-                    { state | index = state.index - 1 |> modBy (List.length allColors) }
+                    { state | index = state.index - 1 |> modBy (List.length CColor.list) }
                 )
                 model
             , Cmd.none
@@ -286,7 +276,7 @@ viewDropdown config state =
             ]
         , tabindex 0
         ]
-        (List.indexedMap (viewItem state) allColors)
+        (List.indexedMap (viewItem state) CColor.list)
 
 
 viewItem : DropdownState -> Int -> CColor -> Html Msg

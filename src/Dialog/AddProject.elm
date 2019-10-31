@@ -2,7 +2,8 @@ module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, subscrip
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
-import Dialog.SelectColor as SelectColor exposing (CColor)
+import CColor exposing (CColor)
+import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
@@ -46,7 +47,7 @@ type Msg
     | Title String
     | Color String
     | SelectColor SelectColor.Msg
-    | CColorChanged SelectColor.CColor
+    | CColorChanged CColor
     | Favorite Bool
     | AutoFocus (Result Dom.Error ())
 
@@ -99,7 +100,7 @@ update { saved, canceled, toMsg } message model =
                 Ok () ->
                     ( model, Cmd.none )
 
-        CColorChanged cColor ->
+        CColorChanged _ ->
             ( model, Cmd.none )
 
 
