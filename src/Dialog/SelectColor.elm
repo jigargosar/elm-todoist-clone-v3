@@ -38,11 +38,11 @@ initial =
 
 type Model
     = Closed
-    | Opened DropdownState
+    | Opened OpenedState
 
 
-type alias DropdownState =
-    { index : Int }
+type alias OpenedState =
+    Int
 
 
 type Msg
@@ -65,7 +65,7 @@ type alias Config msg =
     }
 
 
-getDropdownState : Model -> Maybe DropdownState
+getDropdownState : Model -> Maybe OpenedState
 getDropdownState model =
     case model of
         Closed ->
@@ -75,19 +75,19 @@ getDropdownState model =
             Just state
 
 
+getHighlightIndex : Model -> Maybe Int
+getHighlightIndex =
+    getDropdownState
+
+
 getHighlightedColor : Model -> Maybe CColor
 getHighlightedColor =
-    getDropdownState
+    getHighlightIndex
         >> Maybe.andThen
-            (.index
-                >> (\index ->
-                        List.drop index cColorsList
-                            |> List.head
-                   )
-            )
+            (\index -> List.drop index cColorsList |> List.head)
 
 
-mapDropdownState : (DropdownState -> DropdownState) -> Model -> Model
+mapDropdownState : (OpenedState -> OpenedState) -> Model -> Model
 mapDropdownState func model =
     case model of
         Closed ->
@@ -99,7 +99,7 @@ mapDropdownState func model =
 
 mapHighlightIndex : (Int -> Int) -> Model -> Model
 mapHighlightIndex func =
-    mapDropdownState (\state -> { state | index = func state.index })
+    mapDropdownState func
 
 
 subscriptions : Config msg -> Model -> Sub msg
@@ -117,7 +117,7 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     (case message of
         OpenDropdown ->
-            ( Opened { index = 0 }
+            ( Opened 0
             , focusDropdown config
             )
 
@@ -263,7 +263,7 @@ viewInput config cColor model =
         ]
 
 
-viewDropdown : Config msg -> DropdownState -> Html Msg
+viewDropdown : Config msg -> OpenedState -> Html Msg
 viewDropdown config state =
     div
         [ A.id <| dropdownDomId config
@@ -288,14 +288,14 @@ viewDropdown config state =
         (List.indexedMap (viewItem state) cColorsList)
 
 
-viewItem : DropdownState -> Int -> CColor -> Html Msg
+viewItem : OpenedState -> Int -> CColor -> Html Msg
 viewItem state index color =
     let
         ( cssColor, colorLabel ) =
             CColor.infoOld color
 
         highlightedStyles =
-            case state.index == index of
+            case state == index of
                 True ->
                     [ bgGrayL 0.8 ]
 
