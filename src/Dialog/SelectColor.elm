@@ -33,20 +33,16 @@ cColorsList =
 
 initial : Model
 initial =
-    Model DropdownClosed
+    DropdownClosed
 
 
-type Dropdown
+type Model
     = DropdownClosed
     | DropdownOpened DropdownState
 
 
 type alias DropdownState =
     { index : Int }
-
-
-type alias Model =
-    { dropdown : Dropdown }
 
 
 type Msg
@@ -71,7 +67,7 @@ type alias Config msg =
 
 getDropdownState : Model -> Maybe DropdownState
 getDropdownState model =
-    case model.dropdown of
+    case model of
         DropdownClosed ->
             Nothing
 
@@ -93,12 +89,12 @@ getHighlightedColor =
 
 mapDropdownState : (DropdownState -> DropdownState) -> Model -> Model
 mapDropdownState func model =
-    case model.dropdown of
+    case model of
         DropdownClosed ->
             model
 
         DropdownOpened state ->
-            { model | dropdown = DropdownOpened (func state) }
+            DropdownOpened (func state)
 
 
 mapHighlightIndex : (Int -> Int) -> Model -> Model
@@ -121,7 +117,7 @@ update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
     (case message of
         Open ->
-            ( { model | dropdown = DropdownOpened { index = 0 } }
+            ( DropdownOpened { index = 0 }
             , focusDropdown config
             )
 
@@ -141,12 +137,12 @@ update ({ toMsg } as config) message model =
             )
 
         CloseAndRestoreFocus ->
-            ( { model | dropdown = DropdownClosed }
+            ( DropdownClosed
             , focusInput config
             )
 
         Selected color ->
-            ( { model | dropdown = DropdownClosed }
+            ( DropdownClosed
             , Cmd.batch
                 [ focusInput config
                 , config.changed color |> msgToCmd
@@ -156,7 +152,7 @@ update ({ toMsg } as config) message model =
         SelectHighlighted ->
             case getHighlightedColor model of
                 Just color ->
-                    ( { model | dropdown = DropdownClosed }
+                    ( DropdownClosed
                     , Cmd.batch
                         [ focusInput config
                         , config.changed color |> msgToCmd
@@ -169,7 +165,7 @@ update ({ toMsg } as config) message model =
         OnFocusOrClickOutside domId ->
             ( case domId == dropdownDomId config of
                 True ->
-                    { model | dropdown = DropdownClosed }
+                    DropdownClosed
 
                 False ->
                     model
@@ -196,7 +192,7 @@ update ({ toMsg } as config) message model =
 
 unregisterFocusMonitorOnDropdownCloseEffect : Config msg -> Model -> Model -> Cmd msg
 unregisterFocusMonitorOnDropdownCloseEffect config oldModel newModel =
-    if oldModel.dropdown /= newModel.dropdown && newModel.dropdown == DropdownClosed then
+    if oldModel /= newModel && newModel == DropdownClosed then
         Focus.unRegisterOnFocusOrClickOutSide (dropdownDomId config)
 
     else
@@ -244,7 +240,7 @@ viewInput config cColor model =
                 |> List.map (apply ( Open, True ))
 
         attrsWhenDropdownClosed =
-            case model.dropdown of
+            case model of
                 DropdownClosed ->
                     [ Key.preventDefaultOnKeyDown keydownDecoders
                     , onClick Open
