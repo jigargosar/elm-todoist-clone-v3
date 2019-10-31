@@ -58,6 +58,7 @@ const mockLabelList = ['to-read', 'medical', 'quick-ref'].map(
     createdAt: Date.now(),
     modifiedAt: Date.now(),
     hue: Math.round(Math.random() * 360),
+    cColor: randomCColor(),
     idx,
   }),
 )
@@ -76,6 +77,7 @@ const mockFilterList = [
   createdAt: Date.now(),
   modifiedAt: Date.now(),
   hue: Math.round(Math.random() * 360),
+  cColor: randomCColor(),
   idx,
 }))
 

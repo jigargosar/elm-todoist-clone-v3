@@ -1,5 +1,6 @@
 module Filter exposing (Filter, cssColor, decoder, hue, id, idx, setIdx, title)
 
+import CColor exposing (CColor)
 import Css
 import FilterId exposing (FilterId)
 import Json.Decode as JD exposing (Decoder)
@@ -21,6 +22,7 @@ type alias Internal =
     , title : String
     , idx : Int
     , hue : Int
+    , cColor : CColor
     }
 
 
@@ -38,6 +40,7 @@ decoder =
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "idx" JD.int)
         |> andMap (JD.field "hue" JD.int)
+        |> andMap (JD.field "cColor" CColor.decoder)
         |> JD.map Filter
 
 
