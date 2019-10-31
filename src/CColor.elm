@@ -33,7 +33,7 @@ comparator =
     let
         hslT3Comparator : Comparator ( Float, Float, Float )
         hslT3Comparator =
-            [ Tuple3.first, Tuple3.second, Tuple3.third ]
+            [ Tuple3.first >> (*) -1, Tuple3.second, Tuple3.third ]
                 |> List.map Compare.by
                 |> Compare.concat
     in
