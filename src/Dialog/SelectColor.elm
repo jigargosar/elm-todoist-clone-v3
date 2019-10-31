@@ -21,6 +21,11 @@ import Styles exposing (..)
 import Theme
 
 
+cColorsList : List CColor
+cColorsList =
+    CColor.list
+
+
 initial : Model
 initial =
     Model CColor.Blue DropdownClosed
@@ -275,11 +280,6 @@ viewDropdown config state =
         , tabindex 0
         ]
         (List.indexedMap (viewItem state) cColorsList)
-
-
-cColorsList : List CColor
-cColorsList =
-    CColor.list
 
 
 viewItem : DropdownState -> Int -> CColor -> Html Msg
