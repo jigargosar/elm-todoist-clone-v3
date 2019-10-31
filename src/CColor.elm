@@ -1,4 +1,4 @@
-module CColor exposing (CColor(..), decoder, infoOld, list, toColor, toCssColor, toName)
+module CColor exposing (CColor(..), decoder, infoOld, orderedByHSL, toColor, toCssColor, toName)
 
 import Color exposing (Color)
 import Css
@@ -23,6 +23,15 @@ list =
     , Red
     , Orange
     ]
+
+
+orderedByHSL : List CColor
+orderedByHSL =
+    let
+        toHSLOrder ( h, s, l ) =
+            h * 1000 + s * 100 + l
+    in
+    List.sortBy (toColor >> Color.toHSL >> toHSLOrder) list
 
 
 default : CColor
