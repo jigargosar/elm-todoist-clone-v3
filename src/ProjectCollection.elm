@@ -91,7 +91,7 @@ put project model =
 
         pre =
             sorted model
-                |> List.take (idx - 1)
+                |> List.take idx
                 |> List.filter (Project.id >> (/=) id)
     in
     updateSortOrder (pre ++ project :: post) model
