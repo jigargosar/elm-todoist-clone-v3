@@ -21,7 +21,6 @@ type alias Internal =
     , modifiedAt : Timestamp
     , title : String
     , idx : Int
-    , hue : Int
     , cColor : CColor
     }
 
@@ -39,7 +38,6 @@ decoder =
         |> andMap (JD.field "modifiedAt" Timestamp.decoder)
         |> andMap (JD.field "title" JD.string)
         |> andMap (JD.field "idx" JD.int)
-        |> andMap (JD.field "hue" JD.int)
         |> andMap (JD.field "cColor" CColor.decoder)
         |> JD.map Project
 
