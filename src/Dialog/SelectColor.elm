@@ -8,7 +8,7 @@ module Dialog.SelectColor exposing
     , view
     )
 
-import Basics.More exposing (apply, viewMaybe)
+import Basics.More exposing (apply, msgToCmd, viewMaybe)
 import CColor exposing (CColor)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
@@ -33,7 +33,7 @@ cColorsList =
 
 initial : Model
 initial =
-    Model CColor.Blue DropdownClosed
+    Model DropdownClosed
 
 
 type Dropdown
@@ -46,7 +46,7 @@ type alias DropdownState =
 
 
 type alias Model =
-    { color : CColor, dropdown : Dropdown }
+    { dropdown : Dropdown }
 
 
 type Msg
@@ -146,15 +146,21 @@ update ({ toMsg } as config) message model =
             )
 
         Selected color ->
-            ( { model | color = color, dropdown = DropdownClosed }
-            , focusInput config
+            ( { model | dropdown = DropdownClosed }
+            , Cmd.batch
+                [ focusInput config
+                , config.changed color |> msgToCmd
+                ]
             )
 
         SelectHighlighted ->
             case getHighlightedColor model of
                 Just color ->
-                    ( { model | color = color, dropdown = DropdownClosed }
-                    , focusInput config
+                    ( { model | dropdown = DropdownClosed }
+                    , Cmd.batch
+                        [ focusInput config
+                        , config.changed color |> msgToCmd
+                        ]
                     )
 
                 Nothing ->
@@ -217,18 +223,18 @@ inputDomId { domIdPrefix } =
     domIdPrefix ++ "__select-color-input"
 
 
-view : Config msg -> Model -> Html msg
-view ({ toMsg } as config) model =
+view : Config msg -> CColor -> Model -> Html msg
+view ({ toMsg } as config) cColor model =
     div
         [ css [ relative, lh 1.5 ] ]
-        [ viewInput config model
+        [ viewInput config cColor model
         , viewMaybe (viewDropdown config) (getDropdownState model)
         ]
         |> H.map toMsg
 
 
-viewInput : Config msg -> Model -> Html Msg
-viewInput config model =
+viewInput : Config msg -> CColor -> Model -> Html Msg
+viewInput config cColor model =
     let
         keydownDecoders =
             [ Key.enter
@@ -249,7 +255,7 @@ viewInput config model =
                     []
 
         ( cssColor, colorLabel ) =
-            CColor.infoOld model.color
+            CColor.infoOld cColor
     in
     div
         (A.id (inputDomId config)

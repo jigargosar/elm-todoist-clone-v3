@@ -137,7 +137,7 @@ view { toMsg } model =
                 , changed = Color
                 , attrs = []
                 }
-            , SelectColor.view selectColorConfig model.selectColor
+            , SelectColor.view selectColorConfig model.cColor model.selectColor
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
