@@ -1,4 +1,4 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, viewForm)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, labeled, viewForm)
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
@@ -30,6 +30,14 @@ input { labelText, value, changed, attrs } =
                 ++ attrs
             )
             []
+        ]
+
+
+labeled : String -> Html msg -> Html msg
+labeled labelText el =
+    label [ css [ flex, flexColumn, pv 2 ] ]
+        [ span [ css [ lh 1.5, bold ] ] [ text labelText ]
+        , el
         ]
 
 

@@ -13,7 +13,6 @@ import Task
 
 type alias Model =
     { title : String
-    , color : String
     , favorite : Bool
     , selectColor : SelectColor.Model
     , cColor : CColor
@@ -22,7 +21,6 @@ type alias Model =
 
 type alias SavedWith =
     { title : String
-    , color : String
     , favorite : Bool
     , cColor : CColor
     }
@@ -30,7 +28,7 @@ type alias SavedWith =
 
 initial : Model
 initial =
-    Model "" "" False SelectColor.initial CColor.default
+    Model "" False SelectColor.initial CColor.default
 
 
 init : Config msg -> ( Model, Cmd msg )
@@ -46,7 +44,6 @@ type Msg
     = Save
     | Cancel
     | Title String
-    | Color String
     | SelectColor SelectColor.Msg
     | CColorChanged CColor
     | Favorite Bool
@@ -71,7 +68,7 @@ update { saved, canceled, toMsg } message model =
     case message of
         Save ->
             ( model
-            , SavedWith model.title model.color model.favorite model.cColor
+            , SavedWith model.title model.favorite model.cColor
                 |> saved
                 |> msgToCmd
             )
@@ -81,9 +78,6 @@ update { saved, canceled, toMsg } message model =
 
         Title title ->
             ( { model | title = title }, Cmd.none )
-
-        Color color ->
-            ( { model | color = color }, Cmd.none )
 
         SelectColor msg ->
             SelectColor.update selectColorConfig msg model.selectColor
@@ -131,13 +125,8 @@ view { toMsg } model =
                 , changed = Title
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
-            , Dialog.UI.input
-                { labelText = "Project color"
-                , value = model.color
-                , changed = Color
-                , attrs = []
-                }
-            , SelectColor.view selectColorConfig model.cColor model.selectColor
+            , Dialog.UI.labeled "Project color"
+                (SelectColor.view selectColorConfig model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
