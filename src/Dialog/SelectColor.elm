@@ -17,6 +17,7 @@ import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onClick, onMouseOver)
 import Key
 import Px
+import Return
 import Styles exposing (..)
 import Theme
 
@@ -113,7 +114,7 @@ subscriptions { toMsg } model =
 
 update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update ({ toMsg } as config) message model =
-    case message of
+    (case message of
         Open ->
             ( { model | dropdown = DropdownOpened { index = 0 } }
             , focus config dropdownDomId
@@ -190,6 +191,17 @@ update ({ toMsg } as config) message model =
             ( mapDropdownState (\state -> { state | index = index }) model
             , Cmd.none
             )
+    )
+        |> Return.effect_ (unregisterFocusMonitorOnDropdownCloseEffect config model)
+
+
+unregisterFocusMonitorOnDropdownCloseEffect : Config msg -> Model -> Model -> Cmd msg
+unregisterFocusMonitorOnDropdownCloseEffect config oldModel newModel =
+    if oldModel.dropdown /= newModel.dropdown && newModel.dropdown == DropdownClosed then
+        Focus.unRegisterOnFocusOrClickOutSide (dropdownDomId config)
+
+    else
+        Cmd.none
 
 
 unregisterDropdownFocusMonitor config =
