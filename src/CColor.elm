@@ -16,8 +16,8 @@ type CColor
     | Orange
 
 
-list : List CColor
-list =
+appendOnlyList : List CColor
+appendOnlyList =
     [ Blue
     , Green
     , Yellow
@@ -29,7 +29,7 @@ list =
 
 fromInt : Int -> CColor
 fromInt idx =
-    List.drop idx list |> List.head |> Maybe.withDefault default
+    List.drop idx appendOnlyList |> List.head |> Maybe.withDefault default
 
 
 default : CColor
@@ -51,7 +51,7 @@ comparator =
 
 orderedByHSL : List CColor
 orderedByHSL =
-    List.sortWith comparator list
+    List.sortWith comparator appendOnlyList
 
 
 toColor : CColor -> Color
