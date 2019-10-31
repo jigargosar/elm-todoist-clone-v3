@@ -222,7 +222,12 @@ view ({ toMsg } as config) cColor model =
     div
         [ css [ relative, lh 1.5 ] ]
         [ viewInput config cColor model
-        , viewMaybe (viewDropdown config) (getDropdownState model)
+        , case model of
+            Closed ->
+                text ""
+
+            Opened highlightedIndex ->
+                viewDropdown config highlightedIndex
         ]
         |> H.map toMsg
 
@@ -263,8 +268,8 @@ viewInput config cColor model =
         ]
 
 
-viewDropdown : Config msg -> OpenedState -> Html Msg
-viewDropdown config state =
+viewDropdown : Config msg -> Int -> Html Msg
+viewDropdown config highlightIndex =
     div
         [ A.id <| dropdownDomId config
         , css
@@ -285,17 +290,17 @@ viewDropdown config state =
             ]
         , tabindex 0
         ]
-        (List.indexedMap (viewItem state) cColorsList)
+        (List.indexedMap (viewItem highlightIndex) cColorsList)
 
 
-viewItem : OpenedState -> Int -> CColor -> Html Msg
-viewItem state index color =
+viewItem : Int -> Int -> CColor -> Html Msg
+viewItem highlightIndex index color =
     let
         ( cssColor, colorLabel ) =
             CColor.infoOld color
 
         highlightedStyles =
-            case state == index of
+            case highlightIndex == index of
                 True ->
                     [ bgGrayL 0.8 ]
 
