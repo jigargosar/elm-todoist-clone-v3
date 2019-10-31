@@ -535,6 +535,16 @@ updateFilterSortOrder filterList model =
 updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
 updateProjectPopup projectId action model =
     case action of
+        PopupView.AddProjectBelow ->
+            let
+                projectIdx =
+                    ProjectCollection.byId projectId model.projectCollection
+                        |> Maybe.map (Project.idx >> (+) 1)
+                        |> Maybe.withDefault 0
+            in
+            initAddProjectDialogAt projectIdx
+                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
+
         PopupView.EditProject ->
             ( { model | dialog = EditProjectDialog projectId }
             , Cmd.none
