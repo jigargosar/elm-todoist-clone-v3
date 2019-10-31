@@ -534,15 +534,19 @@ updateFilterSortOrder filterList model =
 
 updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
 updateProjectPopup projectId action model =
+    let
+        projectIdxWithOffset offset =
+            ProjectCollection.byId projectId model.projectCollection
+                |> Maybe.map (Project.idx >> (+) offset)
+                |> Maybe.withDefault 0
+    in
     case action of
         PopupView.AddProjectBelow ->
-            let
-                projectIdx =
-                    ProjectCollection.byId projectId model.projectCollection
-                        |> Maybe.map (Project.idx >> (+) 1)
-                        |> Maybe.withDefault 0
-            in
-            initAddProjectDialogAt projectIdx
+            initAddProjectDialogAt (projectIdxWithOffset 1)
+                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
+
+        PopupView.AddProjectAbove ->
+            initAddProjectDialogAt (projectIdxWithOffset 0)
                 |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
 
         PopupView.EditProject ->
