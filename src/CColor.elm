@@ -16,7 +16,13 @@ type CColor
 
 list : List CColor
 list =
-    [ Blue, Green, Yellow, Charcoal, Red, Orange ]
+    [ Blue
+    , Green
+    , Yellow
+    , Charcoal
+    , Red
+    , Orange
+    ]
 
 
 default : CColor
