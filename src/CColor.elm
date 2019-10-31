@@ -1,6 +1,5 @@
 module CColor exposing (CColor(..), decoder, infoOld, orderedByHSL, toColor, toCssColor, toName)
 
-import Basics.More exposing (impl)
 import Color exposing (Color)
 import Compare exposing (Comparator)
 import Css
