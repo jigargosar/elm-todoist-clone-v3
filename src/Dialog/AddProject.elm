@@ -16,6 +16,7 @@ type alias Model =
     , favorite : Bool
     , selectColor : SelectColor.Model
     , cColor : CColor
+    , idx : Int
     }
 
 
@@ -28,7 +29,7 @@ type alias SavedWith =
 
 initial : Model
 initial =
-    Model "" False SelectColor.initial CColor.default
+    Model "" False SelectColor.initial CColor.default 0
 
 
 init : Config msg -> ( Model, Cmd msg )
