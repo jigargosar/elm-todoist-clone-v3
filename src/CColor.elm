@@ -10,6 +10,12 @@ type CColor
     | Green
     | Yellow
     | Charcoal
+    | Red
+
+
+list : List CColor
+list =
+    [ Blue, Green, Yellow, Charcoal, Red ]
 
 
 default : CColor
@@ -21,24 +27,19 @@ toColor : CColor -> Color
 toColor model =
     case model of
         Blue ->
-            rgb ( 128, 128, 128 )
+            rgb ( 64, 115, 255 )
 
         Green ->
-            rgb ( 128, 128, 128 )
+            rgb ( 41, 148, 56 )
 
         Yellow ->
-            rgb ( 128, 128, 128 )
+            rgb ( 250, 208, 0 )
 
         Charcoal ->
             rgb ( 128, 128, 128 )
 
-
-rgb =
-    Color.fromRGB
-
-
-type alias RGB =
-    ( Int, Int, Int )
+        Red ->
+            rgb ( 219, 64, 53 )
 
 
 fromInt : Int -> CColor
@@ -53,13 +54,11 @@ fromInt idx =
         3 ->
             Yellow
 
+        4 ->
+            Red
+
         _ ->
             default
-
-
-list : List CColor
-list =
-    [ Blue, Green, Yellow ]
 
 
 toName : CColor -> String
@@ -76,6 +75,9 @@ toName model =
 
         Charcoal ->
             "Charcoal"
+
+        Red ->
+            "Red"
 
 
 infoOld : CColor -> ( Css.Color, String )
@@ -95,3 +97,12 @@ toCssColor model =
             Color.toRGB (toColor model)
     in
     Css.rgb (round r) (round g) (round b)
+
+
+rgb : ( Float, Float, Float ) -> Color
+rgb =
+    Color.fromRGB
+
+
+type alias RGB =
+    ( Int, Int, Int )

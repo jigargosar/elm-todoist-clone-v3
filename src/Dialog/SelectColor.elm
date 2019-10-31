@@ -11,7 +11,6 @@ module Dialog.SelectColor exposing
 
 import Basics.More exposing (apply, viewMaybe)
 import CColor exposing (CColor)
-import Css exposing (hex)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, tabindex)
