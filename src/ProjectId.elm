@@ -1,6 +1,7 @@
-module ProjectId exposing (ProjectId, decoder, toString)
+module ProjectId exposing (ProjectId, decoder, generator, toString)
 
 import Json.Decode as JD exposing (Decoder)
+import Random
 
 
 type ProjectId
@@ -17,9 +18,13 @@ unwrap (ProjectId value) =
     value
 
 
+prefix =
+    "ProjectId-"
+
+
 fromStringDecoder : String -> Decoder ProjectId
 fromStringDecoder str =
-    if str |> String.startsWith "ProjectId-" then
+    if str |> String.startsWith prefix then
         JD.succeed (ProjectId str)
 
     else
@@ -29,3 +34,9 @@ fromStringDecoder str =
 decoder : Decoder ProjectId
 decoder =
     JD.andThen fromStringDecoder JD.string
+
+
+generator : Random.Generator ProjectId
+generator =
+    Random.int 9999 99999
+        |> Random.map (String.fromInt >> (++) prefix >> ProjectId)

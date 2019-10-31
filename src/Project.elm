@@ -1,9 +1,10 @@
-module Project exposing (Project, cColor, cssColor, decoder, id, idx, setIdx, title)
+module Project exposing (Project, cColor, cssColor, decoder, generator, id, idx, setIdx, title)
 
 import CColor exposing (CColor)
 import Css
 import Json.Decode as JD exposing (Decoder)
 import ProjectId exposing (ProjectId)
+import Random
 import Timestamp exposing (Timestamp)
 
 
@@ -23,6 +24,16 @@ type alias Internal =
     , idx : Int
     , cColor : CColor
     }
+
+
+generator : String -> Int -> CColor -> Timestamp -> Random.Generator Project
+generator title_ idx_ cColor_ ts =
+    ProjectId.generator
+        |> Random.map
+            (\id_ ->
+                Internal id_ ts ts title_ idx_ cColor_
+                    |> Project
+            )
 
 
 andMap : Decoder a -> Decoder (a -> b) -> Decoder b

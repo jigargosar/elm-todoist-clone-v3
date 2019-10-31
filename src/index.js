@@ -99,6 +99,7 @@ times(assignRandomLabelsToRandomTodo, 7)
 const app = Module.Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
+    now: Date.now(),
     todoList: mockTodoList,
     projectList: mockProjectList,
     labelList: mockLabelList,

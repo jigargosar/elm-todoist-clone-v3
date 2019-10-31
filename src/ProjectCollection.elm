@@ -1,4 +1,12 @@
-module ProjectCollection exposing (ProjectCollection, byId, fromEncodedList, initial, sorted, updateSortOrder)
+module ProjectCollection exposing
+    ( ProjectCollection
+    , byId
+    , fromEncodedList
+    , initial
+    , put
+    , sorted
+    , updateSortOrder
+    )
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
@@ -65,3 +73,8 @@ map func =
 updateSortOrder : List Project -> ProjectCollection -> ProjectCollection
 updateSortOrder pl =
     map (\c -> List.indexedMap Project.setIdx pl |> List.foldl dict.insert c)
+
+
+put : Project -> ProjectCollection -> ProjectCollection
+put project =
+    map (dict.insert project)

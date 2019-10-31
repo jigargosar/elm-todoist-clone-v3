@@ -28,7 +28,11 @@ import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
+import Random
 import Return
+import Task
+import Time
+import Timestamp exposing (Timestamp)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoView
@@ -108,7 +112,8 @@ type PopupMsg
 
 
 type alias Flags =
-    { todoList : Value
+    { now : Int
+    , todoList : Value
     , projectList : Value
     , labelList : Value
     , filterList : Value
@@ -122,6 +127,7 @@ type alias Flags =
 type alias Model =
     { page : Page
     , navKey : Nav.Key
+    , seed : Random.Seed
     , todoDict : TodoDict
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
@@ -142,6 +148,7 @@ init flags url navKey =
         initial =
             { page = Page.pageFromUrl url
             , navKey = navKey
+            , seed = Random.initialSeed flags.now
             , todoDict = TodoDict.initial
             , projectCollection = ProjectCollection.initial
             , labelCollection = LabelCollection.initial
@@ -273,6 +280,7 @@ type Msg
     | DialogMsg DialogMsg
     | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
+    | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked
@@ -366,8 +374,15 @@ update message model =
                 _ ->
                     ret
 
-        AddProjectDialogSaved _ ->
-            ( { model | dialog = NoDialog }, Cmd.none )
+        AddProjectDialogSaved savedWith ->
+            ( { model | dialog = NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+
+        AddProjectWithTS { title, cColor } ts ->
+            let
+                ( newProject, newModel ) =
+                    stepRandom (Project.generator title 0 cColor ts) model
+            in
+            ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
@@ -408,6 +423,15 @@ update message model =
 
         FilterOrderChanged filterList ->
             updateFilterSortOrder filterList model
+
+
+stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
+stepRandom generator model =
+    let
+        ( generated, newSeed ) =
+            Random.step generator model.seed
+    in
+    ( generated, { model | seed = newSeed } )
 
 
 updateWithPopupKind : (Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
