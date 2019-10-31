@@ -65,9 +65,9 @@ addProjectDialogConfig =
     }
 
 
-initAddProjectDialog : ( Dialog, Cmd Msg )
-initAddProjectDialog =
-    Dialog.AddProject.init addProjectDialogConfig
+initAddProjectDialogAt : Int -> ( Dialog, Cmd Msg )
+initAddProjectDialogAt idx =
+    Dialog.AddProject.initAt addProjectDialogConfig idx
         |> Tuple.mapFirst AddProjectDialog
 
 
@@ -394,7 +394,7 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            initAddProjectDialog
+            initAddProjectDialogAt 0
                 |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
 
         AddLabelClicked ->

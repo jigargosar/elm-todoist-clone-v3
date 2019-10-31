@@ -1,4 +1,4 @@
-module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, init, subscriptions, update, view)
+module Dialog.AddProject exposing (Config, Model, Msg, SavedWith, initAt, subscriptions, update, view)
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
@@ -27,9 +27,9 @@ type alias SavedWith =
     }
 
 
-init : Config msg -> ( Model, Cmd msg )
-init { toMsg } =
-    ( Model "" False SelectColor.initial CColor.default 0
+initAt : Config msg -> Int -> ( Model, Cmd msg )
+initAt { toMsg } idx =
+    ( Model "" False SelectColor.initial CColor.default idx
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
