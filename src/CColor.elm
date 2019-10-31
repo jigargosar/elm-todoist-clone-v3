@@ -63,22 +63,25 @@ list =
     [ Blue, Green, Yellow ]
 
 
-infoOld : CColor -> ( Css.Color, String )
-infoOld model =
-    let
-        cssColor : Css.Color
-        cssColor =
-            hex (toColor model)
-    in
+toName : CColor -> String
+toName model =
     case model of
         Blue ->
-            ( cssColor, "Blue" )
+            "Blue"
 
         Green ->
-            ( cssColor, "Green" )
+            "Green"
 
         Yellow ->
-            ( cssColor, "Yellow" )
+            "Yellow"
+
+        Charcoal ->
+            "Charcoal"
+
+
+infoOld : CColor -> ( Css.Color, String )
+infoOld model =
+    ( toCssColor model, toName model )
 
 
 decoder : Decoder CColor
