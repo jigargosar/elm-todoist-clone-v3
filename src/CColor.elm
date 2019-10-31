@@ -1,4 +1,4 @@
-module CColor exposing (CColor(..), decoder, infoOld, name, orderedByHSL, toColor, toCssColor)
+module CColor exposing (CColor(..), decoder, infoOld, list, name, toColor, toCssColor)
 
 import Color exposing (Color)
 import Compare exposing (Comparator)
@@ -49,8 +49,8 @@ comparator =
     Compare.compose (toColor >> Color.toHSL) hslT3Comparator
 
 
-orderedByHSL : List CColor
-orderedByHSL =
+list : List CColor
+list =
     List.sortWith comparator appendOnlyList
 
 

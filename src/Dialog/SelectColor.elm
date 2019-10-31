@@ -279,7 +279,7 @@ viewDropdown config state =
 
 cColorsList : List CColor
 cColorsList =
-    CColor.orderedByHSL
+    CColor.list
 
 
 viewItem : DropdownState -> Int -> CColor -> Html Msg
