@@ -6,6 +6,10 @@ const Module = require('./Main.elm')
 require('tachyons')
 require('./style.css')
 
+function randomCColor() {
+  return Math.round(Math.random() * 30)
+}
+
 const mockTodoList = [
   'Get Milk',
   'Remember to call',
@@ -31,7 +35,6 @@ const mockProjectList = [
   'Clone This',
   'Finish That',
   'Read GOT',
-
   'Complete All Foo',
 ].map((title, idx) => ({
   id: `ProjectId-${nanoid()}`,
@@ -39,6 +42,7 @@ const mockProjectList = [
   createdAt: Date.now(),
   modifiedAt: Date.now(),
   hue: Math.round(Math.random() * 360),
+  cColor: randomCColor(),
   idx,
 }))
 
