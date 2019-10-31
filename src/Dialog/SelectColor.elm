@@ -154,7 +154,7 @@ update ({ toMsg } as config) message model =
         Selected color ->
             ( { model | color = color, dropdown = DropdownClosed }
             , Cmd.batch
-                [ focus config inputDomId
+                [ focusInput config
                 ]
             )
 
@@ -163,7 +163,7 @@ update ({ toMsg } as config) message model =
                 Just color ->
                     ( { model | color = color, dropdown = DropdownClosed }
                     , Cmd.batch
-                        [ focus config inputDomId
+                        [ focusInput config
                         ]
                     )
 
