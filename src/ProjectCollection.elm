@@ -77,4 +77,9 @@ updateSortOrder pl =
 
 put : Project -> ProjectCollection -> ProjectCollection
 put project =
-    map (dict.insert project)
+    map (dict.insert project) >> resort
+
+
+resort : ProjectCollection -> ProjectCollection
+resort model =
+    updateSortOrder (sorted model) model
