@@ -76,8 +76,25 @@ updateSortOrder pl =
 
 
 put : Project -> ProjectCollection -> ProjectCollection
-put project =
-    map (dict.insert project) >> resort
+put project model =
+    let
+        idx =
+            Project.idx project
+
+        id =
+            Project.id project
+
+        post =
+            sorted model
+                |> List.drop idx
+                |> List.filter (Project.id >> (/=) id)
+
+        pre =
+            sorted model
+                |> List.take (idx - 1)
+                |> List.filter (Project.id >> (/=) id)
+    in
+    updateSortOrder (pre ++ project :: post) model
 
 
 resort : ProjectCollection -> ProjectCollection

@@ -538,6 +538,7 @@ updateProjectPopup projectId action model =
         projectIdxWithOffset offset =
             ProjectCollection.byId projectId model.projectCollection
                 |> Maybe.map (Project.idx >> (+) offset)
+                |> Debug.log "idx"
                 |> Maybe.withDefault 0
     in
     case action of
