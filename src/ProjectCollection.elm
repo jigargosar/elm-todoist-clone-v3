@@ -95,8 +95,3 @@ put project model =
                 |> List.filter (Project.id >> (/=) id)
     in
     updateSortOrder (pre ++ project :: post) model
-
-
-resort : ProjectCollection -> ProjectCollection
-resort model =
-    updateSortOrder (sorted model) model
