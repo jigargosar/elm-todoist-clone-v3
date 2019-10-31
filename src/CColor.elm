@@ -46,19 +46,6 @@ fromInt idx =
             default
 
 
-toInt : CColor -> Int
-toInt cColor =
-    case cColor of
-        Blue ->
-            1
-
-        Green ->
-            2
-
-        Yellow ->
-            3
-
-
 list : List CColor
 list =
     [ Blue, Green, Yellow ]
