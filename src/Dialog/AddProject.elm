@@ -71,7 +71,7 @@ update { saved, canceled, toMsg } message model =
     case message of
         Save ->
             ( model
-            , SavedWith model.title model.color model.favorite (SelectColor.selected model.selectColor)
+            , SavedWith model.title model.color model.favorite model.cColor
                 |> saved
                 |> msgToCmd
             )
