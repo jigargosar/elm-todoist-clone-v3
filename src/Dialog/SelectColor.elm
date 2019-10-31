@@ -26,8 +26,8 @@ rollListIndexBy offset list index =
     index + offset |> modBy (List.length list)
 
 
-cColorsList : List CColor
-cColorsList =
+cColorList : List CColor
+cColorList =
     CColor.list
 
 
@@ -80,7 +80,7 @@ getHighlightedColor : Model -> Maybe CColor
 getHighlightedColor =
     getHighlightIndex
         >> Maybe.andThen
-            (\index -> List.drop index cColorsList |> List.head)
+            (\index -> List.drop index cColorList |> List.head)
 
 
 mapHighlightIndex : (Int -> Int) -> Model -> Model
@@ -162,12 +162,12 @@ update ({ toMsg } as config) message model =
             )
 
         HighlightNext ->
-            ( mapHighlightIndex (rollListIndexBy 1 cColorsList) model
+            ( mapHighlightIndex (rollListIndexBy 1 cColorList) model
             , Cmd.none
             )
 
         HighlightPrevious ->
-            ( mapHighlightIndex (rollListIndexBy -1 cColorsList) model
+            ( mapHighlightIndex (rollListIndexBy -1 cColorList) model
             , Cmd.none
             )
 
@@ -281,7 +281,7 @@ viewDropdown config highlightIndex =
             ]
         , tabindex 0
         ]
-        (List.indexedMap (viewItem highlightIndex) cColorsList)
+        (List.indexedMap (viewItem highlightIndex) cColorList)
 
 
 viewItem : Int -> Int -> CColor -> Html Msg
