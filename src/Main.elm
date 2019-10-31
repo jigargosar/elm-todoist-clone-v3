@@ -377,10 +377,10 @@ update message model =
         AddProjectDialogSaved savedWith ->
             ( { model | dialog = NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
 
-        AddProjectWithTS { title, cColor } ts ->
+        AddProjectWithTS { title, cColor, idx } ts ->
             let
                 ( newProject, newModel ) =
-                    stepRandom (Project.generator title 0 cColor ts) model
+                    stepRandom (Project.generator title idx cColor ts) model
             in
             ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
 

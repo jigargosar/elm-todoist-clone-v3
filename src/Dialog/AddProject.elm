@@ -24,6 +24,7 @@ type alias SavedWith =
     { title : String
     , favorite : Bool
     , cColor : CColor
+    , idx : Int
     }
 
 
@@ -64,7 +65,7 @@ update { saved, canceled, toMsg } message model =
     case message of
         Save ->
             ( model
-            , SavedWith model.title model.favorite model.cColor
+            , SavedWith model.title model.favorite model.cColor model.idx
                 |> saved
                 |> msgToCmd
             )
