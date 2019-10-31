@@ -3,7 +3,6 @@ module CColor exposing (CColor(..), decoder, infoOld, list, toColor)
 import Color exposing (Color)
 import Css exposing (hex)
 import Json.Decode as JD exposing (Decoder)
-import Json.Encode as JE exposing (Value)
 import Palette.X11
 
 
@@ -13,6 +12,7 @@ type CColor
     | Yellow
 
 
+default : CColor
 default =
     Blue
 
@@ -30,6 +30,7 @@ toHexString color =
             "#fad000"
 
 
+fromInt : Int -> CColor
 fromInt idx =
     case idx of
         1 ->
@@ -42,7 +43,7 @@ fromInt idx =
             Yellow
 
         _ ->
-            Blue
+            default
 
 
 toInt : CColor -> Int
@@ -84,11 +85,6 @@ infoOld model =
 decoder : Decoder CColor
 decoder =
     JD.int |> JD.map fromInt
-
-
-encoder : CColor -> Value
-encoder =
-    toInt >> JE.int
 
 
 toColor : CColor -> Color
