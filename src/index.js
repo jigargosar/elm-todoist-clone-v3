@@ -119,7 +119,7 @@ function MonitorFocusOrClickOutside() {
   const listener = e => {
     if(isEmpty(domIdList)) return
     const target = e.target
-    console.log(target, e.path, domIdList)
+    // console.log(target, e.path, domIdList)
     domIdList.forEach(domId => {
       const monitorEl = document.getElementById(domId)
       if (
