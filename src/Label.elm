@@ -1,6 +1,7 @@
-module Label exposing (Label, cssColor, decoder, hue, id, idx, setIdx, title)
+module Label exposing (Label, color, cssColor, decoder, id, idx, setIdx, title)
 
 import CColor exposing (CColor)
+import Color exposing (Color)
 import Css
 import Json.Decode as JD exposing (Decoder)
 import LabelId exposing (LabelId)
@@ -55,8 +56,19 @@ hue =
 
 
 cssColor : Label -> Css.Color
-cssColor label =
-    Css.hsl (toFloat (hue label)) 0.7 0.5
+cssColor =
+    -- Css.hsl (toFloat (hue label)) 0.7 0.5
+    cColor >> CColor.toCssColor
+
+
+cColor : Label -> CColor
+cColor =
+    unwrap >> .cColor
+
+
+color : Label -> Color
+color =
+    cColor >> CColor.toColor
 
 
 unwrap (Label t) =

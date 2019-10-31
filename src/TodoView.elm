@@ -95,7 +95,7 @@ viewLabelId label =
         [ css
             [ ph 1
             , Css.fontSize Css.small
-            , c_ (Label.hue label |> fromHue |> Color.whiten 10 |> toCssColor)
+            , c_ (Label.color label |> Color.whiten 10 |> toCssColor)
             , hover [ underline, pointer ]
             ]
         ]

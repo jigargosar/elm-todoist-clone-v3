@@ -1,6 +1,7 @@
-module Filter exposing (Filter, cssColor, decoder, hue, id, idx, setIdx, title)
+module Filter exposing (Filter, color, cssColor, decoder, id, idx, setIdx, title)
 
 import CColor exposing (CColor)
+import Color exposing (Color)
 import Css
 import FilterId exposing (FilterId)
 import Json.Decode as JD exposing (Decoder)
@@ -55,8 +56,19 @@ hue =
 
 
 cssColor : Filter -> Css.Color
-cssColor filter =
-    Css.hsl (toFloat (hue filter)) 0.7 0.5
+cssColor =
+    -- Css.hsl (toFloat (hue filter)) 0.7 0.5
+    cColor >> CColor.toCssColor
+
+
+color : Filter -> Color
+color =
+    cColor >> CColor.toColor
+
+
+cColor : Filter -> CColor
+cColor =
+    unwrap >> .cColor
 
 
 unwrap (Filter t) =
