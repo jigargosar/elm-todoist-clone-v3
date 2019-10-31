@@ -187,7 +187,7 @@ update ({ toMsg } as config) message model =
             )
 
         Highlighted index ->
-            ( mapDropdownState (\state -> { state | index = index }) model
+            ( mapHighlightIndex (\_ -> index) model
             , Cmd.none
             )
     )
