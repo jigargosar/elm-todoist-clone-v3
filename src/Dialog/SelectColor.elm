@@ -1,6 +1,5 @@
 module Dialog.SelectColor exposing
-    ( CColor
-    , Config
+    ( Config
     , Model
     , Msg
     , initial
@@ -240,7 +239,7 @@ viewInput config model =
                     []
 
         ( cssColor, colorLabel ) =
-            colorInfo model.color
+            CColor.info model.color
     in
     div
         (A.id (inputDomId config)
@@ -283,7 +282,7 @@ viewItem : DropdownState -> Int -> CColor -> Html Msg
 viewItem state index color =
     let
         ( cssColor, colorLabel ) =
-            colorInfo color
+            CColor.info color
 
         highlightedStyles =
             case state.index == index of
@@ -302,16 +301,3 @@ viewItem state index color =
             [ text "folder" ]
         , div [ css [ Px.p2 0 4 ] ] [ text colorLabel ]
         ]
-
-
-colorInfo : CColor -> ( Css.Color, String )
-colorInfo color =
-    case color of
-        Blue ->
-            ( hex "#4073ff", "Blue" )
-
-        Green ->
-            ( hex "#299438", "Green" )
-
-        Yellow ->
-            ( hex "#fad000", "Yellow" )
