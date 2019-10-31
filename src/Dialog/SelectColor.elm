@@ -79,7 +79,7 @@ getHighlightedColor =
         >> Maybe.andThen
             (.index
                 >> (\index ->
-                        List.drop index CColor.orderedByHSL
+                        List.drop index cColorsList
                             |> List.head
                    )
             )
@@ -166,7 +166,7 @@ update ({ toMsg } as config) message model =
         HighlightNext ->
             ( mapDropdownState
                 (\state ->
-                    { state | index = state.index + 1 |> modBy (List.length CColor.orderedByHSL) }
+                    { state | index = state.index + 1 |> modBy (List.length cColorsList) }
                 )
                 model
             , Cmd.none
@@ -175,7 +175,7 @@ update ({ toMsg } as config) message model =
         HighlightPrevious ->
             ( mapDropdownState
                 (\state ->
-                    { state | index = state.index - 1 |> modBy (List.length CColor.orderedByHSL) }
+                    { state | index = state.index - 1 |> modBy (List.length cColorsList) }
                 )
                 model
             , Cmd.none
@@ -274,7 +274,12 @@ viewDropdown config state =
             ]
         , tabindex 0
         ]
-        (List.indexedMap (viewItem state) CColor.orderedByHSL)
+        (List.indexedMap (viewItem state) cColorsList)
+
+
+cColorsList : List CColor
+cColorsList =
+    CColor.orderedByHSL
 
 
 viewItem : DropdownState -> Int -> CColor -> Html Msg
