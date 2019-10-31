@@ -27,14 +27,9 @@ type alias SavedWith =
     }
 
 
-initial : Model
-initial =
-    Model "" False SelectColor.initial CColor.default 0
-
-
 init : Config msg -> ( Model, Cmd msg )
 init { toMsg } =
-    ( initial
+    ( Model "" False SelectColor.initial CColor.default 0
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
