@@ -8,7 +8,7 @@ module Dialog.SelectColor exposing
     , view
     )
 
-import Basics.More exposing (apply, msgToCmd, viewMaybe)
+import Basics.More exposing (apply, msgToCmd)
 import CColor exposing (CColor)
 import Focus
 import Html.Styled as H exposing (Html, div, i, text)
@@ -38,11 +38,7 @@ initial =
 
 type Model
     = Closed
-    | Opened OpenedState
-
-
-type alias OpenedState =
-    Int
+    | Opened Int
 
 
 type Msg
@@ -65,7 +61,7 @@ type alias Config msg =
     }
 
 
-getDropdownState : Model -> Maybe OpenedState
+getDropdownState : Model -> Maybe Int
 getDropdownState model =
     case model of
         Closed ->
@@ -87,19 +83,14 @@ getHighlightedColor =
             (\index -> List.drop index cColorsList |> List.head)
 
 
-mapDropdownState : (OpenedState -> OpenedState) -> Model -> Model
-mapDropdownState func model =
+mapHighlightIndex : (Int -> Int) -> Model -> Model
+mapHighlightIndex func model =
     case model of
         Closed ->
             model
 
-        Opened state ->
-            Opened (func state)
-
-
-mapHighlightIndex : (Int -> Int) -> Model -> Model
-mapHighlightIndex func =
-    mapDropdownState func
+        Opened highlightIndex ->
+            Opened (func highlightIndex)
 
 
 subscriptions : Config msg -> Model -> Sub msg
