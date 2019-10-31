@@ -3,6 +3,7 @@ module Dialog.SelectColor exposing
     , Model
     , Msg
     , initial
+    , inputDomId
     , subscriptions
     , update
     , view

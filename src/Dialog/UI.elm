@@ -1,8 +1,8 @@
-module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, labeled, viewForm)
+module Dialog.UI exposing (ActionsConfig, CheckboxConfig, FormContainer, InputConfig, checkbox, input, labelFor, labeled, viewForm)
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
-import Html.Styled.Attributes as A exposing (css, type_, value)
+import Html.Styled.Attributes as A exposing (css, for, type_, value)
 import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
 import Key
 import Px as PX
