@@ -16,6 +16,7 @@ type alias Model =
     , color : String
     , favorite : Bool
     , selectColor : SelectColor.Model
+    , cColor : CColor
     }
 
 
@@ -29,7 +30,7 @@ type alias SavedWith =
 
 initial : Model
 initial =
-    Model "" "" False SelectColor.initial
+    Model "" "" False SelectColor.initial CColor.default
 
 
 init : Config msg -> ( Model, Cmd msg )
@@ -100,8 +101,8 @@ update { saved, canceled, toMsg } message model =
                 Ok () ->
                     ( model, Cmd.none )
 
-        CColorChanged _ ->
-            ( model, Cmd.none )
+        CColorChanged cColor ->
+            ( { model | cColor = cColor }, Cmd.none )
 
 
 autofocusDomId =

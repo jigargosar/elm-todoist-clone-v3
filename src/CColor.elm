@@ -1,4 +1,4 @@
-module CColor exposing (CColor(..), decoder, infoOld, list, name, toColor, toCssColor)
+module CColor exposing (CColor(..), decoder, default, infoOld, list, name, toColor, toCssColor)
 
 import Color exposing (Color)
 import Compare exposing (Comparator)
