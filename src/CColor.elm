@@ -11,11 +11,12 @@ type CColor
     | Yellow
     | Charcoal
     | Red
+    | Orange
 
 
 list : List CColor
 list =
-    [ Blue, Green, Yellow, Charcoal, Red ]
+    [ Blue, Green, Yellow, Charcoal, Red, Orange ]
 
 
 default : CColor
@@ -41,6 +42,9 @@ toColor model =
         Red ->
             rgb ( 219, 64, 53 )
 
+        Orange ->
+            rgb ( 255, 153, 51 )
+
 
 fromInt : Int -> CColor
 fromInt idx =
@@ -56,6 +60,9 @@ fromInt idx =
 
         4 ->
             Red
+
+        5 ->
+            Orange
 
         _ ->
             default
@@ -78,6 +85,9 @@ toName model =
 
         Red ->
             "Red"
+
+        Orange ->
+            "Orange"
 
 
 infoOld : CColor -> ( Css.Color, String )
