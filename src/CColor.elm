@@ -1,14 +1,33 @@
 module CColor exposing (..)
 
+import Color exposing (Color)
 import Css exposing (hex)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode as JE exposing (Value)
+import Palette.X11
 
 
 type CColor
     = Blue
     | Green
     | Yellow
+
+
+default =
+    Blue
+
+
+toHexString : CColor -> String
+toHexString color =
+    case color of
+        Blue ->
+            "#4073ff"
+
+        Green ->
+            "#299438"
+
+        Yellow ->
+            "#fad000"
 
 
 fromInt idx =
@@ -44,17 +63,22 @@ list =
     [ Blue, Green, Yellow ]
 
 
-info : CColor -> ( Css.Color, String )
-info color =
-    case color of
+infoOld : CColor -> ( Css.Color, String )
+infoOld model =
+    let
+        cssColor : Css.Color
+        cssColor =
+            hex (toHexString model)
+    in
+    case model of
         Blue ->
-            ( hex "#4073ff", "Blue" )
+            ( cssColor, "Blue" )
 
         Green ->
-            ( hex "#299438", "Green" )
+            ( cssColor, "Green" )
 
         Yellow ->
-            ( hex "#fad000", "Yellow" )
+            ( cssColor, "Yellow" )
 
 
 decoder : Decoder CColor
@@ -65,3 +89,8 @@ decoder =
 encoder : CColor -> Value
 encoder =
     toInt >> JE.int
+
+
+toColor : CColor -> Color
+toColor cColor =
+    toHexString cColor |> Color.fromHex |> Result.withDefault Palette.X11.blue

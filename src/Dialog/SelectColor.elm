@@ -239,7 +239,7 @@ viewInput config model =
                     []
 
         ( cssColor, colorLabel ) =
-            CColor.info model.color
+            CColor.infoOld model.color
     in
     div
         (A.id (inputDomId config)
@@ -282,7 +282,7 @@ viewItem : DropdownState -> Int -> CColor -> Html Msg
 viewItem state index color =
     let
         ( cssColor, colorLabel ) =
-            CColor.info color
+            CColor.infoOld color
 
         highlightedStyles =
             case state.index == index of

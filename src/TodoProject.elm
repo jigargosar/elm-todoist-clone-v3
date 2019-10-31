@@ -7,6 +7,7 @@ module TodoProject exposing
     , notFound
     )
 
+import CColor exposing (CColor)
 import Color exposing (Color)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
@@ -25,7 +26,7 @@ fromProject : Project -> TodoProject
 fromProject project =
     TodoProject (Just <| ProjectRef.fromId (Project.id project))
         (Project.title project)
-        (Color.fromHSL ( toFloat <| Project.hue project, 70, 50 ))
+        (Project.cColor project |> CColor.toColor)
 
 
 inbox : TodoProject
