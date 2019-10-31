@@ -134,7 +134,6 @@ update ({ toMsg } as config) message model =
             ( { model | dropdown = DropdownClosed }
             , Cmd.batch
                 [ focus config inputDomId
-                , unregisterDropdownFocusMonitor config
                 ]
             )
 
@@ -142,7 +141,6 @@ update ({ toMsg } as config) message model =
             ( { model | color = color, dropdown = DropdownClosed }
             , Cmd.batch
                 [ focus config inputDomId
-                , unregisterDropdownFocusMonitor config
                 ]
             )
 
@@ -152,7 +150,6 @@ update ({ toMsg } as config) message model =
                     ( { model | color = color, dropdown = DropdownClosed }
                     , Cmd.batch
                         [ focus config inputDomId
-                        , unregisterDropdownFocusMonitor config
                         ]
                     )
 
@@ -160,14 +157,14 @@ update ({ toMsg } as config) message model =
                     ( model, Cmd.none )
 
         OnFocusOrClickOutside domId ->
-            case domId == dropdownDomId config of
+            ( case domId == dropdownDomId config of
                 True ->
-                    ( { model | dropdown = DropdownClosed }
-                    , unregisterDropdownFocusMonitor config
-                    )
+                    { model | dropdown = DropdownClosed }
 
                 False ->
-                    ( model, Cmd.none )
+                    model
+            , Cmd.none
+            )
 
         HighlightNext ->
             ( mapDropdownState
@@ -202,10 +199,6 @@ unregisterFocusMonitorOnDropdownCloseEffect config oldModel newModel =
 
     else
         Cmd.none
-
-
-unregisterDropdownFocusMonitor config =
-    Focus.unRegisterOnFocusOrClickOutSide (dropdownDomId config)
 
 
 focus : Config msg -> (Config msg -> String) -> Cmd msg
