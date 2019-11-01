@@ -9,11 +9,13 @@ import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Log exposing (logError)
 import Project exposing (Project)
+import ProjectId exposing (ProjectId)
 import Task
 
 
 type alias Model =
-    { title : String
+    { projectId : ProjectId
+    , title : String
     , favorite : Bool
     , selectColor : SelectColor.Model
     , cColor : CColor
@@ -21,7 +23,8 @@ type alias Model =
 
 
 type alias SavedWith =
-    { title : String
+    { projectId : ProjectId
+    , title : String
     , favorite : Bool
     , cColor : CColor
     }
@@ -29,7 +32,7 @@ type alias SavedWith =
 
 init : Config msg -> Project -> ( Model, Cmd msg )
 init { toMsg } project =
-    ( Model (Project.title project) False SelectColor.initial (Project.cColor project)
+    ( Model (Project.id project) (Project.title project) False SelectColor.initial (Project.cColor project)
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
@@ -64,7 +67,7 @@ update { saved, canceled, toMsg } message model =
     case message of
         Save ->
             ( model
-            , SavedWith model.title model.favorite model.cColor
+            , SavedWith model.projectId model.title model.favorite model.cColor
                 |> saved
                 |> msgToCmd
             )

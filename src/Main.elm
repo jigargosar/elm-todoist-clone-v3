@@ -356,15 +356,15 @@ update message model =
             dialog.close model
                 |> Return.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
 
-        EditProjectWithTS _ _ ->
-            ( model, Cmd.none )
-
         AddProjectWithTS { title, cColor, idx } ts ->
             let
                 ( newProject, newModel ) =
                     stepRandom (Project.generator title idx cColor ts) model
             in
             ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
+
+        EditProjectWithTS { projectId, title, cColor } ts ->
+            ( mapProjectCollection (ProjectCollection.put newProject) model, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
