@@ -2,6 +2,7 @@ module Dialog exposing
     ( Config
     , Dialog
     , DialogMsg
+    , close
     , createConfig
     , initial
     , openAddProject
@@ -27,7 +28,7 @@ type Dialog
          | AddFilterDialog
          | EditFilterDialog FilterId
       -}
-    | NoDialog
+    | Closed
 
 
 type alias Config msg =
@@ -62,6 +63,7 @@ type DialogMsg
     | EditProjectDialogMsg EditProject.Msg
     | OpenAddProjectDialog Int
     | OpenEditProject Project
+    | Close
 
 
 openAddProject : Int -> DialogMsg
@@ -75,7 +77,12 @@ openEditProject =
 
 
 initial =
-    NoDialog
+    Closed
+
+
+close : DialogMsg
+close =
+    Close
 
 
 subscriptions : Config msg -> Dialog -> Sub msg
@@ -125,6 +132,9 @@ update config message dialogModel =
             EditProject.init config.editProject project
                 |> Tuple.mapFirst EditProjectDialog
 
+        Close ->
+            ( Closed, Cmd.none )
+
 
 viewDialog : Config msg -> Dialog -> List (Html msg)
 viewDialog config dialog =
@@ -135,5 +145,5 @@ viewDialog config dialog =
         EditProjectDialog model ->
             [ EditProject.view config.editProject model ]
 
-        NoDialog ->
+        Closed ->
             []
