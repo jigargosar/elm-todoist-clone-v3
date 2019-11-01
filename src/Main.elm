@@ -295,10 +295,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    let
-        ret =
-            ( model, Cmd.none )
-    in
     case message of
         NoOp ->
             Return.singleton model
@@ -364,13 +360,8 @@ update message model =
                 setDialog dialog =
                     { model | dialog = dialog }
             in
-            case ( model.dialog, msg ) of
-                ( Dialog.AddProjectDialog dialogModel, Dialog.AddProjectDialogMsg dialogMsg ) ->
-                    Dialog.AddProject.update addProjectDialogConfig dialogMsg dialogModel
-                        |> Tuple.mapFirst (Dialog.AddProjectDialog >> setDialog)
-
-                _ ->
-                    ret
+            Dialog.update dialogConfig msg model.dialog
+                |> Return.map setDialog
 
         AddProjectDialogSaved savedWith ->
             ( { model | dialog = Dialog.NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )

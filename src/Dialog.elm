@@ -43,19 +43,6 @@ initEditProjectDialog config project =
         |> Tuple.mapFirst EditProjectDialog
 
 
-viewDialog : Config msg -> Dialog -> List (Html msg)
-viewDialog config dialog =
-    case dialog of
-        AddProjectDialog model ->
-            [ Dialog.AddProject.view config.addProject model ]
-
-        EditProjectDialog model ->
-            [ Dialog.EditProject.view config.editProject model ]
-
-        _ ->
-            []
-
-
 dialogSubscriptions : Config msg -> Dialog -> Sub msg
 dialogSubscriptions config dialog =
     case dialog of
@@ -67,3 +54,32 @@ dialogSubscriptions config dialog =
 
         _ ->
             Sub.none
+
+
+update : Config msg -> DialogMsg -> Dialog -> ( Dialog, Cmd msg )
+update config dialogMsg dialog =
+    let
+        ret : ( Dialog, Cmd msg )
+        ret =
+            ( dialog, Cmd.none )
+    in
+    case ( dialog, dialogMsg ) of
+        ( AddProjectDialog dialogModel, AddProjectDialogMsg msg ) ->
+            Dialog.AddProject.update config.addProject msg dialogModel
+                |> Tuple.mapFirst AddProjectDialog
+
+        _ ->
+            ret
+
+
+viewDialog : Config msg -> Dialog -> List (Html msg)
+viewDialog config dialog =
+    case dialog of
+        AddProjectDialog model ->
+            [ Dialog.AddProject.view config.addProject model ]
+
+        EditProjectDialog model ->
+            [ Dialog.EditProject.view config.editProject model ]
+
+        _ ->
+            []
