@@ -55,17 +55,17 @@ dialogConfig =
         }
 
 
-openAddProjectDialog : Int -> Model -> ( Model, Cmd Msg )
+openAddProjectDialog : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 openAddProjectDialog idx =
     updateDialog (Dialog.openAddProject idx)
 
 
-openEditProjectDialog : Project -> Model -> ( Model, Cmd Msg )
+openEditProjectDialog : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 openEditProjectDialog project =
     updateDialog (Dialog.openEditProject project)
 
 
-closeDialog : Model -> ( Model, Cmd Msg )
+closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 closeDialog =
     updateDialog Dialog.close
 
