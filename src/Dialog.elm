@@ -4,7 +4,6 @@ module Dialog exposing
     , DialogMsg
     , createConfig
     , dialogSubscriptions
-    , initAddProjectDialogAt
     , initEditProjectDialog
     , none
     , openAddProject
@@ -69,12 +68,6 @@ openAddProject =
     OpenAddProjectDialogAt
 
 
-initAddProjectDialogAt : Config msg -> Int -> ( Dialog, Cmd msg )
-initAddProjectDialogAt config idx =
-    AddProject.initAt config.addProject idx
-        |> Tuple.mapFirst AddProjectDialog
-
-
 initEditProjectDialog : Config msg -> Project -> ( Dialog, Cmd msg )
 initEditProjectDialog config project =
     EditProject.init config.editProject project
@@ -125,7 +118,8 @@ update config message dialogModel =
                     ret
 
         OpenAddProjectDialogAt idx ->
-            initAddProjectDialogAt config idx
+            AddProject.initAt config.addProject idx
+                |> Tuple.mapFirst AddProjectDialog
 
 
 viewDialog : Config msg -> Dialog -> List (Html msg)
