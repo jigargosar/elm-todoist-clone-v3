@@ -1,7 +1,7 @@
 module Dialog exposing
     ( Config
     , Dialog
-    , DialogMsg
+    , Msg
     , close
     , createConfig
     , initial
@@ -38,7 +38,7 @@ type alias Config msg =
 
 
 createConfig :
-    { toMsg : DialogMsg -> msg
+    { toMsg : Msg -> msg
     , canceled : msg
     , projectAdded : AddProject.SavedWith -> msg
     , projectEdited : EditProject.SavedWith -> msg
@@ -58,7 +58,7 @@ createConfig c =
     }
 
 
-type DialogMsg
+type Msg
     = AddProjectDialogMsg AddProject.Msg
     | EditProjectDialogMsg EditProject.Msg
     | OpenAddProjectDialog Int
@@ -66,12 +66,12 @@ type DialogMsg
     | Close
 
 
-openAddProject : Int -> DialogMsg
+openAddProject : Int -> Msg
 openAddProject =
     OpenAddProjectDialog
 
 
-openEditProject : Project -> DialogMsg
+openEditProject : Project -> Msg
 openEditProject =
     OpenEditProject
 
@@ -80,7 +80,7 @@ initial =
     Closed
 
 
-close : DialogMsg
+close : Msg
 close =
     Close
 
@@ -98,7 +98,7 @@ subscriptions config dialog =
             Sub.none
 
 
-update : Config msg -> DialogMsg -> Dialog -> ( Dialog, Cmd msg )
+update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
 update config message dialogModel =
     let
         ret : ( Dialog, Cmd msg )

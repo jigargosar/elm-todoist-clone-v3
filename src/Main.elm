@@ -65,7 +65,7 @@ openEditProjectDialog project =
     updateDialog (Dialog.openEditProject project)
 
 
-updateDialog : Dialog.DialogMsg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 updateDialog msg model =
     Dialog.update dialogConfig msg model.dialog
         |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
@@ -267,7 +267,7 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | DialogMsg Dialog.DialogMsg
+    | DialogMsg Dialog.Msg
     | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
