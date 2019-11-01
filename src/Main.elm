@@ -268,6 +268,7 @@ type Msg
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
     | EditProjectDialogSaved Dialog.EditProject.SavedWith
+    | EditProjectWithTS Dialog.EditProject.SavedWith Timestamp
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked
@@ -348,9 +349,14 @@ update message model =
             dialog.update msg model
 
         AddProjectDialogSaved savedWith ->
-            ( model, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+            dialog.close model
+                |> Return.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
 
-        EditProjectDialogSaved _ ->
+        EditProjectDialogSaved savedWith ->
+            dialog.close model
+                |> Return.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
+
+        EditProjectWithTS _ _ ->
             ( model, Cmd.none )
 
         AddProjectWithTS { title, cColor, idx } ts ->
