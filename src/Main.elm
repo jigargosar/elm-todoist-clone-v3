@@ -290,7 +290,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NoOp ->
-            Return.singleton model
+            ( model, Cmd.none )
 
         LogError error ->
             ( model, logError error )
@@ -527,11 +527,11 @@ updateProjectPopup projectId action model =
     case action of
         PopupView.AddProjectBelow ->
             openAddProjectDialog (projectIdxWithOffset 1) model
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
         PopupView.AddProjectAbove ->
             openAddProjectDialog (projectIdxWithOffset 0) model
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
         PopupView.EditProject ->
             (case maybeProject of
@@ -541,11 +541,11 @@ updateProjectPopup projectId action model =
                 Nothing ->
                     ( model, Cmd.none )
             )
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
         _ ->
             ( model, Cmd.none )
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
 
 updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd Msg )
@@ -555,7 +555,7 @@ updateLabelPopup _ action model =
             ( { model | dialog = Dialog.none }
             , Cmd.none
             )
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
 
 updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cmd Msg )
@@ -565,7 +565,7 @@ updateFilterPopup _ action model =
             ( { model | dialog = Dialog.none }
             , Cmd.none
             )
-                |> Return.map closePopup
+                |> Tuple.mapFirst closePopup
 
 
 closePopup : { a | popup : Maybe b } -> { a | popup : Maybe b }
