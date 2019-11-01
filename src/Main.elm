@@ -55,25 +55,9 @@ dialogConfig =
         }
 
 
-addProjectDialogConfig : Dialog.AddProject.Config Msg
-addProjectDialogConfig =
-    { canceled = DialogCanceled
-    , saved = AddProjectDialogSaved
-    , toMsg = DialogMsg << Dialog.AddProjectDialogMsg
-    }
-
-
 initAddProjectDialogAt : Int -> ( Dialog, Cmd Msg )
 initAddProjectDialogAt idx =
     Dialog.initAddProjectDialogAt dialogConfig idx
-
-
-editProjectDialogConfig : Dialog.EditProject.Config Msg
-editProjectDialogConfig =
-    { canceled = DialogCanceled
-    , saved = EditProjectDialogSaved
-    , toMsg = DialogMsg << Dialog.EditProjectDialogMsg
-    }
 
 
 initEditProjectDialog : Project -> ( Dialog, Cmd Msg )
