@@ -26,6 +26,28 @@ type alias Config msg =
     }
 
 
+createConfig :
+    (DialogMsg -> msg)
+    ->
+        { canceled : msg
+        , projectAdded : Dialog.AddProject.SavedWith -> msg
+        , projectEdited : Dialog.EditProject.SavedWith -> msg
+        }
+    -> Config msg
+createConfig toMsg c =
+    { addProject =
+        { canceled = c.canceled
+        , saved = c.projectAdded
+        , toMsg = toMsg << AddProjectDialogMsg
+        }
+    , editProject =
+        { canceled = c.canceled
+        , saved = c.projectEdited
+        , toMsg = toMsg << EditProjectDialogMsg
+        }
+    }
+
+
 type DialogMsg
     = AddProjectDialogMsg Dialog.AddProject.Msg
     | EditProjectDialogMsg Dialog.EditProject.Msg
