@@ -55,6 +55,12 @@ dialogConfig =
         }
 
 
+dialog =
+    { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
+    , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
+    }
+
+
 openAddProjectDialog : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 openAddProjectDialog idx =
     updateDialog (Dialog.openAddProject idx)
@@ -73,17 +79,17 @@ closeDialog =
 updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 updateDialog msg model =
     Dialog.update dialogConfig msg model.dialog
-        |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
+        |> Tuple.mapFirst (\dialog_ -> { model | dialog = dialog_ })
 
 
 viewDialog : Dialog -> List (Html Msg)
-viewDialog dialog =
-    Dialog.viewDialog dialogConfig dialog
+viewDialog =
+    Dialog.viewDialog dialogConfig
 
 
 dialogSubscriptions : Dialog -> Sub Msg
-dialogSubscriptions dialog =
-    Dialog.subscriptions dialogConfig dialog
+dialogSubscriptions =
+    Dialog.subscriptions dialogConfig
 
 
 
