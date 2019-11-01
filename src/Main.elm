@@ -577,11 +577,12 @@ updateProjectPopup projectId action model =
             (case maybeProject of
                 Just project ->
                     initEditProjectDialog project
+                        |> Return.map (\dialog -> { model | dialog = dialog })
 
                 Nothing ->
-                    ( model.dialog, Cmd.none )
+                    ( model, Cmd.none )
             )
-                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
+                |> Return.map closePopup
 
         _ ->
             ( model, Cmd.none )
