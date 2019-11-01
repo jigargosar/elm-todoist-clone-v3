@@ -4,6 +4,7 @@ import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DNDList
+import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
 import Drawer
@@ -44,19 +45,16 @@ import Url exposing (Url)
 -- DIALOG
 
 
-type Dialog
-    = AddProjectDialog Dialog.AddProject.Model
-    | EditProjectDialog Dialog.EditProject.Model
-    | AddLabelDialog
-    | EditLabelDialog LabelId
-    | AddFilterDialog
-    | EditFilterDialog FilterId
-    | NoDialog
-
-
 type DialogMsg
     = AddProjectDialogMsg Dialog.AddProject.Msg
     | EditProjectDialogMsg Dialog.EditProject.Msg
+
+
+dialogConfig : Dialog.Config Msg
+dialogConfig =
+    { addProject = addProjectDialogConfig
+    , editProject = editProjectDialogConfig
+    }
 
 
 addProjectDialogConfig : Dialog.AddProject.Config Msg
@@ -69,8 +67,7 @@ addProjectDialogConfig =
 
 initAddProjectDialogAt : Int -> ( Dialog, Cmd Msg )
 initAddProjectDialogAt idx =
-    Dialog.AddProject.initAt addProjectDialogConfig idx
-        |> Tuple.mapFirst AddProjectDialog
+    Dialog.initAddProjectDialogAt dialogConfig idx
 
 
 editProjectDialogConfig : Dialog.EditProject.Config Msg
@@ -83,34 +80,17 @@ editProjectDialogConfig =
 
 initEditProjectDialog : Project -> ( Dialog, Cmd Msg )
 initEditProjectDialog project =
-    Dialog.EditProject.init editProjectDialogConfig project
-        |> Tuple.mapFirst EditProjectDialog
+    Dialog.initEditProjectDialog dialogConfig project
 
 
 viewDialog : Dialog -> List (Html Msg)
 viewDialog dialog =
-    case dialog of
-        AddProjectDialog model ->
-            [ Dialog.AddProject.view addProjectDialogConfig model ]
-
-        EditProjectDialog model ->
-            [ Dialog.EditProject.view editProjectDialogConfig model ]
-
-        _ ->
-            []
+    Dialog.viewDialog dialogConfig dialog
 
 
 dialogSubscriptions : Dialog -> Sub Msg
 dialogSubscriptions dialog =
-    case dialog of
-        AddProjectDialog model ->
-            Dialog.AddProject.subscriptions addProjectDialogConfig model
-
-        EditProjectDialog model ->
-            Dialog.EditProject.subscriptions editProjectDialogConfig model
-
-        _ ->
-            Sub.none
+    Dialog.dialogSubscriptions dialogConfig dialog
 
 
 
@@ -177,7 +157,7 @@ init flags url navKey =
             , filterCollection = FilterCollection.initial
             , isDrawerModalOpen = False
             , popup = Nothing
-            , dialog = NoDialog
+            , dialog = Dialog.NoDialog
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
@@ -382,7 +362,7 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         DialogCanceled ->
-            ( { model | dialog = NoDialog }, Cmd.none )
+            ( { model | dialog = Dialog.NoDialog }, Cmd.none )
 
         DialogMsg msg ->
             let
@@ -390,15 +370,15 @@ update message model =
                     { model | dialog = dialog }
             in
             case ( model.dialog, msg ) of
-                ( AddProjectDialog dialogModel, AddProjectDialogMsg dialogMsg ) ->
+                ( Dialog.AddProjectDialog dialogModel, AddProjectDialogMsg dialogMsg ) ->
                     Dialog.AddProject.update addProjectDialogConfig dialogMsg dialogModel
-                        |> Tuple.mapFirst (AddProjectDialog >> setDialog)
+                        |> Tuple.mapFirst (Dialog.AddProjectDialog >> setDialog)
 
                 _ ->
                     ret
 
         AddProjectDialogSaved savedWith ->
-            ( { model | dialog = NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+            ( { model | dialog = Dialog.NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
 
         EditProjectDialogSaved _ ->
             ( model, Cmd.none )
@@ -424,10 +404,10 @@ update message model =
                 |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
 
         AddLabelClicked ->
-            ( { model | dialog = AddLabelDialog }, Cmd.none )
+            ( { model | dialog = Dialog.AddLabelDialog }, Cmd.none )
 
         AddFilterClicked ->
-            ( { model | dialog = AddFilterDialog }, Cmd.none )
+            ( { model | dialog = Dialog.AddFilterDialog }, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
@@ -599,7 +579,7 @@ updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd M
 updateLabelPopup labelId action model =
     case action of
         PopupView.EditLabel ->
-            ( { model | dialog = EditLabelDialog labelId }
+            ( { model | dialog = Dialog.EditLabelDialog labelId }
             , Cmd.none
             )
                 |> Return.map closePopup
@@ -609,7 +589,7 @@ updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cm
 updateFilterPopup filterId action model =
     case action of
         PopupView.EditFilter ->
-            ( { model | dialog = EditFilterDialog filterId }
+            ( { model | dialog = Dialog.EditFilterDialog filterId }
             , Cmd.none
             )
                 |> Return.map closePopup
