@@ -618,7 +618,7 @@ view model =
         , main = pageView model
         , modal =
             popupView model
-                ++ dialogView model
+                ++ viewDialog model.dialog
                 ++ ProjectPanel.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
@@ -697,11 +697,6 @@ popupView model =
 
                 FilterMoreMenu _ ->
                     viewHelp PopupView.filterContent FilterMoreMenuMsg
-
-
-dialogView : Model -> List (Html Msg)
-dialogView model =
-    viewDialog model.dialog
 
 
 
