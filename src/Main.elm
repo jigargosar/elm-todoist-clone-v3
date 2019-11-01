@@ -67,6 +67,12 @@ initEditProjectDialog project model =
         |> Return.map (\dialog -> { model | dialog = dialog })
 
 
+updateDialog : Dialog.DialogMsg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+updateDialog msg model =
+    Dialog.update dialogConfig msg model.dialog
+        |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
+
+
 viewDialog : Dialog -> List (Html Msg)
 viewDialog dialog =
     Dialog.viewDialog dialogConfig dialog
@@ -345,8 +351,7 @@ update message model =
             ( { model | dialog = Dialog.none }, Cmd.none )
 
         DialogMsg msg ->
-            Dialog.update dialogConfig msg model.dialog
-                |> Return.map (\dialog -> { model | dialog = dialog })
+            updateDialog msg model
 
         AddProjectDialogSaved savedWith ->
             ( { model | dialog = Dialog.none }, Time.now |> Task.perform (AddProjectWithTS savedWith) )

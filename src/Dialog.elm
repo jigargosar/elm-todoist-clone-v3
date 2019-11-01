@@ -7,6 +7,7 @@ module Dialog exposing
     , initAddProjectDialogAt
     , initEditProjectDialog
     , none
+    , openAddProject
     , update
     , viewDialog
     )
@@ -60,6 +61,12 @@ createConfig c =
 type DialogMsg
     = AddProjectDialogMsg AddProject.Msg
     | EditProjectDialogMsg EditProject.Msg
+    | OpenAddProjectDialogAt Int
+
+
+openAddProject : Int -> DialogMsg
+openAddProject =
+    OpenAddProjectDialogAt
 
 
 initAddProjectDialogAt : Config msg -> Int -> ( Dialog, Cmd msg )
@@ -116,6 +123,9 @@ update config message dialogModel =
 
                 _ ->
                     ret
+
+        OpenAddProjectDialogAt idx ->
+            initAddProjectDialogAt config idx
 
 
 viewDialog : Config msg -> Dialog -> List (Html msg)
