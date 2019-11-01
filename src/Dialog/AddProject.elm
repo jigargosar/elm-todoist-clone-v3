@@ -96,6 +96,7 @@ update { saved, canceled, toMsg } message model =
             ( { model | cColor = cColor }, Cmd.none )
 
 
+autofocusDomId : String
 autofocusDomId =
     "add-project-dialog-autofocus"
 
