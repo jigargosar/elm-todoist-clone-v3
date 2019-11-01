@@ -1,4 +1,15 @@
-module Dialog exposing (..)
+module Dialog exposing
+    ( Config
+    , Dialog
+    , DialogMsg
+    , createConfig
+    , dialogSubscriptions
+    , initAddProjectDialogAt
+    , initEditProjectDialog
+    , none
+    , update
+    , viewDialog
+    )
 
 -- DIALOG
 
@@ -62,6 +73,10 @@ initEditProjectDialog : Config msg -> Project -> ( Dialog, Cmd msg )
 initEditProjectDialog config project =
     Dialog.EditProject.init config.editProject project
         |> Tuple.mapFirst EditProjectDialog
+
+
+none =
+    NoDialog
 
 
 dialogSubscriptions : Config msg -> Dialog -> Sub msg
