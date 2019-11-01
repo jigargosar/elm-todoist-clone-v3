@@ -60,6 +60,7 @@ dialog :
     , closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , view : { a | dialog : Dialog } -> List (Html Msg)
+    , subscriptions : { a | dialog : Dialog } -> Sub Msg
     }
 dialog =
     let
@@ -73,12 +74,8 @@ dialog =
     , closeDialog = updateDialog Dialog.close
     , update = updateDialog
     , view = .dialog >> Dialog.viewDialog dialogConfig
+    , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
-
-
-dialogSubscriptions : Dialog -> Sub Msg
-dialogSubscriptions =
-    Dialog.subscriptions dialogConfig
 
 
 
@@ -247,7 +244,7 @@ subscriptions model =
         , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
-        , dialogSubscriptions model.dialog
+        , dialog.subscriptions model
         ]
 
 
