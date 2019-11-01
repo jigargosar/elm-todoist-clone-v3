@@ -93,6 +93,9 @@ viewDialog dialog =
         AddProjectDialog model ->
             [ Dialog.AddProject.view addProjectDialogConfig model ]
 
+        EditProjectDialog model ->
+            [ Dialog.EditProject.view editProjectDialogConfig model ]
+
         _ ->
             []
 
@@ -102,6 +105,9 @@ dialogSubscriptions dialog =
     case dialog of
         AddProjectDialog model ->
             Dialog.AddProject.subscriptions addProjectDialogConfig model
+
+        EditProjectDialog model ->
+            Dialog.EditProject.subscriptions editProjectDialogConfig model
 
         _ ->
             Sub.none
