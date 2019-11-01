@@ -61,16 +61,6 @@ dialog =
     }
 
 
-openAddProjectDialog : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-openAddProjectDialog idx =
-    updateDialog (Dialog.openAddProject idx)
-
-
-openEditProjectDialog : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-openEditProjectDialog project =
-    updateDialog (Dialog.openEditProject project)
-
-
 closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 closeDialog =
     updateDialog Dialog.close
@@ -385,7 +375,7 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            openAddProjectDialog 0 model
+            dialog.openAddProject 0 model
 
         AddLabelClicked ->
             ( { model | dialog = Dialog.initial }, Cmd.none )
@@ -537,17 +527,17 @@ updateProjectPopup projectId action model =
     in
     case action of
         PopupView.AddProjectBelow ->
-            openAddProjectDialog (projectIdxWithOffset 1) model
+            dialog.openAddProject (projectIdxWithOffset 1) model
                 |> Tuple.mapFirst closePopup
 
         PopupView.AddProjectAbove ->
-            openAddProjectDialog (projectIdxWithOffset 0) model
+            dialog.openAddProject (projectIdxWithOffset 0) model
                 |> Tuple.mapFirst closePopup
 
         PopupView.EditProject ->
             (case maybeProject of
                 Just project ->
-                    openEditProjectDialog project model
+                    dialog.openEditProject project model
 
                 Nothing ->
                     ( model, Cmd.none )
