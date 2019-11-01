@@ -364,7 +364,12 @@ update message model =
             ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
-            ( mapProjectCollection (ProjectCollection.put newProject) model, Cmd.none )
+            --            ( mapProjectCollection (\pc ->
+            --                ProjectCollection.updateById projectId {title = title, cColor = cColor}
+            --
+            --
+            --            ) model, Cmd.none )
+            ( model, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
