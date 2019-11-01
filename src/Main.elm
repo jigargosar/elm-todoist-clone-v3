@@ -55,15 +55,16 @@ dialogConfig =
         }
 
 
+dialog :
+    { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    , closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    }
 dialog =
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
+    , closeDialog = updateDialog Dialog.close
     }
-
-
-closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-closeDialog =
-    updateDialog Dialog.close
 
 
 updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
@@ -347,13 +348,13 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         DialogCanceled ->
-            closeDialog model
+            dialog.closeDialog model
 
         DialogMsg msg ->
             updateDialog msg model
 
         AddProjectDialogSaved savedWith ->
-            ( { model | dialog = Dialog.initial }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+            ( model, Time.now |> Task.perform (AddProjectWithTS savedWith) )
 
         EditProjectDialogSaved _ ->
             ( model, Cmd.none )
@@ -378,10 +379,10 @@ update message model =
             dialog.openAddProject 0 model
 
         AddLabelClicked ->
-            ( { model | dialog = Dialog.initial }, Cmd.none )
+            ( model, Cmd.none )
 
         AddFilterClicked ->
-            ( { model | dialog = Dialog.initial }, Cmd.none )
+            ( model, Cmd.none )
 
         ProjectPanelDNDListMsg msg ->
             ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
@@ -553,9 +554,7 @@ updateLabelPopup : LabelId -> PopupView.LabelMenuItem -> Model -> ( Model, Cmd M
 updateLabelPopup _ action model =
     case action of
         PopupView.EditLabel ->
-            ( { model | dialog = Dialog.initial }
-            , Cmd.none
-            )
+            ( model, Cmd.none )
                 |> Tuple.mapFirst closePopup
 
 
@@ -563,9 +562,7 @@ updateFilterPopup : FilterId -> PopupView.FilterMenuItem -> Model -> ( Model, Cm
 updateFilterPopup _ action model =
     case action of
         PopupView.EditFilter ->
-            ( { model | dialog = Dialog.initial }
-            , Cmd.none
-            )
+            ( model, Cmd.none )
                 |> Tuple.mapFirst closePopup
 
 
