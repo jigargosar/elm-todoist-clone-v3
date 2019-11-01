@@ -345,12 +345,8 @@ update message model =
             ( { model | dialog = Dialog.none }, Cmd.none )
 
         DialogMsg msg ->
-            let
-                setDialog dialog =
-                    { model | dialog = dialog }
-            in
             Dialog.update dialogConfig msg model.dialog
-                |> Return.map setDialog
+                |> Return.map (\dialog -> { model | dialog = dialog })
 
         AddProjectDialogSaved savedWith ->
             ( { model | dialog = Dialog.none }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
