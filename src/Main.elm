@@ -5,6 +5,7 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DNDList
 import Dialog.AddProject
+import Dialog.EditProject
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
@@ -45,7 +46,7 @@ import Url exposing (Url)
 
 type Dialog
     = AddProjectDialog Dialog.AddProject.Model
-    | EditProjectDialog ProjectId
+    | EditProjectDialog Dialog.EditProject.Model
     | AddLabelDialog
     | EditLabelDialog LabelId
     | AddFilterDialog
@@ -55,6 +56,7 @@ type Dialog
 
 type DialogMsg
     = AddProjectDialogMsg Dialog.AddProject.Msg
+    | EditProjectDialogMsg Dialog.EditProject.Msg
 
 
 addProjectDialogConfig : Dialog.AddProject.Config Msg
@@ -69,6 +71,20 @@ initAddProjectDialogAt : Int -> ( Dialog, Cmd Msg )
 initAddProjectDialogAt idx =
     Dialog.AddProject.initAt addProjectDialogConfig idx
         |> Tuple.mapFirst AddProjectDialog
+
+
+editProjectDialogConfig : Dialog.EditProject.Config Msg
+editProjectDialogConfig =
+    { canceled = DialogCanceled
+    , saved = EditProjectDialogSaved
+    , toMsg = DialogMsg << EditProjectDialogMsg
+    }
+
+
+initEditProjectDialog : Project -> ( Dialog, Cmd Msg )
+initEditProjectDialog project =
+    Dialog.EditProject.init editProjectDialogConfig project
+        |> Tuple.mapFirst EditProjectDialog
 
 
 viewDialog : Dialog -> List (Html Msg)
@@ -281,6 +297,7 @@ type Msg
     | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
+    | EditProjectDialogSaved Dialog.EditProject.SavedWith
     | AddProjectClicked
     | AddLabelClicked
     | AddFilterClicked
@@ -376,6 +393,9 @@ update message model =
 
         AddProjectDialogSaved savedWith ->
             ( { model | dialog = NoDialog }, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+
+        EditProjectDialogSaved _ ->
+            ( model, Cmd.none )
 
         AddProjectWithTS { title, cColor, idx } ts ->
             let
@@ -535,8 +555,11 @@ updateFilterSortOrder filterList model =
 updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
 updateProjectPopup projectId action model =
     let
-        projectIdxWithOffset offset =
+        maybeProject =
             ProjectCollection.byId projectId model.projectCollection
+
+        projectIdxWithOffset offset =
+            maybeProject
                 |> Maybe.map (Project.idx >> (+) offset)
                 |> Debug.log "idx"
                 |> Maybe.withDefault 0
@@ -551,10 +574,14 @@ updateProjectPopup projectId action model =
                 |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
 
         PopupView.EditProject ->
-            ( { model | dialog = EditProjectDialog projectId }
-            , Cmd.none
+            (case maybeProject of
+                Just project ->
+                    initEditProjectDialog project
+
+                Nothing ->
+                    ( model.dialog, Cmd.none )
             )
-                |> Return.map closePopup
+                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
 
         _ ->
             ( model, Cmd.none )
