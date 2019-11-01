@@ -3,7 +3,7 @@ module Dialog exposing
     , Dialog
     , DialogMsg
     , createConfig
-    , none
+    , initial
     , openAddProject
     , openEditProject
     , subscriptions
@@ -74,7 +74,7 @@ openEditProject =
     OpenEditProject
 
 
-none =
+initial =
     NoDialog
 
 
