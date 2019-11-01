@@ -72,7 +72,7 @@ dialog =
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     , close = updateDialog Dialog.close
     , update = updateDialog
-    , view = .dialog >> Dialog.viewDialog dialogConfig
+    , view = .dialog >> Dialog.view dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
 

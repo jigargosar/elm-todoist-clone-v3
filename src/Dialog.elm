@@ -9,7 +9,7 @@ module Dialog exposing
     , openEditProject
     , subscriptions
     , update
-    , viewDialog
+    , view
     )
 
 -- DIALOG
@@ -139,8 +139,8 @@ update config message dialogModel =
             ( Closed, Cmd.none )
 
 
-viewDialog : Config msg -> Dialog -> List (Html msg)
-viewDialog config dialog =
+view : Config msg -> Dialog -> List (Html msg)
+view config dialog =
     case dialog of
         AddProjectDialog model ->
             [ AddProject.view config.addProject model ]
