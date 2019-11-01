@@ -98,27 +98,24 @@ update config message dialogModel =
         ret =
             ( dialogModel, Cmd.none )
     in
-    case dialogModel of
-        AddProjectDialog model ->
-            case message of
-                AddProjectDialogMsg msg ->
+    case message of
+        AddProjectDialogMsg msg ->
+            case dialogModel of
+                AddProjectDialog model ->
                     AddProject.update config.addProject msg model
                         |> Tuple.mapFirst AddProjectDialog
 
                 _ ->
                     ret
 
-        EditProjectDialog model ->
-            case message of
-                EditProjectDialogMsg msg ->
+        EditProjectDialogMsg msg ->
+            case dialogModel of
+                EditProjectDialog model ->
                     EditProject.update config.editProject msg model
                         |> Tuple.mapFirst EditProjectDialog
 
                 _ ->
                     ret
-
-        NoDialog ->
-            ret
 
 
 viewDialog : Config msg -> Dialog -> List (Html msg)
