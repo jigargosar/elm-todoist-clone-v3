@@ -45,15 +45,6 @@ import Url exposing (Url)
 -- DIALOG
 
 
-dialogConfig : Dialog.Config Msg
-dialogConfig =
-    Dialog.createConfig
-        { toMsg = DialogMsg
-        , projectAdded = AddProjectDialogSaved
-        , projectEdited = EditProjectDialogSaved
-        }
-
-
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
@@ -64,6 +55,14 @@ dialog :
     }
 dialog =
     let
+        dialogConfig : Dialog.Config Msg
+        dialogConfig =
+            Dialog.createConfig
+                { toMsg = DialogMsg
+                , projectAdded = AddProjectDialogSaved
+                , projectEdited = EditProjectDialogSaved
+                }
+
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg model =
             Dialog.update dialogConfig msg model.dialog
