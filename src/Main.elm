@@ -55,14 +55,16 @@ dialogConfig =
         }
 
 
-initAddProjectDialogAt : Int -> ( Dialog, Cmd Msg )
-initAddProjectDialogAt idx =
+initAddProjectDialogAt : Int -> Model -> ( Model, Cmd Msg )
+initAddProjectDialogAt idx model =
     Dialog.initAddProjectDialogAt dialogConfig idx
+        |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
 
 
-initEditProjectDialog : Project -> ( Dialog, Cmd Msg )
-initEditProjectDialog project =
+initEditProjectDialog : Project -> Model -> ( Model, Cmd Msg )
+initEditProjectDialog project model =
     Dialog.initEditProjectDialog dialogConfig project
+        |> Return.map (\dialog -> { model | dialog = dialog })
 
 
 viewDialog : Dialog -> List (Html Msg)
@@ -373,8 +375,7 @@ update message model =
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
 
         AddProjectClicked ->
-            initAddProjectDialogAt 0
-                |> Tuple.mapFirst (\dialog -> { model | dialog = dialog })
+            initAddProjectDialogAt 0 model
 
         AddLabelClicked ->
             ( { model | dialog = Dialog.AddLabelDialog }, Cmd.none )
@@ -525,18 +526,17 @@ updateProjectPopup projectId action model =
     in
     case action of
         PopupView.AddProjectBelow ->
-            initAddProjectDialogAt (projectIdxWithOffset 1)
-                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
+            initAddProjectDialogAt (projectIdxWithOffset 1) model
+                |> Return.map closePopup
 
         PopupView.AddProjectAbove ->
-            initAddProjectDialogAt (projectIdxWithOffset 0)
-                |> Return.map (\dialog -> { model | dialog = dialog } |> closePopup)
+            initAddProjectDialogAt (projectIdxWithOffset 0) model
+                |> Return.map closePopup
 
         PopupView.EditProject ->
             (case maybeProject of
                 Just project ->
-                    initEditProjectDialog project
-                        |> Return.map (\dialog -> { model | dialog = dialog })
+                    initEditProjectDialog project model
 
                 Nothing ->
                     ( model, Cmd.none )
