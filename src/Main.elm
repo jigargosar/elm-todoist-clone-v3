@@ -61,9 +61,8 @@ openAddProjectDialog idx =
 
 
 openEditProjectDialog : Project -> Model -> ( Model, Cmd Msg )
-openEditProjectDialog project model =
-    Dialog.initEditProjectDialog dialogConfig project
-        |> Return.map (\dialog -> { model | dialog = dialog })
+openEditProjectDialog project =
+    updateDialog (Dialog.openEditProject project)
 
 
 updateDialog : Dialog.DialogMsg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
