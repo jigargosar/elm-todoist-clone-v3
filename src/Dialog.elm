@@ -13,35 +13,34 @@ module Dialog exposing
 
 -- DIALOG
 
-import Dialog.AddProject
-import Dialog.EditProject
-import FilterId exposing (FilterId)
+import Dialog.AddProject as AddProject
+import Dialog.EditProject as EditProject
 import Html.Styled exposing (Html)
-import LabelId exposing (LabelId)
 import Project exposing (Project)
 
 
 type Dialog
-    = AddProjectDialog Dialog.AddProject.Model
-    | EditProjectDialog Dialog.EditProject.Model
-    | AddLabelDialog
-    | EditLabelDialog LabelId
-    | AddFilterDialog
-    | EditFilterDialog FilterId
+    = AddProjectDialog AddProject.Model
+    | EditProjectDialog EditProject.Model
+      {- | AddLabelDialog
+         | EditLabelDialog LabelId
+         | AddFilterDialog
+         | EditFilterDialog FilterId
+      -}
     | NoDialog
 
 
 type alias Config msg =
-    { addProject : Dialog.AddProject.Config msg
-    , editProject : Dialog.EditProject.Config msg
+    { addProject : AddProject.Config msg
+    , editProject : EditProject.Config msg
     }
 
 
 createConfig :
     { toMsg : DialogMsg -> msg
     , canceled : msg
-    , projectAdded : Dialog.AddProject.SavedWith -> msg
-    , projectEdited : Dialog.EditProject.SavedWith -> msg
+    , projectAdded : AddProject.SavedWith -> msg
+    , projectEdited : EditProject.SavedWith -> msg
     }
     -> Config msg
 createConfig c =
@@ -59,19 +58,19 @@ createConfig c =
 
 
 type DialogMsg
-    = AddProjectDialogMsg Dialog.AddProject.Msg
-    | EditProjectDialogMsg Dialog.EditProject.Msg
+    = AddProjectDialogMsg AddProject.Msg
+    | EditProjectDialogMsg EditProject.Msg
 
 
 initAddProjectDialogAt : Config msg -> Int -> ( Dialog, Cmd msg )
 initAddProjectDialogAt config idx =
-    Dialog.AddProject.initAt config.addProject idx
+    AddProject.initAt config.addProject idx
         |> Tuple.mapFirst AddProjectDialog
 
 
 initEditProjectDialog : Config msg -> Project -> ( Dialog, Cmd msg )
 initEditProjectDialog config project =
-    Dialog.EditProject.init config.editProject project
+    EditProject.init config.editProject project
         |> Tuple.mapFirst EditProjectDialog
 
 
@@ -83,10 +82,10 @@ dialogSubscriptions : Config msg -> Dialog -> Sub msg
 dialogSubscriptions config dialog =
     case dialog of
         AddProjectDialog model ->
-            Dialog.AddProject.subscriptions config.addProject model
+            AddProject.subscriptions config.addProject model
 
         EditProjectDialog model ->
-            Dialog.EditProject.subscriptions config.editProject model
+            EditProject.subscriptions config.editProject model
 
         _ ->
             Sub.none
@@ -99,16 +98,26 @@ update config message dialogModel =
         ret =
             ( dialogModel, Cmd.none )
     in
-    case ( dialogModel, message ) of
-        ( AddProjectDialog model, AddProjectDialogMsg msg ) ->
-            Dialog.AddProject.update config.addProject msg model
-                |> Tuple.mapFirst AddProjectDialog
+    case dialogModel of
+        AddProjectDialog model ->
+            case message of
+                AddProjectDialogMsg msg ->
+                    AddProject.update config.addProject msg model
+                        |> Tuple.mapFirst AddProjectDialog
 
-        ( EditProjectDialog model, EditProjectDialogMsg msg ) ->
-            Dialog.EditProject.update config.editProject msg model
-                |> Tuple.mapFirst EditProjectDialog
+                _ ->
+                    ret
 
-        _ ->
+        EditProjectDialog model ->
+            case message of
+                EditProjectDialogMsg msg ->
+                    EditProject.update config.editProject msg model
+                        |> Tuple.mapFirst EditProjectDialog
+
+                _ ->
+                    ret
+
+        NoDialog ->
             ret
 
 
@@ -116,10 +125,10 @@ viewDialog : Config msg -> Dialog -> List (Html msg)
 viewDialog config dialog =
     case dialog of
         AddProjectDialog model ->
-            [ Dialog.AddProject.view config.addProject model ]
+            [ AddProject.view config.addProject model ]
 
         EditProjectDialog model ->
-            [ Dialog.EditProject.view config.editProject model ]
+            [ EditProject.view config.editProject model ]
 
-        _ ->
+        NoDialog ->
             []
