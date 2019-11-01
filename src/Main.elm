@@ -47,9 +47,12 @@ import Url exposing (Url)
 
 dialogConfig : Dialog.Config Msg
 dialogConfig =
-    { addProject = addProjectDialogConfig
-    , editProject = editProjectDialogConfig
-    }
+    Dialog.createConfig
+        { toMsg = DialogMsg
+        , canceled = DialogCanceled
+        , projectAdded = AddProjectDialogSaved
+        , projectEdited = EditProjectDialogSaved
+        }
 
 
 addProjectDialogConfig : Dialog.AddProject.Config Msg
