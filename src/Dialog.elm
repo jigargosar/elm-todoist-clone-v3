@@ -104,6 +104,10 @@ update config message dialogModel =
             Dialog.AddProject.update config.addProject msg model
                 |> Tuple.mapFirst AddProjectDialog
 
+        ( EditProjectDialog model, EditProjectDialogMsg msg ) ->
+            Dialog.EditProject.update config.editProject msg model
+                |> Tuple.mapFirst EditProjectDialog
+
         _ ->
             ret
 
