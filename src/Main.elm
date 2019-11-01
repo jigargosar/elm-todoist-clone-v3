@@ -454,6 +454,7 @@ projectPanelConfig =
     }
 
 
+mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
 mapProjectCollection func model =
     { model | projectCollection = func model.projectCollection }
 
