@@ -45,11 +45,6 @@ import Url exposing (Url)
 -- DIALOG
 
 
-type DialogMsg
-    = AddProjectDialogMsg Dialog.AddProject.Msg
-    | EditProjectDialogMsg Dialog.EditProject.Msg
-
-
 dialogConfig : Dialog.Config Msg
 dialogConfig =
     { addProject = addProjectDialogConfig
@@ -61,7 +56,7 @@ addProjectDialogConfig : Dialog.AddProject.Config Msg
 addProjectDialogConfig =
     { canceled = DialogCanceled
     , saved = AddProjectDialogSaved
-    , toMsg = DialogMsg << AddProjectDialogMsg
+    , toMsg = DialogMsg << Dialog.AddProjectDialogMsg
     }
 
 
@@ -74,7 +69,7 @@ editProjectDialogConfig : Dialog.EditProject.Config Msg
 editProjectDialogConfig =
     { canceled = DialogCanceled
     , saved = EditProjectDialogSaved
-    , toMsg = DialogMsg << EditProjectDialogMsg
+    , toMsg = DialogMsg << Dialog.EditProjectDialogMsg
     }
 
 
@@ -279,7 +274,7 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | DialogMsg DialogMsg
+    | DialogMsg Dialog.DialogMsg
     | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
@@ -370,7 +365,7 @@ update message model =
                     { model | dialog = dialog }
             in
             case ( model.dialog, msg ) of
-                ( Dialog.AddProjectDialog dialogModel, AddProjectDialogMsg dialogMsg ) ->
+                ( Dialog.AddProjectDialog dialogModel, Dialog.AddProjectDialogMsg dialogMsg ) ->
                     Dialog.AddProject.update addProjectDialogConfig dialogMsg dialogModel
                         |> Tuple.mapFirst (Dialog.AddProjectDialog >> setDialog)
 
