@@ -65,7 +65,7 @@ openEditProjectDialog project =
     updateDialog (Dialog.openEditProject project)
 
 
-closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+closeDialog : Model -> ( Model, Cmd Msg )
 closeDialog =
     updateDialog Dialog.close
 
