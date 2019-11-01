@@ -48,7 +48,7 @@ import Url exposing (Url)
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-    , closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    , close : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , view : { a | dialog : Dialog } -> List (Html Msg)
     , subscriptions : { a | dialog : Dialog } -> Sub Msg
@@ -70,7 +70,7 @@ dialog =
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
-    , closeDialog = updateDialog Dialog.close
+    , close = updateDialog Dialog.close
     , update = updateDialog
     , view = .dialog >> Dialog.viewDialog dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
@@ -342,7 +342,7 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         DialogCanceled ->
-            dialog.closeDialog model
+            dialog.close model
 
         DialogMsg msg ->
             dialog.update msg model
