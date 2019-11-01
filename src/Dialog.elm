@@ -3,10 +3,10 @@ module Dialog exposing
     , Dialog
     , DialogMsg
     , createConfig
-    , dialogSubscriptions
     , none
     , openAddProject
     , openEditProject
+    , subscriptions
     , update
     , viewDialog
     )
@@ -78,8 +78,8 @@ none =
     NoDialog
 
 
-dialogSubscriptions : Config msg -> Dialog -> Sub msg
-dialogSubscriptions config dialog =
+subscriptions : Config msg -> Dialog -> Sub msg
+subscriptions config dialog =
     case dialog of
         AddProjectDialog model ->
             AddProject.subscriptions config.addProject model

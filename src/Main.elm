@@ -78,7 +78,7 @@ viewDialog dialog =
 
 dialogSubscriptions : Dialog -> Sub Msg
 dialogSubscriptions dialog =
-    Dialog.dialogSubscriptions dialogConfig dialog
+    Dialog.subscriptions dialogConfig dialog
 
 
 
