@@ -49,7 +49,6 @@ dialogConfig : Dialog.Config Msg
 dialogConfig =
     Dialog.createConfig
         { toMsg = DialogMsg
-        , canceled = DialogCanceled
         , projectAdded = AddProjectDialogSaved
         , projectEdited = EditProjectDialogSaved
         }
@@ -59,18 +58,20 @@ dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     }
 dialog =
+    let
+        updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+        updateDialog msg model =
+            Dialog.update dialogConfig msg model.dialog
+                |> Tuple.mapFirst (\dialog_ -> { model | dialog = dialog_ })
+    in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     , closeDialog = updateDialog Dialog.close
+    , update = updateDialog
     }
-
-
-updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-updateDialog msg model =
-    Dialog.update dialogConfig msg model.dialog
-        |> Tuple.mapFirst (\dialog_ -> { model | dialog = dialog_ })
 
 
 viewDialog : Dialog -> List (Html Msg)
@@ -351,7 +352,7 @@ update message model =
             dialog.closeDialog model
 
         DialogMsg msg ->
-            updateDialog msg model
+            dialog.update msg model
 
         AddProjectDialogSaved savedWith ->
             ( model, Time.now |> Task.perform (AddProjectWithTS savedWith) )

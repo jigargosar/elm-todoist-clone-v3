@@ -39,20 +39,23 @@ type alias Config msg =
 
 createConfig :
     { toMsg : Msg -> msg
-    , canceled : msg
     , projectAdded : AddProject.SavedWith -> msg
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> Config msg
 createConfig c =
+    let
+        canceled =
+            c.toMsg Close
+    in
     { addProject =
         { toMsg = c.toMsg << AddProjectDialogMsg
-        , canceled = c.canceled
+        , canceled = canceled
         , saved = c.projectAdded
         }
     , editProject =
         { toMsg = c.toMsg << EditProjectDialogMsg
-        , canceled = c.canceled
+        , canceled = canceled
         , saved = c.projectEdited
         }
     }
