@@ -65,6 +65,11 @@ openEditProjectDialog project =
     updateDialog (Dialog.openEditProject project)
 
 
+closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+closeDialog =
+    updateDialog Dialog.close
+
+
 updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
 updateDialog msg model =
     Dialog.update dialogConfig msg model.dialog
@@ -346,7 +351,7 @@ update message model =
             updateWithPopupKind (updatePopup msg) model
 
         DialogCanceled ->
-            ( { model | dialog = Dialog.initial }, Cmd.none )
+            closeDialog model
 
         DialogMsg msg ->
             updateDialog msg model
