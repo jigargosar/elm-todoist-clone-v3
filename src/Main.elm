@@ -59,6 +59,7 @@ dialog :
     , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , closeDialog : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
+    , view : { a | dialog : Dialog } -> List (Html Msg)
     }
 dialog =
     let
@@ -71,12 +72,8 @@ dialog =
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     , closeDialog = updateDialog Dialog.close
     , update = updateDialog
+    , view = .dialog >> Dialog.viewDialog dialogConfig
     }
-
-
-viewDialog : Dialog -> List (Html Msg)
-viewDialog =
-    Dialog.viewDialog dialogConfig
 
 
 dialogSubscriptions : Dialog -> Sub Msg
@@ -617,7 +614,7 @@ view model =
         , main = pageView model
         , modal =
             popupView model
-                ++ viewDialog model.dialog
+                ++ dialog.view model
                 ++ ProjectPanel.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
