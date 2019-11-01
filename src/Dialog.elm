@@ -57,15 +57,15 @@ dialogSubscriptions config dialog =
 
 
 update : Config msg -> DialogMsg -> Dialog -> ( Dialog, Cmd msg )
-update config dialogMsg dialog =
+update config message dialogModel =
     let
         ret : ( Dialog, Cmd msg )
         ret =
-            ( dialog, Cmd.none )
+            ( dialogModel, Cmd.none )
     in
-    case ( dialog, dialogMsg ) of
-        ( AddProjectDialog dialogModel, AddProjectDialogMsg msg ) ->
-            Dialog.AddProject.update config.addProject msg dialogModel
+    case ( dialogModel, message ) of
+        ( AddProjectDialog model, AddProjectDialogMsg msg ) ->
+            Dialog.AddProject.update config.addProject msg model
                 |> Tuple.mapFirst AddProjectDialog
 
         _ ->
