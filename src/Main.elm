@@ -141,7 +141,6 @@ type alias Model =
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
     , filterPanel : FilterPanel
-    , projectPanelCollapsed : Bool
     }
 
 
@@ -163,7 +162,6 @@ init flags url navKey =
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
-            , projectPanelCollapsed = False
             }
     in
     Return.singleton initial
@@ -404,7 +402,7 @@ update message model =
             ( newModel, Cmd.none )
 
         ToggleProjectPanel ->
-            ( { model | projectPanelCollapsed = not model.projectPanelCollapsed }, Cmd.none )
+            ( mapProjectPanel toggleCollapsed model, Cmd.none )
 
         ToggleLabelPanel ->
             ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
@@ -441,6 +439,11 @@ update message model =
 
         FilterOrderChanged filterList ->
             updateFilterSortOrder filterList model
+
+
+toggleCollapsed : { a | collapsed : Bool } -> { a | collapsed : Bool }
+toggleCollapsed model =
+    { model | collapsed = not model.collapsed }
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
@@ -632,7 +635,7 @@ view model =
             UI.viewExpansionPanel
                 { toggled = ToggleProjectPanel
                 , title = "Projects"
-                , isExpanded = not model.projectPanelCollapsed
+                , isExpanded = not model.projectPanel.collapsed
                 , secondary = { iconName = "add", action = AddProjectClicked }
                 }
                 (\_ ->
