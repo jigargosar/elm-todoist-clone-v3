@@ -1,4 +1,8 @@
-getRecentlyClosed = () =>
+import ramda from "https://unpkg.com/ramda@0.26.1/dist/ramda.js"
+
+console.log(ramda)
+
+const getRecentlyClosed = () =>
   new Promise(resolve => chrome.sessions.getRecentlyClosed(resolve))
 
 async function main() {

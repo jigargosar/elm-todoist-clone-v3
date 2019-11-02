@@ -3,5 +3,6 @@
   "name": "Recent Sessions",
   "version": "1.0.0",
   "browser_action": { "default_popup": "popup.html" },
-  "permissions": ["sessions", "tabs", "history"]
+  "permissions": ["sessions", "tabs", "history"],
+  "content_security_policy": "script-src 'self' https://unpkgcom; object-src 'self'"
 }
