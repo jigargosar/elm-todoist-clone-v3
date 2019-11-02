@@ -441,11 +441,6 @@ update message model =
             updateFilterSortOrder filterList model
 
 
-toggleCollapsed : { a | collapsed : Bool } -> { a | collapsed : Bool }
-toggleCollapsed model =
-    { model | collapsed = not model.collapsed }
-
-
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
 stepRandom generator model =
     let
