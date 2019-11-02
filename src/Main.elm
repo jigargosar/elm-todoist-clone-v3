@@ -658,7 +658,7 @@ viewPage model =
             Page.NotFound.view url
 
         Page.TodoListByProjectRef projectRef ->
-            mainView projectRef
+            projectRefTodoListView projectRef
                 model.projectCollection
                 model.labelCollection
                 model.todoDict
@@ -678,8 +678,8 @@ viewPage model =
                 model.todoDict
 
 
-mainView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-mainView ref pc lc todoDict =
+projectRefTodoListView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
+projectRefTodoListView ref pc lc todoDict =
     [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withProjectRef ref todoDict)
     ]
 
