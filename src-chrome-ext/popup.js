@@ -1,4 +1,4 @@
-import ramda from "https://unpkg.com/ramda@0.26.1/dist/ramda.js"
+import ramda from "https://unpkg.com/ramda/es/F.js"
 
 console.log(ramda)
 
