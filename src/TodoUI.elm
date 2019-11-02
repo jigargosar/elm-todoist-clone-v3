@@ -14,7 +14,12 @@ import TodoId exposing (TodoId)
 import TodoProject exposing (TodoProject)
 
 
-view : { a | toggle : TodoId -> msg } -> ProjectCollection -> LabelCollection -> Todo -> Html msg
+view :
+    { a | toggle : TodoId -> msg }
+    -> ProjectCollection
+    -> LabelCollection
+    -> Todo
+    -> Html msg
 view config pc lc todo =
     let
         viewIsCompleted =
