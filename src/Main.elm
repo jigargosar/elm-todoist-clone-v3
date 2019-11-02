@@ -751,8 +751,11 @@ projectRefTodoListView ref pc lc todoDict =
                     ]
                 , div [ css [ flex ] ] (viewLabels todo)
                 ]
+
+        viewProjectTitle =
+            div [] [ text "project name" ]
     in
-    List.map viewTodo todoList
+    viewProjectTitle :: List.map viewTodo todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
