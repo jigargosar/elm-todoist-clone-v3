@@ -469,8 +469,7 @@ z_1 =
 linkReset =
     batch
         [ Css.textDecoration Css.none
-        , Css.visited [ Css.color Css.inherit ]
-        , Css.color Css.inherit
+        , Css.color Css.currentColor
         ]
 
 

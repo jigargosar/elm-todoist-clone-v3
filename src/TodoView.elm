@@ -75,13 +75,13 @@ viewProject pc todo =
     in
     a
         [ css
-            [ ph 1
+            [ linkReset
+            , ph 1
             , lh 1.5
             , Css.fontSize Css.small
             , bg (toCssColor todoProject.color)
             , c_ (toCssColor <| Color.highContrast todoProject.color)
             , bor 2
-            , noUnderline
             , hover [ underline, pointer ]
             ]
         , TodoProject.href todoProject
