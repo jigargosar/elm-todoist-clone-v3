@@ -1,6 +1,7 @@
-module Route exposing (Route(..), fromUrl, href, inboxHref, labelHref, projectHref, projectIdHref, replaceUrl)
+module Route exposing (Route(..), filterHref, fromUrl, inboxHref, labelHref, projectHref, projectIdHref, replaceUrl)
 
 import Browser.Navigation as Nav
+import Filter exposing (Filter)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attr
@@ -104,16 +105,6 @@ routeToUrlString route =
     Url.Builder.absolute pathSegments []
 
 
-labelHref : Label -> Attribute msg
-labelHref =
-    Label.id >> Label >> href
-
-
-projectHref : Project -> Attribute msg
-projectHref =
-    Project.id >> projectIdHref
-
-
 inboxHref : Attribute msg
 inboxHref =
     href Inbox
@@ -122,3 +113,18 @@ inboxHref =
 projectIdHref : ProjectId -> Attribute msg
 projectIdHref =
     Project >> href
+
+
+projectHref : Project -> Attribute msg
+projectHref =
+    Project.id >> projectIdHref
+
+
+labelHref : Label -> Attribute msg
+labelHref =
+    Label.id >> Label >> href
+
+
+filterHref : Filter -> Attribute msg
+filterHref =
+    Filter.id >> Filter >> href

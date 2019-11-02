@@ -140,11 +140,8 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
         iconColor =
             Project.cssColor project
 
-        projectId =
-            Project.id project
-
         href =
-            Route.href (Route.Project projectId)
+            Route.projectHref project
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i

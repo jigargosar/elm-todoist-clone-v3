@@ -140,11 +140,8 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } filter =
         iconColor =
             Filter.cssColor filter
 
-        filterId =
-            Filter.id filter
-
         href =
-            Route.href (Route.Filter filterId)
+            Route.filterHref filter
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i
