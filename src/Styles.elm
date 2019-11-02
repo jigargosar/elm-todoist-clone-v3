@@ -524,6 +524,10 @@ hover =
     Css.hover
 
 
+tdNone =
+    Css.textDecoration Css.none
+
+
 underline =
     Css.textDecoration Css.underline
 
