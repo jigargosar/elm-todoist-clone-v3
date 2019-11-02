@@ -3,10 +3,10 @@ module ProjectPanel exposing
     , ProjectPanel
     , initial
     , onDNDMsg
-    , onToggle
     , subscriptions
     , view
     , viewGhost
+    , viewItems
     )
 
 import Css
@@ -46,11 +46,6 @@ type alias Config msg =
     , moreClicked : ProjectId -> String -> msg
     , dndConfig : DNDList.Config Project msg
     }
-
-
-onToggle : ProjectPanel -> ProjectPanel
-onToggle model =
-    { model | collapsed = not model.collapsed }
 
 
 onDNDMsg :

@@ -45,6 +45,7 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoProject exposing (TodoProject)
 import TodoView
+import UI
 import Url exposing (Url)
 
 
@@ -628,9 +629,13 @@ view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            ProjectPanel.view projectPanelConfig
-                (ProjectCollection.sorted model.projectCollection)
-                model.projectPanel
+            UI.viewExpansionPanel
+                { toggled = ToggleProjectPanel
+                , title = "Projects"
+                , isExpanded = not model.projectPanelCollapsed
+                , secondary = { iconName = "add", action = AddProjectClicked }
+                }
+                (\_ -> ProjectPanel.viewItems projectPanelConfig (ProjectCollection.sorted model.projectCollection) model.projectPanel.dnd)
 
         labelPanelView =
             LabelPanel.view labelPanelConfig
