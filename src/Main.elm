@@ -402,7 +402,7 @@ update message model =
             ( newModel, Cmd.none )
 
         ToggleProjectPanel ->
-            ( mapProjectPanel toggleCollapsed model, Cmd.none )
+            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ToggleLabelPanel ->
             ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
