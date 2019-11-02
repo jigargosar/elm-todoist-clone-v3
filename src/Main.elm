@@ -655,9 +655,17 @@ view model =
                 )
 
         filterPanelView =
-            FilterPanel.view filterPanelConfig
-                (FilterCollection.sorted model.filterCollection)
-                model.filterPanel
+            UI.viewExpansionPanel
+                { toggled = ToggleFilterPanel
+                , title = "Filters"
+                , isExpanded = not model.filterPanel.collapsed
+                , secondary = { iconName = "add", action = AddFilterClicked }
+                }
+                (\_ ->
+                    FilterPanel.viewItems filterPanelConfig
+                        (FilterCollection.sorted model.filterCollection)
+                        model.filterPanel.dnd
+                )
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
