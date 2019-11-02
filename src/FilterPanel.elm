@@ -5,8 +5,8 @@ module FilterPanel exposing
     , onDNDMsg
     , onToggle
     , subscriptions
+    , view
     , viewGhost
-    , viewItems
     )
 
 import Css
@@ -80,6 +80,21 @@ viewGhost { dnd } =
 
         Nothing ->
             []
+
+
+view : Config msg -> List Filter -> FilterPanel -> List (Html msg)
+view config filterList model =
+    UI.viewExpansionPanel
+        { toggled = config.toggled
+        , title = "Filters"
+        , collapsed = model.collapsed
+        , secondary = { iconName = "add", action = config.addClicked }
+        }
+        (\_ ->
+            viewItems config
+                filterList
+                model.dnd
+        )
 
 
 viewItems : Config msg -> List Filter -> DNDList.Model Filter -> List (Html msg)

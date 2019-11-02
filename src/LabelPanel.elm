@@ -7,7 +7,6 @@ module LabelPanel exposing
     , subscriptions
     , view
     , viewGhost
-    , viewItems
     )
 
 import Css
@@ -66,20 +65,6 @@ onDNDMsg config msg model =
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
 
 
-view : Config msg -> List Label -> LabelPanel -> List (Html msg)
-view config labelList model =
-    let
-        viewHeader =
-            UI.viewExpansionPanelHeader
-                { toggled = config.toggled
-                , title = "Labels"
-                , collapsed = not model.collapsed
-                , secondary = { iconName = "add", action = config.addClicked }
-                }
-    in
-    viewHeader :: viewItems config labelList model.dnd
-
-
 viewGhost : LabelPanel -> List (Html msg)
 viewGhost { dnd } =
     case DNDList.ghost dnd of
@@ -95,6 +80,21 @@ viewGhost { dnd } =
 
         Nothing ->
             []
+
+
+view : Config msg -> List Label -> LabelPanel -> List (Html msg)
+view config labelList model =
+    UI.viewExpansionPanel
+        { toggled = config.toggled
+        , title = "Labels"
+        , collapsed = model.collapsed
+        , secondary = { iconName = "add", action = config.addClicked }
+        }
+        (\_ ->
+            viewItems config
+                labelList
+                model.dnd
+        )
 
 
 viewItems : Config msg -> List Label -> DNDList.Model Label -> List (Html msg)

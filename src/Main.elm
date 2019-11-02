@@ -632,30 +632,14 @@ view model =
                 model.projectPanel
 
         labelPanelView =
-            UI.viewExpansionPanel
-                { toggled = ToggleLabelPanel
-                , title = "Labels"
-                , collapsed = model.labelPanel.collapsed
-                , secondary = { iconName = "add", action = AddLabelClicked }
-                }
-                (\_ ->
-                    LabelPanel.viewItems labelPanelConfig
-                        (LabelCollection.sorted model.labelCollection)
-                        model.labelPanel.dnd
-                )
+            LabelPanel.view labelPanelConfig
+                (LabelCollection.sorted model.labelCollection)
+                model.labelPanel
 
         filterPanelView =
-            UI.viewExpansionPanel
-                { toggled = ToggleFilterPanel
-                , title = "Filters"
-                , collapsed = model.filterPanel.collapsed
-                , secondary = { iconName = "add", action = AddFilterClicked }
-                }
-                (\_ ->
-                    FilterPanel.viewItems filterPanelConfig
-                        (FilterCollection.sorted model.filterCollection)
-                        model.filterPanel.dnd
-                )
+            FilterPanel.view filterPanelConfig
+                (FilterCollection.sorted model.filterCollection)
+                model.filterPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
