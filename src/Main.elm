@@ -705,7 +705,7 @@ projectRefTodoListView ref pc lc todoDict =
             TodoProject.fromProjectRef pc ref
 
         viewTodo =
-            TodoUI.view config pc lc
+            TodoUI.view config todoProject lc
 
         viewProjectTitle =
             div [] [ text todoProject.title ]

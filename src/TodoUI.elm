@@ -7,7 +7,6 @@ import Html.Styled exposing (Attribute, Html, div, text)
 import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
-import ProjectCollection exposing (ProjectCollection)
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
@@ -16,11 +15,11 @@ import TodoProject exposing (TodoProject)
 
 view :
     { a | toggle : TodoId -> msg }
-    -> ProjectCollection
+    -> TodoProject
     -> LabelCollection
     -> Todo
     -> Html msg
-view config pc lc todo =
+view config todoProject lc todo =
     let
         viewIsCompleted =
             let
@@ -38,11 +37,6 @@ view config pc lc todo =
 
         viewProject : Html msg
         viewProject =
-            let
-                todoProject : TodoProject
-                todoProject =
-                    TodoProject.fromTodo pc todo
-            in
             div
                 [ css
                     [ ph 1
