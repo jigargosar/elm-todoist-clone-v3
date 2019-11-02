@@ -3,20 +3,16 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import Color
-import Css
 import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
 import Drawer
-import Emoji
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
-import Html.Styled.Attributes exposing (css)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -36,8 +32,6 @@ import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Random
 import Return
-import Route
-import Styles exposing (..)
 import Task
 import Time
 import Timestamp exposing (Timestamp)
@@ -130,6 +124,7 @@ type alias Flags =
 
 type alias Model =
     { page : Page
+    , url : Url
     , navKey : Nav.Key
     , seed : Random.Seed
     , todoDict : TodoDict
@@ -151,6 +146,7 @@ init flags url navKey =
         initial : Model
         initial =
             { page = Page.pageFromUrl url
+            , url = url
             , navKey = navKey
             , seed = Random.initialSeed flags.now
             , todoDict = TodoDict.initial
@@ -314,11 +310,11 @@ update message model =
             case urlRequest of
                 Browser.Internal url ->
                     let
-                        pageChanged =
-                            Page.pageFromUrl url == model.page
+                        urlChanged =
+                            url /= model.url
                     in
                     ( model
-                    , if pageChanged then
+                    , if urlChanged then
                         Nav.pushUrl model.navKey (Url.toString url)
 
                       else
