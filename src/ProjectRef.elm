@@ -34,7 +34,7 @@ href : ProjectRef -> Attribute msg
 href model =
     case model of
         Inbox ->
-            Route.href Route.Inbox
+            Route.inboxHref
 
         ProjectId projectId ->
             Route.projectIdHref projectId

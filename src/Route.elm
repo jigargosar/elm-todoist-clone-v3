@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromUrl, href, labelHref, projectHref, projectIdHref, replaceUrl)
+module Route exposing (Route(..), fromUrl, href, inboxHref, labelHref, projectHref, projectIdHref, replaceUrl)
 
 import Browser.Navigation as Nav
 import FilterId exposing (FilterId)
@@ -107,6 +107,11 @@ labelHref =
 projectHref : Project -> Attribute msg
 projectHref =
     Project.id >> projectIdHref
+
+
+inboxHref : Attribute msg
+inboxHref =
+    href Inbox
 
 
 projectIdHref : ProjectId -> Attribute msg
