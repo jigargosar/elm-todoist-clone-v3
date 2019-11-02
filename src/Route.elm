@@ -21,6 +21,7 @@ type Route
     | Project ProjectId
     | Label LabelId
     | Filter FilterId
+    | NotFound Url
 
 
 parser : Parser (Route -> c) c
@@ -34,9 +35,10 @@ parser =
         ]
 
 
-fromUrl : Url -> Maybe Route
+fromUrl : Url -> Route
 fromUrl url =
     parse parser url
+        |> Maybe.withDefault (NotFound url)
 
 
 parseProjectId : Parser (ProjectId -> b) b
@@ -68,16 +70,16 @@ parseFilterId =
 
 href : Route -> Attribute msg
 href targetRoute =
-    Attr.href (routeToString targetRoute)
+    Attr.href (routeToUrlString targetRoute)
 
 
 replaceUrl : Nav.Key -> Route -> Cmd msg
 replaceUrl key route =
-    Nav.replaceUrl key (routeToString route)
+    Nav.replaceUrl key (routeToUrlString route)
 
 
-routeToString : Route -> String
-routeToString route =
+routeToUrlString : Route -> String
+routeToUrlString route =
     let
         pathSegments =
             case route of
@@ -95,6 +97,9 @@ routeToString route =
 
                 Filter filterId ->
                     [ "filter", FilterId.toString filterId ]
+
+                NotFound _ ->
+                    []
     in
     Url.Builder.absolute pathSegments []
 

@@ -32,7 +32,10 @@ pageFromRoute route =
         Route.Filter filterId ->
             TodoListByFilterId filterId
 
+        Route.NotFound url ->
+            NotFound url
+
 
 pageFromUrl : Url -> Page
 pageFromUrl url =
-    Route.fromUrl url |> Maybe.map pageFromRoute |> Maybe.withDefault (NotFound url)
+    Route.fromUrl url |> pageFromRoute

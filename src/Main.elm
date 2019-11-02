@@ -32,6 +32,7 @@ import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Random
 import Return
+import Route
 import Task
 import Time
 import Timestamp exposing (Timestamp)
@@ -310,6 +311,9 @@ update message model =
                     let
                         urlChanged =
                             url /= model.url
+
+                        route =
+                            Route.fromUrl url
                     in
                     ( model
                     , if urlChanged then
