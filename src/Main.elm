@@ -123,8 +123,7 @@ type alias Flags =
 
 
 type alias Model =
-    { page : Page
-    , url : Url
+    { url : Url
     , navKey : Nav.Key
     , seed : Random.Seed
     , todoDict : TodoDict
@@ -145,8 +144,7 @@ init flags url navKey =
     let
         initial : Model
         initial =
-            { page = Page.pageFromUrl url
-            , url = url
+            { url = url
             , navKey = navKey
             , seed = Random.initialSeed flags.now
             , todoDict = TodoDict.initial
@@ -613,11 +611,7 @@ closePopup model =
 
 onUrlChanged : Url -> Model -> ( Model, Cmd Msg )
 onUrlChanged url model =
-    let
-        page =
-            Page.pageFromUrl url
-    in
-    ( { model | page = page, url = url }, Cmd.none )
+    ( { model | url = url }, Cmd.none )
 
 
 
@@ -662,7 +656,7 @@ view model =
 
 viewPage : Model -> List (Html Msg)
 viewPage model =
-    case model.page of
+    case Page.pageFromUrl model.url of
         Page.NotFound url ->
             Page.NotFound.view url
 
