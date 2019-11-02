@@ -7,6 +7,7 @@ import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
+import ProjectRef
 import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
@@ -48,6 +49,12 @@ view config todoProject labelList todo =
                     , bor 2
                     , hover [ underline, pointer ]
                     ]
+                , case todoProject.ref of
+                    Just ref ->
+                        ProjectRef.href ref
+
+                    Nothing ->
+                        class ""
                 ]
                 [ text todoProject.title ]
 

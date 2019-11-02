@@ -1,6 +1,8 @@
-module ProjectRef exposing (ProjectRef, fromId, id, inbox)
+module ProjectRef exposing (ProjectRef, fromId, href, id, inbox)
 
+import Html.Styled exposing (Attribute)
 import ProjectId
+import Route
 
 
 type ProjectRef
@@ -26,3 +28,13 @@ id model =
 
         ProjectId projectId ->
             Just projectId
+
+
+href : ProjectRef -> Attribute msg
+href model =
+    case model of
+        Inbox ->
+            Route.href Route.Inbox
+
+        ProjectId projectId ->
+            Route.projectIdHref projectId

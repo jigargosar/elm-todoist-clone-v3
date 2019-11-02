@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromUrl, href, labelHref, replaceUrl)
+module Route exposing (Route(..), fromUrl, href, labelHref, projectHref, projectIdHref, replaceUrl)
 
 import Browser.Navigation as Nav
 import FilterId exposing (FilterId)
@@ -6,12 +6,13 @@ import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import Json.Encode as JE
-import Label
+import Label exposing (Label)
 import LabelId exposing (LabelId)
+import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Url exposing (Url)
 import Url.Builder
-import Url.Parser exposing ((</>), (<?>), Parser, int, map, parse, s, string, top)
+import Url.Parser exposing ((</>), (<?>), Parser, map, parse, s, top)
 
 
 type Route
@@ -98,6 +99,16 @@ routeToString route =
     Url.Builder.absolute pathSegments []
 
 
-labelHref : Label.Label -> Attribute msg
+labelHref : Label -> Attribute msg
 labelHref =
     Label.id >> Label >> href
+
+
+projectHref : Project -> Attribute msg
+projectHref =
+    Project.id >> projectIdHref
+
+
+projectIdHref : ProjectId -> Attribute msg
+projectIdHref =
+    Project >> href
