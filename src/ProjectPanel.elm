@@ -4,7 +4,6 @@ module ProjectPanel exposing
     , initial
     , onDNDMsg
     , subscriptions
-    , view
     , viewGhost
     , viewItems
     )
@@ -58,17 +57,6 @@ onDNDMsg config msg model =
         msg
         model.dnd
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
-
-
-view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view config projectList model =
-    UI.viewExpansionPanel
-        { toggled = config.toggled
-        , title = "Projects"
-        , isExpanded = not model.collapsed
-        , secondary = { iconName = "add", action = config.addClicked }
-        }
-        (\_ -> viewItems config projectList model.dnd)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
