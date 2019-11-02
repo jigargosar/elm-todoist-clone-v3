@@ -120,7 +120,7 @@ viewForm { submit, submitTitle, cancel, title, content } =
 
         footer =
             div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
-                [ btnSubmit "Add" submit
+                [ btnSubmit submitTitle submit
                 , btnCancel cancel
                 ]
     in
