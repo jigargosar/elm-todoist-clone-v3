@@ -7,6 +7,7 @@ module LabelPanel exposing
     , subscriptions
     , view
     , viewGhost
+    , viewItems
     )
 
 import Css

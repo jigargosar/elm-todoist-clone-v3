@@ -642,9 +642,17 @@ view model =
                 )
 
         labelPanelView =
-            LabelPanel.view labelPanelConfig
-                (LabelCollection.sorted model.labelCollection)
-                model.labelPanel
+            UI.viewExpansionPanel
+                { toggled = ToggleLabelPanel
+                , title = "Labels"
+                , isExpanded = not model.labelPanel.collapsed
+                , secondary = { iconName = "add", action = AddLabelClicked }
+                }
+                (\_ ->
+                    LabelPanel.viewItems labelPanelConfig
+                        (LabelCollection.sorted model.labelCollection)
+                        model.labelPanel.dnd
+                )
 
         filterPanelView =
             FilterPanel.view filterPanelConfig
