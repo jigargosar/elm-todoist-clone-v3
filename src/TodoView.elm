@@ -100,7 +100,3 @@ viewLabelId label =
             ]
         ]
         [ text <| Label.title label ]
-
-
-fromHue h =
-    Color.fromHSL ( toFloat h, 70, 30 )
