@@ -38,7 +38,7 @@ view config todoProject labelList todo =
 
         viewProject : Html msg
         viewProject =
-            div
+            a
                 [ css
                     [ ph 1
                     , lh 1.5
