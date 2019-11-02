@@ -617,11 +617,7 @@ onUrlChanged url model =
         page =
             Page.pageFromUrl url
     in
-    if page /= model.page then
-        ( { model | page = page }, Cmd.none )
-
-    else
-        ( model, Cmd.none )
+    ( { model | page = page, url = url }, Cmd.none )
 
 
 
