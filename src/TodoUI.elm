@@ -4,7 +4,7 @@ import Color
 import Css
 import Emoji
 import Html.Styled exposing (Attribute, Html, a, div, text)
-import Html.Styled.Attributes exposing (class, css)
+import Html.Styled.Attributes exposing (class, css, disabled)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import ProjectRef
@@ -54,7 +54,7 @@ view config todoProject labelList todo =
                         ProjectRef.href ref
 
                     Nothing ->
-                        class ""
+                        disabled True
                 ]
                 [ text todoProject.title ]
 
