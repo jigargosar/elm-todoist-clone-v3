@@ -700,15 +700,15 @@ projectRefTodoListView ref pc lc todoDict =
         config =
             { toggle = ToggleTodoCompleted }
 
-        projectInfo : TodoProject
-        projectInfo =
+        todoProject : TodoProject
+        todoProject =
             TodoProject.fromProjectRef pc ref
 
         viewTodo =
             TodoUI.view config pc lc
 
         viewProjectTitle =
-            div [] [ text projectInfo.title ]
+            div [] [ text todoProject.title ]
     in
     viewProjectTitle :: List.map viewTodo todoList
 
