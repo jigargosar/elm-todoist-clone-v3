@@ -140,11 +140,8 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } label =
         iconColor =
             Label.cssColor label
 
-        labelId =
-            Label.id label
-
         href =
-            Route.href (Route.Label labelId)
+            Route.labelHref label
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ i

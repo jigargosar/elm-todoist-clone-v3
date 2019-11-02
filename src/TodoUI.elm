@@ -3,10 +3,11 @@ module TodoUI exposing (..)
 import Color
 import Css
 import Emoji
-import Html.Styled exposing (Attribute, Html, div, text)
+import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
+import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
@@ -51,13 +52,14 @@ view config todoProject labelList todo =
                 [ text todoProject.title ]
 
         viewLabel label =
-            div
+            a
                 [ css
                     [ ph 1
                     , Css.fontSize Css.small
                     , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
                     , hover [ underline, pointer ]
                     ]
+                , Route.labelHref label
                 ]
                 [ text <| Label.title label ]
     in
