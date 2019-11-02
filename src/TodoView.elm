@@ -69,25 +69,7 @@ viewTitle todo =
 
 viewProject : ProjectCollection -> Todo -> Html msg
 viewProject pc todo =
-    let
-        todoProject : TodoProject
-        todoProject =
-            TodoProject.fromTodo pc todo
-    in
-    a
-        [ css
-            [ linkReset
-            , ph 1
-            , lh 1.5
-            , Css.fontSize Css.small
-            , bg (toCssColor todoProject.color)
-            , c_ (toCssColor <| Color.highContrast todoProject.color)
-            , bor 2
-            , hover [ underline, pointer ]
-            ]
-        , TodoProject.href todoProject
-        ]
-        [ text todoProject.title ]
+    TodoUI.viewProject <| TodoProject.fromTodo pc todo
 
 
 viewLabels lc todo =
