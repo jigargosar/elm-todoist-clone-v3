@@ -81,6 +81,7 @@ viewProject pc todo =
             , bg (toCssColor todoProject.color)
             , c_ (toCssColor <| Color.highContrast todoProject.color)
             , bor 2
+            , Css.textDecoration Css.none
             , hover [ underline, pointer ]
             ]
         , TodoProject.href todoProject
