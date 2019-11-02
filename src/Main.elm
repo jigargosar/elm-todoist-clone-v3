@@ -680,7 +680,11 @@ viewPage model =
 
 projectRefTodoListView : ProjectRef -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 projectRefTodoListView ref pc lc todoDict =
-    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withProjectRef ref todoDict)
+    let
+        todoList =
+            TodoDict.withProjectRef ref todoDict
+    in
+    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc todoList
     ]
 
 
