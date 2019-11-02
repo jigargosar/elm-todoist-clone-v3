@@ -13,6 +13,7 @@ import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 import TodoProject exposing (TodoProject)
+import TodoUI
 
 
 type alias Config msg =
@@ -90,18 +91,4 @@ viewProject pc todo =
 
 
 viewLabels lc todo =
-    List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabel) (Todo.labelIdList todo)
-
-
-viewLabel label =
-    a
-        [ css
-            [ linkReset
-            , ph 1
-            , Css.fontSize Css.small
-            , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
-            , hover [ underline, pointer ]
-            ]
-        , Route.labelHref label
-        ]
-        [ text <| Label.title label ]
+    List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map TodoUI.viewLabel) (Todo.labelIdList todo)
