@@ -635,7 +635,11 @@ view model =
                 , isExpanded = not model.projectPanelCollapsed
                 , secondary = { iconName = "add", action = AddProjectClicked }
                 }
-                (\_ -> ProjectPanel.viewItems projectPanelConfig (ProjectCollection.sorted model.projectCollection) model.projectPanel.dnd)
+                (\_ ->
+                    ProjectPanel.viewItems projectPanelConfig
+                        (ProjectCollection.sorted model.projectCollection)
+                        model.projectPanel.dnd
+                )
 
         labelPanelView =
             LabelPanel.view labelPanelConfig
