@@ -627,17 +627,9 @@ view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            UI.viewExpansionPanel
-                { toggled = ToggleProjectPanel
-                , title = "Projects"
-                , collapsed = model.projectPanel.collapsed
-                , secondary = { iconName = "add", action = AddProjectClicked }
-                }
-                (\_ ->
-                    ProjectPanel.viewItems projectPanelConfig
-                        (ProjectCollection.sorted model.projectCollection)
-                        model.projectPanel.dnd
-                )
+            ProjectPanel.view projectPanelConfig
+                (ProjectCollection.sorted model.projectCollection)
+                model.projectPanel
 
         labelPanelView =
             UI.viewExpansionPanel

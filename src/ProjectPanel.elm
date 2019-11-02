@@ -5,8 +5,8 @@ module ProjectPanel exposing
     , onDNDMsg
     , onToggle
     , subscriptions
+    , view
     , viewGhost
-    , viewItems
     )
 
 import Css
@@ -80,6 +80,21 @@ viewGhost { dnd } =
 
         Nothing ->
             []
+
+
+view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
+view config projectList model =
+    UI.viewExpansionPanel
+        { toggled = config.toggled
+        , title = "Projects"
+        , collapsed = model.collapsed
+        , secondary = { iconName = "add", action = config.addClicked }
+        }
+        (\_ ->
+            viewItems config
+                projectList
+                model.dnd
+        )
 
 
 viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
