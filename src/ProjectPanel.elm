@@ -76,7 +76,13 @@ view config projectList model =
                 , secondary = { iconName = "add", action = config.addClicked }
                 }
     in
-    viewHeader :: viewItems config projectList model.dnd
+    viewHeader
+        :: (if model.collapsed then
+                []
+
+            else
+                viewItems config projectList model.dnd
+           )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
