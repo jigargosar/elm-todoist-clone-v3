@@ -635,7 +635,7 @@ view model =
             UI.viewExpansionPanel
                 { toggled = ToggleProjectPanel
                 , title = "Projects"
-                , isExpanded = not model.projectPanel.collapsed
+                , collapsed = model.projectPanel.collapsed
                 , secondary = { iconName = "add", action = AddProjectClicked }
                 }
                 (\_ ->
@@ -648,7 +648,7 @@ view model =
             UI.viewExpansionPanel
                 { toggled = ToggleLabelPanel
                 , title = "Labels"
-                , isExpanded = not model.labelPanel.collapsed
+                , collapsed = model.labelPanel.collapsed
                 , secondary = { iconName = "add", action = AddLabelClicked }
                 }
                 (\_ ->
@@ -661,7 +661,7 @@ view model =
             UI.viewExpansionPanel
                 { toggled = ToggleFilterPanel
                 , title = "Filters"
-                , isExpanded = not model.filterPanel.collapsed
+                , collapsed = model.filterPanel.collapsed
                 , secondary = { iconName = "add", action = AddFilterClicked }
                 }
                 (\_ ->

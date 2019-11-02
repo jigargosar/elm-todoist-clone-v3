@@ -11,11 +11,11 @@ import Theme
 viewExpansionPanelHeader :
     { toggled : msg
     , title : String
-    , isExpanded : Bool
+    , collapsed : Bool
     , secondary : { iconName : String, action : msg }
     }
     -> Html msg
-viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
+viewExpansionPanelHeader { toggled, collapsed, title, secondary } =
     div
         [ css
             [ Px.pl 4
@@ -29,11 +29,11 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
         ]
         [ let
             iconName =
-                if isExpanded then
-                    "expand_more"
+                if collapsed then
+                    "chevron_right"
 
                 else
-                    "chevron_right"
+                    "expand_more"
           in
           button
             [ css [ btnReset, pointer, flex, itemsCenter, flexGrow1, tal ], onClick toggled ]
@@ -51,16 +51,16 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
 viewExpansionPanel :
     { toggled : msg
     , title : String
-    , isExpanded : Bool
+    , collapsed : Bool
     , secondary : { iconName : String, action : msg }
     }
     -> (() -> List (Html msg))
     -> List (Html msg)
 viewExpansionPanel config lazyContent =
     viewExpansionPanelHeader config
-        :: (if config.isExpanded then
-                lazyContent ()
+        :: (if config.collapsed then
+                []
 
             else
-                []
+                lazyContent ()
            )

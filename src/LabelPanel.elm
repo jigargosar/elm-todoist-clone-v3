@@ -73,7 +73,7 @@ view config labelList model =
             UI.viewExpansionPanelHeader
                 { toggled = config.toggled
                 , title = "Labels"
-                , isExpanded = not model.collapsed
+                , collapsed = not model.collapsed
                 , secondary = { iconName = "add", action = config.addClicked }
                 }
     in
