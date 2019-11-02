@@ -1,4 +1,4 @@
-module TodoUI exposing (..)
+module TodoUI exposing (view, viewLabel)
 
 import Color
 import Css
