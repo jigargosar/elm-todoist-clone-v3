@@ -730,7 +730,11 @@ projectRefTodoListView ref pc lc todoDict =
                 [ text todoProject.title ]
 
         viewLabels todo =
-            List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabel) (Todo.labelIdList todo)
+            List.filterMap
+                (\lid ->
+                    LabelCollection.byId lid lc |> Maybe.map viewLabel
+                )
+                (Todo.labelIdList todo)
 
         viewLabel label =
             div
