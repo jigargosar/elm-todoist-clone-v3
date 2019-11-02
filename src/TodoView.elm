@@ -93,7 +93,7 @@ viewLabels lc todo =
 
 
 viewLabel label =
-    div
+    a
         [ css
             [ ph 1
             , Css.fontSize Css.small
