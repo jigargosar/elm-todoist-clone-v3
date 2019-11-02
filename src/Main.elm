@@ -686,6 +686,15 @@ viewPage model =
                 model.todoDict
 
 
+todoLabelList : LabelCollection -> Todo -> List Label
+todoLabelList lc todo =
+    List.filterMap
+        (\lid ->
+            LabelCollection.byId lid lc
+        )
+        (Todo.labelIdList todo)
+
+
 projectRefTodoListView :
     ProjectRef
     -> ProjectCollection
