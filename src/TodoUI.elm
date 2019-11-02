@@ -4,10 +4,8 @@ import Color
 import Css
 import Emoji
 import Html.Styled exposing (Attribute, Html, a, div, text)
-import Html.Styled.Attributes as A exposing (class, css, disabled, href)
+import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
-import LabelCollection exposing (LabelCollection)
-import ProjectRef
 import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
