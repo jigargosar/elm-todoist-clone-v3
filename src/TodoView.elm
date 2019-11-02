@@ -96,7 +96,8 @@ viewLabels lc todo =
 viewLabel label =
     a
         [ css
-            [ ph 1
+            [ linkReset
+            , ph 1
             , Css.fontSize Css.small
             , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
             , hover [ underline, pointer ]
