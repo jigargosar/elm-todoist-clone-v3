@@ -742,6 +742,10 @@ projectRefTodoListView ref pc lc todoDict =
                 ]
                 [ text <| Label.title label ]
 
+        projectInfo : TodoProject
+        projectInfo =
+            TodoProject.fromProjectRef pc ref
+
         viewTodo todo =
             div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
                 [ div [ css [ flex, itemsCenter ] ]
@@ -753,7 +757,7 @@ projectRefTodoListView ref pc lc todoDict =
                 ]
 
         viewProjectTitle =
-            div [] [ text "project name" ]
+            div [] [ text projectInfo.title ]
     in
     viewProjectTitle :: List.map viewTodo todoList
 
