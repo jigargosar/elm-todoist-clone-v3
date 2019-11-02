@@ -46,3 +46,21 @@ viewExpansionPanelHeader { toggled, isExpanded, title, secondary } =
             ]
             [ i [ class "material-icons" ] [ text secondary.iconName ] ]
         ]
+
+
+viewExpansionPanel :
+    { toggled : msg
+    , title : String
+    , isExpanded : Bool
+    , secondary : { iconName : String, action : msg }
+    }
+    -> (() -> List (Html msg))
+    -> List (Html msg)
+viewExpansionPanel config lazyContent =
+    viewExpansionPanelHeader config
+        :: (if config.isExpanded then
+                lazyContent ()
+
+            else
+                []
+           )

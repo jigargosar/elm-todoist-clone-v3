@@ -67,22 +67,13 @@ onDNDMsg config msg model =
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view config projectList model =
-    let
-        viewHeader =
-            UI.viewExpansionPanelHeader
-                { toggled = config.toggled
-                , title = "Projects"
-                , isExpanded = not model.collapsed
-                , secondary = { iconName = "add", action = config.addClicked }
-                }
-    in
-    viewHeader
-        :: (if model.collapsed then
-                []
-
-            else
-                viewItems config projectList model.dnd
-           )
+    UI.viewExpansionPanel
+        { toggled = config.toggled
+        , title = "Projects"
+        , isExpanded = not model.collapsed
+        , secondary = { iconName = "add", action = config.addClicked }
+        }
+        (\_ -> viewItems config projectList model.dnd)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
