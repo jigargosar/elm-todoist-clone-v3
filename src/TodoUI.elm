@@ -41,7 +41,8 @@ view config todoProject labelList todo =
         viewProject =
             a
                 [ css
-                    [ ph 1
+                    [ linkReset
+                    , ph 1
                     , lh 1.5
                     , Css.fontSize Css.small
                     , bg (toCssColor todoProject.color)
@@ -56,7 +57,8 @@ view config todoProject labelList todo =
         viewLabel label =
             a
                 [ css
-                    [ ph 1
+                    [ linkReset
+                    , ph 1
                     , Css.fontSize Css.small
                     , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
                     , hover [ underline, pointer ]
