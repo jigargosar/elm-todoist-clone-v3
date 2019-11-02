@@ -3,7 +3,7 @@ getRecentlyClosed = () =>
 
 async function main() {
   const sessions = await getRecentlyClosed()
-  console.log('sessions', sessions)
+  console.debug('sessions', sessions)
 
   sessions.forEach(session => {
     const tab = session.tab
@@ -16,9 +16,18 @@ async function main() {
       window.tabs.forEach(logTab)
     }
   })
+
+  chrome.history.search(
+    { startTime: Date.now() - days(1), text: 'Netflix' },
+    arr => arr.forEach(it => console.log(it)),
+  )
+}
+
+function days(count) {
+  return 1000 * 60 * 60 * 24 * count
 }
 
 function logTab({ title, url }) {
-  console.log('tab', { title, url })
+  console.debug('tab', { title, url })
 }
 main().catch(console.error)
