@@ -683,8 +683,11 @@ projectRefTodoListView ref pc lc todoDict =
     let
         todoList =
             TodoDict.withProjectRef ref todoDict
+
+        config =
+            { toggle = ToggleTodoCompleted }
     in
-    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc todoList
+    [ TodoView.viewList config pc lc todoList
     ]
 
 
