@@ -87,10 +87,10 @@ viewProject pc todo =
 
 
 viewLabels lc todo =
-    List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabelId) (Todo.labelIdList todo)
+    List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabel) (Todo.labelIdList todo)
 
 
-viewLabelId label =
+viewLabel label =
     div
         [ css
             [ ph 1

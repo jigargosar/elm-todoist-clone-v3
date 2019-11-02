@@ -3,16 +3,20 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Color
+import Css
 import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
 import Drawer
+import Emoji
 import Filter exposing (Filter)
 import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
-import Html.Styled as H exposing (Attribute, Html, toUnstyled)
+import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
+import Html.Styled.Attributes exposing (class, css)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -32,11 +36,14 @@ import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Random
 import Return
+import Styles exposing (..)
 import Task
 import Time
 import Timestamp exposing (Timestamp)
+import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
+import TodoProject exposing (TodoProject)
 import TodoView
 import Url exposing (Url)
 
@@ -686,9 +693,66 @@ projectRefTodoListView ref pc lc todoDict =
 
         config =
             { toggle = ToggleTodoCompleted }
+
+        viewIsCompleted todo =
+            let
+                emoji =
+                    if Todo.isCompleted todo then
+                        Emoji.heavy_check_mark
+
+                    else
+                        Emoji.heavy_large_circle
+
+                toggleMsg =
+                    config.toggle <| Todo.id todo
+            in
+            Emoji.button toggleMsg emoji
+
+        viewProject : Todo -> Html msg
+        viewProject todo =
+            let
+                todoProject : TodoProject
+                todoProject =
+                    TodoProject.fromTodo pc todo
+            in
+            div
+                [ css
+                    [ ph 1
+                    , lh 1.5
+                    , Css.fontSize Css.small
+                    , bg (toCssColor todoProject.color)
+                    , c_ (toCssColor <| Color.highContrast todoProject.color)
+                    , bor 2
+                    , hover [ underline, pointer ]
+                    ]
+                ]
+                [ text todoProject.title ]
+
+        viewLabels todo =
+            List.filterMap (\lid -> LabelCollection.byId lid lc |> Maybe.map viewLabel) (Todo.labelIdList todo)
+
+        viewLabel label =
+            div
+                [ css
+                    [ ph 1
+                    , Css.fontSize Css.small
+                    , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
+                    , hover [ underline, pointer ]
+                    ]
+                ]
+                [ text <| Label.title label ]
+
+        viewTodo todo =
+            div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
+                [ div [ css [ flex, itemsCenter ] ]
+                    [ viewIsCompleted todo
+                    , div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
+                    , viewProject todo
+                    ]
+                , div [ css [ flex ] ] (viewLabels todo)
+                ]
     in
-    [ TodoView.viewList config pc lc todoList
-    ]
+    List.map viewTodo todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
