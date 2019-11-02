@@ -4,7 +4,9 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/elm-stuff" />
+      <excludePattern pattern="elm-stuff" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="@types/chrome" level="application" />
   </component>
 </module>

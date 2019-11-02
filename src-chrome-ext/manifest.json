@@ -3,5 +3,5 @@
   "name": "Recent Sessions",
   "version": "1.0.0",
   "browser_action": { "default_popup": "popup.html" },
-  "permissions": ["sessions"]
+  "permissions": ["sessions", "tabs", "history"]
 }
