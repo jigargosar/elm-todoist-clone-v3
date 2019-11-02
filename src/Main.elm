@@ -640,7 +640,7 @@ view model =
                 ++ projectPanelView
                 ++ labelPanelView
                 ++ filterPanelView
-        , main = pageView model
+        , main = viewPage model
         , modal =
             popupView model
                 ++ dialog.view model
@@ -651,8 +651,8 @@ view model =
         model.isDrawerModalOpen
 
 
-pageView : Model -> List (Html Msg)
-pageView model =
+viewPage : Model -> List (Html Msg)
+viewPage model =
     case model.page of
         Page.NotFound url ->
             Page.NotFound.view url
