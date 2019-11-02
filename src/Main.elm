@@ -628,30 +628,21 @@ onUrlChanged url model =
 -- VIEW
 
 
-viewPanel epConfig itemsConfig viewItemsFunc items panelModel =
-    UI.viewExpansionPanel
-        epConfig
-        (\_ ->
-            viewItemsFunc itemsConfig
-                items
-                panelModel.dnd
-        )
-
-
 view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            viewPanel
+            UI.viewExpansionPanel
                 { toggled = ToggleProjectPanel
                 , title = "Projects"
                 , collapsed = model.projectPanel.collapsed
                 , secondary = { iconName = "add", action = AddProjectClicked }
                 }
-                projectPanelConfig
-                ProjectPanel.viewItems
-                (ProjectCollection.sorted model.projectCollection)
-                model.projectPanel
+                (\_ ->
+                    ProjectPanel.viewItems projectPanelConfig
+                        (ProjectCollection.sorted model.projectCollection)
+                        model.projectPanel.dnd
+                )
 
         labelPanelView =
             UI.viewExpansionPanel
