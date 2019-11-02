@@ -4,7 +4,7 @@ import Color
 import Css
 import Emoji
 import Html.Styled exposing (Attribute, Html, a, div, text)
-import Html.Styled.Attributes exposing (class, css, disabled, href)
+import Html.Styled.Attributes as A exposing (class, css, disabled, href)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
 import ProjectRef
@@ -49,12 +49,7 @@ view config todoProject labelList todo =
                     , bor 2
                     , hover [ underline, pointer ]
                     ]
-                , case todoProject.ref of
-                    Just ref ->
-                        ProjectRef.href ref
-
-                    Nothing ->
-                        href ""
+                , TodoProject.href todoProject
                 ]
                 [ text todoProject.title ]
 

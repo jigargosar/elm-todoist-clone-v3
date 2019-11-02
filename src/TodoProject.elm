@@ -3,12 +3,15 @@ module TodoProject exposing
     , fromProject
     , fromProjectRef
     , fromTodo
+    , href
     , inbox
     , notFound
     )
 
 import CColor exposing (CColor)
 import Color exposing (Color)
+import Html.Styled exposing (Attribute)
+import Html.Styled.Attributes as A
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectRef exposing (ProjectRef)
@@ -58,3 +61,8 @@ fromProjectRef pc ref =
 fromTodo : ProjectCollection -> Todo.Todo -> TodoProject
 fromTodo projectCollection =
     Todo.projectRef >> fromProjectRef projectCollection
+
+
+href : { a | ref : Maybe ProjectRef.ProjectRef } -> Attribute msg
+href =
+    .ref >> Maybe.map ProjectRef.href >> Maybe.withDefault (A.href "")
