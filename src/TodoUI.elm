@@ -16,10 +16,10 @@ import TodoProject exposing (TodoProject)
 view :
     { a | toggle : TodoId -> msg }
     -> TodoProject
-    -> LabelCollection
+    -> List Label
     -> Todo
     -> Html msg
-view config todoProject lc todo =
+view config todoProject labelList todo =
     let
         viewIsCompleted =
             let
@@ -51,11 +51,7 @@ view config todoProject lc todo =
                 [ text todoProject.title ]
 
         viewLabels =
-            List.filterMap
-                (\lid ->
-                    LabelCollection.byId lid lc |> Maybe.map viewLabel
-                )
-                (Todo.labelIdList todo)
+            List.map viewLabel labelList
 
         viewLabel label =
             div
