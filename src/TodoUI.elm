@@ -50,9 +50,6 @@ view config todoProject labelList todo =
                 ]
                 [ text todoProject.title ]
 
-        viewLabels =
-            List.map viewLabel labelList
-
         viewLabel label =
             div
                 [ css
@@ -70,5 +67,5 @@ view config todoProject labelList todo =
             , div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
             , viewProject
             ]
-        , div [ css [ flex ] ] viewLabels
+        , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]
