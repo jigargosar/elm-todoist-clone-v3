@@ -8,6 +8,7 @@ import Html.Styled.Attributes exposing (..)
 import Label
 import LabelCollection exposing (LabelCollection)
 import ProjectCollection exposing (ProjectCollection)
+import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
@@ -72,7 +73,7 @@ viewProject pc todo =
         todoProject =
             TodoProject.fromTodo pc todo
     in
-    div
+    a
         [ css
             [ ph 1
             , lh 1.5
@@ -82,6 +83,7 @@ viewProject pc todo =
             , bor 2
             , hover [ underline, pointer ]
             ]
+        , TodoProject.href todoProject
         ]
         [ text todoProject.title ]
 
@@ -98,5 +100,6 @@ viewLabel label =
             , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
             , hover [ underline, pointer ]
             ]
+        , Route.labelHref label
         ]
         [ text <| Label.title label ]
