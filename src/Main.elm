@@ -36,6 +36,7 @@ import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
 import Random
 import Return
+import Route
 import Styles exposing (..)
 import Task
 import Time
@@ -312,8 +313,16 @@ update message model =
         OnUrlRequest urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
+                    let
+                        pageChanged =
+                            Page.pageFromUrl url == model.page
+                    in
                     ( model
-                    , Nav.pushUrl model.navKey (Url.toString url)
+                    , if pageChanged then
+                        Nav.pushUrl model.navKey (Url.toString url)
+
+                      else
+                        Cmd.none
                     )
 
                 Browser.External href ->
