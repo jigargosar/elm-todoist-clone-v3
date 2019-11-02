@@ -1,4 +1,4 @@
-module Project exposing (Project, cColor, cssColor, decoder, generator, id, idx, setIdx, title)
+module Project exposing (Project, cColor, cssColor, decoder, generator, id, idx, setCColor, setIdx, setModifiedAt, setTitle, title)
 
 import CColor exposing (CColor)
 import Css
@@ -95,6 +95,21 @@ map func =
 setIdx : Int -> Project -> Project
 setIdx idx_ =
     map (\p -> { p | idx = idx_ })
+
+
+setTitle : String -> Project -> Project
+setTitle title_ =
+    map (\p -> { p | title = title_ })
+
+
+setCColor : CColor -> Project -> Project
+setCColor cColor_ =
+    map (\p -> { p | cColor = cColor_ })
+
+
+setModifiedAt : Timestamp -> Project -> Project
+setModifiedAt modifiedAt_ =
+    map (\p -> { p | modifiedAt = modifiedAt_ })
 
 
 

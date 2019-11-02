@@ -94,6 +94,15 @@ type PopupMsg
 
 
 
+-- PROJECT COLLECTION
+
+
+projectById : ProjectId -> { a | projectCollection : ProjectCollection } -> Maybe Project
+projectById projectId model =
+    ProjectCollection.byId projectId model.projectCollection
+
+
+
 -- Flags
 
 
@@ -364,7 +373,25 @@ update message model =
             ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
-            ( model, Cmd.none )
+            let
+                updateProject =
+                    Project.setTitle title
+                        >> Project.setCColor cColor
+                        >> Project.setModifiedAt ts
+
+                newModel =
+                    case projectById projectId model of
+                        Just project ->
+                            mapProjectCollection
+                                (updateProject project
+                                    |> ProjectCollection.put
+                                )
+                                model
+
+                        Nothing ->
+                            model
+            in
+            ( newModel, Cmd.none )
 
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
