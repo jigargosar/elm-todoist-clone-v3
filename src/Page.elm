@@ -32,7 +32,7 @@ pageFromRoute route =
         Route.Filter filterId ->
             TodoListByFilterId filterId
 
-        Route.NotFound url ->
+        Route.Invalid url ->
             NotFound url
 
 
