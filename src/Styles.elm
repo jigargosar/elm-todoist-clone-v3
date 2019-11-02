@@ -524,7 +524,7 @@ hover =
     Css.hover
 
 
-tdNone =
+noUnderline =
     Css.textDecoration Css.none
 
 
