@@ -1,32 +1,20 @@
 module Drawer exposing
-    ( Panel(..)
-    , prefixNavItemsView
+    ( prefixNavItemsView
     , viewSimpleNavItem
     )
 
 import DrawerItem as DI
-import FilterId exposing (FilterId)
 import Html.Styled exposing (..)
-import Json.Decode as JD
-import LabelId exposing (LabelId)
-import ProjectId exposing (ProjectId)
 import Route
 import StyleAttrs as SA exposing (StyleAttrs)
-import Styles exposing (..)
 
 
 prefixNavItemsView : List (Html msg)
 prefixNavItemsView =
-    [ viewSimpleNavItem (Route.href Route.Inbox) "Inbox" "inbox"
-    , viewSimpleNavItem (Route.href Route.Inbox) "Today" "calendar_today"
-    , viewSimpleNavItem (Route.href Route.Inbox) "Next 7 Days" "view_week"
+    [ viewSimpleNavItem Route.inboxHref "Inbox" "inbox"
+    , viewSimpleNavItem Route.inboxHref "Today" "calendar_today"
+    , viewSimpleNavItem Route.inboxHref "Next 7 Days" "view_week"
     ]
-
-
-type Panel
-    = Projects
-    | Labels
-    | Filters
 
 
 viewSimpleNavItem : Attribute msg -> String -> String -> Html msg
