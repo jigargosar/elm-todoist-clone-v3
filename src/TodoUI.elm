@@ -1,4 +1,4 @@
-module TodoUI exposing (view, viewLabel)
+module TodoUI exposing (view, viewLabel, viewProject)
 
 import Color
 import Css
@@ -34,29 +34,12 @@ view config todoProject labelList todo =
                     config.toggle <| Todo.id todo
             in
             Emoji.button toggleMsg emoji
-
-        viewProject : Html msg
-        viewProject =
-            a
-                [ css
-                    [ linkReset
-                    , ph 1
-                    , lh 1.5
-                    , Css.fontSize Css.small
-                    , bg (toCssColor todoProject.color)
-                    , c_ (toCssColor <| Color.highContrast todoProject.color)
-                    , bor 2
-                    , hover [ underline, pointer ]
-                    ]
-                , TodoProject.href todoProject
-                ]
-                [ text todoProject.title ]
     in
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
             [ viewIsCompleted
             , div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
-            , viewProject
+            , viewProject todoProject
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]
@@ -75,3 +58,21 @@ viewLabel label =
         , Route.labelHref label
         ]
         [ text <| Label.title label ]
+
+
+viewProject : TodoProject -> Html msg
+viewProject todoProject =
+    a
+        [ css
+            [ linkReset
+            , ph 1
+            , lh 1.5
+            , Css.fontSize Css.small
+            , bg (toCssColor todoProject.color)
+            , c_ (toCssColor <| Color.highContrast todoProject.color)
+            , bor 2
+            , hover [ underline, pointer ]
+            ]
+        , TodoProject.href todoProject
+        ]
+        [ text todoProject.title ]
