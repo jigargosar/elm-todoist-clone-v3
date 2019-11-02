@@ -51,19 +51,6 @@ view config todoProject labelList todo =
                 , TodoProject.href todoProject
                 ]
                 [ text todoProject.title ]
-
-        viewLabel label =
-            a
-                [ css
-                    [ linkReset
-                    , ph 1
-                    , Css.fontSize Css.small
-                    , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
-                    , hover [ underline, pointer ]
-                    ]
-                , Route.labelHref label
-                ]
-                [ text <| Label.title label ]
     in
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
@@ -73,3 +60,18 @@ view config todoProject labelList todo =
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]
+
+
+viewLabel : Label -> Html msg
+viewLabel label =
+    a
+        [ css
+            [ linkReset
+            , ph 1
+            , Css.fontSize Css.small
+            , c_ (Label.color label |> Color.blacken 15 |> toCssColor)
+            , hover [ underline, pointer ]
+            ]
+        , Route.labelHref label
+        ]
+        [ text <| Label.title label ]
