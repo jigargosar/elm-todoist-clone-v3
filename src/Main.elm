@@ -140,6 +140,7 @@ type alias Model =
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
     , filterPanel : FilterPanel
+    , projectPanelCollapsed : Bool
     }
 
 
@@ -161,6 +162,7 @@ init flags url navKey =
             , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
+            , projectPanelCollapsed = False
             }
     in
     Return.singleton initial
@@ -401,7 +403,7 @@ update message model =
             ( newModel, Cmd.none )
 
         ToggleProjectPanel ->
-            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
+            ( { model | projectPanelCollapsed = not model.projectPanelCollapsed }, Cmd.none )
 
         ToggleLabelPanel ->
             ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
