@@ -85,7 +85,7 @@ viewTodoTitle todo =
     let
         completedStyles =
             if Todo.isCompleted todo then
-                [ colorGrayL 0.5, strike ]
+                [ colorGrayF 0, strike ]
 
             else
                 []
