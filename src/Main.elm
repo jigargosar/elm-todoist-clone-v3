@@ -719,7 +719,7 @@ viewTodoListHelp pc lc todoList =
         todoProjectFromTodo : Todo -> Maybe TodoProject.Model
         todoProjectFromTodo =
             Todo.projectRef
-                >> InboxOrProject.unwrap (Just TodoProject.inbox)
+                >> ProjectRef.unwrap (Just TodoProject.inbox)
                     (\id ->
                         ProjectCollection.byId id pc
                             |> Maybe.map TodoProject.fromProject

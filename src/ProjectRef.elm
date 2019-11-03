@@ -1,9 +1,7 @@
-module ProjectRef exposing (ProjectRef, fromId, inbox, toTodoProject)
+module ProjectRef exposing (ProjectRef, fromId, inbox, unwrap)
 
 import InboxOrProject exposing (InboxOrProject)
-import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
-import TodoProject
 
 
 type alias ProjectRef =
@@ -20,10 +18,6 @@ fromId =
     InboxOrProject.project
 
 
-toTodoProject : ProjectCollection -> ProjectRef -> Maybe TodoProject.Model
-toTodoProject pc =
-    InboxOrProject.unwrap (Just TodoProject.inbox)
-        (\id ->
-            ProjectCollection.byId id pc
-                |> Maybe.map TodoProject.fromProject
-        )
+unwrap : a -> (ProjectId -> a) -> ProjectRef -> a
+unwrap =
+    InboxOrProject.unwrap
