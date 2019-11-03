@@ -22,7 +22,7 @@ fromId =
 
 toTodoProject : ProjectCollection -> ProjectRef -> Maybe TodoProject.Model
 toTodoProject pc =
-    InboxOrProject.unpack (\_ -> Just TodoProject.inbox)
+    InboxOrProject.unwrap (Just TodoProject.inbox)
         (\id ->
             ProjectCollection.byId id pc
                 |> Maybe.map TodoProject.fromProject
