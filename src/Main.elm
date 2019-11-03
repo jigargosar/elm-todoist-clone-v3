@@ -718,21 +718,19 @@ todoLabelList lc todo =
         (Todo.labelIdList todo)
 
 
-viewTodoHelp : ProjectCollection -> LabelCollection -> Todo -> Html Msg
-viewTodoHelp pc lc todo =
-    let
-        config =
-            { toggle = ToggleTodoCompleted }
-    in
-    TodoUI.view config
-        { viewProject = TodoProject.view pc }
-        (todoLabelList lc todo)
-        todo
-
-
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
-viewTodoListHelp pc lc =
-    List.map (viewTodoHelp pc lc)
+viewTodoListHelp pc lc todoList =
+    let
+        _ =
+            1
+
+        viewTodoHelp todo =
+            TodoUI.view { toggle = ToggleTodoCompleted }
+                { viewProject = TodoProject.view pc }
+                (todoLabelList lc todo)
+                todo
+    in
+    List.map viewTodoHelp todoList
 
 
 projectTodoListView :
