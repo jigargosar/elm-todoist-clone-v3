@@ -20,7 +20,6 @@ view icon action =
             , boRad 2
             , fg gray50
             , active [ bg gray90 ]
-            , Px.ma 5
             , hover
                 [ bg gray90
                 , fgInherit
