@@ -12,6 +12,7 @@ type Icon
     | FilterList
     | Expanded
     | Collapsed
+    | Circle
 
 
 view : Icon -> Html msg
@@ -39,3 +40,6 @@ iconName icon =
 
         Collapsed ->
             "chevron_right"
+
+        Circle ->
+            "radio_button_unchecked"
