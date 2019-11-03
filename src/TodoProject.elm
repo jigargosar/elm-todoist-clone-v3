@@ -1,7 +1,6 @@
 module TodoProject exposing
     ( TodoProject
     , fromProjectRef
-    , view
     , viewForTodo
     )
 
