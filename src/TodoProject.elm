@@ -39,10 +39,6 @@ inboxHref =
     Route.inboxHref
 
 
-unwrap =
-    identity
-
-
 title : TodoProject -> String
 title =
     InboxOrProject.unwrap inboxTitle Project.title
@@ -65,7 +61,27 @@ highContrastCssColor =
 
 href : TodoProject -> Attribute msg
 href =
-    unwrap >> InboxOrProject.unwrap inboxHref Route.projectHref
+    InboxOrProject.unwrap inboxHref Route.projectHref
+
+
+unwrap : a -> (Project -> a) -> TodoProject -> a
+unwrap =
+    InboxOrProject.unwrap
+
+
+toViewModel : TodoProject -> { title : String, href : Attribute msg, color : Color }
+toViewModel =
+    unwrap
+        { title = inboxTitle
+        , href = inboxHref
+        , color = inboxColor
+        }
+        (\p ->
+            { title = Project.title p
+            , href = Route.projectHref p
+            , color = Project.cColor p |> CColor.toColor
+            }
+        )
 
 
 view : TodoProject -> Html msg
