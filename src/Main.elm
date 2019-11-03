@@ -46,6 +46,8 @@ import TodoId exposing (TodoId)
 import TodoProject exposing (TodoProject)
 import TodoUI
 import TodoView
+import UI.Icon as Icon
+import UI.IconButton as IconButton
 import Url exposing (Url)
 
 
@@ -721,8 +723,12 @@ projectRefTodoListView ref pc lc todoDict =
 
         viewProjectTitle =
             div [ css [ flex ] ]
-                [ div [ css [ Css.fontSize Css.large, lh 1.5, Px.p2 8 8 ] ]
+                [ div [ css [ flexGrow1, Css.fontSize Css.large, lh 1.5, Px.p2 8 8 ] ]
                     [ text todoProject.title ]
+                , div [ css [ flex, selfCenter ] ]
+                    [ IconButton.view Icon.MoreHorizontal NoOp
+                    , IconButton.view Icon.MoreHorizontal NoOp
+                    ]
                 ]
     in
     viewProjectTitle :: List.map viewTodo todoList

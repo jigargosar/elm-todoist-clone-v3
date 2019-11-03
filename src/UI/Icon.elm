@@ -13,6 +13,7 @@ type Icon
     | Collapsed
     | CircleOutline
     | CheckCircleOutline
+    | MoreHorizontal
 
 
 view : Icon -> Html msg
@@ -46,3 +47,6 @@ iconName icon =
 
         CheckCircleOutline ->
             "check_circle_outline"
+
+        MoreHorizontal ->
+            "more_horiz"
