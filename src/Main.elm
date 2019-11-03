@@ -30,7 +30,6 @@ import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
-import ProjectRef exposing (ProjectRef)
 import Random
 import Return
 import Route exposing (Route)
@@ -719,10 +718,9 @@ viewTodoListHelp pc lc todoList =
         todoProjectFromTodo : Todo -> Maybe TodoProject.Model
         todoProjectFromTodo =
             Todo.projectRef
-                >> ProjectRef.unwrap (Just TodoProject.inbox)
+                >> InboxOrProject.filterMapProject
                     (\id ->
                         ProjectCollection.byId id pc
-                            |> Maybe.map TodoProject.fromProject
                     )
 
         viewTodoHelp : Todo -> Maybe (Html Msg)

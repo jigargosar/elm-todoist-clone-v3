@@ -22,23 +22,18 @@ import UI.Icon as Icon
 import UI.IconButton as IconButton
 
 
-type Model
-    = Model Internal
-
-
-type alias Internal =
+type alias Model =
     InboxOrProject () Project
 
 
 inbox : Model
 inbox =
     InboxOrProject.inbox ()
-        |> Model
 
 
 fromProject : Project -> Model
 fromProject =
-    InboxOrProject.project >> Model
+    InboxOrProject.project
 
 
 inboxTitle : String
@@ -56,9 +51,8 @@ inboxHref =
     Route.inboxHref
 
 
-unwrap : Model -> Internal
-unwrap (Model internal) =
-    internal
+unwrap =
+    identity
 
 
 title : Model -> String
