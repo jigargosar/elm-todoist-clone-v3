@@ -1,4 +1,4 @@
-module TodoUI exposing (view, viewLabel, viewProject)
+module TodoUI exposing (view, viewCheck, viewLabel, viewProject)
 
 import Color
 import Css
@@ -20,29 +20,30 @@ view :
     -> Todo
     -> Html msg
 view config todoProject labelList todo =
-    let
-        viewIsCompleted =
-            let
-                emoji =
-                    if Todo.isCompleted todo then
-                        Emoji.heavy_check_mark
-
-                    else
-                        Emoji.heavy_large_circle
-
-                toggleMsg =
-                    config.toggle <| Todo.id todo
-            in
-            Emoji.button toggleMsg emoji
-    in
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
-            [ viewIsCompleted
+            [ viewCheck config.toggle todo
             , div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
             , viewProject todoProject
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]
+
+
+viewCheck : (TodoId -> msg) -> Todo -> Html msg
+viewCheck toggle todo =
+    let
+        emoji =
+            if Todo.isCompleted todo then
+                Emoji.heavy_check_mark
+
+            else
+                Emoji.heavy_large_circle
+
+        toggleMsg =
+            toggle <| Todo.id todo
+    in
+    Emoji.button toggleMsg emoji
 
 
 viewLabel : Label -> Html msg
