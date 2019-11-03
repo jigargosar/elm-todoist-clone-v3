@@ -1,6 +1,8 @@
 module UI.IconButton exposing (..)
 
 import CColor
+import Color
+import Css exposing (Color)
 import Css.Transitions as CT
 import Html.Styled exposing (Html, button)
 import Html.Styled.Attributes exposing (css)
@@ -11,6 +13,13 @@ import Theme
 import UI.Icon as Icon exposing (Icon)
 
 
+iconGray : Color
+iconGray =
+    CColor.toColor CColor.Charcoal
+        |> Color.whiten 10
+        |> toCssColor
+
+
 view : Icon -> msg -> Html msg
 view icon action =
     button
@@ -19,7 +28,7 @@ view icon action =
             , pointer
             , Px.pa 4
             , boRad 2
-            , fg <| CColor.toCssColor CColor.Charcoal
+            , fg iconGray
             , hover
                 [ bg Theme.hoverGray
                 , fgInherit
