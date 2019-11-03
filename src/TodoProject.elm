@@ -1,10 +1,8 @@
 module TodoProject exposing
     ( TodoProject
-    , fromProject
     , fromProjectRef
     , fromTodo
     , href
-    , notFound
     )
 
 import CColor exposing (CColor)
