@@ -1,6 +1,6 @@
 module Px exposing (..)
 
-import Css exposing (margin, margin2, padding, padding2, paddingLeft, paddingRight, px)
+import Css exposing (margin, margin2, padding, padding2, paddingLeft, paddingRight, paddingTop, px)
 
 
 ma =
@@ -21,6 +21,10 @@ p2 tb lr =
 
 pl =
     paddingLeft << px
+
+
+pt =
+    paddingTop << px
 
 
 pr =

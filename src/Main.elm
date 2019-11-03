@@ -722,7 +722,7 @@ projectRefTodoListView ref pc lc todoDict =
             TodoUI.view config todoProject (todoLabelList lc todo) todo
 
         viewProjectTitle =
-            div [ css [ flex ] ]
+            div [ css [ flex, Px.pt 8 ] ]
                 [ div [ css [ flexGrow1, Css.fontSize Css.large, lh 1.5, Px.p2 8 8 ] ]
                     [ text todoProject.title ]
                 , div [ css [ flex, selfCenter ] ]
