@@ -12,6 +12,7 @@ import Color exposing (Color)
 import Css
 import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (css)
+import InboxOrProject exposing (InboxOrProject)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
@@ -26,17 +27,18 @@ type Model
 
 
 type alias Internal =
-    Maybe Project
+    InboxOrProject () Project
 
 
 inbox : Model
 inbox =
-    Model Nothing
+    InboxOrProject.inbox ()
+        |> Model
 
 
 fromProject : Project -> Model
 fromProject =
-    Just >> Model
+    InboxOrProject.project >> Model
 
 
 inboxTitle : String
@@ -61,12 +63,12 @@ unwrap (Model internal) =
 
 title : Model -> String
 title =
-    unwrap >> Maybe.map Project.title >> Maybe.withDefault inboxTitle
+    unwrap >> InboxOrProject.unwrap inboxTitle Project.title
 
 
 color_ : Model -> Color
 color_ =
-    unwrap >> Maybe.map (Project.cColor >> CColor.toColor) >> Maybe.withDefault inboxColor
+    unwrap >> InboxOrProject.unwrap inboxColor (Project.cColor >> CColor.toColor)
 
 
 cssColor : Model -> Css.Color
@@ -81,7 +83,7 @@ highContrastCssColor =
 
 href : Model -> Attribute msg
 href =
-    unwrap >> Maybe.map Route.projectHref >> Maybe.withDefault inboxHref
+    unwrap >> InboxOrProject.unwrap inboxHref Route.projectHref
 
 
 view : Model -> Html msg
