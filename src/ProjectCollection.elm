@@ -10,6 +10,7 @@ module ProjectCollection exposing
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
+import Json.Encode exposing (Value)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 
