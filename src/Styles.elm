@@ -559,6 +559,10 @@ focus =
     Css.focus
 
 
+active =
+    Css.active
+
+
 commonTransitions =
     CT.transition
         [ CT.padding 150

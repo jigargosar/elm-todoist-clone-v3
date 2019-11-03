@@ -1,5 +1,6 @@
 module UI.IconButton exposing (view)
 
+import Css exposing (px)
 import Css.Transitions as CT
 import Html.Styled exposing (Html, button)
 import Html.Styled.Attributes exposing (css)
@@ -18,6 +19,8 @@ view icon action =
             , Px.pa 4
             , boRad 2
             , fg gray50
+            , active [ bg gray90 ]
+            , Px.ma 5
             , hover
                 [ bg gray90
                 , fgInherit
