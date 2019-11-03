@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Appbar
+import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Css
@@ -289,6 +290,7 @@ type Msg
     | EditProjectDialogSaved Dialog.EditProject.SavedWith
     | EditProjectWithTS Dialog.EditProject.SavedWith Timestamp
     | AddProjectClicked
+    | EditProjectClicked ProjectId
     | AddLabelClicked
     | AddFilterClicked
     | ToggleProjectPanel
@@ -304,6 +306,10 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
+    let
+        ret =
+            ( model, Cmd.none )
+    in
     case message of
         NoOp ->
             ( model, Cmd.none )
@@ -425,6 +431,11 @@ update message model =
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
+
+        EditProjectClicked id ->
+            projectById id model
+                |> Maybe.map (flip dialog.openEditProject model)
+                |> Maybe.withDefault ret
 
         AddLabelClicked ->
             ( model, Cmd.none )
