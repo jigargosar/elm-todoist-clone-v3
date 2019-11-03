@@ -22,7 +22,7 @@ type Route
     | Project ProjectId
     | Label LabelId
     | Filter FilterId
-    | Invalid Url
+    | NotFound Url
 
 
 parser : Parser (Route -> c) c
@@ -39,7 +39,7 @@ parser =
 fromUrl : Url -> Route
 fromUrl url =
     parse parser url
-        |> Maybe.withDefault (Invalid url)
+        |> Maybe.withDefault (NotFound url)
 
 
 parseProjectId : Parser (ProjectId -> b) b
@@ -99,7 +99,7 @@ routeToUrlString route =
                 Filter filterId ->
                     [ "filter", FilterId.toString filterId ]
 
-                Invalid _ ->
+                NotFound _ ->
                     []
     in
     Url.Builder.absolute pathSegments []

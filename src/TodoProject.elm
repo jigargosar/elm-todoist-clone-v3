@@ -1,6 +1,7 @@
 module TodoProject exposing
     ( fromProjectRef
     , view
+    , viewInboxTitle
     , viewProjectTitle
     )
 
@@ -94,13 +95,15 @@ view pc todo =
 
 viewProjectTitle :
     { a | editClicked : ProjectId -> msg, noOp : msg }
-    -> ProjectCollection
-    -> ProjectRef
+    -> Project
     -> Html msg
-viewProjectTitle { editClicked, noOp } pc ref =
+viewProjectTitle { editClicked, noOp } project =
     let
+        projectId =
+            Project.id project
+
         todoProject =
-            fromProjectRef pc ref
+            fromProject project
     in
     div [ css [ flex, Px.pt 8 ] ]
         [ div
@@ -114,11 +117,33 @@ viewProjectTitle { editClicked, noOp } pc ref =
             ]
             [ text todoProject.title ]
         , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
-            [ todoProject.ref
-                |> Maybe.andThen ProjectRef.id
-                |> Maybe.map (editClicked >> IconButton.view Icon.Edit)
-                |> Maybe.withDefault (text "")
+            [ IconButton.view Icon.Edit (editClicked projectId)
             , IconButton.view Icon.Comment noOp
+            , IconButton.view Icon.PersonAdd noOp
+            , IconButton.view Icon.MoreHorizontal noOp
+            ]
+        ]
+
+
+viewInboxTitle : { a | noOp : msg } -> Html msg
+viewInboxTitle { noOp } =
+    let
+        todoProject =
+            inbox
+    in
+    div [ css [ flex, Px.pt 8 ] ]
+        [ div
+            [ css
+                [ flexGrow1
+                , Css.fontSize Css.large
+                , bold
+                , lh 1.5
+                , Px.p2 8 8
+                ]
+            ]
+            [ text todoProject.title ]
+        , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
+            [ IconButton.view Icon.Comment noOp
             , IconButton.view Icon.PersonAdd noOp
             , IconButton.view Icon.MoreHorizontal noOp
             ]

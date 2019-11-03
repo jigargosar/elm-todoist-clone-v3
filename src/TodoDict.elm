@@ -5,6 +5,7 @@ module TodoDict exposing
     , sortedByIdx
     , toggleCompleted
     , withLabelId
+    , withProjectId
     , withProjectRef
     )
 
@@ -12,6 +13,7 @@ import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import LabelId exposing (LabelId)
+import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
@@ -61,6 +63,15 @@ unwrap (TodoDict internal) =
 withProjectRef : ProjectRef -> TodoDict -> List Todo
 withProjectRef ref =
     toList >> List.filter (Todo.projectRef >> (==) ref)
+
+
+withProjectId : ProjectId -> TodoDict -> List Todo
+withProjectId projectId =
+    let
+        ref =
+            ProjectRef.fromId projectId
+    in
+    withProjectRef ref
 
 
 withLabelId : LabelId -> TodoDict -> List Todo

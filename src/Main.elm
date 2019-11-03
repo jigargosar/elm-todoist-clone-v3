@@ -673,23 +673,28 @@ view model =
 viewRoute : Route -> Model -> List (Html Msg)
 viewRoute route model =
     case route of
-        Route.Invalid url ->
+        Route.NotFound url ->
             Page.NotFound.view url
 
         Route.Root ->
             viewRoute Route.Inbox model
 
         Route.Inbox ->
-            projectRefTodoListView ProjectRef.inbox
+            inboxTodoListView
                 model.projectCollection
                 model.labelCollection
                 model.todoDict
 
         Route.Project projectId ->
-            projectRefTodoListView (ProjectRef.fromId projectId)
-                model.projectCollection
-                model.labelCollection
-                model.todoDict
+            case projectById projectId model of
+                Just project ->
+                    projectTodoListView project
+                        model.projectCollection
+                        model.labelCollection
+                        model.todoDict
+
+                Nothing ->
+                    viewRoute (Route.NotFound model.url) model
 
         Route.Label labelId ->
             todoListByLabelIdView
@@ -732,23 +737,44 @@ viewTodoListHelp pc lc =
     List.map (viewTodoHelp pc lc)
 
 
-projectRefTodoListView :
-    ProjectRef
+projectTodoListView :
+    Project
     -> ProjectCollection
     -> LabelCollection
     -> TodoDict
     -> List (Html Msg)
-projectRefTodoListView ref pc lc todoDict =
+projectTodoListView project pc lc todoDict =
     let
+        projectId =
+            Project.id project
+
         todoList =
-            TodoDict.withProjectRef ref todoDict
+            TodoDict.withProjectId projectId todoDict
 
         config =
             { editClicked = EditProjectClicked
             , noOp = NoOp
             }
     in
-    TodoProject.viewProjectTitle config pc ref :: viewTodoListHelp pc lc todoList
+    TodoProject.viewProjectTitle config project :: viewTodoListHelp pc lc todoList
+
+
+inboxTodoListView :
+    ProjectCollection
+    -> LabelCollection
+    -> TodoDict
+    -> List (Html Msg)
+inboxTodoListView pc lc todoDict =
+    let
+        todoList =
+            TodoDict.withProjectRef ProjectRef.inbox todoDict
+
+        config =
+            { editClicked = EditProjectClicked
+            , noOp = NoOp
+            }
+    in
+    TodoProject.viewInboxTitle config :: viewTodoListHelp pc lc todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
