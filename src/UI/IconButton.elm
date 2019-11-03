@@ -1,23 +1,12 @@
-module UI.IconButton exposing (..)
+module UI.IconButton exposing (view)
 
-import CColor
-import Color
-import Css exposing (Color)
 import Css.Transitions as CT
 import Html.Styled exposing (Html, button)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import Px
 import Styles exposing (..)
-import Theme
 import UI.Icon as Icon exposing (Icon)
-
-
-iconGray : Color
-iconGray =
-    CColor.toColor CColor.Charcoal
-        |> Color.whiten 10
-        |> toCssColor
 
 
 view : Icon -> msg -> Html msg
