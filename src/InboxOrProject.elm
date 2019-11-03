@@ -6,7 +6,6 @@ module InboxOrProject exposing
     , mapBoth
     , mapProject
     , project
-    , toMaybeProject
     , unpack
     , unwrap
     )
@@ -25,11 +24,6 @@ inbox =
 project : project -> InboxOrProject inbox project
 project =
     Project
-
-
-toMaybeProject : InboxOrProject () project -> Maybe project
-toMaybeProject =
-    unwrap Nothing Just
 
 
 unpack : (inbox -> a) -> (project -> a) -> InboxOrProject inbox project -> a
@@ -57,18 +51,18 @@ unwrap inboxVal =
     unpack (\() -> inboxVal)
 
 
-mapProject : (project -> project2) -> InboxOrProject inbox project -> InboxOrProject inbox project2
-mapProject projectFn model =
-    case model of
-        Project val ->
-            projectFn val
-                |> Project
-
-        Inbox val ->
-            Inbox val
+mapProject :
+    (project -> project2)
+    -> InboxOrProject inbox project
+    -> InboxOrProject inbox project2
+mapProject projectFn =
+    mapBoth identity projectFn
 
 
-filterMapProject : (project -> Maybe project2) -> InboxOrProject inbox project -> Maybe (InboxOrProject inbox project2)
+filterMapProject :
+    (project -> Maybe project2)
+    -> InboxOrProject inbox project
+    -> Maybe (InboxOrProject inbox project2)
 filterMapProject projectFn =
     filterMap Just projectFn
 
