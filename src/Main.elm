@@ -728,7 +728,7 @@ viewTodoListHelp pc lc todoList =
                 |> Maybe.map (flip ProjectCollection.byId pc)
 
         viewTodoHelp todo =
-            maybeTodoProject todo
+            TodoProject.fromTodo pc todo
                 |> Maybe.map
                     (\todoProject ->
                         TodoUI.view { toggle = ToggleTodoCompleted }

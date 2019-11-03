@@ -23,23 +23,32 @@ import UI.IconButton as IconButton
 
 
 type Model
-    = Inbox
-    | Project Project
+    = Model Internal
+
+
+type alias Internal =
+    Maybe Project
+
+
+inbox : Model
+inbox =
+    Model Nothing
+
+
+fromProject : Project -> Model
+fromProject =
+    Just >> Model
 
 
 fromTodo : ProjectCollection -> Todo -> Maybe Model
-fromTodo pc =
-    Todo.projectRef
-        >> ProjectRef.id
-        >> (\maybeId ->
-                case maybeId of
-                    Nothing ->
-                        Just Inbox
+fromTodo pc todo =
+    case Todo.projectRef todo of
+        ProjectRef.Inbox ->
+            Just inbox
 
-                    Just id ->
-                        ProjectCollection.byId id pc
-                            |> Maybe.map Project
-           )
+        ProjectRef.ProjectId id ->
+            ProjectCollection.byId id pc
+                |> Maybe.map fromProject
 
 
 inboxTitle : String
@@ -57,47 +66,52 @@ inboxHref =
     Route.inboxHref
 
 
-title : Maybe Project -> String
+unwrap : Model -> Internal
+unwrap (Model internal) =
+    internal
+
+
+title : Model -> String
 title =
-    Maybe.map Project.title >> Maybe.withDefault inboxTitle
+    unwrap >> Maybe.map Project.title >> Maybe.withDefault inboxTitle
 
 
-color_ : Maybe Project -> Color
+color_ : Model -> Color
 color_ =
-    Maybe.map (Project.cColor >> CColor.toColor) >> Maybe.withDefault inboxColor
+    unwrap >> Maybe.map (Project.cColor >> CColor.toColor) >> Maybe.withDefault inboxColor
 
 
-cssColor : Maybe Project -> Css.Color
+cssColor : Model -> Css.Color
 cssColor =
     color_ >> toCssColor
 
 
-highContrastCssColor : Maybe Project -> Css.Color
+highContrastCssColor : Model -> Css.Color
 highContrastCssColor =
     color_ >> Color.highContrast >> toCssColor
 
 
-href : Maybe Project -> Attribute msg
+href : Model -> Attribute msg
 href =
-    Maybe.map Route.projectHref >> Maybe.withDefault inboxHref
+    unwrap >> Maybe.map Route.projectHref >> Maybe.withDefault inboxHref
 
 
-view : Maybe Project -> Html msg
-view maybeProject =
+view : Model -> Html msg
+view model =
     a
         [ css
             [ linkReset
             , ph 1
             , lh 1.5
             , Css.fontSize Css.small
-            , bg (cssColor maybeProject)
-            , fg (highContrastCssColor maybeProject)
+            , bg (cssColor model)
+            , fg (highContrastCssColor model)
             , boRad 2
             , hover [ underline, pointer ]
             ]
-        , href maybeProject
+        , href model
         ]
-        [ text <| title maybeProject ]
+        [ text <| title model ]
 
 
 viewProjectTitle :
