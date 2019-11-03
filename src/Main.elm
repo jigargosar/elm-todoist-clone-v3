@@ -721,13 +721,23 @@ todoLabelList lc todo =
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
 viewTodoListHelp pc lc todoList =
     let
+        maybeTodoProject : Todo -> Maybe (Maybe Project)
+        maybeTodoProject todo =
+            Todo.projectRef todo
+                |> ProjectRef.id
+                |> Maybe.map (flip ProjectCollection.byId pc)
+
         viewTodoHelp todo =
-            TodoUI.view { toggle = ToggleTodoCompleted }
-                { viewProject = TodoProject.view pc }
-                (todoLabelList lc todo)
-                todo
+            maybeTodoProject todo
+                |> Maybe.map
+                    (\_ ->
+                        TodoUI.view { toggle = ToggleTodoCompleted }
+                            { viewProject = TodoProject.view pc }
+                            (todoLabelList lc todo)
+                            todo
+                    )
     in
-    List.map viewTodoHelp todoList
+    List.filterMap viewTodoHelp todoList
 
 
 projectTodoListView :
