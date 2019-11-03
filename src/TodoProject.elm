@@ -16,7 +16,6 @@ import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
 import Px
 import Styles exposing (..)
-import Todo exposing (Todo)
 import UI.Icon as Icon
 import UI.IconButton as IconButton
 
@@ -59,11 +58,6 @@ fromProjectRef pc ref =
 
         Nothing ->
             inbox
-
-
-fromTodo : ProjectCollection -> Todo.Todo -> TodoProject
-fromTodo projectCollection =
-    Todo.projectRef >> fromProjectRef projectCollection
 
 
 href : { a | ref : Maybe ProjectRef.ProjectRef } -> Attribute msg
