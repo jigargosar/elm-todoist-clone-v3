@@ -399,7 +399,7 @@ boAll =
     Css.batch [ Css.borderStyle Css.solid, Css.borderWidth (Css.px 1) ]
 
 
-bor =
+boRad =
     Css.borderRadius << b_radius
 
 

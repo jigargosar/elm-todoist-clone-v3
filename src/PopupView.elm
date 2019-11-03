@@ -40,7 +40,7 @@ container config content popper =
               in
               css
                 [ Styles.bgWhite
-                , Styles.bor 3
+                , Styles.boRad 3
                 , Styles.batch popperStyles
                 , pv 2
                 ]

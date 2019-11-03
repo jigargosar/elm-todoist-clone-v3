@@ -72,7 +72,7 @@ viewProject todoProject =
             , Css.fontSize Css.small
             , bg (toCssColor todoProject.color)
             , c_ (toCssColor <| Color.highContrast todoProject.color)
-            , bor 2
+            , boRad 2
             , hover [ underline, pointer ]
             ]
         , TodoProject.href todoProject

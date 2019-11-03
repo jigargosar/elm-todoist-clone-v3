@@ -92,7 +92,7 @@ viewForm { submit, submitTitle, cancel, title, content } =
         formAttrs =
             [ css
                 [ bgWhite
-                , Styles.bor 3
+                , Styles.boRad 3
                 , w_ 300
                 , max_w_pct 100
                 ]
@@ -154,7 +154,7 @@ plainBtnStyles =
     batch
         [ btnReset
         , PX.p2 4 8
-        , bor 1
+        , boRad 1
         , hover [ bgGrayL 0.95 ]
         , focus [ bgGrayL 0.9, z_ 1 ]
         ]

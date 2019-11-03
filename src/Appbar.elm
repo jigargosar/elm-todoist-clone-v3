@@ -17,7 +17,7 @@ view { menuClicked } =
         gap =
             batch [ mr 2, ns [ mr 3 ] ]
     in
-    [ iBtn [ selfCenter, dn, ns [ flex ], bgWhite, c_ lightRed, gap, bor 1 ]
+    [ iBtn [ selfCenter, dn, ns [ flex ], bgWhite, c_ lightRed, gap, boRad 1 ]
         []
         [ i [ class "material-icons" ] [ text "done_all" ]
         ]
@@ -45,7 +45,7 @@ search styles =
             , flexGrow1
             , focusWithin [ bgWhite, c_grayL 0.3 ]
             , batch styles
-            , bor 2
+            , boRad 2
             ]
         ]
         [ div
@@ -55,7 +55,7 @@ search styles =
             [ pa 1
             , Css.paddingLeft (Css.px 24)
             , bn
-            , bor 2
+            , boRad 2
             , min_w_0
             , bgTransparent
             , c_inherit
