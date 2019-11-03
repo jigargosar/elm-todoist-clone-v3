@@ -32,6 +32,7 @@ import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import ProjectRef exposing (ProjectRef)
+import Px
 import Random
 import Return
 import Route
@@ -719,7 +720,7 @@ projectRefTodoListView ref pc lc todoDict =
             TodoUI.view config todoProject (todoLabelList lc todo) todo
 
         viewProjectTitle =
-            div [ css [ Css.fontSize Css.large, lh 1.5 ] ] [ text todoProject.title ]
+            div [ css [ Css.fontSize Css.large, lh 1.5, Px.p2 8 8 ] ] [ text todoProject.title ]
     in
     viewProjectTitle :: List.map viewTodo todoList
 
