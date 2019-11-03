@@ -18,14 +18,17 @@ import UI.Icon as Icon
 import UI.IconButton as IconButton
 
 
+inboxTitle : String
 inboxTitle =
     "Inbox"
 
 
+inboxColor : Color
 inboxColor =
     CColor.toColor CColor.Charcoal
 
 
+inboxHref : Attribute msg
 inboxHref =
     Route.inboxHref
 
