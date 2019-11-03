@@ -44,19 +44,29 @@ unwrap =
     InboxOrProject.unwrap
 
 
-toViewModel : TodoProject -> { title : String, href : Attribute msg, color : Color }
+inboxViewModel =
+    { title = inboxTitle
+    , href = inboxHref
+    , color = inboxColor
+    }
+
+
+projectViewModel p =
+    { title = Project.title p
+    , href = Route.projectHref p
+    , color = Project.cColor p |> CColor.toColor
+    }
+
+
+type alias ViewModel msg =
+    { title : String, href : Attribute msg, color : Color }
+
+
+toViewModel : TodoProject -> ViewModel msg
 toViewModel =
     unwrap
-        { title = inboxTitle
-        , href = inboxHref
-        , color = inboxColor
-        }
-        (\p ->
-            { title = Project.title p
-            , href = Route.projectHref p
-            , color = Project.cColor p |> CColor.toColor
-            }
-        )
+        inboxViewModel
+        projectViewModel
 
 
 view : TodoProject -> Html msg
