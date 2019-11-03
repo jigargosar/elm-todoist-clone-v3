@@ -29,6 +29,7 @@ import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
+import ProjectRef
 import Random
 import Return
 import Route exposing (Route)
@@ -716,7 +717,9 @@ viewTodoListHelp pc lc todoList =
     let
         viewTodoHelp : Todo -> Maybe (Html Msg)
         viewTodoHelp todo =
-            TodoProject.fromTodo pc todo
+            todo
+                |> Todo.projectRef
+                |> ProjectRef.toTodoProject pc
                 |> Maybe.map
                     (\todoProject ->
                         TodoUI.view { toggle = ToggleTodoCompleted }

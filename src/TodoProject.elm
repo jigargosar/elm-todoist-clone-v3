@@ -1,5 +1,7 @@
 module TodoProject exposing
-    ( fromTodo
+    ( Model
+    , fromProject
+    , inbox
     , view
     , viewInboxTitle
     , viewProjectTitle
@@ -11,13 +13,10 @@ import Css
 import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (css)
 import Project exposing (Project)
-import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
-import ProjectRef
 import Px
 import Route
 import Styles exposing (..)
-import Todo exposing (Todo)
 import UI.Icon as Icon
 import UI.IconButton as IconButton
 
@@ -38,17 +37,6 @@ inbox =
 fromProject : Project -> Model
 fromProject =
     Just >> Model
-
-
-fromTodo : ProjectCollection -> Todo -> Maybe Model
-fromTodo pc todo =
-    case Todo.projectRef todo of
-        ProjectRef.Inbox ->
-            Just inbox
-
-        ProjectRef.ProjectId id ->
-            ProjectCollection.byId id pc
-                |> Maybe.map fromProject
 
 
 inboxTitle : String
