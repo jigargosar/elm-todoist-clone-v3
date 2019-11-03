@@ -57,15 +57,15 @@ unwrap inboxVal =
     unpack (\() -> inboxVal)
 
 
-mapProject : (project -> project) -> InboxOrProject inbox project -> InboxOrProject inbox project
+mapProject : (project -> project2) -> InboxOrProject inbox project -> InboxOrProject inbox project2
 mapProject projectFn model =
     case model of
         Project val ->
             projectFn val
                 |> Project
 
-        _ ->
-            model
+        Inbox val ->
+            Inbox val
 
 
 filterMapProject : (project -> Maybe project2) -> InboxOrProject inbox project -> Maybe (InboxOrProject inbox project2)
