@@ -1,6 +1,5 @@
 module UI.IconButton exposing (view)
 
-import Css exposing (px)
 import Css.Transitions as CT
 import Html.Styled exposing (Html, button)
 import Html.Styled.Attributes exposing (css)
