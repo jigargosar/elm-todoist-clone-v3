@@ -1,14 +1,9 @@
 module TodoView exposing (Config, viewList)
 
-import Color
-import Css
-import Emoji
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Label
 import LabelCollection exposing (LabelCollection)
 import ProjectCollection exposing (ProjectCollection)
-import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
