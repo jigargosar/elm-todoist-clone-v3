@@ -1,7 +1,5 @@
 module TodoProject exposing
     ( Model
-    , fromProject
-    , inbox
     , view
     , viewInboxTitle
     , viewProjectTitle
@@ -26,16 +24,6 @@ type alias Model =
     InboxOrProject () Project
 
 
-inbox : Model
-inbox =
-    InboxOrProject.inbox ()
-
-
-fromProject : Project -> Model
-fromProject =
-    InboxOrProject.project
-
-
 inboxTitle : String
 inboxTitle =
     "Inbox"
@@ -57,12 +45,12 @@ unwrap =
 
 title : Model -> String
 title =
-    unwrap >> InboxOrProject.unwrap inboxTitle Project.title
+    InboxOrProject.unwrap inboxTitle Project.title
 
 
 color_ : Model -> Color
 color_ =
-    unwrap >> InboxOrProject.unwrap inboxColor (Project.cColor >> CColor.toColor)
+    InboxOrProject.unwrap inboxColor (Project.cColor >> CColor.toColor)
 
 
 cssColor : Model -> Css.Color
