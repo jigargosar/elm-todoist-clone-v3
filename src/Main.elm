@@ -721,12 +721,7 @@ todoLabelList lc todo =
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
 viewTodoListHelp pc lc todoList =
     let
-        maybeTodoProject : Todo -> Maybe (Maybe Project)
-        maybeTodoProject todo =
-            Todo.projectRef todo
-                |> ProjectRef.id
-                |> Maybe.map (flip ProjectCollection.byId pc)
-
+        viewTodoHelp : Todo -> Maybe (Html Msg)
         viewTodoHelp todo =
             TodoProject.fromTodo pc todo
                 |> Maybe.map
