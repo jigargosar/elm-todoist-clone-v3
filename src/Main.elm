@@ -721,9 +721,6 @@ todoLabelList lc todo =
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
 viewTodoListHelp pc lc todoList =
     let
-        _ =
-            1
-
         viewTodoHelp todo =
             TodoUI.view { toggle = ToggleTodoCompleted }
                 { viewProject = TodoProject.view pc }
