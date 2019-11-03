@@ -14,6 +14,7 @@ import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
+import InboxOrProject exposing (InboxOrProject)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -29,7 +30,7 @@ import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
-import ProjectRef
+import ProjectRef exposing (ProjectRef)
 import Random
 import Return
 import Route exposing (Route)
@@ -715,11 +716,19 @@ todoLabelList lc todo =
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
 viewTodoListHelp pc lc todoList =
     let
+        todoProjectFromTodo : Todo -> Maybe TodoProject.Model
+        todoProjectFromTodo =
+            Todo.projectRef
+                >> InboxOrProject.unwrap (Just TodoProject.inbox)
+                    (\id ->
+                        ProjectCollection.byId id pc
+                            |> Maybe.map TodoProject.fromProject
+                    )
+
         viewTodoHelp : Todo -> Maybe (Html Msg)
         viewTodoHelp todo =
             todo
-                |> Todo.projectRef
-                |> ProjectRef.toTodoProject pc
+                |> todoProjectFromTodo
                 |> Maybe.map
                     (\todoProject ->
                         TodoUI.view { toggle = ToggleTodoCompleted }
