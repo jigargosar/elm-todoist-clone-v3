@@ -2,7 +2,6 @@ module TodoUI exposing (view, viewCheck, viewLabel, viewProject)
 
 import Color
 import Css
-import Emoji
 import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
@@ -11,6 +10,8 @@ import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
 import TodoProject exposing (TodoProject)
+import UI.Icon as Icon exposing (Icon)
+import UI.IconButton as IconBtn
 
 
 view :
@@ -33,17 +34,17 @@ view config todoProject labelList todo =
 viewCheck : (TodoId -> msg) -> Todo -> Html msg
 viewCheck toggle todo =
     let
-        emoji =
+        icon =
             if Todo.isCompleted todo then
-                Emoji.heavy_check_mark
+                Icon.CheckCircleOutline
 
             else
-                Emoji.heavy_large_circle
+                Icon.CircleOutline
 
         toggleMsg =
             toggle <| Todo.id todo
     in
-    Emoji.button toggleMsg emoji
+    IconBtn.view icon toggleMsg
 
 
 viewLabel : Label -> Html msg

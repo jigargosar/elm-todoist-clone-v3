@@ -1,7 +1,6 @@
 module UI.Icon exposing (Icon(..), view)
 
-import Html exposing (Html)
-import Html.Styled exposing (i, text)
+import Html.Styled exposing (Html, i, text)
 import Html.Styled.Attributes exposing (class)
 
 
@@ -46,4 +45,4 @@ iconName icon =
             "radio_button_unchecked"
 
         CheckCircleOutline ->
-            "CircleOutline"
+            "check_circle_outline"
