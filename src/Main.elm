@@ -323,9 +323,6 @@ update message model =
                     let
                         urlChanged =
                             url /= model.url
-
-                        route =
-                            Route.fromUrl url
                     in
                     ( model
                     , if urlChanged then
@@ -745,7 +742,9 @@ projectRefTodoListView ref pc lc todoDict =
                     ]
                     [ text todoProject.title ]
                 , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
-                    [ IconButton.view Icon.Edit NoOp
+                    [ ProjectRef.id ref
+                        |> Maybe.map (EditProjectClicked >> IconButton.view Icon.Edit)
+                        |> Maybe.withDefault (text "")
                     , IconButton.view Icon.Comment NoOp
                     , IconButton.view Icon.PersonAdd NoOp
                     , IconButton.view Icon.MoreHorizontal NoOp
