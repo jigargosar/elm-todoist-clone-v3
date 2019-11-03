@@ -1,31 +1,29 @@
-module ProjectRef exposing (ProjectRef(..), fromId, inbox, toTodoProject)
+module ProjectRef exposing (ProjectRef, fromId, inbox, toTodoProject)
 
-import ProjectCollection
+import InboxOrProject exposing (InboxOrProject)
+import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import TodoProject
 
 
-type ProjectRef
-    = Inbox
-    | ProjectId ProjectId
+type alias ProjectRef =
+    InboxOrProject () ProjectId
 
 
 inbox : ProjectRef
 inbox =
-    Inbox
+    InboxOrProject.inbox ()
 
 
 fromId : ProjectId -> ProjectRef
 fromId =
-    ProjectId
+    InboxOrProject.project
 
 
-toTodoProject : ProjectCollection.ProjectCollection -> ProjectRef -> Maybe TodoProject.Model
-toTodoProject pc model =
-    case model of
-        Inbox ->
-            Just TodoProject.inbox
-
-        ProjectId id ->
+toTodoProject : ProjectCollection -> ProjectRef -> Maybe TodoProject.Model
+toTodoProject pc =
+    InboxOrProject.unpack (\_ -> Just TodoProject.inbox)
+        (\id ->
             ProjectCollection.byId id pc
                 |> Maybe.map TodoProject.fromProject
+        )
