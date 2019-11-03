@@ -144,7 +144,6 @@ viewInboxTitle { noOp } =
             [ text todoProject.title ]
         , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
             [ IconButton.view Icon.Comment noOp
-            , IconButton.view Icon.PersonAdd noOp
             , IconButton.view Icon.MoreHorizontal noOp
             ]
         ]
