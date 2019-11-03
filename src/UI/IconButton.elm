@@ -16,7 +16,7 @@ view icon action =
         [ css
             [ btnReset
             , pointer
-            , Px.ma 4
+            , Px.pa 4
             , boRad 2
             , hover
                 [ bg Theme.hoverGray

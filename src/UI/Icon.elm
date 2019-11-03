@@ -14,6 +14,8 @@ type Icon
     | CircleOutline
     | CheckCircleOutline
     | MoreHorizontal
+    | Comment
+    | PersonAdd
 
 
 view : Icon -> Html msg
@@ -50,3 +52,9 @@ iconName icon =
 
         MoreHorizontal ->
             "more_horiz"
+
+        Comment ->
+            "comment"
+
+        PersonAdd ->
+            "person_add"
