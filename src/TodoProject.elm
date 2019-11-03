@@ -71,11 +71,12 @@ href =
     .ref >> Maybe.map ProjectRef.href >> Maybe.withDefault (A.href "")
 
 
-view : ProjectCollection -> Todo -> Html msg
-view pc todo =
+view : Maybe Project -> Html msg
+view maybeProject =
     let
         todoProject =
-            fromTodo pc todo
+            Maybe.map fromProject maybeProject
+                |> Maybe.withDefault inbox
     in
     a
         [ css

@@ -730,9 +730,9 @@ viewTodoListHelp pc lc todoList =
         viewTodoHelp todo =
             maybeTodoProject todo
                 |> Maybe.map
-                    (\_ ->
+                    (\todoProject ->
                         TodoUI.view { toggle = ToggleTodoCompleted }
-                            { viewProject = TodoProject.view pc }
+                            { viewProject = \_ -> TodoProject.view todoProject }
                             (todoLabelList lc todo)
                             todo
                     )
