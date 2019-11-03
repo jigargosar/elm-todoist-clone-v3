@@ -782,8 +782,9 @@ inboxTodoListView lc todoDict =
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-todoListByLabelIdView labelId pc lc todoDict =
-    viewTodoListHelp pc lc (TodoDict.withLabelId labelId todoDict)
+todoListByLabelIdView id pc lc todoDict =
+    div [] [ text "label: ", text <| LabelId.toString id ]
+        :: viewTodoListHelp pc lc (TodoDict.withLabelId id todoDict)
 
 
 todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
