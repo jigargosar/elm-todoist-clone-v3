@@ -74,7 +74,7 @@ toViewModel =
 view : TodoProject -> Html msg
 view model_ =
     let
-        vm : { title : String, href : Attribute msg, color : Color }
+        vm : ViewModel msg
         vm =
             toViewModel model_
     in
