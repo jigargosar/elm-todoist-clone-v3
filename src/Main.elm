@@ -4,7 +4,6 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import Css
 import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject
@@ -15,7 +14,6 @@ import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
-import Html.Styled.Attributes exposing (css)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -31,12 +29,9 @@ import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
-import ProjectRef exposing (ProjectRef)
-import Px
 import Random
 import Return
 import Route exposing (Route)
-import Styles exposing (..)
 import Task
 import Time
 import Timestamp exposing (Timestamp)
@@ -45,8 +40,6 @@ import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
-import UI.Icon as Icon
-import UI.IconButton as IconButton
 import Url exposing (Url)
 
 
