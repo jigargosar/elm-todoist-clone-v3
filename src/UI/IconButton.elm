@@ -1,5 +1,6 @@
 module UI.IconButton exposing (..)
 
+import Css.Transitions as CT
 import Html.Styled exposing (Html, button)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
@@ -19,6 +20,9 @@ view icon action =
             , boRad 2
             , hover
                 [ bg Theme.hoverGray
+                ]
+            , CT.transition
+                [ CT.background 150
                 ]
             ]
         , onClick action
