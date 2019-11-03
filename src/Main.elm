@@ -741,7 +741,8 @@ projectRefTodoListView ref pc lc todoDict =
                     ]
                     [ text todoProject.title ]
                 , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
-                    [ ProjectRef.id ref
+                    [ todoProject.ref
+                        |> Maybe.andThen ProjectRef.id
                         |> Maybe.map (EditProjectClicked >> IconButton.view Icon.Edit)
                         |> Maybe.withDefault (text "")
                     , IconButton.view Icon.Comment NoOp
