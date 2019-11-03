@@ -1,6 +1,5 @@
 module TodoProject exposing
-    ( fromProjectRef
-    , view
+    ( view
     , viewInboxTitle
     , viewProjectTitle
     )
@@ -9,83 +8,67 @@ import CColor exposing (CColor)
 import Color exposing (Color)
 import Css
 import Html.Styled exposing (Attribute, Html, a, div, text)
-import Html.Styled.Attributes as A exposing (css)
+import Html.Styled.Attributes exposing (css)
 import Project exposing (Project)
-import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
-import ProjectRef exposing (ProjectRef)
 import Px
+import Route
 import Styles exposing (..)
 import UI.Icon as Icon
 import UI.IconButton as IconButton
 
 
-type alias TodoProject =
-    { ref : Maybe ProjectRef
-    , title : String
-    , color : Color
-    }
+inboxTitle =
+    "Inbox"
 
 
-fromProject : Project -> TodoProject
-fromProject project =
-    TodoProject (Just <| ProjectRef.fromId (Project.id project))
-        (Project.title project)
-        (Project.cColor project |> CColor.toColor)
+inboxColor =
+    CColor.toColor CColor.Charcoal
 
 
-inbox : TodoProject
-inbox =
-    TodoProject (Just ProjectRef.inbox)
-        "Inbox"
-        (CColor.toColor CColor.Charcoal)
+inboxHref =
+    Route.inboxHref
 
 
-notFound : TodoProject
-notFound =
-    TodoProject Nothing
-        "not-found"
-        (Color.fromHSL ( 0, 70, 50 ))
+title : Maybe Project -> String
+title =
+    Maybe.map Project.title >> Maybe.withDefault inboxTitle
 
 
-fromProjectRef : ProjectCollection -> ProjectRef -> TodoProject
-fromProjectRef pc ref =
-    case ProjectRef.id ref of
-        Just projectId ->
-            ProjectCollection.byId projectId pc
-                |> Maybe.map fromProject
-                |> Maybe.withDefault notFound
-
-        Nothing ->
-            inbox
+color : Maybe Project -> Color
+color =
+    Maybe.map (Project.cColor >> CColor.toColor) >> Maybe.withDefault inboxColor
 
 
-href : { a | ref : Maybe ProjectRef.ProjectRef } -> Attribute msg
+cssColor =
+    color >> toCssColor
+
+
+highContrastCssColor =
+    color >> Color.highContrast >> toCssColor
+
+
+href : Maybe Project -> Attribute msg
 href =
-    .ref >> Maybe.map ProjectRef.href >> Maybe.withDefault (A.href "")
+    Maybe.map Route.projectHref >> Maybe.withDefault inboxHref
 
 
 view : Maybe Project -> Html msg
 view maybeProject =
-    let
-        todoProject =
-            Maybe.map fromProject maybeProject
-                |> Maybe.withDefault inbox
-    in
     a
         [ css
             [ linkReset
             , ph 1
             , lh 1.5
             , Css.fontSize Css.small
-            , bg (toCssColor todoProject.color)
-            , c_ (toCssColor <| Color.highContrast todoProject.color)
+            , bg (cssColor maybeProject)
+            , fg (highContrastCssColor maybeProject)
             , boRad 2
             , hover [ underline, pointer ]
             ]
-        , href todoProject
+        , href maybeProject
         ]
-        [ text todoProject.title ]
+        [ text <| title maybeProject ]
 
 
 viewProjectTitle :
@@ -96,9 +79,6 @@ viewProjectTitle { editClicked, noOp } project =
     let
         projectId =
             Project.id project
-
-        todoProject =
-            fromProject project
     in
     div [ css [ flex, Px.pt 8 ] ]
         [ div
@@ -110,7 +90,7 @@ viewProjectTitle { editClicked, noOp } project =
                 , Px.p2 8 8
                 ]
             ]
-            [ text todoProject.title ]
+            [ text <| Project.title project ]
         , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
             [ IconButton.view Icon.Edit (editClicked projectId)
             , IconButton.view Icon.Comment noOp
@@ -122,10 +102,6 @@ viewProjectTitle { editClicked, noOp } project =
 
 viewInboxTitle : { noOp : msg } -> Html msg
 viewInboxTitle { noOp } =
-    let
-        todoProject =
-            inbox
-    in
     div [ css [ flex, Px.pt 8 ] ]
         [ div
             [ css
@@ -136,7 +112,7 @@ viewInboxTitle { noOp } =
                 , Px.p2 8 8
                 ]
             ]
-            [ text todoProject.title ]
+            [ text inboxTitle ]
         , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
             [ IconButton.view Icon.Comment noOp
             , IconButton.view Icon.MoreHorizontal noOp
