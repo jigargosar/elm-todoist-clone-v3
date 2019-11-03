@@ -17,16 +17,16 @@ import UI.IconButton as IconBtn
 
 view :
     { a | toggle : TodoId -> msg }
-    -> TodoProject
+    -> { b | viewProject : Todo -> Html msg }
     -> List Label
     -> Todo
     -> Html msg
-view config todoProject labelList todo =
+view config viewFns labelList todo =
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
             [ viewCheck config.toggle todo
             , viewTodoTitle todo
-            , TodoProject.view todoProject
+            , viewFns.viewProject todo
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]

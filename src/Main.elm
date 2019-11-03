@@ -716,6 +716,23 @@ todoLabelList lc todo =
         (Todo.labelIdList todo)
 
 
+viewTodoHelp : ProjectCollection -> LabelCollection -> Todo -> Html Msg
+viewTodoHelp pc lc todo =
+    let
+        config =
+            { toggle = ToggleTodoCompleted }
+    in
+    TodoUI.view config
+        { viewProject = TodoProject.viewForTodo pc }
+        (todoLabelList lc todo)
+        todo
+
+
+viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
+viewTodoListHelp pc lc =
+    List.map (viewTodoHelp pc lc)
+
+
 projectRefTodoListView :
     ProjectRef
     -> ProjectCollection
@@ -727,15 +744,9 @@ projectRefTodoListView ref pc lc todoDict =
         todoList =
             TodoDict.withProjectRef ref todoDict
 
-        config =
-            { toggle = ToggleTodoCompleted }
-
         todoProject : TodoProject
         todoProject =
             TodoProject.fromProjectRef pc ref
-
-        viewTodo todo =
-            TodoUI.view config todoProject (todoLabelList lc todo) todo
 
         viewProjectTitle =
             div [ css [ flex, Px.pt 8 ] ]
@@ -760,19 +771,17 @@ projectRefTodoListView ref pc lc todoDict =
                     ]
                 ]
     in
-    viewProjectTitle :: List.map viewTodo todoList
+    viewProjectTitle :: viewTodoListHelp pc lc todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 todoListByLabelIdView labelId pc lc todoDict =
-    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.withLabelId labelId todoDict)
-    ]
+    viewTodoListHelp pc lc (TodoDict.withLabelId labelId todoDict)
 
 
 todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 todoListByFilterIdView _ pc lc todoDict =
-    [ TodoView.viewList { toggle = ToggleTodoCompleted } pc lc (TodoDict.sortedByIdx todoDict)
-    ]
+    viewTodoListHelp pc lc (TodoDict.sortedByIdx todoDict)
 
 
 popupView : Model -> List (Html Msg)
