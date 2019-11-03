@@ -1,4 +1,4 @@
-module ProjectRef exposing (ProjectRef, fromId, href, id, inbox)
+module ProjectRef exposing (ProjectRef(..), fromId, href, id, inbox)
 
 import Html.Styled exposing (Attribute)
 import ProjectId
