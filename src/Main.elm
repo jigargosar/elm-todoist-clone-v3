@@ -715,7 +715,7 @@ todoLabelList lc todo =
 viewTodoListHelp : ProjectCollection -> LabelCollection -> List Todo -> List (Html Msg)
 viewTodoListHelp pc lc todoList =
     let
-        todoProjectFromTodo : Todo -> Maybe TodoProject.Model
+        todoProjectFromTodo : Todo -> Maybe TodoProject.TodoProject
         todoProjectFromTodo =
             Todo.projectRef
                 >> InboxOrProject.filterMap

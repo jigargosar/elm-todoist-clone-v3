@@ -1,5 +1,5 @@
 module TodoProject exposing
-    ( Model
+    ( TodoProject
     , view
     , viewInboxTitle
     , viewProjectTitle
@@ -20,7 +20,7 @@ import UI.Icon as Icon
 import UI.IconButton as IconButton
 
 
-type alias Model =
+type alias TodoProject =
     InboxOrProject Project
 
 
@@ -43,32 +43,32 @@ unwrap =
     identity
 
 
-title : Model -> String
+title : TodoProject -> String
 title =
     InboxOrProject.unwrap inboxTitle Project.title
 
 
-color_ : Model -> Color
+color_ : TodoProject -> Color
 color_ =
     InboxOrProject.unwrap inboxColor (Project.cColor >> CColor.toColor)
 
 
-cssColor : Model -> Css.Color
+cssColor : TodoProject -> Css.Color
 cssColor =
     color_ >> toCssColor
 
 
-highContrastCssColor : Model -> Css.Color
+highContrastCssColor : TodoProject -> Css.Color
 highContrastCssColor =
     color_ >> Color.highContrast >> toCssColor
 
 
-href : Model -> Attribute msg
+href : TodoProject -> Attribute msg
 href =
     unwrap >> InboxOrProject.unwrap inboxHref Route.projectHref
 
 
-view : Model -> Html msg
+view : TodoProject -> Html msg
 view model =
     a
         [ css
