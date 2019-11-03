@@ -39,31 +39,6 @@ inboxHref =
     Route.inboxHref
 
 
-title : TodoProject -> String
-title =
-    InboxOrProject.unwrap inboxTitle Project.title
-
-
-color_ : TodoProject -> Color
-color_ =
-    InboxOrProject.unwrap inboxColor (Project.cColor >> CColor.toColor)
-
-
-cssColor : TodoProject -> Css.Color
-cssColor =
-    color_ >> toCssColor
-
-
-highContrastCssColor : TodoProject -> Css.Color
-highContrastCssColor =
-    color_ >> Color.highContrast >> toCssColor
-
-
-href : TodoProject -> Attribute msg
-href =
-    InboxOrProject.unwrap inboxHref Route.projectHref
-
-
 unwrap : a -> (Project -> a) -> TodoProject -> a
 unwrap =
     InboxOrProject.unwrap
