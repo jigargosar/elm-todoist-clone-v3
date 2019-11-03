@@ -21,7 +21,7 @@ import UI.IconButton as IconButton
 
 
 type alias Model =
-    InboxOrProject () Project
+    InboxOrProject Project
 
 
 inboxTitle : String

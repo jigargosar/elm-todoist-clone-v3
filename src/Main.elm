@@ -718,7 +718,7 @@ viewTodoListHelp pc lc todoList =
         todoProjectFromTodo : Todo -> Maybe TodoProject.Model
         todoProjectFromTodo =
             Todo.projectRef
-                >> InboxOrProject.filterMapProject
+                >> InboxOrProject.filterMap
                     (\id ->
                         ProjectCollection.byId id pc
                     )

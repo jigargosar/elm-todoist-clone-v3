@@ -5,12 +5,12 @@ import ProjectId exposing (ProjectId)
 
 
 type alias ProjectRef =
-    InboxOrProject () ProjectId
+    InboxOrProject ProjectId
 
 
 inbox : ProjectRef
 inbox =
-    InboxOrProject.inbox ()
+    InboxOrProject.inbox
 
 
 fromId : ProjectId -> ProjectRef

@@ -1,7 +1,6 @@
 module InboxOrProject exposing
     ( InboxOrProject
     , filterMap
-    , filterMapProject
     , inbox
     , project
     , unpack
@@ -9,53 +8,44 @@ module InboxOrProject exposing
     )
 
 
-type InboxOrProject inbox project
-    = Inbox inbox
+type InboxOrProject project
+    = Inbox
     | Project project
 
 
-inbox : inbox -> InboxOrProject inbox project
+inbox : InboxOrProject project
 inbox =
     Inbox
 
 
-project : project -> InboxOrProject inbox project
+project : project -> InboxOrProject project
 project =
     Project
 
 
-unpack : (inbox -> a) -> (project -> a) -> InboxOrProject inbox project -> a
+unpack : (() -> a) -> (project -> a) -> InboxOrProject project -> a
 unpack inboxFn projectFn model =
     case model of
-        Inbox val ->
-            inboxFn val
+        Inbox ->
+            inboxFn ()
 
         Project val ->
             projectFn val
 
 
-unwrap : a -> (project -> a) -> InboxOrProject () project -> a
+unwrap : a -> (project -> a) -> InboxOrProject project -> a
 unwrap inboxVal =
     unpack (\() -> inboxVal)
 
 
-filterMapProject :
-    (project -> Maybe project2)
-    -> InboxOrProject inbox project
-    -> Maybe (InboxOrProject inbox project2)
-filterMapProject projectFn =
-    filterMap Just projectFn
-
-
 filterMap :
-    (inbox -> Maybe inbox2)
-    -> (project -> Maybe project2)
-    -> InboxOrProject inbox project
-    -> Maybe (InboxOrProject inbox2 project2)
-filterMap inboxFn projectFn model =
+    (project -> Maybe project2)
+    -> InboxOrProject project
+    -> Maybe (InboxOrProject project2)
+filterMap projectFn model =
     case model of
-        Inbox val ->
-            inboxFn val |> Maybe.map Inbox
+        Inbox ->
+            Just Inbox
 
         Project val ->
             projectFn val |> Maybe.map Project
