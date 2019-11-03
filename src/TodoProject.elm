@@ -1,19 +1,23 @@
 module TodoProject exposing
-    ( TodoProject
-    , fromProjectRef
+    ( fromProjectRef
     , view
+    , viewProjectTitle
     )
 
 import CColor exposing (CColor)
 import Color exposing (Color)
 import Css
-import Html.Styled exposing (Attribute, Html, a, text)
+import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes as A exposing (css)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
+import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
+import Px
 import Styles exposing (..)
 import Todo exposing (Todo)
+import UI.Icon as Icon
+import UI.IconButton as IconButton
 
 
 type alias TodoProject =
@@ -86,3 +90,36 @@ view pc todo =
         , href todoProject
         ]
         [ text todoProject.title ]
+
+
+viewProjectTitle :
+    { a | editClicked : ProjectId -> msg, noOp : msg }
+    -> ProjectCollection
+    -> ProjectRef
+    -> Html msg
+viewProjectTitle { editClicked, noOp } pc ref =
+    let
+        todoProject =
+            fromProjectRef pc ref
+    in
+    div [ css [ flex, Px.pt 8 ] ]
+        [ div
+            [ css
+                [ flexGrow1
+                , Css.fontSize Css.large
+                , bold
+                , lh 1.5
+                , Px.p2 8 8
+                ]
+            ]
+            [ text todoProject.title ]
+        , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
+            [ todoProject.ref
+                |> Maybe.andThen ProjectRef.id
+                |> Maybe.map (editClicked >> IconButton.view Icon.Edit)
+                |> Maybe.withDefault (text "")
+            , IconButton.view Icon.Comment noOp
+            , IconButton.view Icon.PersonAdd noOp
+            , IconButton.view Icon.MoreHorizontal noOp
+            ]
+        ]

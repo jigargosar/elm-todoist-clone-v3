@@ -43,9 +43,8 @@ import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
 import TodoDict exposing (TodoDict)
 import TodoId exposing (TodoId)
-import TodoProject exposing (TodoProject)
+import TodoProject
 import TodoUI
-import TodoView
 import UI.Icon as Icon
 import UI.IconButton as IconButton
 import Url exposing (Url)
@@ -744,34 +743,12 @@ projectRefTodoListView ref pc lc todoDict =
         todoList =
             TodoDict.withProjectRef ref todoDict
 
-        todoProject : TodoProject
-        todoProject =
-            TodoProject.fromProjectRef pc ref
-
-        viewProjectTitle =
-            div [ css [ flex, Px.pt 8 ] ]
-                [ div
-                    [ css
-                        [ flexGrow1
-                        , Css.fontSize Css.large
-                        , bold
-                        , lh 1.5
-                        , Px.p2 8 8
-                        ]
-                    ]
-                    [ text todoProject.title ]
-                , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
-                    [ todoProject.ref
-                        |> Maybe.andThen ProjectRef.id
-                        |> Maybe.map (EditProjectClicked >> IconButton.view Icon.Edit)
-                        |> Maybe.withDefault (text "")
-                    , IconButton.view Icon.Comment NoOp
-                    , IconButton.view Icon.PersonAdd NoOp
-                    , IconButton.view Icon.MoreHorizontal NoOp
-                    ]
-                ]
+        config =
+            { editClicked = EditProjectClicked
+            , noOp = NoOp
+            }
     in
-    viewProjectTitle :: viewTodoListHelp pc lc todoList
+    TodoProject.viewProjectTitle config pc ref :: viewTodoListHelp pc lc todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)

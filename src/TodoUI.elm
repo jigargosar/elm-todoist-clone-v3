@@ -10,7 +10,6 @@ import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
-import TodoProject exposing (TodoProject)
 import UI.Icon as Icon exposing (Icon)
 import UI.IconButton as IconBtn
 
