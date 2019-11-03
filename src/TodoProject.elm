@@ -4,7 +4,6 @@ module TodoProject exposing
     , fromProjectRef
     , fromTodo
     , href
-    , inbox
     , notFound
     )
 
