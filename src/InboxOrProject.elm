@@ -1,4 +1,4 @@
-module InboxOrProject exposing (InboxOrProject, inbox, project, unpack)
+module InboxOrProject exposing (InboxOrProject, inbox, project, unpack, unwrap)
 
 
 type InboxOrProject inbox project
