@@ -772,7 +772,7 @@ inboxTodoListView pc lc todoDict =
         viewTodo todo =
             TodoUI.view
                 { toggle = ToggleTodoCompleted }
-                { viewProject = TodoProject.view pc }
+                { viewProject = \_ -> text "" }
                 (todoLabelList lc todo)
                 todo
     in
