@@ -24,7 +24,6 @@ import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
 import Layout
 import Log exposing (logError)
-import Page exposing (Page)
 import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
@@ -36,6 +35,7 @@ import ProjectRef exposing (ProjectRef)
 import Px
 import Random
 import Return
+import Route exposing (Route)
 import Styles exposing (..)
 import Task
 import Time
@@ -660,7 +660,7 @@ view model =
                 ++ projectPanelView
                 ++ labelPanelView
                 ++ filterPanelView
-        , main = viewPage model
+        , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
                 ++ dialog.view model
@@ -671,26 +671,35 @@ view model =
         model.isDrawerModalOpen
 
 
-viewPage : Model -> List (Html Msg)
-viewPage model =
-    case Page.pageFromUrl model.url of
-        Page.NotFound url ->
+viewRoute : Route -> Model -> List (Html Msg)
+viewRoute route model =
+    case route of
+        Route.Invalid url ->
             Page.NotFound.view url
 
-        Page.TodoListByProjectRef projectRef ->
-            projectRefTodoListView projectRef
+        Route.Root ->
+            viewRoute Route.Inbox model
+
+        Route.Inbox ->
+            projectRefTodoListView ProjectRef.inbox
                 model.projectCollection
                 model.labelCollection
                 model.todoDict
 
-        Page.TodoListByLabelId labelId ->
+        Route.Project projectId ->
+            projectRefTodoListView (ProjectRef.fromId projectId)
+                model.projectCollection
+                model.labelCollection
+                model.todoDict
+
+        Route.Label labelId ->
             todoListByLabelIdView
                 labelId
                 model.projectCollection
                 model.labelCollection
                 model.todoDict
 
-        Page.TodoListByFilterId filterId ->
+        Route.Filter filterId ->
             todoListByFilterIdView
                 filterId
                 model.projectCollection
