@@ -769,12 +769,18 @@ inboxTodoListView pc lc todoDict =
         todoList =
             TodoDict.withProjectRef ProjectRef.inbox todoDict
 
-        config =
-            { editClicked = EditProjectClicked
-            , noOp = NoOp
-            }
+        viewTodo todo =
+            TodoUI.view
+                { toggle = ToggleTodoCompleted }
+                { viewProject = TodoProject.view pc }
+                (todoLabelList lc todo)
+                todo
     in
-    TodoProject.viewInboxTitle config :: viewTodoListHelp pc lc todoList
+    TodoProject.viewInboxTitle
+        { editClicked = EditProjectClicked
+        , noOp = NoOp
+        }
+        :: List.map viewTodo todoList
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
