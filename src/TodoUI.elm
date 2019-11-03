@@ -25,7 +25,7 @@ view config todoProject labelList todo =
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
             [ viewCheck config.toggle todo
-            , div [ css [ Px.pa 4, flexGrow1 ] ] [ text <| Todo.title todo ]
+            , viewTodoTitle todo
             , viewProject todoProject
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
@@ -79,3 +79,15 @@ viewProject todoProject =
         , TodoProject.href todoProject
         ]
         [ text todoProject.title ]
+
+
+viewTodoTitle todo =
+    let
+        completedStyles =
+            if Todo.isCompleted todo then
+                [ colorGrayL 0.5, strike ]
+
+            else
+                []
+    in
+    div [ css [ Px.pa 4, flexGrow1, batch completedStyles ] ] [ text <| Todo.title todo ]

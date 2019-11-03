@@ -515,7 +515,7 @@ bolder =
     Css.fontWeight Css.bolder
 
 
-c_grayL =
+colorGrayL =
     Css.color << grayL
 
 
@@ -529,6 +529,10 @@ noUnderline =
 
 underline =
     Css.textDecoration Css.underline
+
+
+strike =
+    Css.textDecoration Css.lineThrough
 
 
 focus =
