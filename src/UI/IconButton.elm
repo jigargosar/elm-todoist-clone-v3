@@ -28,7 +28,7 @@ view icon action =
             , pointer
             , Px.pa 4
             , boRad 2
-            , fg iconGray
+            , fg gray50
             , hover
                 [ bg Theme.hoverGray
                 , fgInherit

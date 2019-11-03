@@ -519,8 +519,20 @@ colorGrayL =
     Css.color << grayL
 
 
-colorGrayF pct_ =
-    Css.color <| Css.hsl 0 0 (pct_ / 100)
+fgGrayF =
+    Css.color << grayF
+
+
+grayF n =
+    Css.hsl 0 0 (n / 100)
+
+
+bgGrayF =
+    bg << grayF
+
+
+gray50 =
+    grayF 50
 
 
 hover =
