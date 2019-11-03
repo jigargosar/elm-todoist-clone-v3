@@ -688,7 +688,6 @@ viewRoute route model =
             case projectById projectId model of
                 Just project ->
                     projectTodoListView project
-                        model.projectCollection
                         model.labelCollection
                         model.todoDict
 
@@ -738,11 +737,10 @@ viewTodoListHelp pc lc =
 
 projectTodoListView :
     Project
-    -> ProjectCollection
     -> LabelCollection
     -> TodoDict
     -> List (Html Msg)
-projectTodoListView project pc lc todoDict =
+projectTodoListView project lc todoDict =
     let
         projectId =
             Project.id project
@@ -750,12 +748,19 @@ projectTodoListView project pc lc todoDict =
         todoList =
             TodoDict.withProjectId projectId todoDict
 
-        config =
-            { editClicked = EditProjectClicked
-            , noOp = NoOp
-            }
+        viewTodo todo =
+            TodoUI.view
+                { toggle = ToggleTodoCompleted }
+                { viewProject = \_ -> text "" }
+                (todoLabelList lc todo)
+                todo
     in
-    TodoProject.viewProjectTitle config project :: viewTodoListHelp pc lc todoList
+    TodoProject.viewProjectTitle
+        { editClicked = EditProjectClicked
+        , noOp = NoOp
+        }
+        project
+        :: List.map viewTodo todoList
 
 
 inboxTodoListView :
