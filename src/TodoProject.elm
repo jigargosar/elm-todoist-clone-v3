@@ -95,7 +95,7 @@ view model_ =
 
 
 viewProjectTitle :
-    { a | editClicked : ProjectId -> msg, noOp : msg }
+    { editClicked : ProjectId -> msg, noOp : msg }
     -> Project
     -> Html msg
 viewProjectTitle { editClicked, noOp } project =
