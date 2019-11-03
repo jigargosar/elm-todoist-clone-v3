@@ -7,7 +7,7 @@ import ProjectCollection exposing (ProjectCollection)
 import Styles exposing (..)
 import Todo exposing (Todo)
 import TodoId exposing (TodoId)
-import TodoProject exposing (TodoProject)
+import TodoProject
 import TodoUI
 
 
@@ -30,7 +30,7 @@ viewListItem config pc lc todo =
         [ div [ css [ flex, itemsCenter ] ]
             [ viewIsCompleted config todo
             , viewTitle todo
-            , viewProject pc todo
+            , TodoProject.viewForTodo pc todo
             ]
         , div [ css [ flex ] ] (viewLabels lc todo)
         ]
@@ -49,11 +49,6 @@ viewIsCompleted config =
 viewTitle : Todo -> Html msg
 viewTitle todo =
     div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
-
-
-viewProject : ProjectCollection -> Todo -> Html msg
-viewProject pc todo =
-    TodoProject.view <| TodoProject.fromTodo pc todo
 
 
 viewLabels lc todo =

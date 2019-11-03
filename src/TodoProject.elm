@@ -1,8 +1,8 @@
 module TodoProject exposing
     ( TodoProject
     , fromProjectRef
-    , fromTodo
     , view
+    , viewForTodo
     )
 
 import CColor exposing (CColor)
@@ -65,6 +65,11 @@ fromTodo projectCollection =
 href : { a | ref : Maybe ProjectRef.ProjectRef } -> Attribute msg
 href =
     .ref >> Maybe.map ProjectRef.href >> Maybe.withDefault (A.href "")
+
+
+viewForTodo : ProjectCollection -> Todo -> Html msg
+viewForTodo pc todo =
+    view <| fromTodo pc todo
 
 
 view : TodoProject -> Html msg
