@@ -85,21 +85,26 @@ toViewModel =
 
 
 view : TodoProject -> Html msg
-view model =
+view model_ =
+    let
+        vm : { title : String, href : Attribute msg, color : Color }
+        vm =
+            toViewModel model_
+    in
     a
         [ css
             [ linkReset
             , ph 1
             , lh 1.5
             , Css.fontSize Css.small
-            , bg (cssColor model)
-            , fg (highContrastCssColor model)
+            , bg (toCssColor vm.color)
+            , fg (toCssColor <| Color.highContrast vm.color)
             , boRad 2
             , hover [ underline, pointer ]
             ]
-        , href model
+        , vm.href
         ]
-        [ text <| title model ]
+        [ text vm.title ]
 
 
 viewProjectTitle :
