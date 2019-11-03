@@ -53,7 +53,7 @@ viewTitle todo =
 
 viewProject : ProjectCollection -> Todo -> Html msg
 viewProject pc todo =
-    TodoUI.viewProject <| TodoProject.fromTodo pc todo
+    TodoProject.view <| TodoProject.fromTodo pc todo
 
 
 viewLabels lc todo =

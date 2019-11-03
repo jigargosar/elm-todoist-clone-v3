@@ -2,17 +2,19 @@ module TodoProject exposing
     ( TodoProject
     , fromProjectRef
     , fromTodo
-    , href
+    , view
     )
 
 import CColor exposing (CColor)
 import Color exposing (Color)
-import Html.Styled exposing (Attribute)
-import Html.Styled.Attributes as A
+import Css
+import Html.Styled exposing (Attribute, Html, a, text)
+import Html.Styled.Attributes as A exposing (css)
 import Project exposing (Project)
 import ProjectCollection exposing (ProjectCollection)
 import ProjectRef exposing (ProjectRef)
-import Todo
+import Styles exposing (..)
+import Todo exposing (Todo)
 
 
 type alias TodoProject =
@@ -63,3 +65,21 @@ fromTodo projectCollection =
 href : { a | ref : Maybe ProjectRef.ProjectRef } -> Attribute msg
 href =
     .ref >> Maybe.map ProjectRef.href >> Maybe.withDefault (A.href "")
+
+
+view : TodoProject -> Html msg
+view todoProject =
+    a
+        [ css
+            [ linkReset
+            , ph 1
+            , lh 1.5
+            , Css.fontSize Css.small
+            , bg (toCssColor todoProject.color)
+            , c_ (toCssColor <| Color.highContrast todoProject.color)
+            , boRad 2
+            , hover [ underline, pointer ]
+            ]
+        , href todoProject
+        ]
+        [ text todoProject.title ]

@@ -1,4 +1,4 @@
-module TodoUI exposing (view, viewCheck, viewLabel, viewProject)
+module TodoUI exposing (view, viewCheck, viewLabel)
 
 import Color
 import Css
@@ -26,7 +26,7 @@ view config todoProject labelList todo =
         [ div [ css [ flex, itemsCenter ] ]
             [ viewCheck config.toggle todo
             , viewTodoTitle todo
-            , viewProject todoProject
+            , TodoProject.view todoProject
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
         ]
@@ -61,24 +61,6 @@ viewLabel label =
         , Route.labelHref label
         ]
         [ text <| Label.title label ]
-
-
-viewProject : TodoProject -> Html msg
-viewProject todoProject =
-    a
-        [ css
-            [ linkReset
-            , ph 1
-            , lh 1.5
-            , Css.fontSize Css.small
-            , bg (toCssColor todoProject.color)
-            , c_ (toCssColor <| Color.highContrast todoProject.color)
-            , boRad 2
-            , hover [ underline, pointer ]
-            ]
-        , TodoProject.href todoProject
-        ]
-        [ text todoProject.title ]
 
 
 viewTodoTitle todo =
