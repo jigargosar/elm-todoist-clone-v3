@@ -35,17 +35,19 @@ title =
     Maybe.map Project.title >> Maybe.withDefault inboxTitle
 
 
-color : Maybe Project -> Color
-color =
+color_ : Maybe Project -> Color
+color_ =
     Maybe.map (Project.cColor >> CColor.toColor) >> Maybe.withDefault inboxColor
 
 
+cssColor : Maybe Project -> Css.Color
 cssColor =
-    color >> toCssColor
+    color_ >> toCssColor
 
 
+highContrastCssColor : Maybe Project -> Css.Color
 highContrastCssColor =
-    color >> Color.highContrast >> toCssColor
+    color_ >> Color.highContrast >> toCssColor
 
 
 href : Maybe Project -> Attribute msg
