@@ -734,7 +734,8 @@ projectRefTodoListView ref pc lc todoDict =
                     ]
                     [ text todoProject.title ]
                 , div [ css [ flex, selfCenter, Px.p2 0 8 ] ]
-                    [ IconButton.view Icon.Comment NoOp
+                    [ IconButton.view Icon.Edit NoOp
+                    , IconButton.view Icon.Comment NoOp
                     , IconButton.view Icon.PersonAdd NoOp
                     , IconButton.view Icon.MoreHorizontal NoOp
                     ]
