@@ -535,6 +535,10 @@ gray50 =
     grayF 50
 
 
+gray90 =
+    grayF 90
+
+
 hover =
     Css.hover
 

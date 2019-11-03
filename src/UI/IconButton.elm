@@ -30,7 +30,7 @@ view icon action =
             , boRad 2
             , fg gray50
             , hover
-                [ bg Theme.hoverGray
+                [ bg gray90
                 , fgInherit
                 ]
             , CT.transition
