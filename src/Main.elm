@@ -3,6 +3,7 @@ module Main exposing (main)
 import Appbar
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Css
 import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject
@@ -13,6 +14,7 @@ import FilterCollection exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
+import Html.Styled.Attributes exposing (css)
 import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
@@ -33,6 +35,7 @@ import ProjectRef exposing (ProjectRef)
 import Random
 import Return
 import Route
+import Styles exposing (..)
 import Task
 import Time
 import Timestamp exposing (Timestamp)
@@ -716,7 +719,7 @@ projectRefTodoListView ref pc lc todoDict =
             TodoUI.view config todoProject (todoLabelList lc todo) todo
 
         viewProjectTitle =
-            div [] [ text todoProject.title ]
+            div [ css [ Css.fontSize Css.large, lh 1.5 ] ] [ text todoProject.title ]
     in
     viewProjectTitle :: List.map viewTodo todoList
 
