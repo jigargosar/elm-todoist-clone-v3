@@ -125,7 +125,7 @@ viewProjectTitle { editClicked, noOp } project =
         ]
 
 
-viewInboxTitle : { a | noOp : msg } -> Html msg
+viewInboxTitle : { noOp : msg } -> Html msg
 viewInboxTitle { noOp } =
     let
         todoProject =

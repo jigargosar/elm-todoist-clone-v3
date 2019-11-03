@@ -681,7 +681,6 @@ viewRoute route model =
 
         Route.Inbox ->
             inboxTodoListView
-                model.projectCollection
                 model.labelCollection
                 model.todoDict
 
@@ -760,11 +759,10 @@ projectTodoListView project pc lc todoDict =
 
 
 inboxTodoListView :
-    ProjectCollection
-    -> LabelCollection
+    LabelCollection
     -> TodoDict
     -> List (Html Msg)
-inboxTodoListView pc lc todoDict =
+inboxTodoListView lc todoDict =
     let
         todoList =
             TodoDict.withProjectRef ProjectRef.inbox todoDict
@@ -776,10 +774,7 @@ inboxTodoListView pc lc todoDict =
                 (todoLabelList lc todo)
                 todo
     in
-    TodoProject.viewInboxTitle
-        { editClicked = EditProjectClicked
-        , noOp = NoOp
-        }
+    TodoProject.viewInboxTitle { noOp = NoOp }
         :: List.map viewTodo todoList
 
 
