@@ -5,6 +5,7 @@ import Css
 import Html.Styled exposing (Attribute, Html, a, div, text)
 import Html.Styled.Attributes exposing (class, css)
 import Label exposing (Label)
+import Px
 import Route
 import Styles exposing (..)
 import Todo exposing (Todo)
@@ -24,7 +25,7 @@ view config todoProject labelList todo =
     div [ class "ph2 pv1 ba bl-0 bt-0 br-0 b--dotted b--black-30" ]
         [ div [ css [ flex, itemsCenter ] ]
             [ viewCheck config.toggle todo
-            , div [ class "pa2 flex-grow-1" ] [ text <| Todo.title todo ]
+            , div [ css [ Px.pa 4, flexGrow1 ] ] [ text <| Todo.title todo ]
             , viewProject todoProject
             ]
         , div [ css [ flex ] ] (List.map viewLabel labelList)
