@@ -16,6 +16,7 @@ type Icon
     | MoreHorizontal
     | Comment
     | PersonAdd
+    | Edit
 
 
 view : Icon -> Html msg
@@ -58,3 +59,6 @@ iconName icon =
 
         PersonAdd ->
             "person_add"
+
+        Edit ->
+            "edit"
