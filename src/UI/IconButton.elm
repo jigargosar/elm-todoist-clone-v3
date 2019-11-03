@@ -9,4 +9,4 @@ import UI.Icon as Icon exposing (Icon)
 
 view : Icon -> msg -> Html msg
 view icon action =
-    button [ css [ btnReset ], onClick action ] [ Icon.view icon ]
+    button [ css [ btnReset, pointer ], onClick action ] [ Icon.view icon ]
