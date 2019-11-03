@@ -47,19 +47,8 @@ li =
 
 
 viewIsCompleted : { a | toggle : TodoId -> msg } -> Todo -> Html msg
-viewIsCompleted config todo =
-    let
-        emoji =
-            if Todo.isCompleted todo then
-                Emoji.heavy_check_mark
-
-            else
-                Emoji.heavy_large_circle
-
-        toggleMsg =
-            config.toggle <| Todo.id todo
-    in
-    Emoji.button toggleMsg emoji
+viewIsCompleted config =
+    TodoUI.viewCheck config.toggle
 
 
 viewTitle : Todo -> Html msg
