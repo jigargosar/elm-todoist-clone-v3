@@ -44,6 +44,7 @@ unwrap =
     InboxOrProject.unwrap
 
 
+inboxViewModel : ViewModel msg
 inboxViewModel =
     { title = inboxTitle
     , href = inboxHref
@@ -51,6 +52,7 @@ inboxViewModel =
     }
 
 
+projectViewModel : Project -> ViewModel msg
 projectViewModel p =
     { title = Project.title p
     , href = Route.projectHref p
