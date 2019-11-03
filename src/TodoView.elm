@@ -30,7 +30,7 @@ viewListItem config pc lc todo =
         [ div [ css [ flex, itemsCenter ] ]
             [ viewIsCompleted config todo
             , viewTitle todo
-            , TodoProject.viewForTodo pc todo
+            , TodoProject.view pc todo
             ]
         , div [ css [ flex ] ] (viewLabels lc todo)
         ]

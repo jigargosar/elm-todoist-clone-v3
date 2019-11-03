@@ -723,7 +723,7 @@ viewTodoHelp pc lc todo =
             { toggle = ToggleTodoCompleted }
     in
     TodoUI.view config
-        { viewProject = TodoProject.viewForTodo pc }
+        { viewProject = TodoProject.view pc }
         (todoLabelList lc todo)
         todo
 
