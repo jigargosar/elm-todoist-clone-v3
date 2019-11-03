@@ -770,7 +770,7 @@ inboxTodoListView :
 inboxTodoListView lc todoDict =
     let
         todoList =
-            TodoDict.withProjectRef ProjectRef.inbox todoDict
+            TodoDict.inInbox todoDict
 
         viewTodo todo =
             TodoUI.view

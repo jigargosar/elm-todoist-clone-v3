@@ -1,12 +1,12 @@
 module TodoDict exposing
     ( TodoDict
     , fromEncodedList
+    , inInbox
     , initial
     , sortedByIdx
     , toggleCompleted
     , withLabelId
     , withProjectId
-    , withProjectRef
     )
 
 import Collection exposing (Collection)
@@ -72,6 +72,11 @@ withProjectId projectId =
             ProjectRef.fromId projectId
     in
     withProjectRef ref
+
+
+inInbox : TodoDict -> List Todo
+inInbox =
+    withProjectRef ProjectRef.inbox
 
 
 withLabelId : LabelId -> TodoDict -> List Todo
