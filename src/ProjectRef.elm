@@ -1,11 +1,11 @@
 module ProjectRef exposing (ProjectRef(..), fromId, inbox)
 
-import ProjectId
+import ProjectId exposing (ProjectId)
 
 
 type ProjectRef
     = Inbox
-    | ProjectId ProjectId.ProjectId
+    | ProjectId ProjectId
 
 
 inbox : ProjectRef
@@ -13,6 +13,6 @@ inbox =
     Inbox
 
 
-fromId : ProjectId.ProjectId -> ProjectRef
+fromId : ProjectId -> ProjectRef
 fromId =
     ProjectId
