@@ -1,4 +1,4 @@
-module UI.Btn exposing (..)
+module UI.Btn exposing (linkStyle, style)
 
 import Css exposing (..)
 import Css.Transitions as T
@@ -42,6 +42,7 @@ style =
         , border3 (rem 0.05) solid (Theme.toCssColor Theme.primary)
         , borderRadius (rem 0.1)
         , color (Theme.toCssColor Theme.primary)
+        , cursor pointer
         , display inlineBlock
         , fontSize (rem 0.8)
         , fontSize (rem 1)
@@ -64,8 +65,8 @@ style =
 activeStyles =
     [ textDecorationNone
     , colorWhite
-    , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 10))
-    , borderColor (Theme.toCssColor (Theme.primaryBlacken 10))
+    , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 5))
+    , borderColor (Theme.toCssColor (Theme.primaryBlacken 5))
     ]
 
 
@@ -80,5 +81,25 @@ focusStyles =
         zero
         zero
         (rem 0.2)
-        (Theme.toCssColorAlpha (Theme.primaryAlpha 0.2))
+        (Theme.toCssColorAlpha (Theme.primaryAlpha 0.5))
     ]
+
+
+linkStyle : Style
+linkStyle =
+    batch
+        [ style
+        , backgroundColor Theme.white
+        , borderColor transparent
+        , color (Theme.toCssColor Theme.primary)
+        , hover
+            [ color (Theme.toCssColor (Theme.primaryBlacken 10))
+            , backgroundColor Theme.white
+            , borderColor transparent
+            ]
+        , active
+            [ color (Theme.toCssColor (Theme.primaryBlacken 10))
+            , backgroundColor Theme.white
+            , borderColor transparent
+            ]
+        ]
