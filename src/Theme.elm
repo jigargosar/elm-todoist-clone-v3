@@ -25,8 +25,8 @@ primary =
     Color.fromHSL ( 241, 63, 60 )
 
 
-colorToCssColor : Color.Color -> Css.Color
-colorToCssColor color_ =
+toCssColor : Color.Color -> Css.Color
+toCssColor color_ =
     let
         ( r, g, b ) =
             Color.toRGB color_
@@ -34,10 +34,18 @@ colorToCssColor color_ =
     Css.rgb (round r) (round g) (round b)
 
 
-transparentColorToCssColor : Color.Transparent.Color -> Css.Color
-transparentColorToCssColor tColor =
+toCssColorAlpha : Color.Transparent.Color -> Css.Color
+toCssColorAlpha tColor =
     let
         { red, green, blue, alpha } =
             Color.Transparent.toRGBA tColor
     in
     Css.rgba (round red) (round green) (round blue) (Color.Transparent.opacityToFloat alpha)
+
+
+primaryWhiten n =
+    primary |> Color.whiten n
+
+
+primaryAlpha n =
+    Color.Transparent.fromColor (Color.Transparent.customOpacity n) primary

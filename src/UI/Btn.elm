@@ -41,9 +41,9 @@ style =
     batch
         [ appearanceNone
         , backgroundColor Theme.white
-        , border3 (rem 0.5) solid (Theme.colorToCssColor Theme.primary)
+        , border3 (rem 0.5) solid (Theme.toCssColor Theme.primary)
         , borderRadius (rem 0.1)
-        , color (Theme.colorToCssColor Theme.primary)
+        , color (Theme.toCssColor Theme.primary)
         , colorWhite
         , display inlineBlock
         , fontSize (rem 0.8)
@@ -65,8 +65,8 @@ style =
 activeStyles =
     [ textDecorationNone
     , colorWhite
-    , borderColor (Theme.colorToCssColor (Theme.primary |> Color.whiten 10))
-    , backgroundColor (Theme.colorToCssColor (Theme.primary |> Color.whiten 10))
+    , borderColor (Theme.toCssColor (Theme.primaryWhiten 10))
+    , backgroundColor (Theme.toCssColor (Theme.primaryWhiten 10))
     ]
 
 
@@ -75,7 +75,5 @@ focusStyles =
         zero
         zero
         (rem 0.1)
-        (Theme.transparentColorToCssColor
-            (Color.Transparent.fromColor (Color.Transparent.customOpacity 0.2) Theme.primary)
-        )
+        (Theme.toCssColorAlpha (Theme.primaryAlpha 0.2))
     ]
