@@ -17,6 +17,7 @@ import Key
 import Px as PX
 import Styles exposing (..)
 import Theme
+import UI.Btn
 
 
 type alias InputConfig msg =
@@ -143,11 +144,11 @@ overlayStyles =
 
 
 btnSubmit title action =
-    button [ css [ plainBtnStyles ], onClick action ] [ text title ]
+    button [ css [ UI.Btn.style ], onClick action ] [ text title ]
 
 
 btnCancel canceled =
-    button [ css [ plainBtnStyles ], onClick canceled ] [ text "Cancel" ]
+    button [ css [ UI.Btn.style ], onClick canceled ] [ text "Cancel" ]
 
 
 plainBtnStyles =

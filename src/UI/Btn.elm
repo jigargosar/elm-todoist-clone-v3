@@ -39,12 +39,12 @@ style =
     batch
         [ appearanceNone
         , backgroundColor Theme.white
-        , border3 (rem 0.5) solid (Theme.toCssColor Theme.primary)
+        , border3 (rem 0.05) solid (Theme.toCssColor Theme.primary)
         , borderRadius (rem 0.1)
         , color (Theme.toCssColor Theme.primary)
-        , colorWhite
         , display inlineBlock
         , fontSize (rem 0.8)
+        , fontSize (rem 1)
         , height (rem 1.8)
         , lineHeight (rem 1.2)
         , outline zero
