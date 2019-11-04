@@ -58,6 +58,7 @@ style =
         , verticalAlign middle
         , whiteSpace noWrap
         , active activeStyles
+        , focus focusStyles
         ]
 
 
