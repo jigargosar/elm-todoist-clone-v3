@@ -55,16 +55,23 @@ style =
         , userSelectNone
         , verticalAlign middle
         , whiteSpace noWrap
-        , active activeStyles
+        , hover hoverStyles
         , focus focusStyles
+        , active activeStyles
         ]
 
 
 activeStyles =
     [ textDecorationNone
     , colorWhite
-    , borderColor (Theme.toCssColor (Theme.primaryWhiten 10))
-    , backgroundColor (Theme.toCssColor (Theme.primaryWhiten 10))
+    , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 10))
+    , borderColor (Theme.toCssColor (Theme.primaryBlacken 10))
+    ]
+
+
+hoverStyles =
+    [ backgroundColor (Theme.toCssColor (Theme.primaryWhiten 35))
+    , borderColor (Theme.toCssColor Theme.primary)
     ]
 
 
@@ -72,6 +79,6 @@ focusStyles =
     [ boxShadow5 zero
         zero
         zero
-        (rem 0.1)
+        (rem 0.2)
         (Theme.toCssColorAlpha (Theme.primaryAlpha 0.2))
     ]

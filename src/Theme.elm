@@ -47,5 +47,9 @@ primaryWhiten n =
     primary |> Color.whiten n
 
 
+primaryBlacken n =
+    primary |> Color.blacken n
+
+
 primaryAlpha n =
     Color.Transparent.fromColor (Color.Transparent.customOpacity n) primary
