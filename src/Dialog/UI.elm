@@ -150,13 +150,3 @@ btnSubmit title action =
 
 btnCancel canceled =
     button [ css [ UI.Btn.style ], onClick canceled ] [ text "Cancel" ]
-
-
-plainBtnStyles =
-    batch
-        [ btnReset
-        , PX.p2 4 8
-        , boRad 1
-        , hover [ bgGrayL 0.95 ]
-        , focus [ bgGrayL 0.9, z_ 1 ]
-        ]
