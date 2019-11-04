@@ -115,7 +115,7 @@ view { toMsg } model =
         { submit = Save
         , cancel = Cancel
         , title = "Add Project"
-        , submitTitle = "add"
+        , submitTitle = "Add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
