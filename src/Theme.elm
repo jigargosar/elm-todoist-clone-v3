@@ -10,11 +10,6 @@ borderGray =
     Styles.grayL 0.8
 
 
-white : Css.Color
-white =
-    rgb 255 255 255
-
-
 primary : Color.Color
 primary =
     Color.fromHSL ( 241, 63, 59 )

@@ -1,4 +1,11 @@
-module Css.More exposing (..)
+module Css.More exposing
+    ( backgroundColor
+    , backgroundColorWhite
+    , borderColor
+    , color
+    , colorWhite
+    , fromColorWithAlpha
+    )
 
 import Color
 import Color.Transparent
@@ -30,3 +37,32 @@ fromColorWithAlpha color_ =
             Color.toRGB color_
     in
     Css.rgba (round r) (round g) (round b)
+
+
+color : Color.Color -> Css.Style
+color =
+    Css.color << fromColor
+
+
+backgroundColor : Color.Color -> Css.Style
+backgroundColor =
+    Css.backgroundColor << fromColor
+
+
+borderColor : Color.Color -> Css.Style
+borderColor =
+    Css.borderColor << fromColor
+
+
+colorWhite : Css.Style
+colorWhite =
+    Css.color white
+
+
+backgroundColorWhite : Css.Style
+backgroundColorWhite =
+    Css.backgroundColor white
+
+
+white =
+    Css.rgb 255 255 255
