@@ -11,14 +11,13 @@ module Dialog.UI exposing
 
 import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
-import Html.Styled.Attributes as A exposing (css, for, type_, value)
+import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
 import Key
 import Px as PX
-import Style.Elements
+import Style
 import Styles exposing (..)
 import Theme
-import UI.Btn
 
 
 type alias InputConfig msg =
@@ -146,8 +145,8 @@ overlayStyles =
 
 
 btnSubmit title action =
-    button [ css [ Style.Elements.primaryBtn ], onClick action ] [ text title ]
+    button [ css [ Style.primaryBtn ], onClick action ] [ text title ]
 
 
 btnCancel canceled =
-    button [ css [ Style.Elements.primaryBtn ], onClick canceled ] [ text "Cancel" ]
+    button [ css [ Style.primaryBtn ], onClick canceled ] [ text "Cancel" ]
