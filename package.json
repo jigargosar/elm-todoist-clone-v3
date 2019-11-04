@@ -26,6 +26,7 @@
   "dependencies": {
     "nanoid": "^2.1.6",
     "ramda": "^0.26.1",
+    "spectre.css": "^0.5.8",
     "tachyons": "^4.11.1"
   },
   "bit": {
