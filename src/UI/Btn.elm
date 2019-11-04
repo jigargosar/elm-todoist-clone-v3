@@ -32,7 +32,7 @@ appearanceNone =
 
 
 userSelectNone =
-    prefixedProperty "appearance" "none"
+    prefixedProperty "user-select" "none"
 
 
 style =
