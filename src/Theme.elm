@@ -16,12 +16,6 @@ white =
     rgb 255 255 255
 
 
-
-{- primary =
-   hsl 241 0.63 0.59
--}
-
-
 primary : Color.Color
 primary =
     Color.fromHSL ( 241, 63, 59 )
