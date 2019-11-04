@@ -1,4 +1,4 @@
-module UI.Btn exposing (linkStyle, primaryStyle, style)
+module Style.Elements.Button exposing (basic, link, primary)
 
 import Css exposing (..)
 import Css.More as CM exposing (..)
@@ -6,7 +6,8 @@ import Css.Transitions as T
 import Theme
 
 
-style =
+basic : Style
+basic =
     batch
         [ appearanceNone
         , backgroundColorWhite
@@ -48,10 +49,11 @@ style =
         ]
 
 
-linkStyle : Style
-linkStyle =
+link : Style
+link =
     batch
-        [ backgroundColorWhite
+        [ basic
+        , backgroundColorWhite
         , borderColorTransparent
         , CM.color Theme.primary
         , hover
@@ -67,10 +69,11 @@ linkStyle =
         ]
 
 
-primaryStyle : Style
-primaryStyle =
+primary : Style
+primary =
     batch
-        [ CM.backgroundColor Theme.primary
+        [ basic
+        , CM.backgroundColor Theme.primary
         , borderColorTransparent
         , colorWhite
         , hover
