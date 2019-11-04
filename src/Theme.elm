@@ -11,7 +11,7 @@ borderGray =
     Styles.grayL 0.8
 
 
-white : Color
+white : Css.Color
 white =
     rgb 255 255 255
 
