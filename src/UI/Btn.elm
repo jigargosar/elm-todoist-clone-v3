@@ -1,7 +1,5 @@
 module UI.Btn exposing (..)
 
-import Color
-import Color.Transparent
 import Css exposing (..)
 import Css.Transitions as T
 import Theme
