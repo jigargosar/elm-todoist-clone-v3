@@ -17,7 +17,8 @@
     "last 2 chrome versions"
   ],
   "scripts": {
-    "start": "webpack-dev-server"
+    "start_": "webpack-dev-server",
+    "start": "parcel src/index.html"
   },
   "keywords": [],
   "author": "Jigar Gosar <jigar.gosar@gmail.com>",
