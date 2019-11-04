@@ -1,35 +1,9 @@
 module UI.Btn exposing (linkStyle, primaryStyle, style)
 
 import Css exposing (..)
-import Css.More as CM exposing (backgroundColorWhite, colorWhite, fromColorWithAlpha)
+import Css.More as CM exposing (..)
 import Css.Transitions as T
 import Theme
-
-
-transitionWithDelay delay =
-    List.map (\t -> t delay) >> T.transition
-
-
-textDecorationNone =
-    textDecoration none
-
-
-prefixes =
-    [ "-webkit-", "-moz-", "-ms-" ]
-
-
-prefixedProperty name value =
-    prefixes
-        |> List.map (\prefix -> property (prefix ++ name) value)
-        |> batch
-
-
-appearanceNone =
-    prefixedProperty "appearance" "none"
-
-
-userSelectNone =
-    prefixedProperty "user-select" "none"
 
 
 style =
@@ -60,6 +34,7 @@ style =
         ]
 
 
+activeStyles : List Style
 activeStyles =
     [ textDecorationNone
     , colorWhite
@@ -68,12 +43,14 @@ activeStyles =
     ]
 
 
+hoverStyles : List Style
 hoverStyles =
     [ CM.backgroundColor (Theme.primaryWhiten 35)
     , CM.borderColor Theme.primary
     ]
 
 
+focusStyles : List Style
 focusStyles =
     [ boxShadow5 zero
         zero
@@ -87,17 +64,17 @@ linkStyle : Style
 linkStyle =
     batch
         [ backgroundColorWhite
-        , borderColor transparent
+        , borderColorTransparent
         , CM.color Theme.primary
         , hover
             [ CM.color (Theme.primaryBlacken 10)
             , backgroundColorWhite
-            , borderColor transparent
+            , borderColorTransparent
             ]
         , active
             [ CM.color (Theme.primaryBlacken 10)
             , backgroundColorWhite
-            , borderColor transparent
+            , borderColorTransparent
             ]
         ]
 
@@ -106,7 +83,7 @@ primaryStyle : Style
 primaryStyle =
     batch
         [ CM.backgroundColor Theme.primary
-        , borderColor transparent
+        , borderColorTransparent
         , colorWhite
         , hover
             [ colorWhite
