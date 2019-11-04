@@ -145,8 +145,8 @@ overlayStyles =
 
 
 btnSubmit title action =
-    button [ css [ UI.Btn.style ], onClick action ] [ text title ]
+    button [ css [ UI.Btn.style, UI.Btn.primaryStyle ], onClick action ] [ text title ]
 
 
 btnCancel canceled =
-    button [ css [ UI.Btn.linkStyle ], onClick canceled ] [ text "Cancel" ]
+    button [ css [ UI.Btn.style, UI.Btn.linkStyle ], onClick canceled ] [ text "Cancel" ]

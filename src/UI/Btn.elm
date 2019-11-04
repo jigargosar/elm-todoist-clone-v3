@@ -1,4 +1,4 @@
-module UI.Btn exposing (linkStyle, style)
+module UI.Btn exposing (linkStyle, primaryStyle, style)
 
 import Css exposing (..)
 import Css.Transitions as T
@@ -88,8 +88,7 @@ focusStyles =
 linkStyle : Style
 linkStyle =
     batch
-        [ style
-        , backgroundColor Theme.white
+        [ backgroundColor Theme.white
         , borderColor transparent
         , color (Theme.toCssColor Theme.primary)
         , hover
@@ -101,5 +100,24 @@ linkStyle =
             [ color (Theme.toCssColor (Theme.primaryBlacken 10))
             , backgroundColor Theme.white
             , borderColor transparent
+            ]
+        ]
+
+
+primaryStyle : Style
+primaryStyle =
+    batch
+        [ backgroundColor (Theme.toCssColor Theme.primary)
+        , borderColor transparent
+        , color Theme.white
+        , hover
+            [ color Theme.white
+            , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 5))
+            , borderColor (Theme.toCssColor (Theme.primaryBlacken 5))
+            ]
+        , active
+            [ color Theme.white
+            , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 10))
+            , borderColor (Theme.toCssColor (Theme.primaryBlacken 10))
             ]
         ]

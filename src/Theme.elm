@@ -22,7 +22,7 @@ white =
 
 
 primary =
-    Color.fromHSL ( 241, 63, 60 )
+    Color.fromHSL ( 241, 63, 59 )
 
 
 toCssColor : Color.Color -> Css.Color
