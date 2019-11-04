@@ -15,6 +15,7 @@ import Html.Styled.Attributes as A exposing (css, for, type_, value)
 import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
 import Key
 import Px as PX
+import Style.Elements
 import Styles exposing (..)
 import Theme
 import UI.Btn
@@ -145,8 +146,8 @@ overlayStyles =
 
 
 btnSubmit title action =
-    button [ css [ UI.Btn.style, UI.Btn.primaryStyle ], onClick action ] [ text title ]
+    button [ css [ Style.Elements.primaryBtn ], onClick action ] [ text title ]
 
 
 btnCancel canceled =
-    button [ css [ UI.Btn.style, UI.Btn.linkStyle ], onClick canceled ] [ text "Cancel" ]
+    button [ css [ Style.Elements.primaryBtn ], onClick canceled ] [ text "Cancel" ]
