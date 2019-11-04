@@ -1,6 +1,7 @@
 module UI.Btn exposing (linkStyle, primaryStyle, style)
 
 import Css exposing (..)
+import Css.More exposing (fromColor, fromColorWithAlpha)
 import Css.Transitions as T
 import Theme
 
@@ -39,9 +40,9 @@ style =
     batch
         [ appearanceNone
         , backgroundColor Theme.white
-        , border3 (rem 0.05) solid (Theme.toCssColor Theme.primary)
+        , border3 (rem 0.05) solid (fromColor Theme.primary)
         , borderRadius (rem 0.1)
-        , color (Theme.toCssColor Theme.primary)
+        , color (fromColor Theme.primary)
         , cursor pointer
         , display inlineBlock
         , fontSize (rem 0.8)
@@ -65,14 +66,14 @@ style =
 activeStyles =
     [ textDecorationNone
     , colorWhite
-    , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 5))
-    , borderColor (Theme.toCssColor (Theme.primaryBlacken 5))
+    , backgroundColor (fromColor (Theme.primaryBlacken 5))
+    , borderColor (fromColor (Theme.primaryBlacken 5))
     ]
 
 
 hoverStyles =
-    [ backgroundColor (Theme.toCssColor (Theme.primaryWhiten 35))
-    , borderColor (Theme.toCssColor Theme.primary)
+    [ backgroundColor (fromColor (Theme.primaryWhiten 35))
+    , borderColor (fromColor Theme.primary)
     ]
 
 
@@ -81,7 +82,7 @@ focusStyles =
         zero
         zero
         (rem 0.2)
-        (Theme.toCssColorAlpha (Theme.primaryAlpha 0.5))
+        (fromColorWithAlpha Theme.primary 0.5)
     ]
 
 
@@ -90,14 +91,14 @@ linkStyle =
     batch
         [ backgroundColor Theme.white
         , borderColor transparent
-        , color (Theme.toCssColor Theme.primary)
+        , color (fromColor Theme.primary)
         , hover
-            [ color (Theme.toCssColor (Theme.primaryBlacken 10))
+            [ color (fromColor (Theme.primaryBlacken 10))
             , backgroundColor Theme.white
             , borderColor transparent
             ]
         , active
-            [ color (Theme.toCssColor (Theme.primaryBlacken 10))
+            [ color (fromColor (Theme.primaryBlacken 10))
             , backgroundColor Theme.white
             , borderColor transparent
             ]
@@ -107,17 +108,17 @@ linkStyle =
 primaryStyle : Style
 primaryStyle =
     batch
-        [ backgroundColor (Theme.toCssColor Theme.primary)
+        [ backgroundColor (fromColor Theme.primary)
         , borderColor transparent
         , color Theme.white
         , hover
             [ color Theme.white
-            , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 5))
-            , borderColor (Theme.toCssColor (Theme.primaryBlacken 5))
+            , backgroundColor (fromColor (Theme.primaryBlacken 5))
+            , borderColor (fromColor (Theme.primaryBlacken 5))
             ]
         , active
             [ color Theme.white
-            , backgroundColor (Theme.toCssColor (Theme.primaryBlacken 10))
-            , borderColor (Theme.toCssColor (Theme.primaryBlacken 10))
+            , backgroundColor (fromColor (Theme.primaryBlacken 10))
+            , borderColor (fromColor (Theme.primaryBlacken 10))
             ]
         ]
