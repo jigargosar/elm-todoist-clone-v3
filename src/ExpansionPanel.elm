@@ -4,6 +4,8 @@ module ExpansionPanel exposing
     , expanded
     , toggle
     , view
+    , viewContent
+    , viewHeader
     )
 
 import Html.Styled exposing (Attribute, Html, button, div, i, span, text)
@@ -50,6 +52,15 @@ view config content model =
             else
                 []
            )
+
+
+viewContent : (() -> List a) -> Collapsible -> List a
+viewContent content model =
+    if model == Expanded then
+        content ()
+
+    else
+        []
 
 
 viewHeader : Config msg -> Collapsible -> Html msg

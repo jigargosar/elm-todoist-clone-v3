@@ -112,13 +112,14 @@ viewGhost { dnd } =
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view config projectList state =
-    EP.view config.ep
-        (\_ ->
-            viewItems config
-                projectList
-                state.dnd
-        )
-        state.collapsible
+    EP.viewHeader config.ep state.collapsible
+        :: EP.viewContent
+            (\_ ->
+                viewItems config
+                    projectList
+                    state.dnd
+            )
+            state.collapsible
 
 
 viewItems : Config msg -> List Project -> DNDList Project -> List (Html msg)
