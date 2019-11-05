@@ -10,6 +10,7 @@ module ProjectPanel exposing
     , viewGhost
     )
 
+import Basics.More exposing (Position)
 import Css
 import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (Collapsible)
@@ -28,6 +29,7 @@ import UI.Icon as Icon
 type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
+    , dragState : DragState
     }
 
 
@@ -35,6 +37,7 @@ initial : ProjectPanel
 initial =
     { collapsible = EP.expanded
     , dnd = DND.initial
+    , dragState = NotDragging
     }
 
 
@@ -53,6 +56,18 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DND.Config Project msg
     , ep : EP.Config msg
+    }
+
+
+type DragState
+    = NotDragging
+    | Dragging Int MouseState
+
+
+type alias MouseState =
+    { start : Position
+    , current : Position
+    , offset : Position
     }
 
 
