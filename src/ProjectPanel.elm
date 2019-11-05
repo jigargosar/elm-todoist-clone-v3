@@ -60,14 +60,13 @@ type alias Config msg =
 
 
 createConfig :
-    (Msg -> msg)
-    ->
-        { addClicked : msg
-        , moreClicked : ProjectId -> String -> msg
-        , sorted : List Project -> msg
-        }
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
     -> Config msg
-createConfig toMsg { addClicked, moreClicked, sorted } =
+createConfig { toMsg, addClicked, moreClicked, sorted } =
     let
         ep =
             { toggled = toMsg Toggled
