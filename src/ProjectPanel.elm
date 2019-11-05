@@ -10,7 +10,6 @@ module ProjectPanel exposing
     , viewGhost
     )
 
-import Basics.More exposing (flip)
 import Css
 import DNDList
 import ExpansionPanel exposing (ExpansionPanel)
@@ -29,7 +28,7 @@ type ProjectPanel
 
 
 type alias State =
-    { expansionPanel : ExpansionPanel
+    { ep : ExpansionPanel
     , dnd : DNDList.Model Project
     }
 
@@ -37,7 +36,7 @@ type alias State =
 initial : ProjectPanel
 initial =
     ProjectPanel
-        { expansionPanel = ExpansionPanel.initial
+        { ep = ExpansionPanel.initial
         , dnd = DNDList.initial
         }
 
@@ -47,22 +46,17 @@ initial =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config (ProjectPanel { dnd, expansionPanel }) =
+subscriptions config (ProjectPanel { dnd, ep }) =
     Sub.batch
         [ DNDList.subscriptions config.dnd dnd
-        , ExpansionPanel.subscriptions config.expansionPanel expansionPanel
+        , ExpansionPanel.subscriptions config.ep ep
         ]
-
-
-updateSub args smallMsg big =
-    args.update smallMsg (args.get big)
-        |> Tuple.mapFirst (\small -> args.set small big)
 
 
 type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DNDList.Config Project msg
-    , expansionPanel : ExpansionPanel.Config msg
+    , ep : ExpansionPanel.Config msg
     }
 
 
@@ -77,15 +71,10 @@ createConfig :
 createConfig toMsg { addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
-    , expansionPanel =
+    , ep =
         ExpansionPanel.createConfig (toMsg << ExpansionPanel)
             { title = "Projects", secondary = { iconName = "add", action = addClicked } }
     }
-
-
-map : (State -> State) -> ProjectPanel -> ProjectPanel
-map func =
-    unwrap >> func >> ProjectPanel
 
 
 unwrap : ProjectPanel -> State
@@ -103,25 +92,17 @@ type alias ToMsg msg =
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update config message model =
+update config message (ProjectPanel state) =
     case message of
         DNDList msg ->
-            updateSub
-                { get = unwrap >> .dnd
-                , set = \s -> map (\b -> { b | dnd = s })
-                , update = DNDList.update config.dnd
-                }
-                msg
-                model
+            DNDList.update config.dnd msg state.dnd
+                |> Tuple.mapFirst (\dnd -> ProjectPanel { state | dnd = dnd })
 
         ExpansionPanel msg ->
-            updateSub
-                { get = unwrap >> .expansionPanel
-                , set = \s -> map (\b -> { b | expansionPanel = s })
-                , update = ExpansionPanel.update config.expansionPanel
-                }
+            ExpansionPanel.update config.ep
                 msg
-                model
+                state.ep
+                |> Tuple.mapFirst (\ep -> ProjectPanel { state | ep = ep })
 
 
 viewGhost : ProjectPanel -> List (Html msg)
@@ -143,13 +124,13 @@ viewGhost (ProjectPanel { dnd }) =
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view config projectList (ProjectPanel state) =
-    ExpansionPanel.view config.expansionPanel
+    ExpansionPanel.view config.ep
         (\_ ->
             viewItems config
                 projectList
                 state.dnd
         )
-        state.expansionPanel
+        state.ep
 
 
 viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
