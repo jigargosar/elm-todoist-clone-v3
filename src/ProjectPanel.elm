@@ -54,10 +54,9 @@ subscriptions config (ProjectPanel { dnd, expansionPanel }) =
         ]
 
 
-updateSub args =
-    \smallMsg big ->
-        args.update smallMsg (args.get big)
-            |> Tuple.mapFirst (\small -> args.set small big)
+updateSub args smallMsg big =
+    args.update smallMsg (args.get big)
+        |> Tuple.mapFirst (\small -> args.set small big)
 
 
 type alias Config msg =
@@ -116,8 +115,13 @@ update config message model =
                 model
 
         ExpansionPanel msg ->
-            ExpansionPanel.update config.expansionPanel msg (unwrap model |> .expansionPanel)
-                |> Tuple.mapFirst (\expansionPanel -> map (\state -> { state | expansionPanel = expansionPanel }) model)
+            updateSub
+                { get = unwrap >> .expansionPanel
+                , set = \s -> map (\b -> { b | expansionPanel = s })
+                , update = ExpansionPanel.update config.expansionPanel
+                }
+                msg
+                model
 
 
 viewGhost : ProjectPanel -> List (Html msg)
