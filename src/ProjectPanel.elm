@@ -122,7 +122,15 @@ view config projectList state =
             state.collapsible
 
 
-viewItems : { a | dnd : { b | toMsg : DND.Msg Project -> c }, moreClicked : ProjectId -> String -> c } -> List Project -> DNDList Project -> List (Html c)
+viewItems :
+    { a
+        | dnd :
+            { b | toMsg : DND.Msg Project -> c }
+        , moreClicked : ProjectId -> String -> c
+    }
+    -> List Project
+    -> DNDList Project
+    -> List (Html c)
 viewItems config projectList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
