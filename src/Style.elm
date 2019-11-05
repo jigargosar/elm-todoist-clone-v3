@@ -6,6 +6,26 @@ import Css.Transitions as T
 import Theme
 
 
+sRem : Float -> Css.Rem
+sRem n =
+    {-
+       base 16
+       rem 1
+       base 20
+       rem 0.8
+
+
+       base 20
+       rem 1.8
+       base 16
+       rem 2
+
+
+
+    -}
+    Css.rem ((20 / 16) * n)
+
+
 defaultBorder2 =
     border2 (sRem 0.05) solid
 

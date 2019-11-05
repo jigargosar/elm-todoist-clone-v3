@@ -1,6 +1,5 @@
 module Css.More exposing
     ( appearanceNone
-    , sRem
     , textDecorationNone
     , transitionWithDelay
     , userSelectNone
@@ -9,26 +8,6 @@ module Css.More exposing
 
 import Css
 import Css.Transitions as T
-
-
-sRem : Float -> Css.Rem
-sRem n =
-    {-
-       base 16
-       rem 1
-       base 20
-       rem 0.8
-
-
-       base 20
-       rem 1.8
-       base 16
-       rem 2
-
-
-
-    -}
-    Css.rem ((20 / 16) * n)
 
 
 white : Css.Color
