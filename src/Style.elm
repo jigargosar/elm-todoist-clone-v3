@@ -32,9 +32,9 @@ basicBtn : Style
 basicBtn =
     batch
         [ appearanceNone
-        , backgroundColorWhite
+        , backgroundColor white
         , defaultBorder2
-        , borderColorWhite
+        , borderColor white
         , borderRadius (sRem 0.1)
         , color Theme.primary
         , cursor pointer
@@ -58,8 +58,8 @@ linkBtn : Style
 linkBtn =
     batch
         [ basicBtn
-        , backgroundColorWhite
-        , borderColorTransparent
+        , backgroundColor white
+        , borderColor transparent
         , color Theme.primary
         , hover [ color Theme.primaryBlacker ]
         , focus [ color Theme.primaryBlacker ]
@@ -73,7 +73,7 @@ primaryBtn =
         [ basicBtn
         , backgroundColor Theme.primary
         , borderColor Theme.primary
-        , colorWhite
+        , color white
         , hover [ backgroundColor Theme.primaryBlacker ]
         , focus [ backgroundColor Theme.primaryBlacker ]
         , active [ backgroundColor Theme.primaryBlackest ]
@@ -101,11 +101,11 @@ formInput : Style
 formInput =
     batch
         [ appearanceNone
-        , backgroundColorWhite
+        , backgroundColor white
         , backgroundImage none
         , defaultBorder2
-        , borderColorHSL 217 0.16 0.77
-        , colorHSL 218 0.16 0.27
+        , borderColor <| hsl 217 0.16 0.77
+        , color <| hsl 218 0.16 0.27
         , display block
         , fontSize (sRem 0.8)
         , height (sRem 1.8)

@@ -1,15 +1,10 @@
 module Css.More exposing
     ( appearanceNone
-    , backgroundColorWhite
-    , borderColorHSL
-    , borderColorTransparent
-    , borderColorWhite
-    , colorHSL
-    , colorWhite
     , sRem
     , textDecorationNone
     , transitionWithDelay
     , userSelectNone
+    , white
     )
 
 import Css
@@ -34,46 +29,6 @@ sRem n =
 
     -}
     Css.rem ((20 / 16) * n)
-
-
-borderColorTransparent : Css.Style
-borderColorTransparent =
-    Css.borderColor Css.transparent
-
-
-colorWhite : Css.Style
-colorWhite =
-    Css.color white
-
-
-backgroundColorWhite : Css.Style
-backgroundColorWhite =
-    Css.backgroundColor white
-
-
-borderColorWhite : Css.Style
-borderColorWhite =
-    Css.borderColor white
-
-
-hslProperty : (Css.Color -> Css.Style) -> Float -> Float -> Float -> Css.Style
-hslProperty propFn h s l =
-    propFn (Css.hsl h s l)
-
-
-colorHSL : Float -> Float -> Float -> Css.Style
-colorHSL =
-    hslProperty Css.color
-
-
-backgroundColorHSL : Float -> Float -> Float -> Css.Style
-backgroundColorHSL =
-    hslProperty Css.backgroundColor
-
-
-borderColorHSL : Float -> Float -> Float -> Css.Style
-borderColorHSL =
-    hslProperty Css.borderColor
 
 
 white : Css.Color
