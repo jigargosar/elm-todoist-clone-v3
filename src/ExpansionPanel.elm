@@ -31,7 +31,10 @@ type Msg
 
 
 type alias Config msg =
-    { toggled : msg, title : String, secondary : { iconName : String, action : msg } }
+    { toggled : msg
+    , title : String
+    , secondary : { iconName : String, action : msg }
+    }
 
 
 type alias ToMsg msg =
