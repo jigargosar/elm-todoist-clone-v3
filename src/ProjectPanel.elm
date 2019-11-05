@@ -72,6 +72,7 @@ map func =
     unwrap >> func >> ProjectPanel
 
 
+unwrap : ProjectPanel -> State
 unwrap (ProjectPanel state) =
     state
 
