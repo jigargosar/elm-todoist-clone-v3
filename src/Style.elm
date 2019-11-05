@@ -1,4 +1,4 @@
-module Style exposing (basicBtn, formGroup, formLabel, linkBtn, primaryBtn)
+module Style exposing (basicBtn, formGroup, formInput, formLabel, linkBtn, primaryBtn)
 
 import Css exposing (..)
 import Css.More as CM exposing (..)
@@ -7,7 +7,15 @@ import Theme
 
 
 defaultBorder2 =
-    border2 (rem 0.0625) solid
+    border2 (sRem 0.05) solid
+
+
+defaultTransitions =
+    transitionWithDelay 200 [ T.background, T.border, T.boxShadow, T.color ]
+
+
+rem =
+    1
 
 
 basicBtn : Style
@@ -17,18 +25,18 @@ basicBtn =
         , backgroundColorWhite
         , defaultBorder2
         , CM.borderColor Theme.primary
-        , borderRadius (rem 0.125)
+        , borderRadius (sRem 0.1)
         , CM.color Theme.primary
         , cursor pointer
         , display inlineBlock
-        , fontSize (rem 1)
-        , height (rem 2)
-        , lineHeight (rem 1.5)
+        , fontSize (sRem 0.8)
+        , height (sRem 1.8)
+        , lineHeight (sRem 1.2)
         , outline zero
-        , padding2 (rem 0.25) (rem 0.5)
+        , padding2 (sRem 0.25) (sRem 0.4)
         , textAlign center
         , textDecorationNone
-        , transitionWithDelay 200 [ T.background, T.border, T.boxShadow, T.color ]
+        , defaultTransitions
         , userSelectNone
         , verticalAlign middle
         , whiteSpace noWrap
@@ -40,8 +48,8 @@ basicBtn =
             [ boxShadow5 zero
                 zero
                 zero
-                (rem 0.125)
-                (fromColorWithAlpha Theme.primary 0.5)
+                (sRem 0.1)
+                (fromColorWithAlpha Theme.primary 0.2)
             ]
         , active
             [ textDecorationNone
@@ -96,7 +104,7 @@ formGroup : Style
 formGroup =
     batch
         [ lastChild [ marginBottom zero ]
-        , marginBottom (rem 0.5)
+        , marginBottom (sRem 0.4)
         ]
 
 
@@ -104,11 +112,12 @@ formLabel : Style
 formLabel =
     batch
         [ display block
-        , lineHeight (rem 1.5)
-        , padding2 (rem 0.375) zero
+        , lineHeight (sRem 1.2)
+        , padding2 (sRem 0.3) zero
         ]
 
 
+formInput : Style
 formInput =
     batch
         [ appearanceNone
@@ -118,10 +127,13 @@ formInput =
         , borderColorHSL 217 0.16 0.77
         , colorHSL 218 0.16 0.27
         , display block
-        , fontSize (rem 1)
-        , height (rem 2)
-        , lineHeight (rem 1.5)
+        , fontSize (sRem 0.8)
+        , height (sRem 1.8)
+        , lineHeight (sRem 1.2)
         , maxWidth (pct 100)
         , outline none
-        , padding2 (rem 0.375) (rem 0.5)
+        , padding2 (sRem 0.25) (sRem 0.4)
+        , position relative
+        , defaultTransitions
+        , width (pct 100)
         ]

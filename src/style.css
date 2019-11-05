@@ -25,6 +25,20 @@ html {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   height: 100%;
+  /*font-size: 20px;*/
+  line-height: 1.5;
+  box-sizing: border-box;
+
+}
+
+body {
+  background: hsl(0, 0%, 100%);
+  color: hsl(218, 16%, 27%);
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', sans-serif;
+  /*font-size: 0.8rem;*/
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 :root {
@@ -68,14 +82,19 @@ html {
   }
 }
 
-.hover_parent .show_on_parent_hover:focus{
+.hover_parent .show_on_parent_hover:focus {
   visibility: visible;
 }
-.hover_parent .show_on_parent_hover{
+.hover_parent .show_on_parent_hover {
   visibility: hidden;
 }
 
-.hover_parent:hover .show_on_parent_hover{
+.hover_parent:hover .show_on_parent_hover {
   visibility: visible;
 }
 
+*,
+::after,
+::before {
+  box-sizing: inherit;
+}

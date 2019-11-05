@@ -19,7 +19,8 @@ view : { closeDrawerModal : msg } -> Parts msg -> Bool -> Html msg
 view { closeDrawerModal } { appbar, drawer, main, modal } isDrawerModalOpen =
     styled div
         [ bgBody
-        , colorGrayL 0.3
+
+        {- , colorGrayL 0.3 -}
         , min_h_100
         , flex
         ]

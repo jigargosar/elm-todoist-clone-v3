@@ -10,6 +10,7 @@ module Css.More exposing
     , colorHSL
     , colorWhite
     , fromColorWithAlpha
+    , sRem
     , textDecorationNone
     , transitionWithDelay
     , userSelectNone
@@ -19,6 +20,26 @@ import Color
 import Color.Transparent
 import Css
 import Css.Transitions as T
+
+
+sRem : Float -> Css.Rem
+sRem n =
+    {-
+       base 16
+       rem 1
+       base 20
+       rem 0.8
+
+
+       base 20
+       rem 1.8
+       base 16
+       rem 2
+
+
+
+    -}
+    Css.rem ((20 / 16) * n)
 
 
 fromColor : Color.Color -> Css.Color

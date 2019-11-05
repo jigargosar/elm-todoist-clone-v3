@@ -33,7 +33,7 @@ input { labelText, value, changed, attrs } =
     label [ css [ Style.formGroup, flex, flexColumn ] ]
         [ span [ css [ Style.formLabel ] ] [ text labelText ]
         , H.input
-            ([ css [ lh 1.5, pa 1, boAll, boColor <| Theme.borderGray ]
+            ([ css [ Style.formInput ]
              , A.value value
              , onInput changed
              ]
