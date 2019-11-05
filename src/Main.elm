@@ -480,9 +480,27 @@ updatePopup message popup model =
             ( model, Cmd.none )
 
 
-mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
-mapProjectPanel func model =
-    { model | projectPanel = func model.projectPanel }
+mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
+mapProjectCollection func model =
+    { model | projectCollection = func model.projectCollection }
+
+
+updateProjectSortOrder projectList model =
+    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
+    , Cmd.none
+    )
+
+
+mapLabelCollection : (b -> b) -> { a | labelCollection : b } -> { a | labelCollection : b }
+mapLabelCollection func model =
+    { model | labelCollection = func model.labelCollection }
+
+
+updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
+updateLabelSortOrder labelList model =
+    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
+    , Cmd.none
+    )
 
 
 projectPanelConfig : ProjectPanel.Config Msg
@@ -515,30 +533,14 @@ filterPanelConfig =
         }
 
 
-mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
-mapProjectCollection func model =
-    { model | projectCollection = func model.projectCollection }
-
-
-updateProjectSortOrder projectList model =
-    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
-    , Cmd.none
-    )
+mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
+mapProjectPanel func model =
+    { model | projectPanel = func model.projectPanel }
 
 
 mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
 mapLabelPanel func model =
     { model | labelPanel = func model.labelPanel }
-
-
-mapLabelCollection func model =
-    { model | labelCollection = func model.labelCollection }
-
-
-updateLabelSortOrder labelList model =
-    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
-    , Cmd.none
-    )
 
 
 mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
