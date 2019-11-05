@@ -15,7 +15,7 @@ defaultTransitions =
 
 
 rem =
-    1
+    ()
 
 
 basicBtn : Style
