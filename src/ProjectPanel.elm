@@ -46,8 +46,11 @@ initial =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config (ProjectPanel { dnd }) =
-    DNDList.subscriptions config.dnd dnd
+subscriptions config (ProjectPanel { dnd, expansionPanel }) =
+    Sub.batch
+        [ DNDList.subscriptions config.dnd dnd
+        , ExpansionPanel.subscriptions config.expansionPanel expansionPanel
+        ]
 
 
 type alias Config msg =
