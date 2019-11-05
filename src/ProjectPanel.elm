@@ -50,13 +50,14 @@ type alias Config msg =
 
 
 createConfig :
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
+    ToMsg msg
+    ->
+        { addClicked : msg
+        , moreClicked : ProjectId -> String -> msg
+        , sorted : List Project -> msg
+        }
     -> Config msg
-createConfig { toMsg, addClicked, moreClicked, sorted } =
+createConfig toMsg { addClicked, moreClicked, sorted } =
     { addClicked = addClicked
     , moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }

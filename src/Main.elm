@@ -500,9 +500,8 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    ProjectPanel.createConfig
-        { toMsg = ProjectPanel
-        , addClicked = AddProjectClicked
+    ProjectPanel.createConfig ProjectPanel
+        { addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
         }
