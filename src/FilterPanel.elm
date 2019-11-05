@@ -1,34 +1,46 @@
 module FilterPanel exposing
     ( Config
     , FilterPanel
+    , Msg
+    , createConfig
     , initial
-    , onDNDMsg
-    , onToggle
     , subscriptions
+    , update
     , view
     , viewGhost
     )
 
 import Css
-import DNDList
+import DNDList as DND exposing (DNDList)
+import ExpansionPanel as EP exposing (Collapsible)
 import Filter exposing (Filter)
 import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
+import Panels
 import Px
 import Route
 import Styles exposing (..)
-import UI
+import UI.Icon as Icon
 
 
-type alias FilterPanel =
-    { collapsed : Bool, dnd : DNDList.DNDList Filter }
+type FilterPanel
+    = FilterPanel State
+
+
+type alias State =
+    { collapsible : Collapsible
+    , dnd : DNDList Filter
+    }
 
 
 initial : FilterPanel
 initial =
-    { collapsed = False, dnd = DNDList.initial }
+    FilterPanel
+        { collapsible = EP.expanded
+        , dnd = DND.initial
+        }
 
 
 
@@ -36,38 +48,59 @@ initial =
 
 
 subscriptions : Config msg -> FilterPanel -> Sub msg
-subscriptions config { dnd } =
-    DNDList.subscriptions config.dndConfig dnd
+subscriptions config (FilterPanel { dnd }) =
+    Sub.batch
+        [ DND.subscriptions config.dnd dnd
+        ]
 
 
 type alias Config msg =
-    { toggled : msg
-    , addClicked : msg
-    , moreClicked : FilterId -> String -> msg
-    , dndConfig : DNDList.Config Filter msg
+    { moreClicked : FilterId -> String -> msg
+    , dnd : DND.Config Filter msg
+    , ep : EP.Config msg
     }
 
 
-onToggle : FilterPanel -> FilterPanel
-onToggle model =
-    { model | collapsed = not model.collapsed }
+createConfig :
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : FilterId -> String -> msg
+    , sorted : List Filter -> msg
+    }
+    -> Config msg
+createConfig { toMsg, addClicked, moreClicked, sorted } =
+    let
+        ep =
+            { toggled = toMsg Toggled
+            , title = "Filters"
+            , secondary = { iconName = "add", action = addClicked }
+            }
+    in
+    { moreClicked = moreClicked
+    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
+    , ep = ep
+    }
 
 
-onDNDMsg :
-    Config msg
-    -> DNDList.Msg Filter
-    -> FilterPanel
-    -> ( FilterPanel, Cmd msg )
-onDNDMsg config msg model =
-    DNDList.update config.dndConfig
-        msg
-        model.dnd
-        |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
+type Msg
+    = DNDList (DND.Msg Filter)
+    | Toggled
+
+
+update : Config msg -> Msg -> FilterPanel -> ( FilterPanel, Cmd msg )
+update config message (FilterPanel state) =
+    case message of
+        DNDList msg ->
+            DND.update config.dnd msg state.dnd
+                |> Tuple.mapFirst (\dnd -> FilterPanel { state | dnd = dnd })
+
+        Toggled ->
+            ( FilterPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
 viewGhost : FilterPanel -> List (Html msg)
-viewGhost { dnd } =
-    case DNDList.ghost dnd of
+viewGhost (FilterPanel { dnd }) =
+    case DND.ghost dnd of
         Just ( style, filter ) ->
             [ viewItem
                 { itemAttrs = []
@@ -83,25 +116,21 @@ viewGhost { dnd } =
 
 
 view : Config msg -> List Filter -> FilterPanel -> List (Html msg)
-view config filterList model =
-    UI.viewExpansionPanel
-        { toggled = config.toggled
-        , title = "Filters"
-        , collapsed = model.collapsed
-        , secondary = { iconName = "add", action = config.addClicked }
-        }
+view config filterList (FilterPanel state) =
+    EP.view config.ep
         (\_ ->
             viewItems config
                 filterList
-                model.dnd
+                state.dnd
         )
+        state.collapsible
 
 
-viewItems : Config msg -> List Filter -> DNDList.DNDList Filter -> List (Html msg)
+viewItems : Config msg -> List Filter -> DNDList Filter -> List (Html msg)
 viewItems config filterList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DNDList.view config.dndConfig filterList dndList
+            DND.view config.dnd filterList dndList
     in
     List.map
         (\filter ->
@@ -144,12 +173,10 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } filter =
             Route.filterHref filter
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ i
+        [ Icon.view2 Panels.filterIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
-                :: class "material-icons"
                 :: handleAttrs
             )
-            [ text "filter_list" ]
         , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]

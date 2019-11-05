@@ -4,7 +4,6 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
@@ -291,8 +290,7 @@ type Msg
     | AddFilterClicked
     | ProjectPanel ProjectPanel.Msg
     | LabelPanel LabelPanel.Msg
-    | ToggleFilterPanel
-    | FilterPanelDNDListMsg (DNDList.Msg Filter)
+    | FilterPanel FilterPanel.Msg
     | ProjectOrderChanged (List Project)
     | LabelOrderChanged (List Label)
     | FilterOrderChanged (List Filter)
@@ -419,8 +417,9 @@ update message model =
             LabelPanel.update labelPanelConfig msg model.labelPanel
                 |> Tuple.mapFirst (always >> flip mapLabelPanel model)
 
-        ToggleFilterPanel ->
-            ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
+        FilterPanel msg ->
+            FilterPanel.update filterPanelConfig msg model.filterPanel
+                |> Tuple.mapFirst (always >> flip mapFilterPanel model)
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
@@ -435,10 +434,6 @@ update message model =
 
         AddFilterClicked ->
             ( model, Cmd.none )
-
-        FilterPanelDNDListMsg msg ->
-            FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
-                |> Tuple.mapFirst (\filterPanel -> mapFilterPanel (always filterPanel) model)
 
         ProjectOrderChanged projectList ->
             updateProjectSortOrder projectList model
@@ -510,6 +505,16 @@ labelPanelConfig =
         }
 
 
+filterPanelConfig : FilterPanel.Config Msg
+filterPanelConfig =
+    FilterPanel.createConfig
+        { toMsg = FilterPanel
+        , addClicked = AddFilterClicked
+        , moreClicked = FilterMoreMenu >> PopupTriggered
+        , sorted = FilterOrderChanged
+        }
+
+
 mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
 mapProjectCollection func model =
     { model | projectCollection = func model.projectCollection }
@@ -539,15 +544,6 @@ updateLabelSortOrder labelList model =
 mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
 mapFilterPanel func model =
     { model | filterPanel = func model.filterPanel }
-
-
-filterPanelConfig : FilterPanel.Config Msg
-filterPanelConfig =
-    { toggled = ToggleFilterPanel
-    , addClicked = AddFilterClicked
-    , moreClicked = FilterMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = FilterPanelDNDListMsg, sorted = FilterOrderChanged }
-    }
 
 
 mapFilterCollection func model =
