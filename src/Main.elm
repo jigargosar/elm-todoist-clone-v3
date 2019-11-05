@@ -256,7 +256,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
+        , ProjectPanel.subscriptions ProjectPanel projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         , dialog.subscriptions model
@@ -289,10 +289,10 @@ type Msg
     | EditProjectClicked ProjectId
     | AddLabelClicked
     | AddFilterClicked
+    | ProjectPanel ProjectPanel.Msg
     | ToggleProjectPanel
     | ToggleLabelPanel
     | ToggleFilterPanel
-    | ProjectPanelDNDListMsg (DNDList.Msg Project)
     | LabelPanelDNDListMsg (DNDList.Msg Label)
     | FilterPanelDNDListMsg (DNDList.Msg Filter)
     | ProjectOrderChanged (List Project)
@@ -413,6 +413,10 @@ update message model =
             in
             ( newModel, Cmd.none )
 
+        ProjectPanel msg ->
+            ProjectPanel.update ProjectPanel projectPanelConfig msg model.projectPanel
+                |> Tuple.mapFirst (always >> flip mapProjectPanel model)
+
         ToggleProjectPanel ->
             ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
@@ -435,10 +439,6 @@ update message model =
 
         AddFilterClicked ->
             ( model, Cmd.none )
-
-        ProjectPanelDNDListMsg msg ->
-            ProjectPanel.onDNDMsg projectPanelConfig msg model.projectPanel
-                |> Tuple.mapFirst (\projectPanel -> mapProjectPanel (always projectPanel) model)
 
         LabelPanelDNDListMsg msg ->
             LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
@@ -500,10 +500,9 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { toggled = ToggleProjectPanel
-    , addClicked = AddProjectClicked
+    { addClicked = AddProjectClicked
     , moreClicked = ProjectMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = ProjectPanelDNDListMsg, sorted = ProjectOrderChanged }
+    , sorted = ProjectOrderChanged
     }
 
 
@@ -636,7 +635,8 @@ view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            ProjectPanel.view projectPanelConfig
+            ProjectPanel.view ProjectPanel
+                projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
 
