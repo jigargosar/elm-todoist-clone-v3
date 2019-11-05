@@ -54,34 +54,16 @@ subscriptions config (ProjectPanel { dnd, expansionPanel }) =
         ]
 
 
-type alias SubSystem smallMsg big msg =
-    { update : smallMsg -> big -> ( big, Cmd msg )
-    }
-
-
-type alias SubSystemConfig smallMsg small big msg =
-    { get : big -> small
-    , set : small -> big -> big
-    , update : smallMsg -> small -> ( small, Cmd msg )
-    }
-
-
-createSubSystem :
-    SubSystemConfig smallMsg small big msg
-    -> SubSystem smallMsg big msg
-createSubSystem args =
-    { update =
-        \smallMsg big ->
-            args.update smallMsg (args.get big)
-                |> Tuple.mapFirst (\small -> args.set small big)
-    }
+updateSub args =
+    \smallMsg big ->
+        args.update smallMsg (args.get big)
+            |> Tuple.mapFirst (\small -> args.set small big)
 
 
 type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DNDList.Config Project msg
     , expansionPanel : ExpansionPanel.Config msg
-    , dndSys : SubSystem (DNDList.Msg Project) ProjectPanel msg
     }
 
 
@@ -94,18 +76,8 @@ createConfig :
         }
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
-    let
-        dndSys : SubSystem (DNDList.Msg Project) ProjectPanel msg
-        dndSys =
-            createSubSystem
-                { get = unwrap >> .dnd
-                , set = \s -> map (\b -> { b | dnd = s })
-                , update = DNDList.update { toMsg = toMsg << DNDList, sorted = sorted }
-                }
-    in
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
-    , dndSys = dndSys
     , expansionPanel =
         ExpansionPanel.createConfig (toMsg << ExpansionPanel)
             { title = "Projects", secondary = { iconName = "add", action = addClicked } }
@@ -135,7 +107,13 @@ update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
         DNDList msg ->
-            config.dndSys.update msg model
+            updateSub
+                { get = unwrap >> .dnd
+                , set = \s -> map (\b -> { b | dnd = s })
+                , update = DNDList.update config.dnd
+                }
+                msg
+                model
 
         ExpansionPanel msg ->
             ExpansionPanel.update config.expansionPanel msg (unwrap model |> .expansionPanel)
