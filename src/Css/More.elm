@@ -125,6 +125,7 @@ borderColorHSL =
     hslProperty Css.borderColor
 
 
+white : Css.Color
 white =
     Css.rgb 255 255 255
 
