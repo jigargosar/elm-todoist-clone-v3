@@ -45,10 +45,10 @@ view : Config msg -> (() -> List (Html msg)) -> Collapsible -> List (Html msg)
 view config content model =
     viewHeader config model
         :: (if model == Expanded then
-                []
+                content ()
 
             else
-                content ()
+                []
            )
 
 

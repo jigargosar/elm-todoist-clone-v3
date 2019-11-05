@@ -20,6 +20,7 @@ import Px
 import Route
 import Styles exposing (..)
 import UI
+import UI.Icon as Icon
 
 
 type alias LabelPanel =
@@ -144,12 +145,10 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } label =
             Route.labelHref label
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ i
+        [ Icon.view2 Icon.Label
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
-                :: class "material-icons"
                 :: handleAttrs
             )
-            [ text "label" ]
         , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
             ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]

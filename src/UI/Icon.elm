@@ -1,6 +1,6 @@
-module UI.Icon exposing (Icon(..), view)
+module UI.Icon exposing (Icon(..), view, view2)
 
-import Html.Styled exposing (Html, i, text)
+import Html.Styled exposing (Attribute, Html, i, text)
 import Html.Styled.Attributes exposing (class)
 
 
@@ -22,6 +22,11 @@ type Icon
 view : Icon -> Html msg
 view icon =
     i [ class "material-icons" ] [ text <| iconName icon ]
+
+
+view2 : Icon -> List (Attribute msg) -> Html msg
+view2 icon attrs =
+    i (class "material-icons" :: attrs) [ text <| iconName icon ]
 
 
 iconName : Icon -> String
