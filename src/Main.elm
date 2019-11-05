@@ -96,12 +96,36 @@ type PopupMsg
 
 
 
--- PROJECT COLLECTION
+-- COLLECTIONS
 
 
 projectById : ProjectId -> { a | projectCollection : ProjectCollection } -> Maybe Project
 projectById projectId model =
     ProjectCollection.byId projectId model.projectCollection
+
+
+mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
+mapProjectCollection func model =
+    { model | projectCollection = func model.projectCollection }
+
+
+updateProjectSortOrder : List Project -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
+updateProjectSortOrder projectList model =
+    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
+    , Cmd.none
+    )
+
+
+mapLabelCollection : (b -> b) -> { a | labelCollection : b } -> { a | labelCollection : b }
+mapLabelCollection func model =
+    { model | labelCollection = func model.labelCollection }
+
+
+updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
+updateLabelSortOrder labelList model =
+    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
+    , Cmd.none
+    )
 
 
 
@@ -478,29 +502,6 @@ updatePopup message popup model =
 
         _ ->
             ( model, Cmd.none )
-
-
-mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
-mapProjectCollection func model =
-    { model | projectCollection = func model.projectCollection }
-
-
-updateProjectSortOrder projectList model =
-    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
-    , Cmd.none
-    )
-
-
-mapLabelCollection : (b -> b) -> { a | labelCollection : b } -> { a | labelCollection : b }
-mapLabelCollection func model =
-    { model | labelCollection = func model.labelCollection }
-
-
-updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
-updateLabelSortOrder labelList model =
-    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
-    , Cmd.none
-    )
 
 
 projectPanelConfig : ProjectPanel.Config Msg
