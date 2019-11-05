@@ -1,4 +1,4 @@
-module Style exposing (basicBtn, formGroup, formInput, formLabel, linkBtn, primaryBtn)
+module Style exposing (formGroup, formInput, formLabel, linkBtn, primaryBtn)
 
 import Css exposing (..)
 import Css.More as CM exposing (..)
@@ -24,7 +24,7 @@ basicBtn =
         [ appearanceNone
         , backgroundColorWhite
         , defaultBorder2
-        , CM.borderColor Theme.primary
+        , borderColorWhite
         , borderRadius (sRem 0.1)
         , CM.color Theme.primary
         , cursor pointer
@@ -40,24 +40,12 @@ basicBtn =
         , userSelectNone
         , verticalAlign middle
         , whiteSpace noWrap
-        , hover
-            [ CM.backgroundColor (Theme.primaryWhiten 38)
-            , CM.borderColor Theme.primary
-            ]
         , focus
-            [ CM.backgroundColor (Theme.primaryWhiten 38)
-            , CM.borderColor Theme.primary
-            , boxShadow5 zero
+            [ boxShadow5 zero
                 zero
                 zero
                 (sRem 0.1)
                 (fromColorWithAlpha Theme.primary 0.2)
-            ]
-        , active
-            [ textDecorationNone
-            , colorWhite
-            , CM.backgroundColor (Theme.primaryBlacken 5)
-            , CM.borderColor (Theme.primaryBlacken 5)
             ]
         ]
 
@@ -71,20 +59,12 @@ linkBtn =
         , CM.color Theme.primary
         , hover
             [ CM.color (Theme.primaryBlacken 10)
-            , backgroundColorWhite
-            , borderColorTransparent
             ]
         , focus
-            [ hover
-                [ CM.color (Theme.primaryBlacken 10)
-                , backgroundColorWhite
-                , borderColorTransparent
-                ]
+            [ CM.color (Theme.primaryBlacken 10)
             ]
         , active
             [ CM.color (Theme.primaryBlacken 10)
-            , backgroundColorWhite
-            , borderColorTransparent
             ]
         ]
 
@@ -94,22 +74,16 @@ primaryBtn =
     batch
         [ basicBtn
         , CM.backgroundColor Theme.primary
-        , borderColorTransparent
+        , CM.borderColor Theme.primary
         , colorWhite
         , hover
-            [ colorWhite
-            , CM.backgroundColor (Theme.primaryBlacken 5)
-            , CM.borderColor (Theme.primaryBlacken 5)
+            [ CM.backgroundColor (Theme.primaryBlacken 5)
             ]
         , focus
-            [ colorWhite
-            , CM.backgroundColor (Theme.primaryBlacken 5)
-            , CM.borderColor (Theme.primaryBlacken 5)
+            [ CM.backgroundColor (Theme.primaryBlacken 5)
             ]
         , active
-            [ colorWhite
-            , CM.backgroundColor (Theme.primaryBlacken 10)
-            , CM.borderColor (Theme.primaryBlacken 10)
+            [ CM.backgroundColor (Theme.primaryBlacken 10)
             ]
         ]
 

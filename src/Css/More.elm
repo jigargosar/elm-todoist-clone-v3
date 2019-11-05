@@ -6,6 +6,7 @@ module Css.More exposing
     , borderColor
     , borderColorHSL
     , borderColorTransparent
+    , borderColorWhite
     , color
     , colorHSL
     , colorWhite
@@ -97,6 +98,11 @@ colorWhite =
 backgroundColorWhite : Css.Style
 backgroundColorWhite =
     Css.backgroundColor white
+
+
+borderColorWhite : Css.Style
+borderColorWhite =
+    Css.borderColor white
 
 
 hslProperty : (Css.Color -> Css.Style) -> Float -> Float -> Float -> Css.Style
