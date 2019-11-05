@@ -43,7 +43,7 @@ type alias Config msg =
 
 view : Config msg -> (() -> List (Html msg)) -> Collapsible -> List (Html msg)
 view config content model =
-    viewExpansionPanelHeader config model
+    viewHeader config model
         :: (if model == Expanded then
                 []
 
@@ -52,8 +52,8 @@ view config content model =
            )
 
 
-viewExpansionPanelHeader : Config msg -> Collapsible -> Html msg
-viewExpansionPanelHeader { toggled, title, secondary } model =
+viewHeader : Config msg -> Collapsible -> Html msg
+viewHeader { toggled, title, secondary } model =
     div
         [ css
             [ Px.pl 4
