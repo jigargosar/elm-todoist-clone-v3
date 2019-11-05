@@ -1,11 +1,8 @@
 module ExpansionPanel exposing
-    ( Config
-    , ExpansionPanel
-    , Msg
-    , createConfig
-    , initial
-    , subscriptions
-    , update
+    ( Collapsible
+    , Config
+    , expanded
+    , toggle
     , view
     )
 
@@ -17,31 +14,24 @@ import Styles exposing (..)
 import Theme
 
 
-type ExpansionPanel
-    = ExpansionPanel State
+type Collapsible
+    = Collapsed
+    | Expanded
 
 
-type alias State =
-    Bool
+expanded : Collapsible
+expanded =
+    Expanded
 
 
-initial : ExpansionPanel
-initial =
-    ExpansionPanel False
+toggle : Collapsible -> Collapsible
+toggle model =
+    case model of
+        Collapsed ->
+            Expanded
 
-
-unwrap : ExpansionPanel -> State
-unwrap (ExpansionPanel state) =
-    state
-
-
-map : (State -> State) -> ExpansionPanel -> ExpansionPanel
-map func =
-    unwrap >> func >> ExpansionPanel
-
-
-type Msg
-    = Toggled
+        Expanded ->
+            Collapsed
 
 
 type alias Config msg =
@@ -51,40 +41,10 @@ type alias Config msg =
     }
 
 
-type alias ToMsg msg =
-    Msg -> msg
-
-
-createConfig :
-    ToMsg msg
-    ->
-        { title : String
-        , secondary : { iconName : String, action : msg }
-        }
-    -> Config msg
-createConfig toMsg { title, secondary } =
-    { toggled = toMsg Toggled
-    , title = title
-    , secondary = secondary
-    }
-
-
-subscriptions : Config msg -> ExpansionPanel -> Sub msg
-subscriptions _ _ =
-    Sub.none
-
-
-update : Config msg -> Msg -> ExpansionPanel -> ( ExpansionPanel, Cmd msg )
-update _ message model =
-    case message of
-        Toggled ->
-            ( map not model, Cmd.none )
-
-
-view : Config msg -> (() -> List (Html msg)) -> ExpansionPanel -> List (Html msg)
-view config content (ExpansionPanel collapsed) =
-    viewExpansionPanelHeader config collapsed
-        :: (if collapsed then
+view : Config msg -> (() -> List (Html msg)) -> Collapsible -> List (Html msg)
+view config content model =
+    viewExpansionPanelHeader config model
+        :: (if model == Expanded then
                 []
 
             else
@@ -92,8 +52,8 @@ view config content (ExpansionPanel collapsed) =
            )
 
 
-viewExpansionPanelHeader : Config msg -> Bool -> Html msg
-viewExpansionPanelHeader { toggled, title, secondary } collapsed =
+viewExpansionPanelHeader : Config msg -> Collapsible -> Html msg
+viewExpansionPanelHeader { toggled, title, secondary } model =
     div
         [ css
             [ Px.pl 4
@@ -107,7 +67,7 @@ viewExpansionPanelHeader { toggled, title, secondary } collapsed =
         ]
         [ let
             iconName =
-                if collapsed then
+                if model == Collapsed then
                     "chevron_right"
 
                 else

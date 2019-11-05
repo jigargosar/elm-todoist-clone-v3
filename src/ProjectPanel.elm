@@ -12,7 +12,7 @@ module ProjectPanel exposing
 
 import Css
 import DNDList as DND exposing (DNDList)
-import ExpansionPanel as EP exposing (ExpansionPanel)
+import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
@@ -28,7 +28,7 @@ type ProjectPanel
 
 
 type alias State =
-    { ep : ExpansionPanel
+    { collapsible : Collapsible
     , dnd : DNDList Project
     }
 
@@ -36,7 +36,7 @@ type alias State =
 initial : ProjectPanel
 initial =
     ProjectPanel
-        { ep = EP.initial
+        { collapsible = EP.expanded
         , dnd = DND.initial
         }
 
@@ -46,10 +46,9 @@ initial =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config (ProjectPanel { dnd, ep }) =
+subscriptions config (ProjectPanel { dnd }) =
     Sub.batch
         [ DND.subscriptions config.dnd dnd
-        , EP.subscriptions config.ep ep
         ]
 
 
@@ -61,7 +60,7 @@ type alias Config msg =
 
 
 createConfig :
-    ToMsg msg
+    (Msg -> msg)
     ->
         { addClicked : msg
         , moreClicked : ProjectId -> String -> msg
@@ -71,8 +70,10 @@ createConfig :
 createConfig toMsg { addClicked, moreClicked, sorted } =
     let
         ep =
-            EP.createConfig (toMsg << ExpansionPanel)
-                { title = "Projects", secondary = { iconName = "add", action = addClicked } }
+            { toggled = toMsg Toggled
+            , title = "Projects"
+            , secondary = { iconName = "add", action = addClicked }
+            }
     in
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
@@ -82,11 +83,7 @@ createConfig toMsg { addClicked, moreClicked, sorted } =
 
 type Msg
     = DNDList (DND.Msg Project)
-    | ExpansionPanel EP.Msg
-
-
-type alias ToMsg msg =
-    Msg -> msg
+    | Toggled
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
@@ -96,9 +93,8 @@ update config message (ProjectPanel state) =
             DND.update config.dnd msg state.dnd
                 |> Tuple.mapFirst (\dnd -> ProjectPanel { state | dnd = dnd })
 
-        ExpansionPanel msg ->
-            EP.update config.ep msg state.ep
-                |> Tuple.mapFirst (\ep -> ProjectPanel { state | ep = ep })
+        Toggled ->
+            ( ProjectPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
@@ -126,7 +122,7 @@ view config projectList (ProjectPanel state) =
                 projectList
                 state.dnd
         )
-        state.ep
+        state.collapsible
 
 
 viewItems : Config msg -> List Project -> DNDList Project -> List (Html msg)
