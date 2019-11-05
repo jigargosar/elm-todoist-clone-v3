@@ -149,4 +149,4 @@ btnSubmit title action =
 
 
 btnCancel canceled =
-    button [ css [ Style.primaryBtn ], onClick canceled ] [ text "Cancel" ]
+    button [ css [ Style.basicBtn ], onClick canceled ] [ text "Cancel" ]

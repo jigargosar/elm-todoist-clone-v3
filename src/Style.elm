@@ -41,11 +41,13 @@ basicBtn =
         , verticalAlign middle
         , whiteSpace noWrap
         , hover
-            [ CM.backgroundColor (Theme.primaryWhiten 35)
+            [ CM.backgroundColor (Theme.primaryWhiten 38)
             , CM.borderColor Theme.primary
             ]
         , focus
-            [ boxShadow5 zero
+            [ CM.backgroundColor (Theme.primaryWhiten 38)
+            , CM.borderColor Theme.primary
+            , boxShadow5 zero
                 zero
                 zero
                 (sRem 0.1)
@@ -88,6 +90,11 @@ primaryBtn =
         , borderColorTransparent
         , colorWhite
         , hover
+            [ colorWhite
+            , CM.backgroundColor (Theme.primaryBlacken 5)
+            , CM.borderColor (Theme.primaryBlacken 5)
+            ]
+        , focus
             [ colorWhite
             , CM.backgroundColor (Theme.primaryBlacken 5)
             , CM.borderColor (Theme.primaryBlacken 5)
