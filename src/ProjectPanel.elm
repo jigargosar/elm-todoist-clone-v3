@@ -10,6 +10,7 @@ module ProjectPanel exposing
     , viewGhost
     )
 
+import Basics.More exposing (flip)
 import Css
 import DNDList
 import ExpansionPanel exposing (ExpansionPanel)
@@ -96,12 +97,36 @@ type alias ToMsg msg =
     Msg -> msg
 
 
-updateSub :
-    { get : big -> small, set : small -> big -> big }
-    -> (smallMsg -> small -> ( small, Cmd msg ))
-    -> smallMsg
-    -> big
-    -> ( big, Cmd msg )
+type alias SubSystem smallMsg big msg =
+    { update : smallMsg -> big -> ( big, Cmd msg )
+    }
+
+
+type alias SubSystemConfig smallConfig smallMsg small bigConfig big msg =
+    { get : big -> small
+    , set : small -> big -> big
+    , config : bigConfig -> smallConfig
+    , update : smallConfig -> smallMsg -> small -> ( small, Cmd msg )
+    }
+
+
+createSubSystem :
+    SubSystemConfig smallConfig smallMsg small bigConfig big msg
+    -> bigConfig
+    -> SubSystem smallMsg big msg
+createSubSystem args bigConfig =
+    let
+        smallConfig : smallConfig
+        smallConfig =
+            args.config bigConfig
+    in
+    { update =
+        \smallMsg big ->
+            args.update smallConfig smallMsg (args.get big)
+                |> Tuple.mapFirst (\small -> args.set small big)
+    }
+
+
 updateSub { get, set } updateFn smallMsg big =
     updateFn smallMsg (get big)
         |> Tuple.mapFirst (\small -> set small big)
