@@ -25,11 +25,7 @@ import Styles exposing (..)
 import UI.Icon as Icon
 
 
-type ProjectPanel
-    = ProjectPanel State
-
-
-type alias State =
+type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
     }
@@ -37,10 +33,9 @@ type alias State =
 
 initial : ProjectPanel
 initial =
-    ProjectPanel
-        { collapsible = EP.expanded
-        , dnd = DND.initial
-        }
+    { collapsible = EP.expanded
+    , dnd = DND.initial
+    }
 
 
 
@@ -48,7 +43,7 @@ initial =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config (ProjectPanel { dnd }) =
+subscriptions config { dnd } =
     Sub.batch
         [ DND.subscriptions config.dnd dnd
         ]
@@ -88,18 +83,18 @@ type Msg
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update config message (ProjectPanel state) =
+update config message state =
     case message of
         DNDList msg ->
             DND.update config.dnd msg state.dnd
-                |> Tuple.mapFirst (\dnd -> ProjectPanel { state | dnd = dnd })
+                |> Tuple.mapFirst (\dnd -> { state | dnd = dnd })
 
         Toggled ->
-            ( ProjectPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
+            ( { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
-viewGhost (ProjectPanel { dnd }) =
+viewGhost { dnd } =
     case DND.ghost dnd of
         Just ( style, project ) ->
             [ viewItem
@@ -116,7 +111,7 @@ viewGhost (ProjectPanel { dnd }) =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view config projectList (ProjectPanel state) =
+view config projectList state =
     EP.view config.ep
         (\_ ->
             viewItems config
