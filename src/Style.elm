@@ -103,3 +103,7 @@ formLabel =
         , lineHeight (rem 1.5)
         , padding2 (rem 0.375) zero
         ]
+
+
+formInput =
+    batch [ appearanceNone, backgroundColorWhite, backgroundImage none ]
