@@ -67,7 +67,7 @@ createConfig toMsg { addClicked, moreClicked, sorted } =
     }
 
 
-map : ({ collapsed : Bool, dnd : DNDList.Model Project } -> { collapsed : Bool, dnd : DNDList.Model Project }) -> ProjectPanel -> ProjectPanel
+map : (State -> State) -> ProjectPanel -> ProjectPanel
 map func =
     unwrap >> func >> ProjectPanel
 
