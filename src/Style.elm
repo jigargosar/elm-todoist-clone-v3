@@ -18,6 +18,16 @@ rem =
     ()
 
 
+focusBoxShadow =
+    focus
+        [ boxShadow5 zero
+            zero
+            zero
+            (sRem 0.1)
+            (fromColorWithAlpha Theme.primary 0.2)
+        ]
+
+
 basicBtn : Style
 basicBtn =
     batch
@@ -40,13 +50,7 @@ basicBtn =
         , userSelectNone
         , verticalAlign middle
         , whiteSpace noWrap
-        , focus
-            [ boxShadow5 zero
-                zero
-                zero
-                (sRem 0.1)
-                (fromColorWithAlpha Theme.primary 0.2)
-            ]
+        , focusBoxShadow
         ]
 
 
@@ -124,4 +128,6 @@ formInput =
         , position relative
         , defaultTransitions
         , width (pct 100)
+        , focusBoxShadow
+        , focus [ CM.borderColor Theme.primary ]
         ]
