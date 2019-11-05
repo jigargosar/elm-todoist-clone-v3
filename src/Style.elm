@@ -74,6 +74,13 @@ linkBtn =
             , backgroundColorWhite
             , borderColorTransparent
             ]
+        , focus
+            [ hover
+                [ CM.color (Theme.primaryBlacken 10)
+                , backgroundColorWhite
+                , borderColorTransparent
+                ]
+            ]
         , active
             [ CM.color (Theme.primaryBlacken 10)
             , backgroundColorWhite
