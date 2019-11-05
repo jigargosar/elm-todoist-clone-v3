@@ -30,8 +30,8 @@ type alias InputConfig msg =
 
 input : InputConfig msg -> Html msg
 input { labelText, value, changed, attrs } =
-    label [ css [ flex, flexColumn, pv 2 ] ]
-        [ span [ css [ lh 1.5, bold ] ] [ text labelText ]
+    label [ css [ Style.formGroup, flex, flexColumn ] ]
+        [ span [ css [ Style.formLabel ] ] [ text labelText ]
         , H.input
             ([ css [ lh 1.5, pa 1, boAll, boColor <| Theme.borderGray ]
              , A.value value
@@ -45,8 +45,8 @@ input { labelText, value, changed, attrs } =
 
 labeled : String -> Html msg -> Html msg
 labeled labelText el =
-    label [ css [ flex, flexColumn, pv 2 ] ]
-        [ span [ css [ lh 1.5, bold ] ] [ text labelText ]
+    label [ css [ Style.formGroup, flex, flexColumn ] ]
+        [ span [ css [ Style.formLabel ] ] [ text labelText ]
         , el
         ]
 

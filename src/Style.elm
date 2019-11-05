@@ -1,4 +1,4 @@
-module Style exposing (basicBtn, formGroup, linkBtn, primaryBtn)
+module Style exposing (basicBtn, formGroup, formLabel, linkBtn, primaryBtn)
 
 import Css exposing (..)
 import Css.More as CM exposing (..)
@@ -93,4 +93,13 @@ formGroup =
     batch
         [ lastChild [ marginBottom zero ]
         , marginBottom (rem 0.5)
+        ]
+
+
+formLabel : Style
+formLabel =
+    batch
+        [ display block
+        , lineHeight (rem 1.5)
+        , padding2 (rem 0.375) zero
         ]
