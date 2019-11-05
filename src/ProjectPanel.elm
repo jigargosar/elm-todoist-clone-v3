@@ -4,7 +4,6 @@ module ProjectPanel exposing
     , ProjectPanel
     , createConfig
     , initial
-    , onToggle
     , subscriptions
     , update
     , view
@@ -77,11 +76,6 @@ unwrap (ProjectPanel state) =
     state
 
 
-onToggle : ProjectPanel -> ProjectPanel
-onToggle =
-    map (\model -> { model | collapsed = not model.collapsed })
-
-
 type Msg
     = Toggled
     | DNDList (DNDList.Msg Project)
@@ -95,12 +89,10 @@ update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
         Toggled ->
-            ( onToggle model, Cmd.none )
+            ( map (\state -> { state | collapsed = not state.collapsed }) model, Cmd.none )
 
         DNDList msg ->
-            DNDList.update config.dnd
-                msg
-                (unwrap model |> .dnd)
+            DNDList.update config.dnd msg (unwrap model |> .dnd)
                 |> Tuple.mapFirst (\dnd -> map (\state -> { state | dnd = dnd }) model)
 
 

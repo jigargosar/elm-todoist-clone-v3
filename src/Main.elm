@@ -290,7 +290,6 @@ type Msg
     | AddLabelClicked
     | AddFilterClicked
     | ProjectPanel ProjectPanel.Msg
-    | ToggleProjectPanel
     | ToggleLabelPanel
     | ToggleFilterPanel
     | LabelPanelDNDListMsg (DNDList.Msg Label)
@@ -416,9 +415,6 @@ update message model =
         ProjectPanel msg ->
             ProjectPanel.update projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (always >> flip mapProjectPanel model)
-
-        ToggleProjectPanel ->
-            ( mapProjectPanel ProjectPanel.onToggle model, Cmd.none )
 
         ToggleLabelPanel ->
             ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
