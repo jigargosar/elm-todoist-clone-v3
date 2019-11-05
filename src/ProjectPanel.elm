@@ -2,6 +2,7 @@ module ProjectPanel exposing
     ( Config
     , Msg
     , ProjectPanel
+    , createConfig
     , initial
     , onToggle
     , subscriptions
@@ -10,10 +11,9 @@ module ProjectPanel exposing
     , viewGhost
     )
 
-import Basics.More exposing (msgToCmd)
 import Css
 import DNDList
-import Html.Styled as H exposing (Attribute, Html, a, button, div, i, text)
+import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Project exposing (Project)
@@ -37,16 +37,29 @@ initial =
 -- PROJECT PANEL UPDATE
 
 
-subscriptions : ToMsg msg -> Config msg -> ProjectPanel -> Sub msg
-subscriptions toMsg _ (ProjectPanel { dnd }) =
-    DNDList.subscriptions dndConfig dnd
-        |> Sub.map toMsg
+subscriptions : Config msg -> ProjectPanel -> Sub msg
+subscriptions config (ProjectPanel { dnd }) =
+    DNDList.subscriptions config.dnd dnd
 
 
 type alias Config msg =
     { addClicked : msg
     , moreClicked : ProjectId -> String -> msg
+    , dnd : DNDList.Config Project msg
+    }
+
+
+createConfig :
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
     , sorted : List Project -> msg
+    }
+    -> Config msg
+createConfig { toMsg, addClicked, moreClicked, sorted } =
+    { addClicked = addClicked
+    , moreClicked = moreClicked
+    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     }
 
 
@@ -67,36 +80,23 @@ onToggle =
 type Msg
     = Toggled
     | DNDList (DNDList.Msg Project)
-    | Sorted (List Project)
-    | MoreClicked ProjectId String
 
 
 type alias ToMsg msg =
     Msg -> msg
 
 
-dndConfig =
-    { toMsg = DNDList, sorted = Sorted }
-
-
-update : ToMsg msg -> Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update toMsg config message model =
+update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+update config message model =
     case message of
         Toggled ->
             ( onToggle model, Cmd.none )
 
         DNDList msg ->
-            DNDList.update dndConfig
+            DNDList.update config.dnd
                 msg
                 (unwrap model |> .dnd)
-                |> Tuple.mapBoth (\dnd -> map (\state -> { state | dnd = dnd }) model)
-                    (Cmd.map toMsg)
-
-        Sorted projectList ->
-            ( model, config.sorted projectList |> msgToCmd )
-
-        MoreClicked projectId domId ->
-            ( model, config.moreClicked projectId domId |> msgToCmd )
+                |> Tuple.mapFirst (\dnd -> map (\state -> { state | dnd = dnd }) model)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
@@ -125,18 +125,17 @@ view toMsg config projectList (ProjectPanel model) =
         , secondary = { iconName = "add", action = config.addClicked }
         }
         (\_ ->
-            viewItems toMsg
-                config
+            viewItems config
                 projectList
                 model.dnd
         )
 
 
-viewItems : ToMsg msg -> Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
-viewItems toMsg _ projectList dndList =
+viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
+viewItems config projectList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DNDList.view dndConfig projectList dndList
+            DNDList.view config.dnd projectList dndList
     in
     List.map
         (\project ->
@@ -153,11 +152,10 @@ viewItems toMsg _ projectList dndList =
                 , handleAttrs = dragStartAttrs project domId
                 , moreAttrs =
                     [ A.id moreDomId
-                    , onClick (MoreClicked (Project.id project) moreDomId)
+                    , onClick (config.moreClicked (Project.id project) moreDomId)
                     ]
                 }
                 project
-                |> H.map toMsg
         )
         items
 

@@ -256,7 +256,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions ProjectPanel projectPanelConfig model.projectPanel
+        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         , dialog.subscriptions model
@@ -414,7 +414,7 @@ update message model =
             ( newModel, Cmd.none )
 
         ProjectPanel msg ->
-            ProjectPanel.update ProjectPanel projectPanelConfig msg model.projectPanel
+            ProjectPanel.update projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (always >> flip mapProjectPanel model)
 
         ToggleProjectPanel ->
@@ -500,10 +500,12 @@ mapProjectPanel func model =
 
 projectPanelConfig : ProjectPanel.Config Msg
 projectPanelConfig =
-    { addClicked = AddProjectClicked
-    , moreClicked = ProjectMoreMenu >> PopupTriggered
-    , sorted = ProjectOrderChanged
-    }
+    ProjectPanel.createConfig
+        { toMsg = ProjectPanel
+        , addClicked = AddProjectClicked
+        , moreClicked = ProjectMoreMenu >> PopupTriggered
+        , sorted = ProjectOrderChanged
+        }
 
 
 mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
