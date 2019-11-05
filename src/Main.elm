@@ -129,6 +129,10 @@ filterPanelConfig =
         }
 
 
+updateProjectPanel :
+    ProjectPanel.Msg
+    -> { a | projectPanel : ProjectPanel }
+    -> ( { a | projectPanel : ProjectPanel }, Cmd Msg )
 updateProjectPanel msg model =
     ProjectPanel.update projectPanelConfig msg model.projectPanel
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
