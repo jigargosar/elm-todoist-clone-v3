@@ -12,6 +12,7 @@ module ProjectPanel exposing
 
 import Css
 import DNDList
+import ExpansionPanel exposing (ExpansionPanel)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
@@ -28,12 +29,19 @@ type ProjectPanel
 
 
 type alias State =
-    { collapsed : Bool, dnd : DNDList.Model Project }
+    { expansionPanel : ExpansionPanel
+    , collapsed : Bool
+    , dnd : DNDList.Model Project
+    }
 
 
 initial : ProjectPanel
 initial =
-    ProjectPanel { collapsed = False, dnd = DNDList.initial }
+    ProjectPanel
+        { expansionPanel = ExpansionPanel.initial
+        , collapsed = False
+        , dnd = DNDList.initial
+        }
 
 
 
