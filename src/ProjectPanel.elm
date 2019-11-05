@@ -25,7 +25,11 @@ import UI
 
 
 type ProjectPanel
-    = ProjectPanel { collapsed : Bool, dnd : DNDList.Model Project }
+    = ProjectPanel State
+
+
+type alias State =
+    { collapsed : Bool, dnd : DNDList.Model Project }
 
 
 initial : ProjectPanel
