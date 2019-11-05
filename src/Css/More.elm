@@ -1,10 +1,13 @@
 module Css.More exposing
     ( appearanceNone
     , backgroundColor
+    , backgroundColorHSL
     , backgroundColorWhite
     , borderColor
+    , borderColorHSL
     , borderColorTransparent
     , color
+    , colorHSL
     , colorWhite
     , fromColorWithAlpha
     , textDecorationNone
@@ -73,6 +76,26 @@ colorWhite =
 backgroundColorWhite : Css.Style
 backgroundColorWhite =
     Css.backgroundColor white
+
+
+hslProperty : (Css.Color -> Css.Style) -> Float -> Float -> Float -> Css.Style
+hslProperty propFn h s l =
+    propFn (Css.hsl h s l)
+
+
+colorHSL : Float -> Float -> Float -> Css.Style
+colorHSL =
+    hslProperty Css.color
+
+
+backgroundColorHSL : Float -> Float -> Float -> Css.Style
+backgroundColorHSL =
+    hslProperty Css.backgroundColor
+
+
+borderColorHSL : Float -> Float -> Float -> Css.Style
+borderColorHSL =
+    hslProperty Css.borderColor
 
 
 white =

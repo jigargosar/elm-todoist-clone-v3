@@ -6,12 +6,16 @@ import Css.Transitions as T
 import Theme
 
 
+defaultBorder2 =
+    border2 (rem 0.0625) solid
+
+
 basicBtn : Style
 basicBtn =
     batch
         [ appearanceNone
         , backgroundColorWhite
-        , border2 (rem 0.05) solid
+        , defaultBorder2
         , CM.borderColor Theme.primary
         , borderRadius (rem 0.125)
         , CM.color Theme.primary
@@ -106,4 +110,18 @@ formLabel =
 
 
 formInput =
-    batch [ appearanceNone, backgroundColorWhite, backgroundImage none ]
+    batch
+        [ appearanceNone
+        , backgroundColorWhite
+        , backgroundImage none
+        , defaultBorder2
+        , borderColorHSL 217 0.16 0.77
+        , colorHSL 218 0.16 0.27
+        , display block
+        , fontSize (rem 1)
+        , height (rem 2)
+        , lineHeight (rem 1.5)
+        , maxWidth (pct 100)
+        , outline none
+        , padding2 (rem 0.375) (rem 0.5)
+        ]
