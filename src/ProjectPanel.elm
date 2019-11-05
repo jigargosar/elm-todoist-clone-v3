@@ -5,10 +5,12 @@ module ProjectPanel exposing
     , onDNDMsg
     , onToggle
     , subscriptions
+    , update
     , view
     , viewGhost
     )
 
+import Basics.More exposing (msgToCmd)
 import Css
 import DNDList
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
@@ -63,6 +65,33 @@ onDNDMsg config msg model =
         msg
         model.dnd
         |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
+
+
+type Msg
+    = Toggle
+    | DNDList (DNDList.Msg Project)
+    | Sorted (List Project)
+
+
+type alias ToMsg msg =
+    Msg -> msg
+
+
+update : ToMsg msg -> Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+update toMsg config message model =
+    case message of
+        Toggle ->
+            ( onToggle model, Cmd.none )
+
+        DNDList msg ->
+            DNDList.update { toMsg = DNDList, sorted = Sorted }
+                msg
+                model.dnd
+                |> Tuple.mapBoth (\dnd -> { model | dnd = dnd })
+                    (Cmd.map toMsg)
+
+        Sorted projectList ->
+            ( model, config.dndConfig.sorted projectList |> msgToCmd )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
