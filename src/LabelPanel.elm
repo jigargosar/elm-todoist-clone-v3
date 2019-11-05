@@ -1,35 +1,46 @@
 module LabelPanel exposing
     ( Config
     , LabelPanel
+    , Msg
+    , createConfig
     , initial
-    , onDNDMsg
-    , onToggle
     , subscriptions
+    , update
     , view
     , viewGhost
     )
 
 import Css
-import DNDList
+import DNDList as DND exposing (DNDList)
+import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Label exposing (Label)
 import LabelId exposing (LabelId)
+import Panels
 import Px
 import Route
 import Styles exposing (..)
-import UI
 import UI.Icon as Icon
 
 
-type alias LabelPanel =
-    { collapsed : Bool, dnd : DNDList.DNDList Label }
+type LabelPanel
+    = LabelPanel State
+
+
+type alias State =
+    { collapsible : Collapsible
+    , dnd : DNDList Label
+    }
 
 
 initial : LabelPanel
 initial =
-    { collapsed = False, dnd = DNDList.initial }
+    LabelPanel
+        { collapsible = EP.expanded
+        , dnd = DND.initial
+        }
 
 
 
@@ -37,38 +48,59 @@ initial =
 
 
 subscriptions : Config msg -> LabelPanel -> Sub msg
-subscriptions config { dnd } =
-    DNDList.subscriptions config.dndConfig dnd
+subscriptions config (LabelPanel { dnd }) =
+    Sub.batch
+        [ DND.subscriptions config.dnd dnd
+        ]
 
 
 type alias Config msg =
-    { toggled : msg
-    , addClicked : msg
-    , moreClicked : LabelId -> String -> msg
-    , dndConfig : DNDList.Config Label msg
+    { moreClicked : LabelId -> String -> msg
+    , dnd : DND.Config Label msg
+    , ep : EP.Config msg
     }
 
 
-onToggle : LabelPanel -> LabelPanel
-onToggle model =
-    { model | collapsed = not model.collapsed }
+createConfig :
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : LabelId -> String -> msg
+    , sorted : List Label -> msg
+    }
+    -> Config msg
+createConfig { toMsg, addClicked, moreClicked, sorted } =
+    let
+        ep =
+            { toggled = toMsg Toggled
+            , title = "Labels"
+            , secondary = { iconName = "add", action = addClicked }
+            }
+    in
+    { moreClicked = moreClicked
+    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
+    , ep = ep
+    }
 
 
-onDNDMsg :
-    Config msg
-    -> DNDList.Msg Label
-    -> LabelPanel
-    -> ( LabelPanel, Cmd msg )
-onDNDMsg config msg model =
-    DNDList.update config.dndConfig
-        msg
-        model.dnd
-        |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
+type Msg
+    = DNDList (DND.Msg Label)
+    | Toggled
+
+
+update : Config msg -> Msg -> LabelPanel -> ( LabelPanel, Cmd msg )
+update config message (LabelPanel state) =
+    case message of
+        DNDList msg ->
+            DND.update config.dnd msg state.dnd
+                |> Tuple.mapFirst (\dnd -> LabelPanel { state | dnd = dnd })
+
+        Toggled ->
+            ( LabelPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
 viewGhost : LabelPanel -> List (Html msg)
-viewGhost { dnd } =
-    case DNDList.ghost dnd of
+viewGhost (LabelPanel { dnd }) =
+    case DND.ghost dnd of
         Just ( style, label ) ->
             [ viewItem
                 { itemAttrs = []
@@ -84,25 +116,21 @@ viewGhost { dnd } =
 
 
 view : Config msg -> List Label -> LabelPanel -> List (Html msg)
-view config labelList model =
-    UI.viewExpansionPanel
-        { toggled = config.toggled
-        , title = "Labels"
-        , collapsed = model.collapsed
-        , secondary = { iconName = "add", action = config.addClicked }
-        }
+view config labelList (LabelPanel state) =
+    EP.view config.ep
         (\_ ->
             viewItems config
                 labelList
-                model.dnd
+                state.dnd
         )
+        state.collapsible
 
 
-viewItems : Config msg -> List Label -> DNDList.DNDList Label -> List (Html msg)
+viewItems : Config msg -> List Label -> DNDList Label -> List (Html msg)
 viewItems config labelList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DNDList.view config.dndConfig labelList dndList
+            DND.view config.dnd labelList dndList
     in
     List.map
         (\label ->
@@ -145,7 +173,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } label =
             Route.labelHref label
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ Icon.view2 Icon.Label
+        [ Icon.view2 Panels.labelIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: handleAttrs
             )

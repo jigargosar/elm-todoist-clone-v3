@@ -290,9 +290,8 @@ type Msg
     | AddLabelClicked
     | AddFilterClicked
     | ProjectPanel ProjectPanel.Msg
-    | ToggleLabelPanel
+    | LabelPanel LabelPanel.Msg
     | ToggleFilterPanel
-    | LabelPanelDNDListMsg (DNDList.Msg Label)
     | FilterPanelDNDListMsg (DNDList.Msg Filter)
     | ProjectOrderChanged (List Project)
     | LabelOrderChanged (List Label)
@@ -416,8 +415,9 @@ update message model =
             ProjectPanel.update projectPanelConfig msg model.projectPanel
                 |> Tuple.mapFirst (always >> flip mapProjectPanel model)
 
-        ToggleLabelPanel ->
-            ( mapLabelPanel LabelPanel.onToggle model, Cmd.none )
+        LabelPanel msg ->
+            LabelPanel.update labelPanelConfig msg model.labelPanel
+                |> Tuple.mapFirst (always >> flip mapLabelPanel model)
 
         ToggleFilterPanel ->
             ( mapFilterPanel FilterPanel.onToggle model, Cmd.none )
@@ -435,10 +435,6 @@ update message model =
 
         AddFilterClicked ->
             ( model, Cmd.none )
-
-        LabelPanelDNDListMsg msg ->
-            LabelPanel.onDNDMsg labelPanelConfig msg model.labelPanel
-                |> Tuple.mapFirst (\labelPanel -> mapLabelPanel (always labelPanel) model)
 
         FilterPanelDNDListMsg msg ->
             FilterPanel.onDNDMsg filterPanelConfig msg model.filterPanel
@@ -504,6 +500,16 @@ projectPanelConfig =
         }
 
 
+labelPanelConfig : LabelPanel.Config Msg
+labelPanelConfig =
+    LabelPanel.createConfig
+        { toMsg = LabelPanel
+        , addClicked = AddLabelClicked
+        , moreClicked = LabelMoreMenu >> PopupTriggered
+        , sorted = LabelOrderChanged
+        }
+
+
 mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
 mapProjectCollection func model =
     { model | projectCollection = func model.projectCollection }
@@ -518,15 +524,6 @@ updateProjectSortOrder projectList model =
 mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
 mapLabelPanel func model =
     { model | labelPanel = func model.labelPanel }
-
-
-labelPanelConfig : LabelPanel.Config Msg
-labelPanelConfig =
-    { toggled = ToggleLabelPanel
-    , addClicked = AddLabelClicked
-    , moreClicked = LabelMoreMenu >> PopupTriggered
-    , dndConfig = { toMsg = LabelPanelDNDListMsg, sorted = LabelOrderChanged }
-    }
 
 
 mapLabelCollection func model =
