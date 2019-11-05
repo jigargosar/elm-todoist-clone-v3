@@ -63,7 +63,13 @@ onDragStartPreventDefault decoder =
         )
 
 
-createDraggable : Int -> DragState -> { dragHandle : List (Attribute Msg) }
+createDraggable :
+    Int
+    -> DragState
+    ->
+        { dragHandle : List (Attribute Msg)
+        , dragOver : List (Attribute Msg)
+        }
 createDraggable index dragState =
     case dragState of
         NotDragging ->
@@ -72,10 +78,13 @@ createDraggable index dragState =
                     (JD.map (OnDragStart index) pageXYAsPositionDecoder)
                 , A.draggable "true"
                 ]
+            , dragOver = []
             }
 
         Dragging _ _ ->
-            { dragHandle = [] }
+            { dragHandle = []
+            , dragOver = [ E.onMouseOver (OnDragOver index) ]
+            }
 
 
 
@@ -121,6 +130,7 @@ type Msg
     = DNDList (DND.Msg Project)
     | Toggled
     | OnDragStart Int Position
+    | OnDragOver Int
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
@@ -134,6 +144,9 @@ update config message model =
             ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
 
         OnDragStart int position ->
+            ( model, Cmd.none )
+
+        OnDragOver int ->
             ( model, Cmd.none )
 
 
