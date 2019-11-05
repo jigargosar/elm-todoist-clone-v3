@@ -96,12 +96,25 @@ type alias ToMsg msg =
     Msg -> msg
 
 
+updateSub :
+    { get : big -> small, set : small -> big -> big }
+    -> (smallMsg -> small -> ( small, Cmd msg ))
+    -> smallMsg
+    -> big
+    -> ( big, Cmd msg )
+updateSub { get, set } updateFn smallMsg big =
+    updateFn smallMsg (get big)
+        |> Tuple.mapFirst (\small -> set small big)
+
+
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
         DNDList msg ->
-            DNDList.update config.dnd msg (unwrap model |> .dnd)
-                |> Tuple.mapFirst (\dnd -> map (\state -> { state | dnd = dnd }) model)
+            updateSub { get = unwrap >> .dnd, set = \s -> map (\b -> { b | dnd = s }) }
+                (DNDList.update config.dnd)
+                msg
+                model
 
         ExpansionPanel msg ->
             ExpansionPanel.update config.expansionPanel msg (unwrap model |> .expansionPanel)
