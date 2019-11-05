@@ -18,7 +18,7 @@ type alias State =
 
 initial : ExpansionPanel
 initial =
-    ExpansionPanel True
+    ExpansionPanel False
 
 
 unwrap : ExpansionPanel -> State
