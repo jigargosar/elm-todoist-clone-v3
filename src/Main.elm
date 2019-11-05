@@ -96,6 +96,55 @@ type PopupMsg
 
 
 
+-- PANELS
+
+
+projectPanelConfig : ProjectPanel.Config Msg
+projectPanelConfig =
+    ProjectPanel.createConfig
+        { toMsg = ProjectPanel
+        , addClicked = AddProjectClicked
+        , moreClicked = ProjectMoreMenu >> PopupTriggered
+        , sorted = ProjectOrderChanged
+        }
+
+
+labelPanelConfig : LabelPanel.Config Msg
+labelPanelConfig =
+    LabelPanel.createConfig
+        { toMsg = LabelPanel
+        , addClicked = AddLabelClicked
+        , moreClicked = LabelMoreMenu >> PopupTriggered
+        , sorted = LabelOrderChanged
+        }
+
+
+filterPanelConfig : FilterPanel.Config Msg
+filterPanelConfig =
+    FilterPanel.createConfig
+        { toMsg = FilterPanel
+        , addClicked = AddFilterClicked
+        , moreClicked = FilterMoreMenu >> PopupTriggered
+        , sorted = FilterOrderChanged
+        }
+
+
+mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
+mapProjectPanel func model =
+    { model | projectPanel = func model.projectPanel }
+
+
+mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
+mapLabelPanel func model =
+    { model | labelPanel = func model.labelPanel }
+
+
+mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
+mapFilterPanel func model =
+    { model | filterPanel = func model.filterPanel }
+
+
+
 -- COLLECTIONS
 
 
@@ -514,51 +563,6 @@ updatePopup message popup model =
 
         _ ->
             ( model, Cmd.none )
-
-
-projectPanelConfig : ProjectPanel.Config Msg
-projectPanelConfig =
-    ProjectPanel.createConfig
-        { toMsg = ProjectPanel
-        , addClicked = AddProjectClicked
-        , moreClicked = ProjectMoreMenu >> PopupTriggered
-        , sorted = ProjectOrderChanged
-        }
-
-
-labelPanelConfig : LabelPanel.Config Msg
-labelPanelConfig =
-    LabelPanel.createConfig
-        { toMsg = LabelPanel
-        , addClicked = AddLabelClicked
-        , moreClicked = LabelMoreMenu >> PopupTriggered
-        , sorted = LabelOrderChanged
-        }
-
-
-filterPanelConfig : FilterPanel.Config Msg
-filterPanelConfig =
-    FilterPanel.createConfig
-        { toMsg = FilterPanel
-        , addClicked = AddFilterClicked
-        , moreClicked = FilterMoreMenu >> PopupTriggered
-        , sorted = FilterOrderChanged
-        }
-
-
-mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
-mapProjectPanel func model =
-    { model | projectPanel = func model.projectPanel }
-
-
-mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
-mapLabelPanel func model =
-    { model | labelPanel = func model.labelPanel }
-
-
-mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
-mapFilterPanel func model =
-    { model | filterPanel = func model.filterPanel }
 
 
 updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
