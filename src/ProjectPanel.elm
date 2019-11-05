@@ -11,7 +11,7 @@ module ProjectPanel exposing
     )
 
 import Css
-import DNDList
+import DNDList as DND
 import ExpansionPanel as EP exposing (ExpansionPanel)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
@@ -29,7 +29,7 @@ type ProjectPanel
 
 type alias State =
     { ep : ExpansionPanel
-    , dnd : DNDList.Model Project
+    , dnd : DND.Model Project
     }
 
 
@@ -37,7 +37,7 @@ initial : ProjectPanel
 initial =
     ProjectPanel
         { ep = EP.initial
-        , dnd = DNDList.initial
+        , dnd = DND.initial
         }
 
 
@@ -48,14 +48,14 @@ initial =
 subscriptions : Config msg -> ProjectPanel -> Sub msg
 subscriptions config (ProjectPanel { dnd, ep }) =
     Sub.batch
-        [ DNDList.subscriptions config.dnd dnd
+        [ DND.subscriptions config.dnd dnd
         , EP.subscriptions config.ep ep
         ]
 
 
 type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
-    , dnd : DNDList.Config Project msg
+    , dnd : DND.Config Project msg
     , ep : EP.Config msg
     }
 
@@ -77,13 +77,8 @@ createConfig toMsg { addClicked, moreClicked, sorted } =
     }
 
 
-unwrap : ProjectPanel -> State
-unwrap (ProjectPanel state) =
-    state
-
-
 type Msg
-    = DNDList (DNDList.Msg Project)
+    = DNDList (DND.Msg Project)
     | ExpansionPanel EP.Msg
 
 
@@ -95,19 +90,17 @@ update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message (ProjectPanel state) =
     case message of
         DNDList msg ->
-            DNDList.update config.dnd msg state.dnd
+            DND.update config.dnd msg state.dnd
                 |> Tuple.mapFirst (\dnd -> ProjectPanel { state | dnd = dnd })
 
         ExpansionPanel msg ->
-            EP.update config.ep
-                msg
-                state.ep
+            EP.update config.ep msg state.ep
                 |> Tuple.mapFirst (\ep -> ProjectPanel { state | ep = ep })
 
 
 viewGhost : ProjectPanel -> List (Html msg)
 viewGhost (ProjectPanel { dnd }) =
-    case DNDList.ghost dnd of
+    case DND.ghost dnd of
         Just ( style, project ) ->
             [ viewItem
                 { itemAttrs = []
@@ -133,11 +126,11 @@ view config projectList (ProjectPanel state) =
         state.ep
 
 
-viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
+viewItems : Config msg -> List Project -> DND.Model Project -> List (Html msg)
 viewItems config projectList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DNDList.view config.dnd projectList dndList
+            DND.view config.dnd projectList dndList
     in
     List.map
         (\project ->
