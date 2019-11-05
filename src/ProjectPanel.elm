@@ -29,7 +29,6 @@ type ProjectPanel
 
 type alias State =
     { expansionPanel : ExpansionPanel
-    , collapsed : Bool
     , dnd : DNDList.Model Project
     }
 
@@ -38,7 +37,6 @@ initial : ProjectPanel
 initial =
     ProjectPanel
         { expansionPanel = ExpansionPanel.initial
-        , collapsed = False
         , dnd = DNDList.initial
         }
 
@@ -54,7 +52,6 @@ subscriptions config (ProjectPanel { dnd }) =
 
 type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
-    , toggled : msg
     , dnd : DNDList.Config Project msg
     , expansionPanel : ExpansionPanel.Config msg
     }
@@ -70,7 +67,6 @@ createConfig :
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
-    , toggled = toMsg Toggled
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , expansionPanel =
         ExpansionPanel.createConfig (toMsg << ExpansionPanel)
@@ -89,8 +85,7 @@ unwrap (ProjectPanel state) =
 
 
 type Msg
-    = Toggled
-    | DNDList (DNDList.Msg Project)
+    = DNDList (DNDList.Msg Project)
     | ExpansionPanel ExpansionPanel.Msg
 
 
@@ -101,9 +96,6 @@ type alias ToMsg msg =
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
-        Toggled ->
-            ( map (\state -> { state | collapsed = not state.collapsed }) model, Cmd.none )
-
         DNDList msg ->
             DNDList.update config.dnd msg (unwrap model |> .dnd)
                 |> Tuple.mapFirst (\dnd -> map (\state -> { state | dnd = dnd }) model)
