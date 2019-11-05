@@ -2,9 +2,7 @@ module ProjectPanel exposing
     ( Config
     , Msg
     , ProjectPanel
-    , System
     , createConfig
-    , createSystem
     , initial
     , subscriptions
     , update
@@ -80,34 +78,6 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , ep = ep
     }
-
-
-type alias System msg =
-    { initial : ProjectPanel
-    , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-    , view : List Project -> ProjectPanel -> List (Html msg)
-    , viewGhost : ProjectPanel -> List (Html msg)
-    }
-
-
-createSystem :
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
-    -> System msg
-createSystem =
-    createConfig
-        >> (\config ->
-                { initial = initial
-                , subscriptions = subscriptions config
-                , update = update config
-                , view = view config
-                , viewGhost = viewGhost
-                }
-           )
 
 
 type Msg

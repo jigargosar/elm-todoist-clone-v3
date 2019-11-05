@@ -504,16 +504,6 @@ projectPanelConfig =
         }
 
 
-projectPanel : ProjectPanel.System Msg
-projectPanel =
-    ProjectPanel.createSystem
-        { toMsg = ProjectPanel
-        , addClicked = AddProjectClicked
-        , moreClicked = ProjectMoreMenu >> PopupTriggered
-        , sorted = ProjectOrderChanged
-        }
-
-
 mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
 mapProjectCollection func model =
     { model | projectCollection = func model.projectCollection }
