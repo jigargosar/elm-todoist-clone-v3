@@ -1,24 +1,17 @@
 module Css.More exposing
     ( appearanceNone
-    , backgroundColor
-    , backgroundColorHSL
     , backgroundColorWhite
-    , borderColor
     , borderColorHSL
     , borderColorTransparent
     , borderColorWhite
-    , color
     , colorHSL
     , colorWhite
-    , fromColorWithAlpha
     , sRem
     , textDecorationNone
     , transitionWithDelay
     , userSelectNone
     )
 
-import Color
-import Color.Transparent
 import Css
 import Css.Transitions as T
 
@@ -41,48 +34,6 @@ sRem n =
 
     -}
     Css.rem ((20 / 16) * n)
-
-
-fromColor : Color.Color -> Css.Color
-fromColor color_ =
-    let
-        ( r, g, b ) =
-            Color.toRGB color_
-    in
-    Css.rgb (round r) (round g) (round b)
-
-
-fromTransparentColor : Color.Transparent.Color -> Css.Color
-fromTransparentColor tColor =
-    let
-        { red, green, blue, alpha } =
-            Color.Transparent.toRGBA tColor
-    in
-    Css.rgba (round red) (round green) (round blue) (Color.Transparent.opacityToFloat alpha)
-
-
-fromColorWithAlpha : Color.Color -> Float -> Css.Color
-fromColorWithAlpha color_ =
-    let
-        ( r, g, b ) =
-            Color.toRGB color_
-    in
-    Css.rgba (round r) (round g) (round b)
-
-
-color : Color.Color -> Css.Style
-color =
-    Css.color << fromColor
-
-
-backgroundColor : Color.Color -> Css.Style
-backgroundColor =
-    Css.backgroundColor << fromColor
-
-
-borderColor : Color.Color -> Css.Style
-borderColor =
-    Css.borderColor << fromColor
 
 
 borderColorTransparent : Css.Style

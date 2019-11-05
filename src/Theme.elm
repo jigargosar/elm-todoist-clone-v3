@@ -1,7 +1,6 @@
 module Theme exposing (..)
 
-import Color
-import Css exposing (Color, rgb)
+import Css exposing (Color)
 import Styles
 
 
@@ -10,14 +9,21 @@ borderGray =
     Styles.grayL 0.8
 
 
-primary : Color.Color
 primary =
-    Color.fromHSL ( 241, 63, 59 )
+    primaryAddBrightness 0
 
 
-primaryWhiten n =
-    primary |> Color.whiten n
+primaryAddBrightness n =
+    Css.hsl 241 0.63 (0.59 + n)
 
 
-primaryBlacken n =
-    primary |> Color.blacken n
+primaryBlacker =
+    primaryAddBrightness 0.05
+
+
+primaryBlackest =
+    primaryAddBrightness 0.01
+
+
+primaryAlpha =
+    Css.hsla 241 0.63 0.59

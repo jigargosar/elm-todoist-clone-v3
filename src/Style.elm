@@ -1,7 +1,7 @@
 module Style exposing (formGroup, formInput, formLabel, linkBtn, primaryBtn)
 
 import Css exposing (..)
-import Css.More as CM exposing (..)
+import Css.More exposing (..)
 import Css.Transitions as T
 import Theme
 
@@ -24,7 +24,7 @@ focusBoxShadow =
             zero
             zero
             (sRem 0.1)
-            (fromColorWithAlpha Theme.primary 0.2)
+            (Theme.primaryAlpha 0.2)
         ]
 
 
@@ -36,7 +36,7 @@ basicBtn =
         , defaultBorder2
         , borderColorWhite
         , borderRadius (sRem 0.1)
-        , CM.color Theme.primary
+        , color Theme.primary
         , cursor pointer
         , display inlineBlock
         , fontSize (sRem 0.8)
@@ -60,16 +60,10 @@ linkBtn =
         [ basicBtn
         , backgroundColorWhite
         , borderColorTransparent
-        , CM.color Theme.primary
-        , hover
-            [ CM.color (Theme.primaryBlacken 10)
-            ]
-        , focus
-            [ CM.color (Theme.primaryBlacken 10)
-            ]
-        , active
-            [ CM.color (Theme.primaryBlacken 10)
-            ]
+        , color Theme.primary
+        , hover [ color Theme.primaryBlacker ]
+        , focus [ color Theme.primaryBlacker ]
+        , active [ color Theme.primaryBlacker ]
         ]
 
 
@@ -77,18 +71,12 @@ primaryBtn : Style
 primaryBtn =
     batch
         [ basicBtn
-        , CM.backgroundColor Theme.primary
-        , CM.borderColor Theme.primary
+        , backgroundColor Theme.primary
+        , borderColor Theme.primary
         , colorWhite
-        , hover
-            [ CM.backgroundColor (Theme.primaryBlacken 5)
-            ]
-        , focus
-            [ CM.backgroundColor (Theme.primaryBlacken 5)
-            ]
-        , active
-            [ CM.backgroundColor (Theme.primaryBlacken 10)
-            ]
+        , hover [ backgroundColor Theme.primaryBlacker ]
+        , focus [ backgroundColor Theme.primaryBlacker ]
+        , active [ backgroundColor Theme.primaryBlackest ]
         ]
 
 
@@ -129,5 +117,5 @@ formInput =
         , defaultTransitions
         , width (pct 100)
         , focusBoxShadow
-        , focus [ CM.borderColor Theme.primary ]
+        , focus [ borderColor Theme.primary ]
         ]
