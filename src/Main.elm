@@ -129,9 +129,9 @@ filterPanelConfig =
         }
 
 
-mapProjectPanel : (b -> b) -> { a | projectPanel : b } -> { a | projectPanel : b }
-mapProjectPanel func model =
-    { model | projectPanel = func model.projectPanel }
+updateProjectPanel msg model =
+    ProjectPanel.update projectPanelConfig msg model.projectPanel
+        |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
 mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
@@ -495,8 +495,7 @@ update message model =
             ( newModel, Cmd.none )
 
         ProjectPanel msg ->
-            ProjectPanel.update projectPanelConfig msg model.projectPanel
-                |> Tuple.mapFirst (always >> flip mapProjectPanel model)
+            updateProjectPanel msg model
 
         LabelPanel msg ->
             LabelPanel.update labelPanelConfig msg model.labelPanel
