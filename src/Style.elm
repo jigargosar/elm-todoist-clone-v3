@@ -1,4 +1,4 @@
-module Style exposing (..)
+module Style exposing (basicBtn, formGroup, linkBtn, primaryBtn)
 
 import Css exposing (..)
 import Css.More as CM exposing (..)
@@ -13,16 +13,15 @@ basicBtn =
         , backgroundColorWhite
         , border2 (rem 0.05) solid
         , CM.borderColor Theme.primary
-        , borderRadius (rem 0.1)
+        , borderRadius (rem 0.125)
         , CM.color Theme.primary
         , cursor pointer
         , display inlineBlock
-        , fontSize (rem 0.8)
         , fontSize (rem 1)
-        , height (rem 1.8)
-        , lineHeight (rem 1.2)
+        , height (rem 2)
+        , lineHeight (rem 1.5)
         , outline zero
-        , padding2 (rem 0.25) (rem 0.4)
+        , padding2 (rem 0.25) (rem 0.5)
         , textAlign center
         , textDecorationNone
         , transitionWithDelay 200 [ T.background, T.border, T.boxShadow, T.color ]
@@ -37,7 +36,7 @@ basicBtn =
             [ boxShadow5 zero
                 zero
                 zero
-                (rem 0.2)
+                (rem 0.125)
                 (fromColorWithAlpha Theme.primary 0.5)
             ]
         , active
@@ -86,4 +85,12 @@ primaryBtn =
             , CM.backgroundColor (Theme.primaryBlacken 10)
             , CM.borderColor (Theme.primaryBlacken 10)
             ]
+        ]
+
+
+formGroup : Style
+formGroup =
+    batch
+        [ lastChild [ marginBottom zero ]
+        , marginBottom (rem 0.5)
         ]
