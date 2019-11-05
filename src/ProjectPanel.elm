@@ -127,6 +127,15 @@ createSubSystem args bigConfig =
     }
 
 
+dndSubSystem =
+    createSubSystem
+        { get = unwrap >> .dnd
+        , set = \s -> map (\b -> { b | dnd = s })
+        , config = .dnd
+        , update = DNDList.update
+        }
+
+
 updateSub { get, set } updateFn smallMsg big =
     updateFn smallMsg (get big)
         |> Tuple.mapFirst (\small -> set small big)
@@ -136,10 +145,7 @@ update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
     case message of
         DNDList msg ->
-            updateSub { get = unwrap >> .dnd, set = \s -> map (\b -> { b | dnd = s }) }
-                (DNDList.update config.dnd)
-                msg
-                model
+            (dndSubSystem config).update msg model
 
         ExpansionPanel msg ->
             ExpansionPanel.update config.expansionPanel msg (unwrap model |> .expansionPanel)
