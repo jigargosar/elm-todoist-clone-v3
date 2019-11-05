@@ -138,14 +138,22 @@ updateProjectPanel msg model =
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
-mapLabelPanel : (b -> b) -> { a | labelPanel : b } -> { a | labelPanel : b }
-mapLabelPanel func model =
-    { model | labelPanel = func model.labelPanel }
+updateLabelPanel :
+    LabelPanel.Msg
+    -> { a | labelPanel : LabelPanel }
+    -> ( { a | labelPanel : LabelPanel }, Cmd Msg )
+updateLabelPanel msg model =
+    LabelPanel.update labelPanelConfig msg model.labelPanel
+        |> Tuple.mapFirst (\labelPanel -> { model | labelPanel = labelPanel })
 
 
-mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
-mapFilterPanel func model =
-    { model | filterPanel = func model.filterPanel }
+updateFilterPanel :
+    FilterPanel.Msg
+    -> { a | filterPanel : FilterPanel }
+    -> ( { a | filterPanel : FilterPanel }, Cmd Msg )
+updateFilterPanel msg model =
+    FilterPanel.update filterPanelConfig msg model.filterPanel
+        |> Tuple.mapFirst (\filterPanel -> { model | filterPanel = filterPanel })
 
 
 
@@ -502,12 +510,10 @@ update message model =
             updateProjectPanel msg model
 
         LabelPanel msg ->
-            LabelPanel.update labelPanelConfig msg model.labelPanel
-                |> Tuple.mapFirst (always >> flip mapLabelPanel model)
+            updateLabelPanel msg model
 
         FilterPanel msg ->
-            FilterPanel.update filterPanelConfig msg model.filterPanel
-                |> Tuple.mapFirst (always >> flip mapFilterPanel model)
+            updateFilterPanel msg model
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
