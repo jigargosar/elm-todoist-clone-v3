@@ -1,6 +1,6 @@
 module DNDList exposing
     ( Config
-    , Model
+    , DNDList
     , Msg
     , View
     , ghost
@@ -39,7 +39,7 @@ type alias Config item msg =
     }
 
 
-type Model item
+type DNDList item
     = NotDragging
     | Dragging (State item)
 
@@ -61,7 +61,7 @@ type alias State item =
     }
 
 
-initial : Model item
+initial : DNDList item
 initial =
     NotDragging
 
@@ -78,8 +78,8 @@ type Msg item
 update :
     Config item msg
     -> Msg item
-    -> Model item
-    -> ( Model item, Cmd msg )
+    -> DNDList item
+    -> ( DNDList item, Cmd msg )
 update { toMsg, sorted } message model =
     case message of
         DragStarted payload ->
@@ -136,7 +136,7 @@ sortItemsOnDragOver dragOverItem state =
         }
 
 
-updateState : (State item -> ( Model item, Cmd msg )) -> Model item -> ( Model item, Cmd msg )
+updateState : (State item -> ( DNDList item, Cmd msg )) -> DNDList item -> ( DNDList item, Cmd msg )
 updateState func model =
     case model of
         NotDragging ->
@@ -146,7 +146,7 @@ updateState func model =
             func state
 
 
-mapState : (State item -> State item) -> Model item -> Model item
+mapState : (State item -> State item) -> DNDList item -> DNDList item
 mapState func model =
     case model of
         Dragging state ->
@@ -174,7 +174,7 @@ type alias View item msg =
     }
 
 
-view : { a | toMsg : Msg item -> msg } -> List item -> Model item -> View item msg
+view : { a | toMsg : Msg item -> msg } -> List item -> DNDList item -> View item msg
 view { toMsg } items model =
     let
         attrsToMsg =
@@ -209,7 +209,7 @@ getState model =
             Just state
 
 
-ghost : Model a -> Maybe ( Css.Style, a )
+ghost : DNDList a -> Maybe ( Css.Style, a )
 ghost =
     getState
         >> Maybe.map stateToGhost
@@ -234,7 +234,7 @@ stateToGhost { dragItem, dragElement, startPosition, currentPosition } =
     )
 
 
-subscriptions : { a | toMsg : Msg item -> msg } -> Model item -> Sub msg
+subscriptions : { a | toMsg : Msg item -> msg } -> DNDList item -> Sub msg
 subscriptions { toMsg } model =
     case model of
         Dragging _ ->

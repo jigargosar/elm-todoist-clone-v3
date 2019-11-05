@@ -23,7 +23,7 @@ import UI
 
 
 type alias LabelPanel =
-    { collapsed : Bool, dnd : DNDList.Model Label }
+    { collapsed : Bool, dnd : DNDList.DNDList Label }
 
 
 initial : LabelPanel
@@ -97,7 +97,7 @@ view config labelList model =
         )
 
 
-viewItems : Config msg -> List Label -> DNDList.Model Label -> List (Html msg)
+viewItems : Config msg -> List Label -> DNDList.DNDList Label -> List (Html msg)
 viewItems config labelList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =

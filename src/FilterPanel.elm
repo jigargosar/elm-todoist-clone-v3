@@ -23,7 +23,7 @@ import UI
 
 
 type alias FilterPanel =
-    { collapsed : Bool, dnd : DNDList.Model Filter }
+    { collapsed : Bool, dnd : DNDList.DNDList Filter }
 
 
 initial : FilterPanel
@@ -97,7 +97,7 @@ view config filterList model =
         )
 
 
-viewItems : Config msg -> List Filter -> DNDList.Model Filter -> List (Html msg)
+viewItems : Config msg -> List Filter -> DNDList.DNDList Filter -> List (Html msg)
 viewItems config filterList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =

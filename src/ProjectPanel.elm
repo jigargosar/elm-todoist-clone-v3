@@ -11,7 +11,7 @@ module ProjectPanel exposing
     )
 
 import Css
-import DNDList as DND
+import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (ExpansionPanel)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
@@ -29,7 +29,7 @@ type ProjectPanel
 
 type alias State =
     { ep : ExpansionPanel
-    , dnd : DND.Model Project
+    , dnd : DNDList Project
     }
 
 
@@ -69,11 +69,14 @@ createConfig :
         }
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
+    let
+        ep =
+            EP.createConfig (toMsg << ExpansionPanel)
+                { title = "Projects", secondary = { iconName = "add", action = addClicked } }
+    in
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
-    , ep =
-        EP.createConfig (toMsg << ExpansionPanel)
-            { title = "Projects", secondary = { iconName = "add", action = addClicked } }
+    , ep = ep
     }
 
 
@@ -126,7 +129,7 @@ view config projectList (ProjectPanel state) =
         state.ep
 
 
-viewItems : Config msg -> List Project -> DND.Model Project -> List (Html msg)
+viewItems : Config msg -> List Project -> DNDList Project -> List (Html msg)
 viewItems config projectList dndList =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
