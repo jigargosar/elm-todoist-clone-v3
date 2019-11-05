@@ -128,6 +128,18 @@ updateLabelSortOrder labelList model =
     )
 
 
+mapFilterCollection : (b -> b) -> { a | filterCollection : b } -> { a | filterCollection : b }
+mapFilterCollection func model =
+    { model | filterCollection = func model.filterCollection }
+
+
+updateFilterSortOrder : List Filter -> { a | filterCollection : FilterCollection } -> ( { a | filterCollection : FilterCollection }, Cmd msg )
+updateFilterSortOrder filterList model =
+    ( mapFilterCollection (FilterCollection.updateSortOrder filterList) model
+    , Cmd.none
+    )
+
+
 
 -- Flags
 
@@ -547,16 +559,6 @@ mapLabelPanel func model =
 mapFilterPanel : (b -> b) -> { a | filterPanel : b } -> { a | filterPanel : b }
 mapFilterPanel func model =
     { model | filterPanel = func model.filterPanel }
-
-
-mapFilterCollection func model =
-    { model | filterCollection = func model.filterCollection }
-
-
-updateFilterSortOrder filterList model =
-    ( mapFilterCollection (FilterCollection.updateSortOrder filterList) model
-    , Cmd.none
-    )
 
 
 updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model, Cmd Msg )
