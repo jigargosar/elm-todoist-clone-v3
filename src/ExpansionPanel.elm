@@ -1,4 +1,13 @@
-module ExpansionPanel exposing (Config, ExpansionPanel, Msg, createConfig, initial, subscriptions, update, view)
+module ExpansionPanel exposing
+    ( Config
+    , ExpansionPanel
+    , Msg
+    , createConfig
+    , initial
+    , subscriptions
+    , update
+    , view
+    )
 
 import Html.Styled exposing (Attribute, Html, button, div, i, span, text)
 import Html.Styled.Attributes exposing (class, css)
