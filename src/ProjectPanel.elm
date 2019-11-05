@@ -48,6 +48,7 @@ subscriptions config (ProjectPanel { dnd }) =
 type alias Config msg =
     { addClicked : msg
     , moreClicked : ProjectId -> String -> msg
+    , toggled : msg
     , dnd : DNDList.Config Project msg
     }
 
@@ -63,6 +64,7 @@ createConfig :
 createConfig toMsg { addClicked, moreClicked, sorted } =
     { addClicked = addClicked
     , moreClicked = moreClicked
+    , toggled = toMsg Toggled
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     }
 
@@ -114,10 +116,10 @@ viewGhost (ProjectPanel { dnd }) =
             []
 
 
-view : ToMsg msg -> Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view toMsg config projectList (ProjectPanel model) =
+view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
+view config projectList (ProjectPanel model) =
     UI.viewExpansionPanel
-        { toggled = toMsg Toggled
+        { toggled = config.toggled
         , title = "Projects"
         , collapsed = model.collapsed
         , secondary = { iconName = "add", action = config.addClicked }
