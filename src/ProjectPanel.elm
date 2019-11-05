@@ -21,7 +21,6 @@ import ProjectId exposing (ProjectId)
 import Px
 import Route
 import Styles exposing (..)
-import UI
 
 
 type ProjectPanel
@@ -54,10 +53,10 @@ subscriptions config (ProjectPanel { dnd }) =
 
 
 type alias Config msg =
-    { addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
+    { moreClicked : ProjectId -> String -> msg
     , toggled : msg
     , dnd : DNDList.Config Project msg
+    , expansionPanel : ExpansionPanel.Config msg
     }
 
 
@@ -70,10 +69,12 @@ createConfig :
         }
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
-    { addClicked = addClicked
-    , moreClicked = moreClicked
+    { moreClicked = moreClicked
     , toggled = toMsg Toggled
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
+    , expansionPanel =
+        ExpansionPanel.createConfig (toMsg << ExpansionPanel)
+            { title = "Projects", secondary = { iconName = "add", action = addClicked } }
     }
 
 
@@ -90,6 +91,7 @@ unwrap (ProjectPanel state) =
 type Msg
     = Toggled
     | DNDList (DNDList.Msg Project)
+    | ExpansionPanel ExpansionPanel.Msg
 
 
 type alias ToMsg msg =
@@ -105,6 +107,10 @@ update config message model =
         DNDList msg ->
             DNDList.update config.dnd msg (unwrap model |> .dnd)
                 |> Tuple.mapFirst (\dnd -> map (\state -> { state | dnd = dnd }) model)
+
+        ExpansionPanel msg ->
+            ExpansionPanel.update config.expansionPanel msg (unwrap model |> .expansionPanel)
+                |> Tuple.mapFirst (\expansionPanel -> map (\state -> { state | expansionPanel = expansionPanel }) model)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
@@ -125,18 +131,14 @@ viewGhost (ProjectPanel { dnd }) =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view config projectList (ProjectPanel model) =
-    UI.viewExpansionPanel
-        { toggled = config.toggled
-        , title = "Projects"
-        , collapsed = model.collapsed
-        , secondary = { iconName = "add", action = config.addClicked }
-        }
+view config projectList (ProjectPanel state) =
+    ExpansionPanel.view config.expansionPanel
         (\_ ->
             viewItems config
                 projectList
-                model.dnd
+                state.dnd
         )
+        state.expansionPanel
 
 
 viewItems : Config msg -> List Project -> DNDList.Model Project -> List (Html msg)
