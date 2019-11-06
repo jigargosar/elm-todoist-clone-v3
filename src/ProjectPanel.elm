@@ -188,7 +188,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
              ]
                 ++ moreAttrs
             )
-            [ i [ class "material-icons" ] [ text "more_horiz" ]
+            [ Icon.view Icon.MoreHorizontal
             ]
         ]
 
