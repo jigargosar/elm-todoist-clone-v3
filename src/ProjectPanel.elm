@@ -16,7 +16,7 @@ import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
-import Panels
+import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
@@ -177,7 +177,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             Route.projectHref project
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ Icon.view2 Panels.projectIcon
+        [ Icon.view2 PanelsHelp.projectIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: handleAttrs
             )

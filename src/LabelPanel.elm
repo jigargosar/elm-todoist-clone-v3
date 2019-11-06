@@ -18,7 +18,7 @@ import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import Label exposing (Label)
 import LabelId exposing (LabelId)
-import Panels
+import PanelsHelp
 import Px
 import Route
 import Styles exposing (..)
@@ -173,7 +173,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } label =
             Route.labelHref label
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ Icon.view2 Panels.labelIcon
+        [ Icon.view2 PanelsHelp.labelIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: handleAttrs
             )

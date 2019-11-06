@@ -1,4 +1,4 @@
-module Panels exposing (filterIcon, labelIcon, projectIcon)
+module PanelsHelp exposing (filterIcon, labelIcon, projectIcon)
 
 import UI.Icon as Icon
 

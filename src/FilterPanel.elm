@@ -18,7 +18,7 @@ import FilterId exposing (FilterId)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
-import Panels
+import PanelsHelp
 import Px
 import Route
 import Styles exposing (..)
@@ -173,7 +173,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } filter =
             Route.filterHref filter
     in
     div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ Icon.view2 Panels.filterIcon
+        [ Icon.view2 PanelsHelp.filterIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: handleAttrs
             )
