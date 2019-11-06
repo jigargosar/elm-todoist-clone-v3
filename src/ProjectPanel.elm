@@ -125,14 +125,14 @@ view config projectList state =
             state.collapsible
 
 
-type alias DragEvent data =
+type alias DragStartEvent data =
     { start : Position
     , domId : String
     , data : data
     }
 
 
-onDragStart : Int -> String -> DNDState data -> (DragEvent data -> msg)
+onDragStart : Int -> String -> DNDState data -> (DragStartEvent data -> msg)
 onDragStart idx domId handler dragState =
     impl
 
@@ -142,7 +142,7 @@ draggableAttr dragState =
     impl
 
 
-getDragElement : DragEvent data -> Task Dom.Error (DNDState data)
+getDragElement : DragStartEvent data -> Task Dom.Error (DNDState data)
 getDragElement dragEvent =
     impl
 
