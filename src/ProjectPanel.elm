@@ -10,28 +10,24 @@ module ProjectPanel exposing
     , viewGhost
     )
 
-import Basics.More exposing (Position, flip, pageXYAsPositionDecoder)
 import Css
 import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
-import Html.Styled.Events as E exposing (onClick)
-import Json.Decode as JD
+import Html.Styled.Events exposing (onClick)
 import Panels
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
 import Route
 import Styles exposing (..)
-import Tuple2
 import UI.Icon as Icon
 
 
 type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
-    , dragState : DragState
     }
 
 
@@ -39,52 +35,7 @@ initial : ProjectPanel
 initial =
     { collapsible = EP.expanded
     , dnd = DND.initial
-    , dragState = NotDragging
     }
-
-
-type DragState
-    = NotDragging
-    | Dragging Int MouseState
-
-
-type alias MouseState =
-    { start : Position
-    , current : Position
-    , offset : Position
-    }
-
-
-onDragStartPreventDefault : JD.Decoder msg -> Attribute msg
-onDragStartPreventDefault decoder =
-    E.preventDefaultOn "dragstart"
-        (decoder
-            |> JD.map (Tuple2.pairTo True)
-        )
-
-
-createDraggable :
-    Int
-    -> DragState
-    ->
-        { dragHandle : List (Attribute Msg)
-        , dragOver : List (Attribute Msg)
-        }
-createDraggable index dragState =
-    case dragState of
-        NotDragging ->
-            { dragHandle =
-                [ onDragStartPreventDefault
-                    (JD.map (OnDragStart index) pageXYAsPositionDecoder)
-                , A.draggable "true"
-                ]
-            , dragOver = []
-            }
-
-        Dragging _ _ ->
-            { dragHandle = []
-            , dragOver = [ E.onMouseOver (OnDragOver index) ]
-            }
 
 
 
@@ -129,8 +80,6 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
 type Msg
     = DNDList (DND.Msg Project)
     | Toggled
-    | OnDragStart Int Position
-    | OnDragOver Int
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
@@ -142,12 +91,6 @@ update config message model =
 
         Toggled ->
             ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
-
-        OnDragStart int position ->
-            ( model, Cmd.none )
-
-        OnDragOver int ->
-            ( model, Cmd.none )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
