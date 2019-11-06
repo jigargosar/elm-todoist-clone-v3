@@ -141,25 +141,24 @@ viewItems config projectList dnd =
         items
 
 
-viewItemHelp config { dragStartAttrs, dragOverAttrs, isBeingDragged } =
-    \project ->
-        let
-            domId =
-                itemDomId project
+viewItemHelp config { dragStartAttrs, dragOverAttrs, isBeingDragged } project =
+    let
+        domId =
+            itemDomId project
 
-            moreDomId =
-                domId ++ "__more-btn"
-        in
-        viewItem
-            { itemAttrs = A.id domId :: dragOverAttrs project
-            , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-            , handleAttrs = dragStartAttrs project domId
-            , moreAttrs =
-                [ A.id moreDomId
-                , onClick (config.moreClicked (Project.id project) moreDomId)
-                ]
-            }
-            project
+        moreDomId =
+            domId ++ "__more-btn"
+    in
+    viewItem
+        { itemAttrs = A.id domId :: dragOverAttrs project
+        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+        , handleAttrs = dragStartAttrs project domId
+        , moreAttrs =
+            [ A.id moreDomId
+            , onClick (config.moreClicked (Project.id project) moreDomId)
+            ]
+        }
+        project
 
 
 itemDomId : Project -> String
