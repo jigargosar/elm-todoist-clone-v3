@@ -184,7 +184,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             )
         , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
-            ([ css [ Style.linkBtn, Style.btnAction ]
+            ([ css [ Style.btnLink, Style.btnAction ]
              , class "show_on_parent_hover"
              ]
                 ++ moreAttrs

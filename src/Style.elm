@@ -1,4 +1,4 @@
-module Style exposing (btnAction, formGroup, formInput, formLabel, linkBtn, primaryBtn)
+module Style exposing (btnAction, btnLink, formGroup, formInput, formLabel, primaryBtn)
 
 import Css exposing (..)
 import Css.More exposing (..)
@@ -74,8 +74,8 @@ basicBtn =
         ]
 
 
-linkBtn : Style
-linkBtn =
+btnLink : Style
+btnLink =
     batch
         [ basicBtn
         , backgroundColor white
