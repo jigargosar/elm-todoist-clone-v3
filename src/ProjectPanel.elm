@@ -125,18 +125,14 @@ view config projectList state =
 
 
 viewItems :
-    { a
-        | dnd :
-            { b | toMsg : DND.Msg Project -> c }
-        , moreClicked : ProjectId -> String -> c
-    }
+    Config msg
     -> List Project
     -> DNDList Project
-    -> List (Html c)
-viewItems config projectList dndList =
+    -> List (Html msg)
+viewItems config projectList dnd =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DND.view config.dnd projectList dndList
+            DND.view config.dnd projectList dnd
     in
     List.map
         (\project ->
