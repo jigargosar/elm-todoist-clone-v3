@@ -1,4 +1,4 @@
-module Style exposing (btnAction, btnLink, drawerItem, formGroup, formInput, formLabel, primaryBtn)
+module Style exposing (btnAction, btnLink, drawerItem, formGroup, formInput, formLabel, listItemIcon, listItemLink, primaryBtn)
 
 import Css exposing (..)
 import Css.More exposing (..)
@@ -150,3 +150,20 @@ formInput =
 drawerItem : Style
 drawerItem =
     batch [ padding2 zero (sRem 0.25), paddingRight (sRem (0.25 + 1)), displayFlex ]
+
+
+listItemIcon : Style
+listItemIcon =
+    batch [ padding2 (sRem 0.25) (sRem 0.25), verticalAlign middle ]
+
+
+listItemLink : Style
+listItemLink =
+    batch
+        [ padding2 (sRem 0.25) (sRem 0.25)
+        , fontSize (sRem 0.8)
+
+        -- , height (sRem 1.8)
+        , lineHeight (sRem 1.2)
+        , verticalAlign middle
+        ]

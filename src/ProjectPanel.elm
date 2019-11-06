@@ -179,10 +179,10 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     in
     div (css [ Style.drawerItem, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ Icon.view2 PanelsHelp.projectIcon
-            (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
+            (css [ Style.listItemIcon, cursorMove, c_ iconColor ]
                 :: handleAttrs
             )
-        , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
+        , a [ css [ linkReset, Style.listItemLink, flexGrow1 ], href ] [ text title ]
         , button
             ([ css [ Style.btnLink, Style.btnAction ]
              , class "show_on_parent_hover"
