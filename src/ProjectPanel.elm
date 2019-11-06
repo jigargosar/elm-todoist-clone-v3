@@ -10,6 +10,7 @@ module ProjectPanel exposing
     , viewGhost
     )
 
+import Basics.More exposing (Position, impl)
 import Css
 import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (Collapsible)
@@ -120,6 +121,18 @@ view config projectList state =
                     state.dnd
             )
             state.collapsible
+
+
+type alias DragEvent =
+    { start : Position
+    , idx : Int
+    , domId : String
+    }
+
+
+onDragStart : Int -> String -> (DragEvent -> msg)
+onDragStart idx domId handler =
+    impl
 
 
 viewItems :
