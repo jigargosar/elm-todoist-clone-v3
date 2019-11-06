@@ -21,8 +21,8 @@ type alias DragState data =
     }
 
 
-onDragStart : Int -> String -> DragState data -> (DragStartEvent data -> msg)
-onDragStart idx domId handler dragState =
+onDragStart : String -> DragState data -> (DragStartEvent data -> msg)
+onDragStart domId handler dragState =
     impl
 
 
