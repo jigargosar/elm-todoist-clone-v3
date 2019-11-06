@@ -177,7 +177,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
         href =
             Route.projectHref project
     in
-    div (css [ Px.pl 4, Px.pr (4 + 16), flex, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
+    div (css [ Style.drawerItem, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
         [ Icon.view2 PanelsHelp.projectIcon
             (css [ Px.pa 4, Px.m2 4 0, cursorMove, c_ iconColor ]
                 :: handleAttrs

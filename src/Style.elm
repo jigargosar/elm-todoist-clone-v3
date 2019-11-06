@@ -1,4 +1,4 @@
-module Style exposing (btnAction, btnLink, formGroup, formInput, formLabel, primaryBtn)
+module Style exposing (btnAction, btnLink, drawerItem, formGroup, formInput, formLabel, primaryBtn)
 
 import Css exposing (..)
 import Css.More exposing (..)
@@ -71,6 +71,7 @@ basicBtn =
         , verticalAlign middle
         , whiteSpace noWrap
         , focusBoxShadow
+        , zIndex (int 1)
         ]
 
 
@@ -144,3 +145,8 @@ formInput =
         , focusBoxShadow
         , focus [ borderColor Theme.primary ]
         ]
+
+
+drawerItem : Style
+drawerItem =
+    batch [ padding2 zero (sRem 0.25), paddingRight (sRem (0.25 + 1)), displayFlex ]
