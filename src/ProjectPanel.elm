@@ -14,17 +14,14 @@ import Css
 import DNDList as DND exposing (DNDList)
 import DrawerUI
 import ExpansionPanel as EP exposing (Collapsible)
-import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
-import Html.Styled.Attributes as A exposing (class, css, href)
+import Html.Styled exposing (Attribute, Html, text)
+import Html.Styled.Attributes as A exposing (href)
 import Html.Styled.Events exposing (onClick)
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
-import Px
 import Route
-import Style
 import Styles exposing (..)
-import UI.Icon as Icon
 
 
 type alias ProjectPanel =
