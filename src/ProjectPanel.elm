@@ -10,8 +10,6 @@ module ProjectPanel exposing
     , viewGhost
     )
 
-import Basics.More exposing (Position, impl)
-import Browser.Dom as Dom
 import Css
 import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (Collapsible)
@@ -24,7 +22,6 @@ import ProjectId exposing (ProjectId)
 import Px
 import Route
 import Styles exposing (..)
-import Task exposing (Task)
 import UI.Icon as Icon
 
 
