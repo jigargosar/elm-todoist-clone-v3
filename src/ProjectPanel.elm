@@ -12,6 +12,7 @@ module ProjectPanel exposing
 
 import Css
 import DNDList as DND exposing (DNDList)
+import DrawerUI
 import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
 import Html.Styled.Attributes as A exposing (class, css, href)
@@ -177,11 +178,9 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
         href =
             Route.projectHref project
     in
-    div (css [ Style.drawerItem, batch itemStyles ] :: class "hover_parent" :: itemAttrs)
-        [ Icon.view2 PanelsHelp.projectIcon
-            (css [ Style.listItemIcon, cursorMove, c_ iconColor ]
-                :: handleAttrs
-            )
+    DrawerUI.item itemStyles
+        itemAttrs
+        [ DrawerUI.dragHandle [ c_ iconColor ] handleAttrs PanelsHelp.projectIcon
         , a [ css [ linkReset, Style.listItemLink, flexGrow1 ], href ] [ text title ]
         , button
             ([ css [ Style.btnLink, Style.btnAction, bgInherit ]
