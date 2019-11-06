@@ -669,7 +669,7 @@ view model =
         , modal =
             popupView model
                 ++ dialog.view model
-                ++ ProjectPanel.viewGhost model.projectPanel
+                ++ ProjectPanel.viewGhost projectPanelConfig model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
         }

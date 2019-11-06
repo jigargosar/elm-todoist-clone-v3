@@ -22,6 +22,7 @@ import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Route
 import Styles exposing (..)
+import UI.Icon as Icon exposing (Icon)
 
 
 type alias ProjectPanel =
@@ -52,6 +53,7 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DND.Config Project msg
     , ep : EP.Config msg
+    , icon : Icon
     }
 
 
@@ -73,6 +75,7 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , ep = ep
+    , icon = Icon.Folder
     }
 
 
@@ -92,8 +95,8 @@ update config message model =
             ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
 
 
-viewGhost : ProjectPanel -> List (Html msg)
-viewGhost { dnd } =
+viewGhost : Config msg -> ProjectPanel -> List (Html msg)
+viewGhost config { dnd } =
     case DND.ghost dnd of
         Just ( style, project ) ->
             [ viewItem
