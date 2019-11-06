@@ -9,7 +9,6 @@ module DrawerItem exposing
     , withSecondaryMoreAction
     )
 
-import Css
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import StyleAttrs as SA exposing (StyleAttrs)
