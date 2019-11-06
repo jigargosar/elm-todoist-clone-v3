@@ -1,6 +1,6 @@
 module DrawerUI exposing (..)
 
-import Html.Styled exposing (Attribute, Html, a, div)
+import Html.Styled exposing (Attribute, Html, a, button, div)
 import Html.Styled.Attributes exposing (class, css)
 import Style
 import Styles exposing (..)
@@ -19,3 +19,14 @@ dragHandle styles attrs icon =
 link styles attrs =
     a
         (css [ linkReset, Style.listItemLink, flexGrow1, batch styles ] :: attrs)
+
+
+more attrs =
+    button
+        ([ css [ Style.btnLink, Style.btnAction, bgInherit ]
+         , class "show_on_parent_hover"
+         ]
+            ++ attrs
+        )
+        [ Icon.view Icon.MoreHorizontal
+        ]
