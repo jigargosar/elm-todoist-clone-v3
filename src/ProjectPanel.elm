@@ -99,13 +99,16 @@ viewGhost : Config msg -> ProjectPanel -> List (Html msg)
 viewGhost config { dnd } =
     case DND.ghost dnd of
         Just ( style, project ) ->
-            [ viewItem
-                { itemAttrs = []
-                , itemStyles = [ style ]
-                , handleAttrs = []
-                , moreAttrs = []
-                }
-                (projectData project)
+            [ let
+                { iconColor, title, href } =
+                    projectData project
+              in
+              DrawerUI.item [ style ]
+                []
+                [ DrawerUI.dragHandle [ c_ iconColor ] [] PanelsHelp.projectIcon
+                , DrawerUI.link [] [ href ] [ text title ]
+                , DrawerUI.more []
+                ]
             ]
 
         Nothing ->
