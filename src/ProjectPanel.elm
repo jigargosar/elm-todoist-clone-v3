@@ -11,6 +11,7 @@ module ProjectPanel exposing
     )
 
 import Basics.More exposing (Position, impl)
+import Browser.Dom as Dom
 import Css
 import DNDList as DND exposing (DNDList)
 import ExpansionPanel as EP exposing (Collapsible)
@@ -23,6 +24,7 @@ import ProjectId exposing (ProjectId)
 import Px
 import Route
 import Styles exposing (..)
+import Task exposing (Task)
 import UI.Icon as Icon
 
 
@@ -123,16 +125,31 @@ view config projectList state =
             state.collapsible
 
 
-type alias DragEvent =
+type alias DragEvent data =
     { start : Position
-    , idx : Int
     , domId : String
+    , data : data
     }
 
 
-onDragStart : Int -> String -> (DragEvent -> msg)
-onDragStart idx domId handler =
+onDragStart : Int -> String -> DNDState data -> (DragEvent data -> msg)
+onDragStart idx domId handler dragState =
     impl
+
+
+draggableAttr : DNDState data -> Attribute msg
+draggableAttr dragState =
+    impl
+
+
+getDragElement : DragEvent data -> Task Dom.Error (DNDState data)
+getDragElement dragEvent =
+    impl
+
+
+type DNDState data
+    = NotDraggingState
+    | DraggingState data
 
 
 viewItems :
