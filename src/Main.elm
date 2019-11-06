@@ -644,8 +644,7 @@ view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            ProjectPanel.view
-                projectPanelConfig
+            ProjectPanel.view projectPanelConfig
                 (ProjectCollection.sorted model.projectCollection)
                 model.projectPanel
 
