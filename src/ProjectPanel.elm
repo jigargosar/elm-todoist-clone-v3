@@ -166,6 +166,13 @@ itemDomId project =
     "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
 
 
+type alias ItemData msg =
+    { title : String
+    , iconColor : Css.Color
+    , href : Attribute msg
+    }
+
+
 viewItem : ItemProps msg -> Project -> Html msg
 viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
