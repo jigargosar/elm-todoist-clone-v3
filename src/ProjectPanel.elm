@@ -102,7 +102,7 @@ viewGhost { dnd } =
                 , handleAttrs = []
                 , moreAttrs = []
                 }
-                project
+                (projectData project)
             ]
 
         Nothing ->
@@ -158,7 +158,7 @@ viewItemHelp config { dragStartAttrs, dragOverAttrs, isBeingDragged } project =
             , onClick (config.moreClicked (Project.id project) moreDomId)
             ]
         }
-        project
+        (projectData project)
 
 
 itemDomId : Project -> String
@@ -173,8 +173,8 @@ type alias ItemData msg =
     }
 
 
-viewItem : ItemProps msg -> Project -> Html msg
-viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
+projectData : Project -> ItemData msg
+projectData project =
     let
         title =
             Project.title project
@@ -185,6 +185,11 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
         href =
             Route.projectHref project
     in
+    ItemData title iconColor href
+
+
+viewItem : ItemProps msg -> ItemData msg -> Html msg
+viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } { title, iconColor, href } =
     DrawerUI.item itemStyles
         itemAttrs
         [ DrawerUI.dragHandle [ c_ iconColor ] handleAttrs PanelsHelp.projectIcon
