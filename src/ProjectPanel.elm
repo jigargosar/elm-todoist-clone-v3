@@ -154,17 +154,19 @@ viewItemHelp config { dragStartAttrs, dragOverAttrs, isBeingDragged } project =
 
         moreDomId =
             domId ++ "__more-btn"
+
+        { iconColor, title, href } =
+            projectData project
     in
-    viewItem
-        { itemAttrs = A.id domId :: dragOverAttrs project
-        , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-        , handleAttrs = dragStartAttrs project domId
-        , moreAttrs =
+    DrawerUI.item [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+        (A.id domId :: dragOverAttrs project)
+        [ DrawerUI.dragHandle [ c_ iconColor ] (dragStartAttrs project domId) PanelsHelp.projectIcon
+        , DrawerUI.link [] [ href ] [ text title ]
+        , DrawerUI.more
             [ A.id moreDomId
             , onClick (config.moreClicked (Project.id project) moreDomId)
             ]
-        }
-        (projectData project)
+        ]
 
 
 itemDomId : Project -> String
