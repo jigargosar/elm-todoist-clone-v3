@@ -1,4 +1,4 @@
-module Style exposing (formGroup, formInput, formLabel, linkBtn, primaryBtn)
+module Style exposing (btnAction, formGroup, formInput, formLabel, linkBtn, primaryBtn)
 
 import Css exposing (..)
 import Css.More exposing (..)
@@ -85,6 +85,11 @@ linkBtn =
         , focus [ color Theme.primaryBlacker ]
         , active [ color Theme.primaryBlacker ]
         ]
+
+
+btnAction : Style
+btnAction =
+    batch [ paddingLeft zero, paddingRight zero, width (sRem 1.8) ]
 
 
 primaryBtn : Style

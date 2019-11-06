@@ -21,6 +21,7 @@ import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Px
 import Route
+import Style
 import Styles exposing (..)
 import UI.Icon as Icon
 
@@ -183,7 +184,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
             )
         , a [ css [ linkReset, Px.p2 8 4, lh 1.5, flexGrow1 ], href ] [ text title ]
         , button
-            ([ css [ btnReset, pointer, Px.pa 4, Px.m2 4 0, flex, itemsCenter, selfEnd ]
+            ([ css [ Style.primaryBtn, Style.btnAction ]
              , class "show_on_parent_hover"
              ]
                 ++ moreAttrs
