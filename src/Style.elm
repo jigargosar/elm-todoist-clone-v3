@@ -160,7 +160,11 @@ listItemIcon =
 listItemLink : Style
 listItemLink =
     batch
-        [ padding2 (sRem 0.25) (sRem 0.25)
+        [ batch
+            [ Css.textDecoration Css.none
+            , Css.color Css.currentColor
+            ]
+        , padding2 (sRem 0.25) (sRem 0.25)
         , fontSize (sRem 0.8)
 
         -- , height (sRem 1.8)
