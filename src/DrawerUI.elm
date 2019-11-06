@@ -1,6 +1,6 @@
 module DrawerUI exposing (..)
 
-import Html.Styled exposing (Attribute, Html, div)
+import Html.Styled exposing (Attribute, Html, a, div)
 import Html.Styled.Attributes exposing (class, css)
 import Style
 import Styles exposing (..)
@@ -14,3 +14,8 @@ item styles attrs =
 
 dragHandle styles attrs icon =
     Icon.view2 icon ([ css [ Style.listItemIcon, cursorMove, batch styles ] ] ++ attrs)
+
+
+link styles attrs =
+    a
+        (css [ linkReset, Style.listItemLink, flexGrow1, batch styles ] :: attrs)

@@ -181,7 +181,7 @@ viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     DrawerUI.item itemStyles
         itemAttrs
         [ DrawerUI.dragHandle [ c_ iconColor ] handleAttrs PanelsHelp.projectIcon
-        , a [ css [ linkReset, Style.listItemLink, flexGrow1 ], href ] [ text title ]
+        , DrawerUI.link [] [ href ] [ text title ]
         , button
             ([ css [ Style.btnLink, Style.btnAction, bgInherit ]
              , class "show_on_parent_hover"
