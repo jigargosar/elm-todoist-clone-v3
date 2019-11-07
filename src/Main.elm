@@ -290,23 +290,15 @@ initLabelCollection :
     -> { a | labelCollection : LabelCollection }
     -> ( { a | labelCollection : LabelCollection }, Cmd msg )
 initLabelCollection encodedLabelList model =
-    updateLabelCollection
-        (\labelCollection ->
-            LabelCollection.fromEncodedList encodedLabelList
-                |> Result.Extra.unpack
-                    (logDecodeError >> Return.return labelCollection)
-                    Return.singleton
-        )
-        model
+    LabelCollection.fromEncodedList encodedLabelList
+        |> Result.Extra.unpack
+            (flip onDecodeError model)
+            (always >> flip mapLabelCollection model >> Return.singleton)
 
 
-updateLabelCollection : (b -> ( b, a )) -> { c | labelCollection : b } -> ( { c | labelCollection : b }, a )
-updateLabelCollection func model =
-    func model.labelCollection
-        |> Tuple.mapFirst
-            (\labelCollection ->
-                mapLabelCollection (always labelCollection) model
-            )
+onDecodeError : JD.Error -> b -> ( b, Cmd msg )
+onDecodeError error model =
+    ( model, logDecodeError error )
 
 
 logDecodeError : JD.Error -> Cmd msg
