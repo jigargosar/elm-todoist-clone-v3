@@ -26,21 +26,12 @@ type alias Flags a =
     }
 
 
-type alias Lens s b =
-    { get : b -> s, set : s -> b -> b }
-
-
-createLens : ( b -> s, s -> b -> b ) -> Lens s b
-createLens ( get, set ) =
-    { get = get, set = set }
-
-
 todoDictL =
     createLens ( .todoDict, \s b -> { b | todoDict = s } )
 
 
 projectCollectionL =
-    { get = .projectCollection, set = \s b -> { b | projectCollection = s } }
+    createLens ( .projectCollection, \s b -> { b | projectCollection = s } )
 
 
 labelCollectionL =
@@ -77,3 +68,12 @@ initCollections flags model =
                         ( newModel, error :: errorList )
             )
             ( model, [] )
+
+
+type alias Lens s b =
+    { get : b -> s, set : s -> b -> b }
+
+
+createLens : ( b -> s, s -> b -> b ) -> Lens s b
+createLens ( get, set ) =
+    { get = get, set = set }
