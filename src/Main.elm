@@ -267,10 +267,6 @@ init flags url navKey =
             )
 
 
-
---        |> Tuple.mapFirst (Debug.log "model")
-
-
 initProjectCollection :
     JD.Value
     -> { a | projectCollection : ProjectCollection }
