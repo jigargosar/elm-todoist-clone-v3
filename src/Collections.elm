@@ -75,10 +75,6 @@ initCollections flags model =
             , labelCollectionResult
             , filterCollectionResult
             ]
-
-        foo =
-            Result.Extra.unpack (Tuple.mapSecond (::))
-                (Tuple.mapFirst identity)
     in
     results
         |> List.foldl
