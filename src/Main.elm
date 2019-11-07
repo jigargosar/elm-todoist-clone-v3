@@ -257,15 +257,16 @@ init flags url navKey =
             }
     in
     Return.singleton initial
-        |> Return.andThen
-            (Return.pipelK
-                [ initTodoDict flags.todoList
-                , initProjectCollection flags.projectList
-                , initLabelCollection flags.labelList
-                , initFilterCollection flags.filterList
-                , onUrlChanged url
-                ]
-            )
+        |> Return.andThen (initCollections flags)
+        |> Return.andThen (onUrlChanged url)
+
+
+initCollections flags model =
+    Return.singleton model
+        |> Return.andThen (initTodoDict flags.todoList)
+        |> Return.andThen (initProjectCollection flags.projectList)
+        |> Return.andThen (initLabelCollection flags.labelList)
+        |> Return.andThen (initFilterCollection flags.filterList)
 
 
 initProjectCollection :
