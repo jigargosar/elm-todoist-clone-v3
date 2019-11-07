@@ -291,13 +291,10 @@ initLabelCollection :
     -> ( { a | labelCollection : LabelCollection }, Cmd msg )
 initLabelCollection encodedLabelList model =
     LabelCollection.fromEncodedList encodedLabelList
-        |> Result.Extra.unpack (logDecodeError >> Return.return model)
-            (setLabelCollectionIn model >> Return.singleton)
-
-
-setLabelCollectionIn : { a | labelCollection : b } -> b -> { c | labelCollection : b }
-setLabelCollectionIn model =
-    always >> flip mapLabelCollection model
+        |> Result.Extra.unpack
+            (logDecodeError >> Return.return identity)
+            (always >> Return.singleton)
+        |> Return.map (flip mapLabelCollection model)
 
 
 logDecodeError : JD.Error -> Cmd msg
