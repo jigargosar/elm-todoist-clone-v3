@@ -1,4 +1,4 @@
-module Collections exposing (Collections, Flags, init)
+module DB exposing (DB, Flags, init)
 
 import FilterCollection exposing (FilterCollection)
 import Json.Decode as JD
@@ -8,7 +8,7 @@ import ProjectCollection exposing (ProjectCollection)
 import TodoDict exposing (TodoDict)
 
 
-type alias Collections a =
+type alias DB a =
     { a
         | todoDict : TodoDict
         , projectCollection : ProjectCollection
@@ -42,10 +42,10 @@ filterCollectionL =
     createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
 
 
-init : Flags x -> Collections a -> ( Collections a, List JD.Error )
+init : Flags x -> DB a -> ( DB a, List JD.Error )
 init flags model =
     let
-        results : List (Result JD.Error (Collections a -> Collections a))
+        results : List (Result JD.Error (DB a -> DB a))
         results =
             [ TodoDict.fromEncodedList flags.todoList
                 |> Result.map todoDictL.set

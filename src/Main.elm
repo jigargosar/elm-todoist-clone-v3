@@ -4,7 +4,7 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import Collections exposing (Collections)
+import DB exposing (DB)
 import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
@@ -15,7 +15,6 @@ import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
 import InboxOrProject exposing (InboxOrProject)
-import Json.Decode as JD exposing (Decoder)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
 import LabelCollection exposing (LabelCollection)
@@ -31,7 +30,6 @@ import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Result.Extra
 import Return
 import Route exposing (Route)
 import Task
@@ -262,9 +260,9 @@ init flags url navKey =
         |> Return.andThen (onUrlChanged url)
 
 
-initCollections : Flags -> Collections a -> ( Collections a, Cmd msg )
+initCollections : Flags -> DB a -> ( DB a, Cmd msg )
 initCollections flags model =
-    Collections.init flags model
+    DB.init flags model
         |> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
 
 
