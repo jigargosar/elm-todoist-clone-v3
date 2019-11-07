@@ -42,6 +42,10 @@ labelCollectionL =
     { get = .labelCollection, set = \s b -> { b | labelCollection = s } }
 
 
+mapL { get, set } func big =
+    set (func (get big)) big
+
+
 mapTodoDict func model =
     { model | todoDict = func model.todoDict }
 
