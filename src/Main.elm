@@ -4,6 +4,7 @@ import Appbar
 import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Collections exposing (Collections)
 import Dialog exposing (Dialog)
 import Dialog.AddProject
 import Dialog.EditProject
@@ -261,84 +262,15 @@ init flags url navKey =
         |> Return.andThen (onUrlChanged url)
 
 
+initCollections : Flags -> Collections a -> ( Collections a, Cmd msg )
 initCollections flags model =
-    Return.singleton model
-        |> Return.andThen (initTodoDict flags.todoList)
-        |> Return.andThen (initProjectCollection flags.projectList)
-        |> Return.andThen (initLabelCollection flags.labelList)
-        |> Return.andThen (initFilterCollection flags.filterList)
-
-
-initProjectCollection :
-    JD.Value
-    -> { a | projectCollection : ProjectCollection }
-    -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
-initProjectCollection encodedProjectList model =
-    let
-        ( newProjectCollection, cmd ) =
-            case ProjectCollection.fromEncodedList encodedProjectList of
-                Ok new ->
-                    ( new, Cmd.none )
-
-                Err e ->
-                    ( model.projectCollection, logError <| JD.errorToString e )
-    in
-    ( { model | projectCollection = newProjectCollection }, cmd )
-
-
-initLabelCollection :
-    JD.Value
-    -> { a | labelCollection : LabelCollection }
-    -> ( { a | labelCollection : LabelCollection }, Cmd msg )
-initLabelCollection encodedLabelList model =
-    LabelCollection.fromEncodedList encodedLabelList
-        |> Result.Extra.unpack
-            (flip onDecodeError model)
-            (always >> flip mapLabelCollection model >> Return.singleton)
-
-
-onDecodeError : JD.Error -> b -> ( b, Cmd msg )
-onDecodeError error model =
-    ( model, logDecodeError error )
+    Collections.initCollections flags model
+        |> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
 
 
 logDecodeError : JD.Error -> Cmd msg
 logDecodeError =
     logError << JD.errorToString
-
-
-initFilterCollection :
-    JD.Value
-    -> { a | filterCollection : FilterCollection }
-    -> ( { a | filterCollection : FilterCollection }, Cmd msg )
-initFilterCollection encodedFilterList model =
-    let
-        ( newFilterCollection, cmd ) =
-            case FilterCollection.fromEncodedList encodedFilterList of
-                Ok new ->
-                    ( new, Cmd.none )
-
-                Err e ->
-                    ( model.filterCollection, logError <| JD.errorToString e )
-    in
-    ( { model | filterCollection = newFilterCollection }, cmd )
-
-
-initTodoDict :
-    JD.Value
-    -> { a | todoDict : TodoDict }
-    -> ( { a | todoDict : TodoDict }, Cmd msg )
-initTodoDict encodedTodoList model =
-    let
-        ( newTodoDict, cmd ) =
-            case TodoDict.fromEncodedList encodedTodoList of
-                Ok new ->
-                    ( new, Cmd.none )
-
-                Err e ->
-                    ( model.todoDict, logError <| JD.errorToString e )
-    in
-    ( { model | todoDict = newTodoDict }, cmd )
 
 
 
