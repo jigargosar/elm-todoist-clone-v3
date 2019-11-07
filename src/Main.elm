@@ -10,14 +10,14 @@ import Dialog.AddProject
 import Dialog.EditProject
 import Drawer
 import Filter exposing (Filter)
-import FilterCollection exposing (FilterCollection)
+import FilterCollection as FC exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
 import InboxOrProject exposing (InboxOrProject)
 import Json.Encode exposing (Value)
 import Label exposing (Label)
-import LabelCollection exposing (LabelCollection)
+import LabelCollection as LC exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
 import Layout
@@ -26,7 +26,7 @@ import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
 import Project exposing (Project)
-import ProjectCollection exposing (ProjectCollection)
+import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
@@ -162,7 +162,7 @@ updateFilterPanel msg model =
 
 projectById : ProjectId -> { a | projectCollection : ProjectCollection } -> Maybe Project
 projectById projectId model =
-    ProjectCollection.byId projectId model.projectCollection
+    PC.byId projectId model.projectCollection
 
 
 mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
@@ -172,7 +172,7 @@ mapProjectCollection func model =
 
 updateProjectSortOrder : List Project -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
 updateProjectSortOrder projectList model =
-    ( mapProjectCollection (ProjectCollection.updateSortOrder projectList) model
+    ( mapProjectCollection (PC.updateSortOrder projectList) model
     , Cmd.none
     )
 
@@ -184,7 +184,7 @@ mapLabelCollection func model =
 
 updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
 updateLabelSortOrder labelList model =
-    ( mapLabelCollection (LabelCollection.updateSortOrder labelList) model
+    ( mapLabelCollection (LC.updateSortOrder labelList) model
     , Cmd.none
     )
 
@@ -196,7 +196,7 @@ mapFilterCollection func model =
 
 updateFilterSortOrder : List Filter -> { a | filterCollection : FilterCollection } -> ( { a | filterCollection : FilterCollection }, Cmd msg )
 updateFilterSortOrder filterList model =
-    ( mapFilterCollection (FilterCollection.updateSortOrder filterList) model
+    ( mapFilterCollection (FC.updateSortOrder filterList) model
     , Cmd.none
     )
 
@@ -244,9 +244,9 @@ init flags url navKey =
             , navKey = navKey
             , seed = Random.initialSeed flags.now
             , todoDict = TodoDict.initial
-            , projectCollection = ProjectCollection.initial
-            , labelCollection = LabelCollection.initial
-            , filterCollection = FilterCollection.initial
+            , projectCollection = PC.initial
+            , labelCollection = LC.initial
+            , filterCollection = FC.initial
             , isDrawerModalOpen = False
             , popup = Nothing
             , dialog = Dialog.initial
@@ -410,7 +410,7 @@ update message model =
                 ( newProject, newModel ) =
                     stepRandom (Project.generator title idx cColor ts) model
             in
-            ( mapProjectCollection (ProjectCollection.put newProject) newModel, Cmd.none )
+            ( DB.mapPC (PC.put newProject) newModel, Cmd.none )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
             let
@@ -424,7 +424,7 @@ update message model =
                         Just project ->
                             mapProjectCollection
                                 (updateProject project
-                                    |> ProjectCollection.put
+                                    |> PC.put
                                 )
                                 model
 
@@ -505,7 +505,7 @@ updateProjectPopup : ProjectId -> PopupView.ProjectMenuItem -> Model -> ( Model,
 updateProjectPopup projectId action model =
     let
         maybeProject =
-            ProjectCollection.byId projectId model.projectCollection
+            PC.byId projectId model.projectCollection
 
         projectIdxWithOffset offset =
             maybeProject
@@ -572,17 +572,17 @@ view model =
     let
         projectPanelView =
             ProjectPanel.view projectPanelConfig
-                (ProjectCollection.sorted model.projectCollection)
+                (PC.sorted model.projectCollection)
                 model.projectPanel
 
         labelPanelView =
             LabelPanel.view labelPanelConfig
-                (LabelCollection.sorted model.labelCollection)
+                (LC.sorted model.labelCollection)
                 model.labelPanel
 
         filterPanelView =
             FilterPanel.view filterPanelConfig
-                (FilterCollection.sorted model.filterCollection)
+                (FC.sorted model.filterCollection)
                 model.filterPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
@@ -646,7 +646,7 @@ todoLabelList : LabelCollection -> Todo -> List Label
 todoLabelList lc todo =
     List.filterMap
         (\lid ->
-            LabelCollection.byId lid lc
+            LC.byId lid lc
         )
         (Todo.labelIdList todo)
 
@@ -659,7 +659,7 @@ viewTodoListHelp pc lc todoList =
             Todo.projectRef
                 >> InboxOrProject.filterMap
                     (\id ->
-                        ProjectCollection.byId id pc
+                        PC.byId id pc
                     )
 
         viewTodoHelp : Todo -> Maybe (Html Msg)

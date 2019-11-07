@@ -1,4 +1,4 @@
-module DB exposing (DB, Flags, init)
+module DB exposing (DB, Flags, init, mapPC)
 
 import FilterCollection exposing (FilterCollection)
 import Json.Decode as JD
@@ -30,6 +30,7 @@ todoDictL =
     createLens ( .todoDict, \s b -> { b | todoDict = s } )
 
 
+projectCollectionL : Lens a { b | projectCollection : a }
 projectCollectionL =
     createLens ( .projectCollection, \s b -> { b | projectCollection = s } )
 
@@ -40,6 +41,11 @@ labelCollectionL =
 
 filterCollectionL =
     createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
+
+
+mapPC : (a -> a) -> { b | projectCollection : a } -> { b | projectCollection : a }
+mapPC =
+    over projectCollectionL
 
 
 init : Flags x -> DB a -> ( DB a, List JD.Error )
@@ -77,3 +83,8 @@ type alias Lens s b =
 createLens : ( b -> s, s -> b -> b ) -> Lens s b
 createLens ( get, set ) =
     { get = get, set = set }
+
+
+over : Lens s b -> (s -> s) -> b -> b
+over lens func val =
+    lens.set (func <| lens.get val) val
