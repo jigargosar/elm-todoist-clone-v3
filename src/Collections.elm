@@ -1,13 +1,10 @@
 module Collections exposing (..)
 
-import Basics.More exposing (apply)
 import FilterCollection exposing (FilterCollection)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import ProjectCollection exposing (ProjectCollection)
-import Result.Extra
-import Return
 import TodoDict exposing (TodoDict)
 
 
