@@ -1,4 +1,4 @@
-module Collections exposing (..)
+module Collections exposing (Collections, Flags, initCollections)
 
 import FilterCollection exposing (FilterCollection)
 import Json.Decode as JD
@@ -36,7 +36,7 @@ createLens ( get, set ) =
 
 
 todoDictL =
-    { get = .todoDict, set = \s b -> { b | todoDict = s } }
+    createLens ( .todoDict, \s b -> { b | todoDict = s } )
 
 
 projectCollectionL =
