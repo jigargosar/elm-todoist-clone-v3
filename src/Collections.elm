@@ -59,18 +59,15 @@ initCollections flags model =
             , FilterCollection.fromEncodedList flags.filterList
                 |> Result.map (always >> mapFilterCollection)
             ]
-
-        _ =
-            Result.Extra.extract
     in
     results
         |> List.foldl
-            (\result ->
+            (\result ( newModel, errorList ) ->
                 case result of
                     Ok func ->
-                        Tuple.mapFirst func
+                        ( func newModel, errorList )
 
                     Err error ->
-                        Tuple.mapSecond ((::) error)
+                        ( newModel, error :: errorList )
             )
             ( model, [] )
