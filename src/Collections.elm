@@ -48,7 +48,7 @@ labelCollectionL =
 
 
 filterCollectionL =
-    { get = .filterCollection, set = \s b -> { b | filterCollection = s } }
+    createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
 
 
 initCollections : Flags x -> Collections a -> ( Collections a, List JD.Error )
