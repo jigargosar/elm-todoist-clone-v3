@@ -48,33 +48,20 @@ mapFilterCollection func model =
 initCollections : Flags x -> Collections a -> ( Collections a, List JD.Error )
 initCollections flags model =
     let
-        todoDictResult : Result JD.Error (Collections a -> Collections a)
-        todoDictResult =
-            TodoDict.fromEncodedList flags.todoList
-                |> Result.map (always >> mapTodoDict)
-
-        projectCollectionResult : Result JD.Error (Collections a -> Collections a)
-        projectCollectionResult =
-            ProjectCollection.fromEncodedList flags.projectList
-                |> Result.map (always >> mapProjectCollection)
-
-        labelCollectionResult : Result JD.Error (Collections a -> Collections a)
-        labelCollectionResult =
-            LabelCollection.fromEncodedList flags.labelList
-                |> Result.map (always >> mapLabelCollection)
-
-        filterCollectionResult : Result JD.Error (Collections a -> Collections a)
-        filterCollectionResult =
-            FilterCollection.fromEncodedList flags.filterList
-                |> Result.map (always >> mapFilterCollection)
-
         results : List (Result JD.Error (Collections a -> Collections a))
         results =
-            [ todoDictResult
-            , projectCollectionResult
-            , labelCollectionResult
-            , filterCollectionResult
+            [ TodoDict.fromEncodedList flags.todoList
+                |> Result.map (always >> mapTodoDict)
+            , ProjectCollection.fromEncodedList flags.projectList
+                |> Result.map (always >> mapProjectCollection)
+            , LabelCollection.fromEncodedList flags.labelList
+                |> Result.map (always >> mapLabelCollection)
+            , FilterCollection.fromEncodedList flags.filterList
+                |> Result.map (always >> mapFilterCollection)
             ]
+
+        _ =
+            Result.Extra.extract
     in
     results
         |> List.foldl
