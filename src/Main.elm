@@ -30,6 +30,7 @@ import ProjectCollection exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
+import Result.Extra
 import Return
 import Route exposing (Route)
 import Task
@@ -289,16 +290,19 @@ initLabelCollection :
     -> { a | labelCollection : LabelCollection }
     -> ( { a | labelCollection : LabelCollection }, Cmd msg )
 initLabelCollection encodedLabelList model =
-    let
-        ( newLabelCollection, cmd ) =
-            case LabelCollection.fromEncodedList encodedLabelList of
-                Ok new ->
-                    ( new, Cmd.none )
+    LabelCollection.fromEncodedList encodedLabelList
+        |> Result.Extra.unpack (logDecodeError >> Return.return model)
+            (setLabelCollectionIn model >> Return.singleton)
 
-                Err e ->
-                    ( model.labelCollection, logError <| JD.errorToString e )
-    in
-    ( { model | labelCollection = newLabelCollection }, cmd )
+
+setLabelCollectionIn : { a | labelCollection : b } -> b -> { c | labelCollection : b }
+setLabelCollectionIn model =
+    always >> flip mapLabelCollection model
+
+
+logDecodeError : JD.Error -> Cmd msg
+logDecodeError =
+    logError << JD.errorToString
 
 
 initFilterCollection :

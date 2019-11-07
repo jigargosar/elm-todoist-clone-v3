@@ -19,6 +19,7 @@
             "elm/url": "1.0.0",
             "elm-community/array-extra": "2.1.0",
             "elm-community/list-extra": "8.2.2",
+            "elm-community/result-extra": "2.3.0",
             "joneshf/elm-tagged": "2.1.1",
             "miyamoen/select-list": "4.1.0",
             "rl-king/elm-modular-scale": "2.0.2",
