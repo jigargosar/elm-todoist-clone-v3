@@ -1,11 +1,11 @@
 module DB exposing (DB, Flags, init, mapPC)
 
-import FilterCollection exposing (FilterCollection)
+import FilterCollection as FC exposing (FilterCollection)
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import LabelCollection exposing (LabelCollection)
-import ProjectCollection exposing (ProjectCollection)
-import TodoCollection exposing (TodoCollection)
+import LabelCollection as LC exposing (LabelCollection)
+import ProjectCollection as PC exposing (ProjectCollection)
+import TodoCollection as TC exposing (TodoCollection)
 
 
 type alias DB a =
@@ -53,13 +53,13 @@ init flags model =
     let
         results : List (Result JD.Error (DB a -> DB a))
         results =
-            [ TodoCollection.fromEncodedList flags.todoList
+            [ TC.fromEncodedList flags.todoList
                 |> Result.map tc.set
-            , ProjectCollection.fromEncodedList flags.projectList
+            , PC.fromEncodedList flags.projectList
                 |> Result.map pc.set
-            , LabelCollection.fromEncodedList flags.labelList
+            , LC.fromEncodedList flags.labelList
                 |> Result.map lc.set
-            , FilterCollection.fromEncodedList flags.filterList
+            , FC.fromEncodedList flags.filterList
                 |> Result.map fc.set
             ]
     in
