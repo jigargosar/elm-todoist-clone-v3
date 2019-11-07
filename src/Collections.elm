@@ -30,6 +30,11 @@ type alias Lens s b =
     { get : b -> s, set : s -> b -> b }
 
 
+createLens : ( b -> s, s -> b -> b ) -> Lens s b
+createLens ( get, set ) =
+    { get = get, set = set }
+
+
 todoDictL =
     { get = .todoDict, set = \s b -> { b | todoDict = s } }
 
@@ -39,31 +44,11 @@ projectCollectionL =
 
 
 labelCollectionL =
-    { get = .labelCollection, set = \s b -> { b | labelCollection = s } }
+    createLens ( .labelCollection, \s b -> { b | labelCollection = s } )
 
 
 filterCollectionL =
     { get = .filterCollection, set = \s b -> { b | filterCollection = s } }
-
-
-mapL { get, set } func big =
-    set (func (get big)) big
-
-
-mapTodoDict func model =
-    { model | todoDict = func model.todoDict }
-
-
-mapProjectCollection func model =
-    { model | projectCollection = func model.projectCollection }
-
-
-mapLabelCollection func model =
-    { model | labelCollection = func model.labelCollection }
-
-
-mapFilterCollection func model =
-    { model | filterCollection = func model.filterCollection }
 
 
 initCollections : Flags x -> Collections a -> ( Collections a, List JD.Error )
@@ -78,7 +63,7 @@ initCollections flags model =
             , LabelCollection.fromEncodedList flags.labelList
                 |> Result.map labelCollectionL.set
             , FilterCollection.fromEncodedList flags.filterList
-                |> Result.map fcl
+                |> Result.map filterCollectionL.set
             ]
     in
     results
