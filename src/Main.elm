@@ -181,7 +181,7 @@ updateLabelSortOrder labelList model =
 
 updateFilterSortOrder : List Filter -> { a | filterCollection : FilterCollection } -> ( { a | filterCollection : FilterCollection }, Cmd msg )
 updateFilterSortOrder filterList model =
-    ( mapFilterCollection (FC.updateSortOrder filterList) model
+    ( DB.mapFC (FC.updateSortOrder filterList) model
     , Cmd.none
     )
 
