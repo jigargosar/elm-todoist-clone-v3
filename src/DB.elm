@@ -5,12 +5,12 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import LabelCollection exposing (LabelCollection)
 import ProjectCollection exposing (ProjectCollection)
-import TodoDict exposing (TodoDict)
+import TodoCollection exposing (TodoCollection)
 
 
 type alias DB a =
     { a
-        | todoDict : TodoDict
+        | todoCollection : TodoCollection
         , projectCollection : ProjectCollection
         , labelCollection : LabelCollection
         , filterCollection : FilterCollection
@@ -26,8 +26,8 @@ type alias Flags a =
     }
 
 
-todoDictL =
-    createLens ( .todoDict, \s b -> { b | todoDict = s } )
+todoCollectionL =
+    createLens ( .todoCollection, \s b -> { b | todoCollection = s } )
 
 
 projectCollectionL : Lens a { b | projectCollection : a }
@@ -53,8 +53,8 @@ init flags model =
     let
         results : List (Result JD.Error (DB a -> DB a))
         results =
-            [ TodoDict.fromEncodedList flags.todoList
-                |> Result.map todoDictL.set
+            [ TodoCollection.fromEncodedList flags.todoList
+                |> Result.map todoCollectionL.set
             , ProjectCollection.fromEncodedList flags.projectList
                 |> Result.map projectCollectionL.set
             , LabelCollection.fromEncodedList flags.labelList

@@ -1,5 +1,5 @@
-module TodoDict exposing
-    ( TodoDict
+module TodoCollection exposing
+    ( TodoCollection
     , fromEncodedList
     , inInbox
     , initial
@@ -11,6 +11,7 @@ module TodoDict exposing
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
+import Json.Encode exposing (Value)
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)
@@ -22,7 +23,7 @@ import TodoId exposing (TodoId)
 -- MODEL
 
 
-type TodoDict
+type TodoCollection
     = TodoDict Internal
 
 
@@ -35,22 +36,22 @@ dict =
     Collection.system TodoId.toString Todo.id
 
 
-initial : TodoDict
+initial : TodoCollection
 initial =
     TodoDict dict.empty
 
 
-fromEncodedList : Value -> Result JD.Error TodoDict
+fromEncodedList : Value -> Result JD.Error TodoCollection
 fromEncodedList =
     JD.decodeValue (JD.list Todo.decoder |> JD.map (dict.fromList >> TodoDict))
 
 
-sortedByIdx : TodoDict -> List Todo
+sortedByIdx : TodoCollection -> List Todo
 sortedByIdx =
     toList >> List.sortBy Todo.idx
 
 
-toList : TodoDict -> List Todo
+toList : TodoCollection -> List Todo
 toList =
     unwrap >> dict.values
 
@@ -59,12 +60,12 @@ unwrap (TodoDict internal) =
     internal
 
 
-withProjectRef : ProjectRef -> TodoDict -> List Todo
+withProjectRef : ProjectRef -> TodoCollection -> List Todo
 withProjectRef ref =
     toList >> List.filter (Todo.projectRef >> (==) ref)
 
 
-withProjectId : ProjectId -> TodoDict -> List Todo
+withProjectId : ProjectId -> TodoCollection -> List Todo
 withProjectId projectId =
     let
         ref =
@@ -73,12 +74,12 @@ withProjectId projectId =
     withProjectRef ref
 
 
-inInbox : TodoDict -> List Todo
+inInbox : TodoCollection -> List Todo
 inInbox =
     withProjectRef ProjectRef.inbox
 
 
-withLabelId : LabelId -> TodoDict -> List Todo
+withLabelId : LabelId -> TodoCollection -> List Todo
 withLabelId labelId =
     toList >> List.filter (Todo.hasLabel labelId)
 
@@ -87,11 +88,11 @@ withLabelId labelId =
 -- UPDATE
 
 
-map : (Internal -> Internal) -> TodoDict -> TodoDict
+map : (Internal -> Internal) -> TodoCollection -> TodoCollection
 map func =
     unwrap >> func >> TodoDict
 
 
-toggleCompleted : TodoId -> TodoDict -> TodoDict
+toggleCompleted : TodoId -> TodoCollection -> TodoCollection
 toggleCompleted todoId =
     map (dict.update todoId (Maybe.map Todo.toggle))

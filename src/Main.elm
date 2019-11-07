@@ -36,7 +36,7 @@ import Task
 import Time
 import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
-import TodoDict as TC exposing (TodoDict)
+import TodoCollection as TC exposing (TodoCollection)
 import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
@@ -222,7 +222,7 @@ type alias Model =
     { url : Url
     , navKey : Nav.Key
     , seed : Random.Seed
-    , todoDict : TodoDict
+    , todoCollection : TodoCollection
     , projectCollection : ProjectCollection
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
@@ -243,7 +243,7 @@ init flags url navKey =
             { url = url
             , navKey = navKey
             , seed = Random.initialSeed flags.now
-            , todoDict = TC.initial
+            , todoCollection = TC.initial
             , projectCollection = PC.initial
             , labelCollection = LC.initial
             , filterCollection = FC.initial
@@ -358,10 +358,10 @@ update message model =
 
         ToggleTodoCompleted todoId ->
             let
-                newTodoDict =
-                    TC.toggleCompleted todoId model.todoDict
+                newTodoCollection =
+                    TC.toggleCompleted todoId model.todoCollection
             in
-            ( { model | todoDict = newTodoDict }, Cmd.none )
+            ( { model | todoCollection = newTodoCollection }, Cmd.none )
 
         OpenDrawerModal ->
             ( { model | isDrawerModalOpen = True }, Cmd.none )
@@ -615,14 +615,14 @@ viewRoute route model =
         Route.Inbox ->
             inboxTodoListView
                 model.labelCollection
-                model.todoDict
+                model.todoCollection
 
         Route.Project projectId ->
             case projectById projectId model of
                 Just project ->
                     projectTodoListView project
                         model.labelCollection
-                        model.todoDict
+                        model.todoCollection
 
                 Nothing ->
                     viewRoute (Route.NotFound model.url) model
@@ -632,14 +632,14 @@ viewRoute route model =
                 labelId
                 model.projectCollection
                 model.labelCollection
-                model.todoDict
+                model.todoCollection
 
         Route.Filter filterId ->
             todoListByFilterIdView
                 filterId
                 model.projectCollection
                 model.labelCollection
-                model.todoDict
+                model.todoCollection
 
 
 todoLabelList : LabelCollection -> Todo -> List Label
@@ -680,15 +680,15 @@ viewTodoListHelp pc lc todoList =
 projectTodoListView :
     Project
     -> LabelCollection
-    -> TodoDict
+    -> TodoCollection
     -> List (Html Msg)
-projectTodoListView project lc todoDict =
+projectTodoListView project lc todoCollection =
     let
         projectId =
             Project.id project
 
         todoList =
-            TC.withProjectId projectId todoDict
+            TC.withProjectId projectId todoCollection
 
         viewTodo todo =
             TodoUI.view
@@ -707,12 +707,12 @@ projectTodoListView project lc todoDict =
 
 inboxTodoListView :
     LabelCollection
-    -> TodoDict
+    -> TodoCollection
     -> List (Html Msg)
-inboxTodoListView lc todoDict =
+inboxTodoListView lc todoCollection =
     let
         todoList =
-            TC.inInbox todoDict
+            TC.inInbox todoCollection
 
         viewTodo todo =
             TodoUI.view
@@ -725,15 +725,15 @@ inboxTodoListView lc todoDict =
         :: List.map viewTodo todoList
 
 
-todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-todoListByLabelIdView id pc lc todoDict =
+todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
+todoListByLabelIdView id pc lc todoCollection =
     div [] [ text "label: ", text <| LabelId.toString id ]
-        :: viewTodoListHelp pc lc (TC.withLabelId id todoDict)
+        :: viewTodoListHelp pc lc (TC.withLabelId id todoCollection)
 
 
-todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
-todoListByFilterIdView _ pc lc todoDict =
-    viewTodoListHelp pc lc (TC.sortedByIdx todoDict)
+todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
+todoListByFilterIdView _ pc lc todoCollection =
+    viewTodoListHelp pc lc (TC.sortedByIdx todoCollection)
 
 
 popupView : Model -> List (Html Msg)
