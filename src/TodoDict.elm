@@ -11,7 +11,6 @@ module TodoDict exposing
 
 import Collection exposing (Collection)
 import Json.Decode as JD exposing (Decoder)
-import Json.Encode exposing (Value)
 import LabelId exposing (LabelId)
 import ProjectId exposing (ProjectId)
 import ProjectRef exposing (ProjectRef)

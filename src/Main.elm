@@ -36,7 +36,7 @@ import Task
 import Time
 import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
-import TodoDict exposing (TodoDict)
+import TodoDict as TC exposing (TodoDict)
 import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
@@ -243,7 +243,7 @@ init flags url navKey =
             { url = url
             , navKey = navKey
             , seed = Random.initialSeed flags.now
-            , todoDict = TodoDict.initial
+            , todoDict = TC.initial
             , projectCollection = PC.initial
             , labelCollection = LC.initial
             , filterCollection = FC.initial
@@ -359,7 +359,7 @@ update message model =
         ToggleTodoCompleted todoId ->
             let
                 newTodoDict =
-                    TodoDict.toggleCompleted todoId model.todoDict
+                    TC.toggleCompleted todoId model.todoDict
             in
             ( { model | todoDict = newTodoDict }, Cmd.none )
 
@@ -688,7 +688,7 @@ projectTodoListView project lc todoDict =
             Project.id project
 
         todoList =
-            TodoDict.withProjectId projectId todoDict
+            TC.withProjectId projectId todoDict
 
         viewTodo todo =
             TodoUI.view
@@ -712,7 +712,7 @@ inboxTodoListView :
 inboxTodoListView lc todoDict =
     let
         todoList =
-            TodoDict.inInbox todoDict
+            TC.inInbox todoDict
 
         viewTodo todo =
             TodoUI.view
@@ -728,12 +728,12 @@ inboxTodoListView lc todoDict =
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 todoListByLabelIdView id pc lc todoDict =
     div [] [ text "label: ", text <| LabelId.toString id ]
-        :: viewTodoListHelp pc lc (TodoDict.withLabelId id todoDict)
+        :: viewTodoListHelp pc lc (TC.withLabelId id todoDict)
 
 
 todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoDict -> List (Html Msg)
 todoListByFilterIdView _ pc lc todoDict =
-    viewTodoListHelp pc lc (TodoDict.sortedByIdx todoDict)
+    viewTodoListHelp pc lc (TC.sortedByIdx todoDict)
 
 
 popupView : Model -> List (Html Msg)
