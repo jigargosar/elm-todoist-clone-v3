@@ -58,9 +58,9 @@ mapLC =
     over lc
 
 
-mapFC : (a -> a) -> { b | labelCollection : a } -> { b | labelCollection : a }
+mapFC : (a -> a) -> { b | filterCollection : a } -> { b | filterCollection : a }
 mapFC =
-    over lc
+    over fc
 
 
 init : Flags x -> DB a -> ( DB a, List JD.Error )

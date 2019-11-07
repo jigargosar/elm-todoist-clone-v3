@@ -165,27 +165,6 @@ projectById projectId model =
     PC.byId projectId model.projectCollection
 
 
-updateProjectSortOrder : List Project -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
-updateProjectSortOrder projectList model =
-    ( DB.mapPC (PC.updateSortOrder projectList) model
-    , Cmd.none
-    )
-
-
-updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
-updateLabelSortOrder labelList model =
-    ( DB.mapLC (LC.updateSortOrder labelList) model
-    , Cmd.none
-    )
-
-
-updateFilterSortOrder : List Filter -> { a | filterCollection : FilterCollection } -> ( { a | filterCollection : FilterCollection }, Cmd msg )
-updateFilterSortOrder filterList model =
-    ( DB.mapFC (FC.updateSortOrder filterList) model
-    , Cmd.none
-    )
-
-
 
 -- Flags
 
@@ -442,13 +421,19 @@ update message model =
             ( model, Cmd.none )
 
         ProjectOrderChanged projectList ->
-            updateProjectSortOrder projectList model
+            ( DB.mapPC (PC.updateSortOrder projectList) model
+            , Cmd.none
+            )
 
         LabelOrderChanged labelList ->
-            updateLabelSortOrder labelList model
+            ( DB.mapLC (LC.updateSortOrder labelList) model
+            , Cmd.none
+            )
 
         FilterOrderChanged filterList ->
-            updateFilterSortOrder filterList model
+            ( DB.mapFC (FC.updateSortOrder filterList) model
+            , Cmd.none
+            )
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
