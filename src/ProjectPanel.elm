@@ -14,15 +14,17 @@ import Css
 import DNDList as DND exposing (DNDList)
 import DrawerUI
 import ExpansionPanel as EP exposing (Collapsible)
-import Html.Styled exposing (Attribute, Html, text)
-import Html.Styled.Attributes as A exposing (href)
+import Html.Styled exposing (Attribute, Html, a, button, div, i, text)
+import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
+import Px
 import Route
+import Style
 import Styles exposing (..)
-import UI.Icon as Icon exposing (Icon)
+import UI.Icon as Icon
 
 
 type alias ProjectPanel =
@@ -53,7 +55,6 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DND.Config Project msg
     , ep : EP.Config msg
-    , icon : Icon
     }
 
 
@@ -75,7 +76,6 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , ep = ep
-    , icon = Icon.Folder
     }
 
 
@@ -95,20 +95,17 @@ update config message model =
             ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
 
 
-viewGhost : Config msg -> ProjectPanel -> List (Html msg)
-viewGhost config { dnd } =
+viewGhost : ProjectPanel -> List (Html msg)
+viewGhost { dnd } =
     case DND.ghost dnd of
         Just ( style, project ) ->
-            [ let
-                { iconColor, title, href } =
-                    projectData project
-              in
-              DrawerUI.item [ style ]
-                []
-                [ DrawerUI.dragHandle [ c_ iconColor ] [] PanelsHelp.projectIcon
-                , DrawerUI.link [] [ href ] [ text title ]
-                , DrawerUI.more []
-                ]
+            [ viewItem
+                { itemAttrs = []
+                , itemStyles = [ style ]
+                , handleAttrs = []
+                , moreAttrs = []
+                }
+                project
             ]
 
         Nothing ->
@@ -138,35 +135,26 @@ viewItems config projectList dnd =
             DND.view config.dnd projectList dnd
     in
     List.map
-        (viewItemHelp config
-            { dragStartAttrs = dragStartAttrs
-            , dragOverAttrs = dragOverAttrs
-            , isBeingDragged = isBeingDragged
-            }
+        (\project ->
+            let
+                domId =
+                    itemDomId project
+
+                moreDomId =
+                    domId ++ "__more-btn"
+            in
+            viewItem
+                { itemAttrs = A.id domId :: dragOverAttrs project
+                , itemStyles = [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
+                , handleAttrs = dragStartAttrs project domId
+                , moreAttrs =
+                    [ A.id moreDomId
+                    , onClick (config.moreClicked (Project.id project) moreDomId)
+                    ]
+                }
+                project
         )
         items
-
-
-viewItemHelp config { dragStartAttrs, dragOverAttrs, isBeingDragged } project =
-    let
-        domId =
-            itemDomId project
-
-        moreDomId =
-            domId ++ "__more-btn"
-
-        { iconColor, title, href } =
-            projectData project
-    in
-    DrawerUI.item [ styleIf (isBeingDragged project) [ Css.opacity <| Css.zero ] ]
-        (A.id domId :: dragOverAttrs project)
-        [ DrawerUI.dragHandle [ c_ iconColor ] (dragStartAttrs project domId) PanelsHelp.projectIcon
-        , DrawerUI.link [] [ href ] [ text title ]
-        , DrawerUI.more
-            [ A.id moreDomId
-            , onClick (config.moreClicked (Project.id project) moreDomId)
-            ]
-        ]
 
 
 itemDomId : Project -> String
@@ -174,15 +162,8 @@ itemDomId project =
     "project-panel-item__" ++ (Project.id project |> ProjectId.toString)
 
 
-type alias ItemData msg =
-    { title : String
-    , iconColor : Css.Color
-    , href : Attribute msg
-    }
-
-
-projectData : Project -> ItemData msg
-projectData project =
+viewItem : ItemProps msg -> Project -> Html msg
+viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } project =
     let
         title =
             Project.title project
@@ -193,11 +174,6 @@ projectData project =
         href =
             Route.projectHref project
     in
-    ItemData title iconColor href
-
-
-viewItem : ItemProps msg -> ItemData msg -> Html msg
-viewItem { itemAttrs, itemStyles, handleAttrs, moreAttrs } { title, iconColor, href } =
     DrawerUI.item itemStyles
         itemAttrs
         [ DrawerUI.dragHandle [ c_ iconColor ] handleAttrs PanelsHelp.projectIcon
