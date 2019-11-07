@@ -22,7 +22,7 @@ import LabelCollection exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
 import Layout
-import Log exposing (logError)
+import Log exposing (logDecodeError, logError)
 import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
@@ -264,13 +264,8 @@ init flags url navKey =
 
 initCollections : Flags -> Collections a -> ( Collections a, Cmd msg )
 initCollections flags model =
-    Collections.initCollections flags model
+    Collections.init flags model
         |> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
-
-
-logDecodeError : JD.Error -> Cmd msg
-logDecodeError =
-    logError << JD.errorToString
 
 
 

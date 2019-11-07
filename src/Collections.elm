@@ -1,4 +1,4 @@
-module Collections exposing (Collections, Flags, initCollections)
+module Collections exposing (Collections, Flags, init)
 
 import FilterCollection exposing (FilterCollection)
 import Json.Decode as JD
@@ -42,8 +42,8 @@ filterCollectionL =
     createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
 
 
-initCollections : Flags x -> Collections a -> ( Collections a, List JD.Error )
-initCollections flags model =
+init : Flags x -> Collections a -> ( Collections a, List JD.Error )
+init flags model =
     let
         results : List (Result JD.Error (Collections a -> Collections a))
         results =
