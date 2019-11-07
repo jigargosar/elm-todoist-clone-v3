@@ -696,9 +696,9 @@ inboxTodoListView lc todoCollection =
 
 
 todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
-todoListByLabelIdView id pc lc todoCollection =
+todoListByLabelIdView id pc lc tc =
     div [] [ text "label: ", text <| LabelId.toString id ]
-        :: viewTodoListHelp pc lc (TC.withLabelId id todoCollection)
+        :: viewTodoListHelp pc lc (TC.withLabelId id tc)
 
 
 todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
