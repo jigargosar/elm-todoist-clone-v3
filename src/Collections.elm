@@ -42,6 +42,10 @@ labelCollectionL =
     { get = .labelCollection, set = \s b -> { b | labelCollection = s } }
 
 
+filterCollectionL =
+    { get = .filterCollection, set = \s b -> { b | filterCollection = s } }
+
+
 mapL { get, set } func big =
     set (func (get big)) big
 
@@ -68,13 +72,13 @@ initCollections flags model =
         results : List (Result JD.Error (Collections a -> Collections a))
         results =
             [ TodoDict.fromEncodedList flags.todoList
-                |> Result.map (always >> mapTodoDict)
+                |> Result.map todoDictL.set
             , ProjectCollection.fromEncodedList flags.projectList
-                |> Result.map (always >> mapProjectCollection)
+                |> Result.map projectCollectionL.set
             , LabelCollection.fromEncodedList flags.labelList
-                |> Result.map (always >> mapLabelCollection)
+                |> Result.map labelCollectionL.set
             , FilterCollection.fromEncodedList flags.filterList
-                |> Result.map (always >> mapFilterCollection)
+                |> Result.map fcl
             ]
     in
     results
