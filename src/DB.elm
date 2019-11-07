@@ -26,26 +26,26 @@ type alias Flags a =
     }
 
 
-todoCollectionL =
+tc =
     createLens ( .todoCollection, \s b -> { b | todoCollection = s } )
 
 
-projectCollectionL : Lens a { b | projectCollection : a }
-projectCollectionL =
+pc : Lens a { b | projectCollection : a }
+pc =
     createLens ( .projectCollection, \s b -> { b | projectCollection = s } )
 
 
-labelCollectionL =
+lc =
     createLens ( .labelCollection, \s b -> { b | labelCollection = s } )
 
 
-filterCollectionL =
+fc =
     createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
 
 
 mapPC : (a -> a) -> { b | projectCollection : a } -> { b | projectCollection : a }
 mapPC =
-    over projectCollectionL
+    over pc
 
 
 init : Flags x -> DB a -> ( DB a, List JD.Error )
@@ -54,13 +54,13 @@ init flags model =
         results : List (Result JD.Error (DB a -> DB a))
         results =
             [ TodoCollection.fromEncodedList flags.todoList
-                |> Result.map todoCollectionL.set
+                |> Result.map tc.set
             , ProjectCollection.fromEncodedList flags.projectList
-                |> Result.map projectCollectionL.set
+                |> Result.map pc.set
             , LabelCollection.fromEncodedList flags.labelList
-                |> Result.map labelCollectionL.set
+                |> Result.map lc.set
             , FilterCollection.fromEncodedList flags.filterList
-                |> Result.map filterCollectionL.set
+                |> Result.map fc.set
             ]
     in
     results
