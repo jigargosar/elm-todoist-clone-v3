@@ -26,6 +26,22 @@ type alias Flags a =
     }
 
 
+type alias Lens s b =
+    { get : b -> s, set : s -> b -> b }
+
+
+todoDictL =
+    { get = .todoDict, set = \s b -> { b | todoDict = s } }
+
+
+projectCollectionL =
+    { get = .projectCollection, set = \s b -> { b | projectCollection = s } }
+
+
+labelCollectionL =
+    { get = .labelCollection, set = \s b -> { b | labelCollection = s } }
+
+
 mapTodoDict func model =
     { model | todoDict = func model.todoDict }
 
