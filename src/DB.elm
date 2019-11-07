@@ -1,4 +1,4 @@
-module DB exposing (DB, Flags, init, mapPC)
+module DB exposing (DB, Flags, init, mapFC, mapLC, mapPC, mapTC)
 
 import FilterCollection as FC exposing (FilterCollection)
 import Json.Decode as JD
@@ -43,9 +43,24 @@ fc =
     createLens ( .filterCollection, \s b -> { b | filterCollection = s } )
 
 
+mapTC : (a -> a) -> { b | todoCollection : a } -> { b | todoCollection : a }
+mapTC =
+    over tc
+
+
 mapPC : (a -> a) -> { b | projectCollection : a } -> { b | projectCollection : a }
 mapPC =
     over pc
+
+
+mapLC : (a -> a) -> { b | labelCollection : a } -> { b | labelCollection : a }
+mapLC =
+    over lc
+
+
+mapFC : (a -> a) -> { b | labelCollection : a } -> { b | labelCollection : a }
+mapFC =
+    over lc
 
 
 init : Flags x -> DB a -> ( DB a, List JD.Error )

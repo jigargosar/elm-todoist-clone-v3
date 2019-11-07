@@ -165,33 +165,18 @@ projectById projectId model =
     PC.byId projectId model.projectCollection
 
 
-mapProjectCollection : (b -> b) -> { a | projectCollection : b } -> { a | projectCollection : b }
-mapProjectCollection func model =
-    { model | projectCollection = func model.projectCollection }
-
-
 updateProjectSortOrder : List Project -> { a | projectCollection : ProjectCollection } -> ( { a | projectCollection : ProjectCollection }, Cmd msg )
 updateProjectSortOrder projectList model =
-    ( mapProjectCollection (PC.updateSortOrder projectList) model
+    ( DB.mapPC (PC.updateSortOrder projectList) model
     , Cmd.none
     )
-
-
-mapLabelCollection : (b -> b) -> { a | labelCollection : b } -> { a | labelCollection : b }
-mapLabelCollection func model =
-    { model | labelCollection = func model.labelCollection }
 
 
 updateLabelSortOrder : List Label -> { a | labelCollection : LabelCollection } -> ( { a | labelCollection : LabelCollection }, Cmd msg )
 updateLabelSortOrder labelList model =
-    ( mapLabelCollection (LC.updateSortOrder labelList) model
+    ( DB.mapLC (LC.updateSortOrder labelList) model
     , Cmd.none
     )
-
-
-mapFilterCollection : (b -> b) -> { a | filterCollection : b } -> { a | filterCollection : b }
-mapFilterCollection func model =
-    { model | filterCollection = func model.filterCollection }
 
 
 updateFilterSortOrder : List Filter -> { a | filterCollection : FilterCollection } -> ( { a | filterCollection : FilterCollection }, Cmd msg )
@@ -422,7 +407,7 @@ update message model =
                 newModel =
                     case projectById projectId model of
                         Just project ->
-                            mapProjectCollection
+                            DB.mapPC
                                 (updateProject project
                                     |> PC.put
                                 )
