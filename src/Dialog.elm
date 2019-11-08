@@ -108,39 +108,26 @@ subscriptions config dialog =
             Sub.none
 
 
-update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
-update config message model =
-    let
-        retT : ( Dialog, Cmd msg )
-        retT =
-            ( model, Cmd.none )
-
-        ret : RetCmd Dialog msg
-        ret =
-            Ret.only model
-    in
+update2 : Config msg -> Msg -> RetCmd Dialog msg -> RetCmd Dialog msg
+update2 config message =
     case message of
         SubMsg subMsg ->
-            updateSub config subMsg ret
-                |> Ret.batch
+            updateSub config subMsg
 
         OpenAddProject idx ->
-            config.addProject.initAt idx
-                |> Tuple.mapFirst AddProject
+            Ret.andThen (always <| Ret.fromElmTuple <| config.addProject.initAt idx)
+                >> Ret.map AddProject
 
         OpenEditProject project ->
-            config.editProject.init project
-                |> Ret.fromElmTuple
-                |> Ret.map EditProject
-                |> Ret.batch
+            Ret.andThen (always <| Ret.fromElmTuple <| config.editProject.init project)
+                >> Ret.map EditProject
 
         Canceled ->
-            ( Closed, Cmd.none )
+            Ret.map (always Closed)
 
         SavedMsg savedMsg ->
-            ret
-                |> Ret.map (always Closed)
-                |> Ret.addMsg
+            Ret.map (always Closed)
+                >> Ret.addMsg
                     (case savedMsg of
                         AddProjectSaved savedWith ->
                             config.projectAdded savedWith
@@ -148,7 +135,11 @@ update config message model =
                         EditProjectSaved savedWith ->
                             config.projectEdited savedWith
                     )
-                |> Ret.batch
+
+
+update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
+update config =
+    Ret.toElmUpdate (update2 config)
 
 
 updateSub : Config msg -> SubMsg -> RetCmd Dialog msg -> RetCmd Dialog msg
