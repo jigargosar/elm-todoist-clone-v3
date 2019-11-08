@@ -55,7 +55,7 @@ addEffect func ret =
     ret |> add (func ret.a)
 
 
-liftUpdate : (b -> a -> ( c, d )) -> b -> Ret a d -> Ret c d
+liftUpdate : (b -> a -> ( c, Cmd msg )) -> b -> RetCmd a msg -> RetCmd c msg
 liftUpdate func msg retCmd =
     let
         ( a, cmd ) =

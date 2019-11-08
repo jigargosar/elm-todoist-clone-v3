@@ -31,7 +31,7 @@ import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Ret
+import Ret exposing (RetCmd)
 import Return
 import Route exposing (Route)
 import Task
@@ -129,15 +129,6 @@ filterPanelConfig =
         , moreClicked = FilterMoreMenu >> PopupTriggered
         , sorted = FilterOrderChanged
         }
-
-
-updateLabelPanel :
-    LabelPanel.Msg
-    -> { a | labelPanel : LabelPanel }
-    -> ( { a | labelPanel : LabelPanel }, Cmd Msg )
-updateLabelPanel msg model =
-    LabelPanel.update labelPanelConfig msg model.labelPanel
-        |> Tuple.mapFirst (\labelPanel -> { model | labelPanel = labelPanel })
 
 
 updateFilterPanel :
@@ -412,7 +403,13 @@ update message model =
                         |> Ret.batch
 
                 LabelPanel msg ->
-                    updateLabelPanel msg model
+                    let
+                        ulp : LabelPanel.Msg -> RetCmd LabelPanel Msg -> RetCmd LabelPanel Msg
+                        ulp =
+                            Ret.liftUpdate (LabelPanel.update labelPanelConfig)
+                    in
+                    Ret.updateSub fields.labelPanel ulp msg ret
+                        |> Ret.batch
 
                 FilterPanel msg ->
                     updateFilterPanel msg model
