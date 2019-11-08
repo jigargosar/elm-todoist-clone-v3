@@ -5,8 +5,8 @@ type alias ReturnRecord a x =
     { a : a, list : List x }
 
 
-singleton : a -> ReturnRecord a x
-singleton a =
+empty : a -> ReturnRecord a x
+empty a =
     ReturnRecord a []
 
 
@@ -29,3 +29,13 @@ andThen func { a, list } =
 addAll : List x -> ReturnRecord a x -> ReturnRecord a x
 addAll list_ { a, list } =
     fromTuple ( a, list ++ list_ )
+
+
+add : x -> ReturnRecord a x -> ReturnRecord a x
+add x =
+    addAll [ x ]
+
+
+effect : (a -> x) -> ReturnRecord a x -> ReturnRecord a x
+effect func ret =
+    ret |> add (func ret.a)
