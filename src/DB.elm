@@ -64,8 +64,8 @@ mapFC =
     over fc
 
 
-init2 : Flags x -> DB a -> ( DB a, List JD.Error )
-init2 flags =
+init : Flags x -> DB a -> ( DB a, List JD.Error )
+init flags =
     Tuple2.pairTo []
         >> handleDecodeResult tc (TC.fromEncodedList flags.todoList)
         >> handleDecodeResult pc (PC.fromEncodedList flags.projectList)
@@ -85,34 +85,6 @@ handleDecodeResult lens result ( big, errors ) =
 
         Err error ->
             ( big, error :: errors )
-
-
-init : Flags x -> DB a -> ( DB a, List JD.Error )
-init flags model =
-    let
-        results : List (Result JD.Error (DB a -> DB a))
-        results =
-            [ TC.fromEncodedList flags.todoList
-                |> Result.map tc.set
-            , PC.fromEncodedList flags.projectList
-                |> Result.map pc.set
-            , LC.fromEncodedList flags.labelList
-                |> Result.map lc.set
-            , FC.fromEncodedList flags.filterList
-                |> Result.map fc.set
-            ]
-    in
-    results
-        |> List.foldl
-            (\result ( newModel, errorList ) ->
-                case result of
-                    Ok func ->
-                        ( func newModel, errorList )
-
-                    Err error ->
-                        ( newModel, error :: errorList )
-            )
-            ( model, [] )
 
 
 type alias Lens s b =
