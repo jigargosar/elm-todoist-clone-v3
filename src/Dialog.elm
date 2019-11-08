@@ -112,30 +112,30 @@ subscriptions config dialog =
 
 
 update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
-update config message dialogModel =
+update config message model =
     let
-        ret : ( Dialog, Cmd msg )
-        ret =
-            ( dialogModel, Cmd.none )
+        retT : ( Dialog, Cmd msg )
+        retT =
+            ( model, Cmd.none )
     in
     case message of
         AddProjectMsg msg ->
-            case dialogModel of
-                AddProject model ->
-                    config.addProject.update msg model
+            case model of
+                AddProject sub ->
+                    config.addProject.update msg sub
                         |> Tuple.mapFirst AddProject
 
                 _ ->
-                    ret
+                    retT
 
         EditProjectMsg msg ->
-            case dialogModel of
-                EditProject model ->
-                    config.editProject.update msg model
+            case model of
+                EditProject sub ->
+                    config.editProject.update msg sub
                         |> Tuple.mapFirst EditProject
 
                 _ ->
-                    ret
+                    retT
 
         OpenAddProject idx ->
             config.addProject.initAt idx
