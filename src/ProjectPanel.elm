@@ -17,6 +17,7 @@ import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, text)
 import Html.Styled.Attributes as A exposing (href)
 import Html.Styled.Events exposing (onClick)
+import Lens exposing (Lens)
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -31,10 +32,23 @@ type alias ProjectPanel =
     }
 
 
+type alias Fields =
+    { collapsible : Lens Collapsible ProjectPanel
+    , dnd : Lens DNDProjectModel ProjectPanel
+    }
+
+
 initial : ProjectPanel
 initial =
     { collapsible = EP.expanded
     , dnd = DND.initial
+    }
+
+
+fields : Fields
+fields =
+    { collapsible = Lens.fromTuple ( .collapsible, \s b -> { b | collapsible = s } )
+    , dnd = Lens.fromTuple ( .dnd, \s b -> { b | dnd = s } )
     }
 
 
@@ -119,11 +133,11 @@ update config message =
 
 
 dndLens =
-    Ret.createLens ( .dnd, \s b -> { b | dnd = s } )
+    fields.dnd
 
 
 collapsibleLens =
-    Ret.createLens ( .collapsible, \s b -> { b | collapsible = s } )
+    fields.collapsible
 
 
 type alias DNDProjectMsg =
