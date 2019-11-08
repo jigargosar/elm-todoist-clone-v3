@@ -20,6 +20,7 @@ import Label exposing (Label)
 import LabelId exposing (LabelId)
 import PanelsHelp
 import Px
+import Ret exposing (RetCmd)
 import Route
 import Styles exposing (..)
 import UI.Icon as Icon
@@ -87,8 +88,8 @@ type Msg
     | Toggled
 
 
-update : Config msg -> Msg -> LabelPanel -> ( LabelPanel, Cmd msg )
-update config message (LabelPanel state) =
+elmUpdate : Config msg -> Msg -> LabelPanel -> ( LabelPanel, Cmd msg )
+elmUpdate config message (LabelPanel state) =
     case message of
         DNDList msg ->
             DND.update config.dnd msg state.dnd
@@ -96,6 +97,11 @@ update config message (LabelPanel state) =
 
         Toggled ->
             ( LabelPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
+
+
+update : Config msg -> Msg -> RetCmd LabelPanel msg -> RetCmd LabelPanel msg
+update config =
+    Ret.liftUpdate (elmUpdate config)
 
 
 viewGhost : LabelPanel -> List (Html msg)

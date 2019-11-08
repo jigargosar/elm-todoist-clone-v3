@@ -20,6 +20,7 @@ import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import PanelsHelp
 import Px
+import Ret exposing (RetCmd)
 import Route
 import Styles exposing (..)
 import UI.Icon as Icon
@@ -87,8 +88,8 @@ type Msg
     | Toggled
 
 
-update : Config msg -> Msg -> FilterPanel -> ( FilterPanel, Cmd msg )
-update config message (FilterPanel state) =
+elmUpdate : Config msg -> Msg -> FilterPanel -> ( FilterPanel, Cmd msg )
+elmUpdate config message (FilterPanel state) =
     case message of
         DNDList msg ->
             DND.update config.dnd msg state.dnd
@@ -96,6 +97,11 @@ update config message (FilterPanel state) =
 
         Toggled ->
             ( FilterPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
+
+
+update : Config msg -> Msg -> RetCmd FilterPanel msg -> RetCmd FilterPanel msg
+update config =
+    elmUpdate config |> Ret.liftUpdate
 
 
 viewGhost : FilterPanel -> List (Html msg)

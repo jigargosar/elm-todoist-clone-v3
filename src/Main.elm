@@ -131,15 +131,6 @@ filterPanelConfig =
         }
 
 
-updateFilterPanel :
-    FilterPanel.Msg
-    -> { a | filterPanel : FilterPanel }
-    -> ( { a | filterPanel : FilterPanel }, Cmd Msg )
-updateFilterPanel msg model =
-    FilterPanel.update filterPanelConfig msg model.filterPanel
-        |> Tuple.mapFirst (\filterPanel -> { model | filterPanel = filterPanel })
-
-
 
 -- COLLECTIONS
 
@@ -403,16 +394,12 @@ update message model =
                         |> Ret.batch
 
                 LabelPanel msg ->
-                    let
-                        ulp : LabelPanel.Msg -> RetCmd LabelPanel Msg -> RetCmd LabelPanel Msg
-                        ulp =
-                            Ret.liftUpdate (LabelPanel.update labelPanelConfig)
-                    in
-                    Ret.updateSub fields.labelPanel ulp msg ret
+                    Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg ret
                         |> Ret.batch
 
                 FilterPanel msg ->
-                    updateFilterPanel msg model
+                    Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg ret
+                        |> Ret.batch
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
