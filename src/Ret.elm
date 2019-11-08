@@ -94,10 +94,11 @@ updateSubF { get, set } subUpdateF msg ( big, bigC ) =
 
 
 updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateOptional { get, set } subUpdate msg ( big, bigC ) =
+updateOptional { get, set } subUpdateF msg ( big, bigC ) =
     case get big of
         Just small_ ->
-            subUpdate msg (only small_)
+            only small_
+                |> subUpdateF msg
                 |> Tuple.mapBoth
                     (\small -> set small big)
                     (\smallC ->
