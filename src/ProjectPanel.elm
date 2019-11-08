@@ -43,9 +43,9 @@ system :
     -> System msg
 system { toMsg, addClicked, moreClicked, sorted } =
     let
+        config : Config msg
         config =
             { moreClicked = moreClicked
-            , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
             , ep =
                 { toggled = toMsg Toggled
                 , title = "Projects"
@@ -56,7 +56,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
 
         dndSystem : DND.System Project msg
         dndSystem =
-            DND.system config.dnd
+            DND.system { toMsg = toMsg << DNDList, sorted = sorted }
     in
     { initial =
         { collapsible = EP.expanded
@@ -102,7 +102,6 @@ fields =
 
 type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
-    , dnd : DND.Config Project msg
     , ep : EP.Config msg
     , dndSystem : DND.System Project msg
     }
@@ -168,7 +167,7 @@ viewItems :
 viewItems config projectList dnd =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DND.view config.dnd projectList dnd
+            config.dndSystem.view projectList dnd
     in
     List.map
         (\project ->
