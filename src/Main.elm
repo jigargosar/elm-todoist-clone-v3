@@ -30,7 +30,8 @@ import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Return as Ret
+import Ret
+import Return
 import Route exposing (Route)
 import Task
 import Time
@@ -134,7 +135,7 @@ updateProjectPanel :
     -> { a | projectPanel : ProjectPanel }
     -> ( { a | projectPanel : ProjectPanel }, Cmd Msg )
 updateProjectPanel msg model =
-    projectPanelSystem.update msg model.projectPanel
+    Ret.toElmUpdate projectPanelSystem.update msg model.projectPanel
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
@@ -219,9 +220,9 @@ init flags url navKey =
             , filterPanel = FilterPanel.initial
             }
     in
-    Ret.singleton initial
-        |> Ret.andThen (initCollections flags)
-        |> Ret.andThen (onUrlChanged url)
+    Return.singleton initial
+        |> Return.andThen (initCollections flags)
+        |> Return.andThen (onUrlChanged url)
 
 
 initCollections : Flags -> DB a -> ( DB a, Cmd msg )
@@ -363,11 +364,11 @@ update message model =
 
         AddProjectDialogSaved savedWith ->
             dialog.close model
-                |> Ret.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
+                |> Return.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
 
         EditProjectDialogSaved savedWith ->
             dialog.close model
-                |> Ret.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
+                |> Return.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
 
         AddProjectWithTS { title, cColor, idx } ts ->
             let
