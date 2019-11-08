@@ -426,7 +426,7 @@ updateSub message =
             Ret.updateSubF fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
         DialogMsg msg ->
-            Ret.liftElmUpdate dialog.update msg
+            Ret.fromElmUpdate dialog.update msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )

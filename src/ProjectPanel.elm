@@ -62,7 +62,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
         update message =
             case message of
                 DNDList msg ->
-                    Ret.updateSubF fields.dnd (Ret.liftElmUpdate config.dndSystem.update) msg
+                    Ret.updateSubF fields.dnd (Ret.fromElmUpdate config.dndSystem.update) msg
 
                 Toggled ->
                     Ret.mapSubF fields.collapsible EP.toggle

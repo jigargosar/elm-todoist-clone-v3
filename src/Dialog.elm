@@ -146,12 +146,12 @@ updateSub config subMsg =
     case subMsg of
         AddProjectMsg msg ->
             Ret.updateOptionalF fields.addProject
-                (Ret.liftElmUpdate config.addProject.update)
+                (Ret.fromElmUpdate config.addProject.update)
                 msg
 
         EditProjectMsg msg ->
             Ret.updateOptionalF fields.editProject
-                (Ret.liftElmUpdate config.editProject.update)
+                (Ret.fromElmUpdate config.editProject.update)
                 msg
 
 
