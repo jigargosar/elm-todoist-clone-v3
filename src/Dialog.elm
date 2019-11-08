@@ -57,13 +57,17 @@ createConfig c =
 
         toMsg =
             c.toMsg << SubMsg
+
+        foo subM saveM =
+            { toMsg = toMsg << subM
+            , canceled = canceled
+            , saved = saved << saveM
+            }
     in
     { addProject =
-        AddProject.system
-            { toMsg = toMsg << AddProjectMsg
-            , canceled = canceled
-            , saved = saved << AddProjectSaved
-            }
+        AddProject.system <|
+            foo AddProjectMsg
+                AddProjectSaved
     , editProject =
         EditProject.system
             { toMsg = toMsg << EditProjectMsg
