@@ -1,5 +1,7 @@
 module Ret exposing (..)
 
+import Lens exposing (Lens)
+
 
 type alias Ret a x =
     { a : a, list : List x }
@@ -69,6 +71,7 @@ toElmUpdate func a =
         |> batch
 
 
+updateSub : Lens s b -> (msg -> Ret s x -> Ret s x) -> msg -> Ret b x -> Ret b x
 updateSub subLens subUpdate msg ret =
     let
         subRet =
@@ -79,22 +82,8 @@ updateSub subLens subUpdate msg ret =
 
 mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x
 mapSub subLens func =
-    map (over subLens func)
+    map (Lens.over subLens func)
 
 
 
 -- Lens
-
-
-type alias Lens s b =
-    { get : b -> s, set : s -> b -> b }
-
-
-createLens : ( b -> s, s -> b -> b ) -> Lens s b
-createLens ( get, set ) =
-    { get = get, set = set }
-
-
-over : Lens s b -> (s -> s) -> b -> b
-over lens func val =
-    lens.set (func <| lens.get val) val
