@@ -132,14 +132,6 @@ update config message =
     Ret.toElmUpdate (update2 config message)
 
 
-dndLens =
-    fields.dnd
-
-
-collapsibleLens =
-    fields.collapsible
-
-
 type alias DNDProjectMsg =
     DND.Msg Project
 
@@ -157,10 +149,10 @@ update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel ms
 update2 config message =
     case message of
         DNDList msg ->
-            Ret.updateSub dndLens (dndUpdate config) msg
+            Ret.updateSub fields.dnd (dndUpdate config) msg
 
         Toggled ->
-            Ret.mapSub collapsibleLens EP.toggle
+            Ret.mapSub fields.collapsible EP.toggle
 
 
 viewGhost : ProjectPanel -> List (Html msg)
