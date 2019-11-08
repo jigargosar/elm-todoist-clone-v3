@@ -83,22 +83,26 @@ updateSub { get, set } subUpdate msg big =
 
 updateSubF : Lens s b -> (msg -> RetF s x) -> msg -> RetF b x
 updateSubF { get, set } subUpdateF msg ( big, bigC ) =
-    let
-        ( small, smallC ) =
-            toElmUpdate subUpdateF msg (get big)
-    in
-    ( set small big, Cmd.batch [ bigC, smallC ] )
+    get big
+        |> only
+        |> subUpdateF msg
+        |> Tuple.mapBoth
+            (\small -> set small big)
+            (\smallC ->
+                Cmd.batch [ bigC, smallC ]
+            )
 
 
 updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateOptional optional subUpdate msg ( big, bigC ) =
-    case optional.get big of
+updateOptional { get, set } subUpdate msg ( big, bigC ) =
+    case get big of
         Just small_ ->
-            let
-                ( small, smallC ) =
-                    subUpdate msg (only small_)
-            in
-            ( optional.set small big, Cmd.batch [ bigC, smallC ] )
+            subUpdate msg (only small_)
+                |> Tuple.mapBoth
+                    (\small -> set small big)
+                    (\smallC ->
+                        Cmd.batch [ bigC, smallC ]
+                    )
 
         Nothing ->
             ( big, bigC )
