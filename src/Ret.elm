@@ -3,107 +3,95 @@ module Ret exposing (..)
 import Basics.More exposing (msgToCmd)
 import Lens exposing (Lens)
 import Optional exposing (Optional)
+import Return
 
 
 type alias Ret a x =
-    { a : a, list : List x }
+    ( a, Cmd x )
 
 
 type alias RetCmd a msg =
-    Ret a (Cmd msg)
+    Ret a msg
 
 
 only : a -> Ret a x
 only a =
-    Ret a []
+    ( a, Cmd.none )
 
 
-fromTuple : ( a, List x ) -> Ret a x
-fromTuple ( a, list ) =
-    Ret a list
+fromTuple =
+    identity
 
 
-fromElmTuple : ( a, Cmd msg ) -> RetCmd a msg
-fromElmTuple ( a, cmd ) =
-    Ret a [ cmd ]
+fromElmTuple =
+    identity
 
 
-batch : Ret a (Cmd msg) -> ( a, Cmd msg )
-batch { a, list } =
-    ( a, Cmd.batch list )
+batch =
+    identity
 
 
 map : (a -> b) -> Ret a x -> Ret b x
-map func { a, list } =
-    fromTuple ( func a, list )
+map =
+    Tuple.mapFirst
 
 
 andThen : (a -> Ret b x) -> Ret a x -> Ret b x
-andThen func ret =
-    let
-        { a, list } =
-            func ret.a
-    in
-    fromTuple ( a, ret.list ++ list )
+andThen =
+    Return.andThen
 
 
-addAll : List x -> Ret a x -> Ret a x
-addAll list_ ret =
-    { ret | list = list_ ++ ret.list }
+addAll : List (Cmd x) -> Ret a x -> Ret a x
+addAll list_ =
+    Return.command (Cmd.batch list_)
 
 
-add : x -> Ret a x -> Ret a x
-add x ret =
-    { ret | list = x :: ret.list }
+add : Cmd x -> Ret a x -> Ret a x
+add =
+    Return.command
 
 
 addMsg : msg -> RetCmd a msg -> RetCmd a msg
-addMsg msg ret =
-    { ret | list = msgToCmd msg :: ret.list }
+addMsg msg =
+    add (msgToCmd msg)
 
 
-addEffect : (a -> x) -> Ret a x -> Ret a x
-addEffect func ret =
-    ret |> add (func ret.a)
+addEffect : (a -> Cmd x) -> Ret a x -> Ret a x
+addEffect =
+    Return.effect_
 
 
-liftUpdate : (b -> a -> ( c, Cmd msg )) -> b -> RetCmd a msg -> RetCmd c msg
-liftUpdate func msg retCmd =
-    let
-        ( a, cmd ) =
-            func msg retCmd.a
-    in
-    only a |> addAll retCmd.list |> add cmd
+liftElmUpdate : (b -> a -> ( c, Cmd msg )) -> b -> RetCmd a msg -> RetCmd c msg
+liftElmUpdate func msg =
+    andThen (func msg)
 
 
 toElmUpdate : (msg_ -> RetCmd a msg -> RetCmd a msg) -> msg_ -> a -> ( a, Cmd msg )
 toElmUpdate func msg a =
-    only a
-        |> func msg
-        |> batch
+    only a |> func msg
 
 
 updateSub : Lens s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateSub subLens subUpdate msg ret =
+updateSub smallLens subUpdate msg ( big, bigC ) =
     let
-        subRet =
-            subUpdate msg (only (subLens.get ret.a))
+        ( small, smallC ) =
+            subUpdate msg (only (smallLens.get big))
     in
-    fromTuple ( subLens.set subRet.a ret.a, ret.list ++ subRet.list )
+    ( smallLens.set small big, Cmd.batch [ bigC, smallC ] )
 
 
 updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateOptional optional subUpdate msg ret =
-    case optional.get ret.a of
-        Just small ->
+updateOptional optional subUpdate msg ( big, bigC ) =
+    case optional.get big of
+        Just small_ ->
             let
-                subRet =
-                    subUpdate msg (only small)
+                ( small, smallC ) =
+                    subUpdate msg (only small_)
             in
-            fromTuple ( optional.set subRet.a ret.a, ret.list ++ subRet.list )
+            ( optional.set small big, Cmd.batch [ bigC, smallC ] )
 
         Nothing ->
-            ret
+            ( big, bigC )
 
 
 mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x
