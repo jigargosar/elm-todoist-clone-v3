@@ -2,10 +2,12 @@ module DNDList exposing
     ( Config
     , DNDList
     , Msg
+    , System
     , View
     , ghost
     , initial
     , subscriptions
+    , system
     , update
     , view
     )
@@ -31,6 +33,33 @@ import Json.Decode as JD
 import Log exposing (logError)
 import Styles exposing (batch)
 import Task
+
+
+
+-- SYSTEM
+
+
+type alias System item msg =
+    { initial : DNDList item
+    , subscriptions : DNDList item -> Sub msg
+    , update : Msg item -> DNDList item -> ( DNDList item, Cmd msg )
+    , view : List item -> DNDList item -> View item msg
+    , ghost : DNDList item -> Maybe ( Style, item )
+    }
+
+
+system :
+    { toMsg : Msg item -> msg
+    , sorted : List item -> msg
+    }
+    -> System item msg
+system config =
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    , ghost = ghost
+    }
 
 
 type alias Config item msg =

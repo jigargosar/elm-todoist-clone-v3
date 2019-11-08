@@ -51,16 +51,21 @@ system { toMsg, addClicked, moreClicked, sorted } =
                 , title = "Projects"
                 , secondary = { iconName = "add", action = addClicked }
                 }
+            , dndSystem = dndSystem
             }
+
+        dndSystem : DND.System Project msg
+        dndSystem =
+            DND.system config.dnd
     in
     { initial =
         { collapsible = EP.expanded
-        , dnd = DND.initial
+        , dnd = dndSystem.initial
         }
     , subscriptions =
         \model ->
             Sub.batch
-                [ DND.subscriptions config.dnd model.dnd
+                [ dndSystem.subscriptions model.dnd
                 ]
     , update = Ret.toElmUpdate (update2 config)
     , view = view config
@@ -99,6 +104,7 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DND.Config Project msg
     , ep : EP.Config msg
+    , dndSystem : DND.System Project msg
     }
 
 
