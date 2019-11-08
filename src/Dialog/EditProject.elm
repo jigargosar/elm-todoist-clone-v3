@@ -110,7 +110,7 @@ updateF { saved, canceled, toMsg } message =
             Ret.setSub fields.title title
 
         CColor cColor ->
-            Ret.map (\model -> { model | cColor = cColor })
+            Ret.setSub fields.cColor cColor
 
         Favorite favorite ->
             Ret.setSub fields.favorite favorite
