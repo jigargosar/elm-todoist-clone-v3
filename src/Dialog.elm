@@ -145,14 +145,18 @@ updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
 updateSub config subMsg =
     case subMsg of
         AddProjectMsg msg ->
-            Ret.updateOptionalF fields.addProject
-                (Ret.fromElmUpdate config.addProject.update)
-                msg
+            Ret.andThen
+                (Ret.updateOptional fields.addProject
+                    config.addProject.update
+                    msg
+                )
 
         EditProjectMsg msg ->
-            Ret.updateOptionalF fields.editProject
-                (Ret.fromElmUpdate config.editProject.update)
-                msg
+            Ret.andThen
+                (Ret.updateOptional fields.editProject
+                    config.editProject.update
+                    msg
+                )
 
 
 view : Config msg -> Dialog -> List (Html msg)

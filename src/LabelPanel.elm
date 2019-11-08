@@ -101,7 +101,7 @@ elmUpdate config message (LabelPanel state) =
 
 update : Config msg -> Msg -> Ret LabelPanel msg -> Ret LabelPanel msg
 update config =
-    Ret.fromElmUpdate (elmUpdate config)
+    Ret.toUpdateF (elmUpdate config)
 
 
 viewGhost : LabelPanel -> List (Html msg)

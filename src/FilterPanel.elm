@@ -101,7 +101,7 @@ elmUpdate config message (FilterPanel state) =
 
 update : Config msg -> Msg -> Ret FilterPanel msg -> Ret FilterPanel msg
 update config =
-    elmUpdate config |> Ret.fromElmUpdate
+    elmUpdate config |> Ret.toUpdateF
 
 
 viewGhost : FilterPanel -> List (Html msg)
