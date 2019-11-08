@@ -45,7 +45,7 @@ addEffect =
     Return.effect_
 
 
-fromElmUpdate : (b -> a -> ( c, Cmd msg )) -> b -> Ret a msg -> Ret c msg
+fromElmUpdate : (msg -> a -> Ret a x) -> msg -> RetF a x
 fromElmUpdate func msg =
     andThen (func msg)
 
