@@ -84,14 +84,8 @@ type Msg
 
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update config message model =
-    case message of
-        DNDList msg ->
-            DND.update config.dnd msg model.dnd
-                |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
-
-        Toggled ->
-            ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
+update config message =
+    Ret.toElmUpdate (update2 config message)
 
 
 dndLens =
@@ -123,11 +117,6 @@ update2 config message =
 
         Toggled ->
             Ret.mapSub collapsibleLens EP.toggle
-
-
-update3 : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update3 config message =
-    Ret.toElmUpdate (update2 config message)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
