@@ -1,11 +1,10 @@
 module Dialog.EditProject exposing (Config, EditProject, Msg, SavedWith, System, init, subscriptions, system, update, view)
 
-import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
-import Html.Styled as H exposing (Attribute, Html)
+import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Lens
 import Log exposing (logError)
@@ -125,7 +124,7 @@ toSavedWith model =
 updateF : Config msg -> Msg -> RetF EditProject msg
 updateF config message =
     let
-        { saved, canceled, toMsg } =
+        { saved, canceled } =
             config
     in
     case message of
