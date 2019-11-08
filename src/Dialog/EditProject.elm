@@ -103,7 +103,6 @@ init { toMsg } project =
 
 type Msg
     = Save
-    | Cancel
     | Title String
     | SelectColor SelectColor.Msg
     | CColor CColor
@@ -130,9 +129,6 @@ updateF config message =
     case message of
         Save ->
             Ret.addMsgEffect (toSavedWith >> saved)
-
-        Cancel ->
-            Ret.addMsg canceled
 
         Title title ->
             Ret.setSub fields.title title
