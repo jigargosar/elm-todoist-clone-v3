@@ -7,6 +7,7 @@ import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
+import Lens
 import Log exposing (logError)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -39,6 +40,15 @@ type alias EditProject =
     , favorite : Bool
     , selectColor : SelectColor.Model
     , cColor : CColor
+    }
+
+
+fields =
+    { projectId = Lens.fromTuple ( .projectId, \s b -> { b | projectId = s } )
+    , title = Lens.fromTuple ( .title, \s b -> { b | title = s } )
+    , favorite = Lens.fromTuple ( .favorite, \s b -> { b | favorite = s } )
+    , selectColor = Lens.fromTuple ( .selectColor, \s b -> { b | selectColor = s } )
+    , cColor = Lens.fromTuple ( .cColor, \s b -> { b | cColor = s } )
     }
 
 
@@ -97,7 +107,7 @@ updateF { saved, canceled, toMsg } message =
             Ret.addMsg canceled
 
         Title title ->
-            Ret.map (\model -> { model | title = title })
+            Ret.setSub fields.title title
 
         SelectColor msg ->
             Ret.andThen
@@ -108,7 +118,7 @@ updateF { saved, canceled, toMsg } message =
                 )
 
         Favorite favorite ->
-            Ret.map (\model -> { model | favorite = favorite })
+            Ret.setSub fields.favorite favorite
 
         AutoFocus result ->
             Ret.add

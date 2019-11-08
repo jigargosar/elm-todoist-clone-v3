@@ -80,6 +80,16 @@ updateSub { get, set } subUpdate msg big =
         |> map (\small -> set small big)
 
 
+mapSub : Lens s b -> (s -> s) -> RetF b x
+mapSub subLens func =
+    map (Lens.over subLens func)
+
+
+setSub : Lens s b -> s -> RetF b x
+setSub { set } small =
+    map (set small)
+
+
 updateSubF : Lens s b -> (msg -> RetF s x) -> msg -> RetF b x
 updateSubF { get, set } subUpdateF msg ( big, bigC ) =
     get big
@@ -118,8 +128,3 @@ updateOptionalF { get, set } subUpdateF msg ( big, bigC ) =
 
         Nothing ->
             ( big, bigC )
-
-
-mapSubF : Lens s b -> (s -> s) -> Ret b x -> Ret b x
-mapSubF subLens func =
-    map (Lens.over subLens func)
