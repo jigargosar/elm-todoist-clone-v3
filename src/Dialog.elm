@@ -32,9 +32,8 @@ type Dialog
 
 
 type alias Config msg =
-    { addProject : AddProject.Config msg
-    , addProjectSystem : { update : AddProject.Msg -> AddProject.AddProject -> ( AddProject.AddProject, Cmd msg ) }
-    , editProject : EditProject.Config msg
+    { addProject : AddProject.System msg
+    , editProject : EditProject.System msg
     , projectAdded : AddProject.SavedWith -> msg
     , projectEdited : EditProject.SavedWith -> msg
     }
@@ -53,22 +52,19 @@ createConfig c =
 
         saved =
             c.toMsg << SavedMsg
-
-        addProjectConfig =
+    in
+    { addProject =
+        AddProject.system
             { toMsg = c.toMsg << AddProjectMsg
             , canceled = canceled
             , saved = saved << AddProjectSaved
             }
-    in
-    { addProject = addProjectConfig
-    , addProjectSystem =
-        { update = AddProject.update addProjectConfig
-        }
     , editProject =
-        { toMsg = c.toMsg << EditProjectMsg
-        , canceled = canceled
-        , saved = saved << EditProjectSaved
-        }
+        EditProject.system
+            { toMsg = c.toMsg << EditProjectMsg
+            , canceled = canceled
+            , saved = saved << EditProjectSaved
+            }
     , projectAdded = c.projectAdded
     , projectEdited = c.projectEdited
     }
@@ -106,10 +102,10 @@ subscriptions : Config msg -> Dialog -> Sub msg
 subscriptions config dialog =
     case dialog of
         AddProject model ->
-            AddProject.subscriptions config.addProject model
+            config.addProject.subscriptions model
 
         EditProject model ->
-            EditProject.subscriptions config.editProject model
+            config.editProject.subscriptions model
 
         _ ->
             Sub.none
@@ -126,7 +122,7 @@ update config message dialogModel =
         AddProjectMsg msg ->
             case dialogModel of
                 AddProject model ->
-                    AddProject.update config.addProject msg model
+                    config.addProject.update msg model
                         |> Tuple.mapFirst AddProject
 
                 _ ->
@@ -135,18 +131,18 @@ update config message dialogModel =
         EditProjectMsg msg ->
             case dialogModel of
                 EditProject model ->
-                    EditProject.update config.editProject msg model
+                    config.editProject.update msg model
                         |> Tuple.mapFirst EditProject
 
                 _ ->
                     ret
 
         OpenAddProject idx ->
-            AddProject.initAt config.addProject idx
+            config.addProject.initAt idx
                 |> Tuple.mapFirst AddProject
 
         OpenEditProject project ->
-            EditProject.init config.editProject project
+            config.editProject.init project
                 |> Tuple.mapFirst EditProject
 
         Canceled ->
@@ -165,10 +161,10 @@ view : Config msg -> Dialog -> List (Html msg)
 view config dialog =
     case dialog of
         AddProject model ->
-            [ AddProject.view config.addProject model ]
+            [ config.addProject.view model ]
 
         EditProject model ->
-            [ EditProject.view config.editProject model ]
+            [ config.editProject.view model ]
 
         Closed ->
             []
