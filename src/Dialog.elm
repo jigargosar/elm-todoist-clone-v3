@@ -49,16 +49,19 @@ createConfig c =
     let
         canceled =
             c.toMsg Canceled
+
+        saved =
+            c.toMsg << SavedMsg
     in
     { addProject =
         { toMsg = c.toMsg << AddProjectDialogMsg
         , canceled = canceled
-        , saved = c.toMsg << SavedMsg << AddProjectSaved
+        , saved = saved << AddProjectSaved
         }
     , editProject =
         { toMsg = c.toMsg << EditProjectDialogMsg
         , canceled = canceled
-        , saved = c.toMsg << SavedMsg << EditProjectSaved
+        , saved = saved << EditProjectSaved
         }
     , projectAdded = c.projectAdded
     , projectEdited = c.projectEdited
