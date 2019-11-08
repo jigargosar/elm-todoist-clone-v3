@@ -74,7 +74,7 @@ type Msg
     | Cancel
     | Title String
     | SelectColor SelectColor.Msg
-    | CColorChanged CColor
+    | CColor CColor
     | Favorite Bool
     | AutoFocus (Result Dom.Error ())
 
@@ -109,6 +109,12 @@ updateF { saved, canceled, toMsg } message =
         Title title ->
             Ret.setSub fields.title title
 
+        CColor cColor ->
+            Ret.map (\model -> { model | cColor = cColor })
+
+        Favorite favorite ->
+            Ret.setSub fields.favorite favorite
+
         SelectColor msg ->
             Ret.andThen
                 (\model ->
@@ -116,9 +122,6 @@ updateF { saved, canceled, toMsg } message =
                         |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
                             (Cmd.map toMsg)
                 )
-
-        Favorite favorite ->
-            Ret.setSub fields.favorite favorite
 
         AutoFocus result ->
             Ret.add
@@ -129,9 +132,6 @@ updateF { saved, canceled, toMsg } message =
                     Ok () ->
                         Cmd.none
                 )
-
-        CColorChanged cColor ->
-            Ret.map (\model -> { model | cColor = cColor })
 
 
 update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
@@ -166,7 +166,7 @@ update { saved, canceled, toMsg } message model =
                 Ok () ->
                     ( model, Cmd.none )
 
-        CColorChanged cColor ->
+        CColor cColor ->
             ( { model | cColor = cColor }, Cmd.none )
 
 
@@ -179,7 +179,7 @@ selectColorConfig : SelectColor.Config Msg
 selectColorConfig =
     { toMsg = SelectColor
     , domIdPrefix = "edit-project-dialog"
-    , changed = CColorChanged
+    , changed = CColor
     }
 
 
