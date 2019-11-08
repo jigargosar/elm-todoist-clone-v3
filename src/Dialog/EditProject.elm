@@ -1,4 +1,4 @@
-module Dialog.EditProject exposing (Config, Model, Msg, SavedWith, init, subscriptions, update, view)
+module Dialog.EditProject exposing (Config, EditProject, Msg, SavedWith, init, subscriptions, update, view)
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
@@ -13,7 +13,7 @@ import ProjectId exposing (ProjectId)
 import Task
 
 
-type alias Model =
+type alias EditProject =
     { projectId : ProjectId
     , title : String
     , favorite : Bool
@@ -30,9 +30,9 @@ type alias SavedWith =
     }
 
 
-init : Config msg -> Project -> ( Model, Cmd msg )
+init : Config msg -> Project -> ( EditProject, Cmd msg )
 init { toMsg } project =
-    ( Model (Project.id project) (Project.title project) False SelectColor.initial (Project.cColor project)
+    ( EditProject (Project.id project) (Project.title project) False SelectColor.initial (Project.cColor project)
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
@@ -56,13 +56,13 @@ type alias Config msg =
     }
 
 
-subscriptions : Config msg -> Model -> Sub msg
+subscriptions : Config msg -> EditProject -> Sub msg
 subscriptions { toMsg } model =
     SelectColor.subscriptions selectColorConfig model.selectColor
         |> Sub.map toMsg
 
 
-update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
 update { saved, canceled, toMsg } message model =
     case message of
         Save ->
@@ -111,7 +111,7 @@ selectColorConfig =
     }
 
 
-view : Config msg -> Model -> Html msg
+view : Config msg -> EditProject -> Html msg
 view { toMsg } model =
     Dialog.UI.viewForm
         { submit = Save
