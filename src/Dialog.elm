@@ -145,12 +145,12 @@ updateSub : Config msg -> SubMsg -> RetCmd Dialog msg -> RetCmd Dialog msg
 updateSub config subMsg =
     case subMsg of
         AddProjectMsg msg ->
-            Ret.updateOptional fields.addProject
+            Ret.updateOptionalF fields.addProject
                 (Ret.liftElmUpdate config.addProject.update)
                 msg
 
         EditProjectMsg msg ->
-            Ret.updateOptional fields.editProject
+            Ret.updateOptionalF fields.editProject
                 (Ret.liftElmUpdate config.editProject.update)
                 msg
 

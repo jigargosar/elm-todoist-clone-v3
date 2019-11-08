@@ -93,8 +93,8 @@ updateSubF { get, set } subUpdateF msg ( big, bigC ) =
             )
 
 
-updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateOptional { get, set } subUpdateF msg ( big, bigC ) =
+updateOptionalF : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
+updateOptionalF { get, set } subUpdateF msg ( big, bigC ) =
     case get big of
         Just small_ ->
             only small_
