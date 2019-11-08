@@ -91,7 +91,11 @@ type alias SavedWith =
 
 init : Config msg -> Project -> ( EditProject, Cmd msg )
 init { toMsg } project =
-    ( EditProject (Project.id project) (Project.title project) False SelectColor.initial (Project.cColor project)
+    ( EditProject (Project.id project)
+        (Project.title project)
+        False
+        SelectColor.initial
+        (Project.cColor project)
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
