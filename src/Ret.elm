@@ -1,5 +1,6 @@
 module Ret exposing (..)
 
+import Basics.More exposing (msgToCmd)
 import Lens exposing (Lens)
 import Optional exposing (Optional)
 
@@ -20,6 +21,11 @@ only a =
 fromTuple : ( a, List x ) -> Ret a x
 fromTuple ( a, list ) =
     Ret a list
+
+
+fromElmTuple : ( a, Cmd msg ) -> RetCmd a msg
+fromElmTuple ( a, cmd ) =
+    Ret a [ cmd ]
 
 
 batch : Ret a (Cmd msg) -> ( a, Cmd msg )
@@ -49,6 +55,11 @@ addAll list_ ret =
 add : x -> Ret a x -> Ret a x
 add x ret =
     { ret | list = x :: ret.list }
+
+
+addMsg : msg -> RetCmd a msg -> RetCmd a msg
+addMsg msg ret =
+    { ret | list = msgToCmd msg :: ret.list }
 
 
 addEffect : (a -> x) -> Ret a x -> Ret a x

@@ -130,18 +130,25 @@ update config message model =
 
         OpenEditProject project ->
             config.editProject.init project
-                |> Tuple.mapFirst EditProject
+                |> Ret.fromElmTuple
+                |> Ret.map EditProject
+                |> Ret.batch
 
         Canceled ->
             ( Closed, Cmd.none )
 
         SavedMsg savedMsg ->
-            case savedMsg of
-                AddProjectSaved savedWith ->
-                    ( Closed, config.projectAdded savedWith |> msgToCmd )
+            ret
+                |> Ret.map (always Closed)
+                |> Ret.add
+                    (case savedMsg of
+                        AddProjectSaved savedWith ->
+                            config.projectAdded savedWith |> msgToCmd
 
-                EditProjectSaved savedWith ->
-                    ( Closed, config.projectEdited savedWith |> msgToCmd )
+                        EditProjectSaved savedWith ->
+                            config.projectEdited savedWith |> msgToCmd
+                    )
+                |> Ret.batch
 
 
 updateSub : Config msg -> SubMsg -> RetCmd Dialog msg -> RetCmd Dialog msg
