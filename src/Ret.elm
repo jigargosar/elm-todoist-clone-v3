@@ -71,12 +71,21 @@ toElmUpdate func msg a =
     only a |> func msg
 
 
-updateSubF : Lens s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
+type alias RetF a x =
+    Ret a x -> Ret a x
+
+
+updateSub : Lens s b -> (msg -> s -> Ret s x) -> msg -> b -> Ret b x
+updateSub { get, set } subUpdate msg big =
+    subUpdate msg (get big)
+        |> map (\small -> set small big)
+
+
+updateSubF : Lens s b -> (msg -> RetF s x) -> msg -> RetF b x
 updateSubF smallLens subUpdate msg =
     andThen
         (\big ->
-            toElmUpdate subUpdate msg (smallLens.get big)
-                |> map (\small -> smallLens.set small big)
+            updateSub smallLens (toElmUpdate subUpdate) msg big
         )
 
 
