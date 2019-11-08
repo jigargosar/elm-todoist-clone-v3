@@ -6,6 +6,7 @@ import Json.Encode exposing (Value)
 import LabelCollection as LC exposing (LabelCollection)
 import ProjectCollection as PC exposing (ProjectCollection)
 import TodoCollection as TC exposing (TodoCollection)
+import Tuple2
 
 
 type alias DB a =
@@ -61,6 +62,29 @@ mapLC =
 mapFC : (a -> a) -> { b | filterCollection : a } -> { b | filterCollection : a }
 mapFC =
     over fc
+
+
+init2 : Flags x -> DB a -> ( DB a, List JD.Error )
+init2 flags =
+    Tuple2.pairTo []
+        >> handleDecodeResult tc (TC.fromEncodedList flags.todoList)
+        >> handleDecodeResult pc (PC.fromEncodedList flags.projectList)
+        >> handleDecodeResult lc (LC.fromEncodedList flags.labelList)
+        >> handleDecodeResult fc (FC.fromEncodedList flags.filterList)
+
+
+handleDecodeResult :
+    Lens s big
+    -> Result JD.Error s
+    -> ( big, List JD.Error )
+    -> ( big, List JD.Error )
+handleDecodeResult lens result ( big, errors ) =
+    case result of
+        Ok small ->
+            ( lens.set small big, errors )
+
+        Err error ->
+            ( big, error :: errors )
 
 
 init : Flags x -> DB a -> ( DB a, List JD.Error )
