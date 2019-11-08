@@ -20,7 +20,7 @@ import Html.Styled.Attributes as A exposing (class, css, href)
 import Html.Styled.Events exposing (onClick)
 import PanelsHelp
 import Px
-import Ret exposing (RetCmd)
+import Ret exposing (Ret)
 import Route
 import Styles exposing (..)
 import UI.Icon as Icon
@@ -99,7 +99,7 @@ elmUpdate config message (FilterPanel state) =
             ( FilterPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
-update : Config msg -> Msg -> RetCmd FilterPanel msg -> RetCmd FilterPanel msg
+update : Config msg -> Msg -> Ret FilterPanel msg -> Ret FilterPanel msg
 update config =
     elmUpdate config |> Ret.liftElmUpdate
 

@@ -31,7 +31,7 @@ import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Ret exposing (RetCmd)
+import Ret exposing (Ret)
 import Return
 import Route exposing (Route)
 import Task
@@ -273,7 +273,7 @@ update message model =
         retT =
             ( model, Cmd.none )
 
-        ret : Ret.RetCmd Model msg
+        ret : Ret.Ret Model msg
         ret =
             Ret.only model
     in
@@ -377,7 +377,7 @@ update message model =
             ( newModel, Cmd.none )
 
         SubMsg subMsg ->
-            updateSub subMsg ret |> Ret.batch
+            updateSub subMsg ret
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
@@ -410,10 +410,10 @@ update message model =
 
 
 type alias Return =
-    RetCmd Model Msg
+    Ret Model Msg
 
 
-updateSub : SubMsg -> RetCmd Model Msg -> RetCmd Model Msg
+updateSub : SubMsg -> Ret Model Msg -> Ret Model Msg
 updateSub message =
     case message of
         ProjectPanel msg ->

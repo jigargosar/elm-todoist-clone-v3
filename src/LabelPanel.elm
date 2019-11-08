@@ -20,7 +20,7 @@ import Label exposing (Label)
 import LabelId exposing (LabelId)
 import PanelsHelp
 import Px
-import Ret exposing (RetCmd)
+import Ret exposing (Ret)
 import Route
 import Styles exposing (..)
 import UI.Icon as Icon
@@ -99,7 +99,7 @@ elmUpdate config message (LabelPanel state) =
             ( LabelPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
 
 
-update : Config msg -> Msg -> RetCmd LabelPanel msg -> RetCmd LabelPanel msg
+update : Config msg -> Msg -> Ret LabelPanel msg -> Ret LabelPanel msg
 update config =
     Ret.liftElmUpdate (elmUpdate config)
 

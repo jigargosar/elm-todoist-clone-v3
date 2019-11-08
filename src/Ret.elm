@@ -10,25 +10,9 @@ type alias Ret a x =
     ( a, Cmd x )
 
 
-type alias RetCmd a msg =
-    Ret a msg
-
-
 only : a -> Ret a x
 only a =
     ( a, Cmd.none )
-
-
-fromTuple =
-    identity
-
-
-fromElmTuple =
-    identity
-
-
-batch =
-    identity
 
 
 map : (a -> b) -> Ret a x -> Ret b x
@@ -51,7 +35,7 @@ add =
     Return.command
 
 
-addMsg : msg -> RetCmd a msg -> RetCmd a msg
+addMsg : msg -> Ret a msg -> Ret a msg
 addMsg msg =
     add (msgToCmd msg)
 
@@ -61,12 +45,12 @@ addEffect =
     Return.effect_
 
 
-liftElmUpdate : (b -> a -> ( c, Cmd msg )) -> b -> RetCmd a msg -> RetCmd c msg
+liftElmUpdate : (b -> a -> ( c, Cmd msg )) -> b -> Ret a msg -> Ret c msg
 liftElmUpdate func msg =
     andThen (func msg)
 
 
-toElmUpdate : (msg_ -> RetCmd a msg -> RetCmd a msg) -> msg_ -> a -> ( a, Cmd msg )
+toElmUpdate : (msg_ -> Ret a msg -> Ret a msg) -> msg_ -> a -> ( a, Cmd msg )
 toElmUpdate func msg a =
     only a |> func msg
 
@@ -93,7 +77,7 @@ updateSubF { get, set } subUpdateF msg ( big, bigC ) =
             )
 
 
-updateOptional : Optional s b -> (msg -> s -> RetCmd s x) -> msg -> b -> RetCmd b x
+updateOptional : Optional s b -> (msg -> s -> Ret s x) -> msg -> b -> Ret b x
 updateOptional { get, set } subUpdate msg big =
     case get big of
         Just small_ ->
@@ -105,7 +89,7 @@ updateOptional { get, set } subUpdate msg big =
             only big
 
 
-updateOptionalF : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
+updateOptionalF : Optional s b -> (msg -> Ret s x -> Ret s x) -> msg -> Ret b x -> Ret b x
 updateOptionalF { get, set } subUpdateF msg ( big, bigC ) =
     case get big of
         Just small_ ->

@@ -18,7 +18,7 @@ import Dialog.EditProject as EditProject exposing (EditProject)
 import Html.Styled exposing (Html)
 import Optional
 import Project exposing (Project)
-import Ret exposing (RetCmd)
+import Ret exposing (Ret)
 
 
 type Dialog
@@ -107,18 +107,18 @@ subscriptions config dialog =
             Sub.none
 
 
-update2 : Config msg -> Msg -> RetCmd Dialog msg -> RetCmd Dialog msg
+update2 : Config msg -> Msg -> Ret Dialog msg -> Ret Dialog msg
 update2 config message =
     case message of
         SubMsg subMsg ->
             updateSub config subMsg
 
         OpenAddProject idx ->
-            Ret.andThen (always <| Ret.fromElmTuple <| config.addProject.initAt idx)
+            Ret.andThen (always <| config.addProject.initAt idx)
                 >> Ret.map AddProject
 
         OpenEditProject project ->
-            Ret.andThen (always <| Ret.fromElmTuple <| config.editProject.init project)
+            Ret.andThen (always <| config.editProject.init project)
                 >> Ret.map EditProject
 
         Canceled ->
@@ -141,7 +141,7 @@ update config =
     Ret.toElmUpdate (update2 config)
 
 
-updateSub : Config msg -> SubMsg -> RetCmd Dialog msg -> RetCmd Dialog msg
+updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
 updateSub config subMsg =
     case subMsg of
         AddProjectMsg msg ->

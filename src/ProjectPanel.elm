@@ -16,7 +16,7 @@ import Lens exposing (Lens)
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
-import Ret exposing (Ret, RetCmd)
+import Ret exposing (Ret)
 import Route
 import Styles exposing (..)
 
@@ -28,7 +28,7 @@ import Styles exposing (..)
 type alias System msg =
     { initial : ProjectPanel
     , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
+    , update : Msg -> Ret ProjectPanel msg -> Ret ProjectPanel msg
     , view : List Project -> ProjectPanel -> List (Html msg)
     , viewGhost : ProjectPanel -> List (Html msg)
     }
@@ -58,7 +58,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
         dndSystem =
             DND.system { toMsg = toMsg << DNDList, sorted = sorted }
 
-        update : Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
+        update : Msg -> Ret ProjectPanel msg -> Ret ProjectPanel msg
         update message =
             case message of
                 DNDList msg ->
