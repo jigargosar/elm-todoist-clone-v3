@@ -104,7 +104,7 @@ type PopupMsg
 projectPanelSystem : ProjectPanel.System Msg
 projectPanelSystem =
     ProjectPanel.system
-        { toMsg = ProjectPanel
+        { toMsg = SubMsg << ProjectPanel
         , addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
@@ -114,7 +114,7 @@ projectPanelSystem =
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
     LabelPanel.createConfig
-        { toMsg = LabelPanel
+        { toMsg = SubMsg << LabelPanel
         , addClicked = AddLabelClicked
         , moreClicked = LabelMoreMenu >> PopupTriggered
         , sorted = LabelOrderChanged
@@ -124,7 +124,7 @@ labelPanelConfig =
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
     FilterPanel.createConfig
-        { toMsg = FilterPanel
+        { toMsg = SubMsg << FilterPanel
         , addClicked = AddFilterClicked
         , moreClicked = FilterMoreMenu >> PopupTriggered
         , sorted = FilterOrderChanged
@@ -254,6 +254,12 @@ subscriptions model =
 -- UPDATE
 
 
+type SubMsg
+    = ProjectPanel ProjectPanel.Msg
+    | LabelPanel LabelPanel.Msg
+    | FilterPanel FilterPanel.Msg
+
+
 type Msg
     = NoOp
     | LogError String
@@ -276,9 +282,7 @@ type Msg
     | EditProjectClicked ProjectId
     | AddLabelClicked
     | AddFilterClicked
-    | ProjectPanel ProjectPanel.Msg
-    | LabelPanel LabelPanel.Msg
-    | FilterPanel FilterPanel.Msg
+    | SubMsg SubMsg
     | ProjectOrderChanged (List Project)
     | LabelOrderChanged (List Label)
     | FilterOrderChanged (List Filter)
@@ -401,15 +405,17 @@ update message model =
             in
             ( newModel, Cmd.none )
 
-        ProjectPanel msg ->
-            Ret.updateSub fields.projectPanel projectPanelSystem.update msg ret
-                |> Ret.batch
+        SubMsg subMsg ->
+            case subMsg of
+                ProjectPanel msg ->
+                    Ret.updateSub fields.projectPanel projectPanelSystem.update msg ret
+                        |> Ret.batch
 
-        LabelPanel msg ->
-            updateLabelPanel msg model
+                LabelPanel msg ->
+                    updateLabelPanel msg model
 
-        FilterPanel msg ->
-            updateFilterPanel msg model
+                FilterPanel msg ->
+                    updateFilterPanel msg model
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
