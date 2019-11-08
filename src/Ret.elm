@@ -82,11 +82,12 @@ updateSub { get, set } subUpdate msg big =
 
 
 updateSubF : Lens s b -> (msg -> RetF s x) -> msg -> RetF b x
-updateSubF smallLens subUpdate msg =
-    andThen
-        (\big ->
-            updateSub smallLens (toElmUpdate subUpdate) msg big
-        )
+updateSubF { get, set } subUpdateF msg ( big, bigC ) =
+    let
+        ( small, smallC ) =
+            toElmUpdate subUpdateF msg (get big)
+    in
+    ( set small big, Cmd.batch [ bigC, smallC ] )
 
 
 updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
