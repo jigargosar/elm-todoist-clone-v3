@@ -2,7 +2,6 @@ module ProjectPanel exposing
     ( Msg
     , ProjectPanel
     , System
-    , subscriptions
     , system
     )
 
@@ -54,8 +53,15 @@ system { toMsg, addClicked, moreClicked, sorted } =
                 }
             }
     in
-    { initial = initial
-    , subscriptions = subscriptions config
+    { initial =
+        { collapsible = EP.expanded
+        , dnd = DND.initial
+        }
+    , subscriptions =
+        \model ->
+            Sub.batch
+                [ DND.subscriptions config.dnd model.dnd
+                ]
     , update = Ret.toElmUpdate (update2 config)
     , view = view config
     , viewGhost = viewGhost
@@ -78,13 +84,6 @@ type alias Fields =
     }
 
 
-initial : ProjectPanel
-initial =
-    { collapsible = EP.expanded
-    , dnd = DND.initial
-    }
-
-
 fields : Fields
 fields =
     { collapsible = Lens.fromTuple ( .collapsible, \s b -> { b | collapsible = s } )
@@ -94,13 +93,6 @@ fields =
 
 
 -- PROJECT PANEL UPDATE
-
-
-subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config { dnd } =
-    Sub.batch
-        [ DND.subscriptions config.dnd dnd
-        ]
 
 
 type alias Config msg =
