@@ -203,6 +203,8 @@ type alias Model =
 
 fields =
     { projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
+    , labelPanel = Lens.fromTuple ( .labelPanel, \s b -> { b | labelPanel = s } )
+    , filterPanel = Lens.fromTuple ( .filterPanel, \s b -> { b | filterPanel = s } )
     }
 
 
