@@ -1,13 +1,10 @@
 module ProjectPanel exposing
-    ( Config
-    , Msg
+    ( Msg
     , ProjectPanel
-    , createConfig
+    , System
     , initial
     , subscriptions
-    , update
-    , view
-    , viewGhost
+    , system
     )
 
 import Css

@@ -99,9 +99,9 @@ type PopupMsg
 -- PANELS
 
 
-projectPanelConfig : ProjectPanel.Config Msg
-projectPanelConfig =
-    ProjectPanel.createConfig
+projectPanelSystem : ProjectPanel.System Msg
+projectPanelSystem =
+    ProjectPanel.system
         { toMsg = ProjectPanel
         , addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
@@ -134,7 +134,7 @@ updateProjectPanel :
     -> { a | projectPanel : ProjectPanel }
     -> ( { a | projectPanel : ProjectPanel }, Cmd Msg )
 updateProjectPanel msg model =
-    ProjectPanel.update projectPanelConfig msg model.projectPanel
+    projectPanelSystem.update msg model.projectPanel
         |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
 
 
@@ -243,7 +243,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
+        , projectPanelSystem.subscriptions model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         , dialog.subscriptions model
@@ -541,7 +541,7 @@ view : Model -> Html Msg
 view model =
     let
         projectPanelView =
-            ProjectPanel.view projectPanelConfig
+            projectPanelSystem.view
                 (PC.sorted model.projectCollection)
                 model.projectPanel
 
@@ -566,7 +566,7 @@ view model =
         , modal =
             popupView model
                 ++ dialog.view model
-                ++ ProjectPanel.viewGhost model.projectPanel
+                ++ projectPanelSystem.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
         }
