@@ -128,3 +128,13 @@ updateOptionalF { get, set } subUpdateF msg ( big, bigC ) =
 
         Nothing ->
             ( big, bigC )
+
+
+addError : (error -> Cmd x) -> Result error value -> Ret a x -> Ret a x
+addError func result =
+    case result of
+        Err error ->
+            add (func error)
+
+        Ok _ ->
+            identity

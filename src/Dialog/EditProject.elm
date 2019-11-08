@@ -147,14 +147,7 @@ updateF config message =
                 (Ret.updateSub fields.selectColor (SelectColor.update config.selectColor) msg)
 
         AutoFocus result ->
-            Ret.add
-                (case result of
-                    Err (Dom.NotFound domId) ->
-                        logError <| "autofocus failed: " ++ domId
-
-                    Ok () ->
-                        Cmd.none
-                )
+            Ret.addError Log.focusError result
 
 
 update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
