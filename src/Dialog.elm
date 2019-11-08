@@ -49,31 +49,15 @@ createConfig :
     -> Config msg
 createConfig c =
     let
-        canceled =
-            c.toMsg Canceled
-
-        saved =
-            c.toMsg << SavedMsg
-
-        toMsg =
-            c.toMsg << SubMsg
-
-        foo subM saveM =
-            { toMsg = toMsg << subM
-            , canceled = canceled
-            , saved = saved << saveM
+        sys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
+        sys subM saveM =
+            { toMsg = c.toMsg << SubMsg << subM
+            , canceled = c.toMsg Canceled
+            , saved = c.toMsg << SavedMsg << saveM
             }
     in
-    { addProject =
-        AddProject.system <|
-            foo AddProjectMsg
-                AddProjectSaved
-    , editProject =
-        EditProject.system
-            { toMsg = toMsg << EditProjectMsg
-            , canceled = canceled
-            , saved = saved << EditProjectSaved
-            }
+    { addProject = AddProject.system <| sys AddProjectMsg AddProjectSaved
+    , editProject = EditProject.system <| sys EditProjectMsg EditProjectSaved
     , projectAdded = c.projectAdded
     , projectEdited = c.projectEdited
     }
