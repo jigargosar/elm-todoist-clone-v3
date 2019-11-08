@@ -183,4 +183,15 @@ fields =
                         Nothing
             , \s _ -> AddProject s
             )
+    , editProject =
+        Optional.fromTuple
+            ( \b ->
+                case b of
+                    EditProject s ->
+                        Just s
+
+                    _ ->
+                        Nothing
+            , \s _ -> EditProject s
+            )
     }
