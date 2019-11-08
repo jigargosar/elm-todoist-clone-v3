@@ -93,30 +93,28 @@ update config message model =
             ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
 
 
+dndLens =
+    Ret.createLens ( .dnd, \s b -> { b | dnd = s } )
+
+
+type alias DNDProjectMsg =
+    DND.Msg Project
+
+
+type alias DNDProjectModel =
+    DNDList Project
+
+
+dndUpdate : Config msg -> DNDProjectMsg -> RetCmd DNDProjectModel msg -> RetCmd DNDProjectModel msg
+dndUpdate config =
+    Ret.liftUpdate (DND.update config.dnd)
+
+
 update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
 update2 config message ret =
     case message of
         DNDList msg ->
-            let
-                dndUpdate : RetCmd (DNDList Project) msg -> RetCmd (DNDList Project) msg
-                dndUpdate =
-                    Ret.liftUpdate (DND.update config.dnd msg)
-
-                dndRet : Ret (DNDList Project) msg
-                dndRet =
-                    Ret.only ret.a.dnd
-
-                dndRet2 : RetCmd (DNDList Project) msg
-                dndRet2 =
-                    dndUpdate dndRet
-
-                setDnd dnd m =
-                    { m | dnd = dnd }
-
-                fromDndToPP =
-                    Ret.map (\dnd -> setDnd dnd ret.a)
-            in
-            fromDndToPP dndRet2
+            Ret.updateSub dndLens (dndUpdate config) msg ret
 
         Toggled ->
             ret

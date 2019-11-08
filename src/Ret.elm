@@ -53,6 +53,34 @@ addEffect func ret =
     ret |> add (func ret.a)
 
 
+liftUpdate : (b -> a -> ( c, d )) -> b -> Ret a d -> Ret c d
+liftUpdate func msg retCmd =
+    let
+        ( a, cmd ) =
+            func msg retCmd.a
+    in
+    only a |> addAll retCmd.list |> add cmd
+
+
+toElmUpdate : (RetCmd a msg -> RetCmd a msg) -> (a -> ( a, Cmd msg ))
+toElmUpdate func a =
+    only a
+        |> func
+        |> batch
+
+
+updateSub subLens subUpdate msg ret =
+    let
+        subRet =
+            subUpdate msg (only (subLens.get ret.a))
+    in
+    fromTuple ( subLens.set subRet.a ret.a, ret.list ++ subRet.list )
+
+
+
+-- Lens
+
+
 type alias Lens s b =
     { get : b -> s, set : s -> b -> b }
 
@@ -65,23 +93,3 @@ createLens ( get, set ) =
 over : Lens s b -> (s -> s) -> b -> b
 over lens func val =
     lens.set (func <| lens.get val) val
-
-
-liftUpdate :
-    (a
-     -> ( a, Cmd msg )
-    )
-    -> (RetCmd a msg -> RetCmd a msg)
-liftUpdate func retCmd =
-    let
-        ( a, cmd ) =
-            func retCmd.a
-    in
-    only a |> addAll retCmd.list |> add cmd
-
-
-toElmUpdate : (RetCmd a msg -> RetCmd a msg) -> (a -> ( a, Cmd msg ))
-toElmUpdate func a =
-    only a
-        |> func
-        |> batch
