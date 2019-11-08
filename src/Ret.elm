@@ -1,6 +1,7 @@
 module Ret exposing (..)
 
 import Lens exposing (Lens)
+import Optional exposing (Optional)
 
 
 type alias Ret a x =
@@ -78,6 +79,20 @@ updateSub subLens subUpdate msg ret =
             subUpdate msg (only (subLens.get ret.a))
     in
     fromTuple ( subLens.set subRet.a ret.a, ret.list ++ subRet.list )
+
+
+updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
+updateOptional optional subUpdate msg ret =
+    case optional.get ret.a of
+        Just small ->
+            let
+                subRet =
+                    subUpdate msg (only small)
+            in
+            fromTuple ( optional.set subRet.a ret.a, ret.list ++ subRet.list )
+
+        Nothing ->
+            ret
 
 
 mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x

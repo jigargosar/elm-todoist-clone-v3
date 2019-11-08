@@ -19,6 +19,7 @@ import Dialog.EditProject as EditProject exposing (EditProject)
 import Html.Styled exposing (Html)
 import Optional
 import Project exposing (Project)
+import Ret exposing (RetCmd)
 
 
 type Dialog
@@ -118,6 +119,10 @@ update config message model =
         retT : ( Dialog, Cmd msg )
         retT =
             ( model, Cmd.none )
+
+        ret : RetCmd Dialog msg
+        ret =
+            Ret.only model
     in
     case message of
         AddProjectMsg msg ->
@@ -130,13 +135,11 @@ update config message model =
                     retT
 
         EditProjectMsg msg ->
-            case model of
-                EditProject sub ->
-                    config.editProject.update msg sub
-                        |> Tuple.mapFirst EditProject
-
-                _ ->
-                    retT
+            ret
+                |> Ret.updateOptional fields.editProject
+                    (Ret.liftUpdate config.editProject.update)
+                    msg
+                |> Ret.batch
 
         OpenAddProject idx ->
             config.addProject.initAt idx
