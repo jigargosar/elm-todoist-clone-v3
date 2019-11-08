@@ -64,10 +64,10 @@ liftUpdate func msg retCmd =
     only a |> addAll retCmd.list |> add cmd
 
 
-toElmUpdate : (RetCmd a msg -> RetCmd a msg) -> (a -> ( a, Cmd msg ))
-toElmUpdate func a =
+toElmUpdate : (msg_ -> RetCmd a msg -> RetCmd a msg) -> msg_ -> a -> ( a, Cmd msg )
+toElmUpdate func msg a =
     only a
-        |> func
+        |> func msg
         |> batch
 
 

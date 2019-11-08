@@ -113,7 +113,7 @@ system configProps =
     in
     { initial = initial
     , subscriptions = subscriptions config
-    , update = update config
+    , update = Ret.toElmUpdate (update2 config)
     , view = view config
     , viewGhost = viewGhost
     }
@@ -122,11 +122,6 @@ system configProps =
 type Msg
     = DNDList (DND.Msg Project)
     | Toggled
-
-
-update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-update config message =
-    Ret.toElmUpdate (update2 config message)
 
 
 type alias DNDProjectMsg =
