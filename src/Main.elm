@@ -126,7 +126,7 @@ filterPanelConfig =
     FilterPanel.createConfig
         { toMsg = SubMsg << FilterPanel
         , addClicked = AddFilterClicked
-        , moreClicked = FilterMoreMenu >> PopupTriggered
+        , moreClicked = PopupTriggered << FilterMoreMenu
         , sorted = FilterOrderChanged
         }
 
