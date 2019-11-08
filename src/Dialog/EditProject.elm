@@ -1,4 +1,4 @@
-module Dialog.EditProject exposing (Config, EditProject, Msg, SavedWith, init, subscriptions, update, view)
+module Dialog.EditProject exposing (Config, EditProject, Msg, SavedWith, System, init, subscriptions, system, update, view)
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
@@ -11,6 +11,23 @@ import Log exposing (logError)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Task
+
+
+type alias System msg =
+    { init : Project -> ( EditProject, Cmd msg )
+    , subscriptions : EditProject -> Sub msg
+    , update : Msg -> EditProject -> ( EditProject, Cmd msg )
+    , view : EditProject -> Html msg
+    }
+
+
+system : Config msg -> System msg
+system config =
+    { init = init config
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    }
 
 
 type alias EditProject =
