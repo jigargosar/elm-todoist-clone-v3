@@ -121,22 +121,8 @@ update config message model =
     in
     case message of
         SubMsg subMsg ->
-            case subMsg of
-                AddProjectMsg msg ->
-                    case model of
-                        AddProject sub ->
-                            config.addProject.update msg sub
-                                |> Tuple.mapFirst AddProject
-
-                        _ ->
-                            retT
-
-                EditProjectMsg msg ->
-                    ret
-                        |> Ret.updateOptional fields.editProject
-                            (Ret.liftUpdate config.editProject.update)
-                            msg
-                        |> Ret.batch
+            updateSub config subMsg ret
+                |> Ret.batch
 
         OpenAddProject idx ->
             config.addProject.initAt idx
@@ -156,6 +142,20 @@ update config message model =
 
                 EditProjectSaved savedWith ->
                     ( Closed, config.projectEdited savedWith |> msgToCmd )
+
+
+updateSub : Config msg -> SubMsg -> RetCmd Dialog msg -> RetCmd Dialog msg
+updateSub config subMsg =
+    case subMsg of
+        AddProjectMsg msg ->
+            Ret.updateOptional fields.addProject
+                (Ret.liftUpdate config.addProject.update)
+                msg
+
+        EditProjectMsg msg ->
+            Ret.updateOptional fields.editProject
+                (Ret.liftUpdate config.editProject.update)
+                msg
 
 
 view : Config msg -> Dialog -> List (Html msg)
