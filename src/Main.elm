@@ -52,7 +52,6 @@ import Url exposing (Url)
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-    , close : { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
     , view : { a | dialog : Dialog } -> List (Html Msg)
     , subscriptions : { a | dialog : Dialog } -> Sub Msg
@@ -74,7 +73,6 @@ dialog =
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
-    , close = updateDialog Dialog.close
     , update = updateDialog
     , view = .dialog >> Dialog.view dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
@@ -255,7 +253,6 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
     | EditProjectDialogSaved Dialog.EditProject.SavedWith
@@ -345,16 +342,11 @@ update message model =
         PopupMsg msg ->
             updateWithPopupKind (updatePopup msg) model
 
-        DialogCanceled ->
-            dialog.close model
-
         AddProjectDialogSaved savedWith ->
-            dialog.close model
-                |> Return.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
+            ( model, Time.now |> Task.perform (AddProjectWithTS savedWith) )
 
         EditProjectDialogSaved savedWith ->
-            dialog.close model
-                |> Return.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
+            ( model, Time.now |> Task.perform (EditProjectWithTS savedWith) )
 
         AddProjectWithTS { title, cColor, idx } ts ->
             let

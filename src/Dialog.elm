@@ -2,7 +2,6 @@ module Dialog exposing
     ( Config
     , Dialog
     , Msg
-    , close
     , createConfig
     , initial
     , openAddProject
@@ -14,6 +13,7 @@ module Dialog exposing
 
 -- DIALOG
 
+import Basics.More exposing (msgToCmd)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
 import Html.Styled exposing (Html)
@@ -34,6 +34,8 @@ type Dialog
 type alias Config msg =
     { addProject : AddProject.Config msg
     , editProject : EditProject.Config msg
+    , projectAdded : AddProject.SavedWith -> msg
+    , projectEdited : EditProject.SavedWith -> msg
     }
 
 
@@ -46,19 +48,26 @@ createConfig :
 createConfig c =
     let
         canceled =
-            c.toMsg Close
+            c.toMsg Canceled
     in
     { addProject =
         { toMsg = c.toMsg << AddProjectDialogMsg
         , canceled = canceled
-        , saved = c.projectAdded
+        , saved = c.toMsg << SavedMsg << AddProjectSaved
         }
     , editProject =
         { toMsg = c.toMsg << EditProjectDialogMsg
         , canceled = canceled
-        , saved = c.projectEdited
+        , saved = c.toMsg << SavedMsg << EditProjectSaved
         }
+    , projectAdded = c.projectAdded
+    , projectEdited = c.projectEdited
     }
+
+
+type SavedMsg
+    = AddProjectSaved AddProject.SavedWith
+    | EditProjectSaved EditProject.SavedWith
 
 
 type Msg
@@ -66,7 +75,8 @@ type Msg
     | EditProjectDialogMsg EditProject.Msg
     | OpenAddProjectDialog Int
     | OpenEditProject Project
-    | Close
+    | SavedMsg SavedMsg
+    | Canceled
 
 
 openAddProject : Int -> Msg
@@ -81,11 +91,6 @@ openEditProject =
 
 initial =
     Closed
-
-
-close : Msg
-close =
-    Close
 
 
 subscriptions : Config msg -> Dialog -> Sub msg
@@ -135,8 +140,16 @@ update config message dialogModel =
             EditProject.init config.editProject project
                 |> Tuple.mapFirst EditProjectDialog
 
-        Close ->
+        Canceled ->
             ( Closed, Cmd.none )
+
+        SavedMsg savedMsg ->
+            case savedMsg of
+                AddProjectSaved savedWith ->
+                    ( Closed, config.projectAdded savedWith |> msgToCmd )
+
+                EditProjectSaved savedWith ->
+                    ( Closed, config.projectEdited savedWith |> msgToCmd )
 
 
 view : Config msg -> Dialog -> List (Html msg)
