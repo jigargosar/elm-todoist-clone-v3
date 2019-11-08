@@ -1,4 +1,13 @@
-module Dialog.AddProject exposing (AddProject, Config, Msg, SavedWith, initAt, subscriptions, update, view)
+module Dialog.AddProject exposing
+    ( AddProject
+    , Config
+    , Msg
+    , SavedWith
+    , initAt
+    , subscriptions
+    , update
+    , view
+    )
 
 import Basics.More exposing (msgToCmd)
 import Browser.Dom as Dom
@@ -9,6 +18,23 @@ import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Log exposing (logError)
 import Task
+
+
+type alias System msg =
+    { initAt : Int -> ( AddProject, Cmd msg )
+    , subscriptions : AddProject -> Sub msg
+    , update : Msg -> AddProject -> ( AddProject, Cmd msg )
+    , view : AddProject -> Html msg
+    }
+
+
+system : Config msg -> System msg
+system config =
+    { initAt = initAt config
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    }
 
 
 type alias AddProject =
