@@ -21,6 +21,7 @@ import LabelCollection as LC exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
 import Layout
+import Lens
 import Log exposing (logDecodeError, logError)
 import Page.NotFound
 import Popper exposing (Popper)
@@ -197,6 +198,11 @@ type alias Model =
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
     , filterPanel : FilterPanel
+    }
+
+
+fields =
+    { projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
     }
 
 
