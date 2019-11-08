@@ -24,10 +24,12 @@ type alias System msg =
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
+    { saved : SavedWith -> msg
     , canceled : msg
+    , toMsg : Msg -> msg
     , selectColor : SelectColor.Config msg
+    , title : String -> msg
+    , favorite : Bool -> msg
     }
 
 
@@ -52,6 +54,8 @@ system ({ saved, canceled, toMsg } as cc) =
             , canceled = canceled
             , toMsg = toMsg
             , selectColor = selectColorConfig
+            , title = toMsg << Title
+            , favorite = toMsg << Favorite
             }
     in
     { init = init config
@@ -165,9 +169,9 @@ autofocusDomId =
 
 
 view : Config msg -> EditProject -> Html msg
-view { toMsg, selectColor, canceled } model =
+view { selectColor, canceled, saved, title, favorite } model =
     Dialog.UI.viewForm
-        { submit = toMsg Save
+        { submit = saved (toSavedWith model)
         , cancel = canceled
         , title = "Edit Project"
         , submitTitle = "Save"
@@ -175,7 +179,7 @@ view { toMsg, selectColor, canceled } model =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = toMsg << Title
+                , changed = title
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
@@ -183,7 +187,7 @@ view { toMsg, selectColor, canceled } model =
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = toMsg << Favorite
+                , changed = favorite
                 }
             ]
         }
