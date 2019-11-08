@@ -56,6 +56,23 @@ type alias Config msg =
     }
 
 
+type alias CreateConfig msg =
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
+
+
+type alias System msg =
+    { initial : ProjectPanel
+    , subscriptions : ProjectPanel -> Sub msg
+    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+    , view : List Project -> ProjectPanel -> List (Html msg)
+    , viewGhost : ProjectPanel -> List (Html msg)
+    }
+
+
 createConfig :
     { toMsg : Msg -> msg
     , addClicked : msg
@@ -74,23 +91,6 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
     , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , ep = ep
-    }
-
-
-type alias CreateConfig msg =
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
-
-
-type alias System msg =
-    { initial : ProjectPanel
-    , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-    , view : List Project -> ProjectPanel -> List (Html msg)
-    , viewGhost : ProjectPanel -> List (Html msg)
     }
 
 
