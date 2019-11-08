@@ -26,10 +26,10 @@ type alias System msg =
 type alias Config msg =
     { saved : SavedWith -> msg
     , canceled : msg
-    , toMsg : Msg -> msg
+    , autoFocused : Result Dom.Error () -> msg
     , selectColor : SelectColor.Config msg
-    , title : String -> msg
-    , favorite : Bool -> msg
+    , titleChanged : String -> msg
+    , favoriteChanged : Bool -> msg
     }
 
 
@@ -39,7 +39,7 @@ system :
     , canceled : msg
     }
     -> System msg
-system ({ saved, canceled, toMsg } as cc) =
+system { saved, canceled, toMsg } =
     let
         selectColorConfig : SelectColor.Config msg
         selectColorConfig =
@@ -52,10 +52,10 @@ system ({ saved, canceled, toMsg } as cc) =
         config =
             { saved = saved
             , canceled = canceled
-            , toMsg = toMsg
+            , autoFocused = toMsg << AutoFocus
             , selectColor = selectColorConfig
-            , title = toMsg << Title
-            , favorite = toMsg << Favorite
+            , titleChanged = toMsg << Title
+            , favoriteChanged = toMsg << Favorite
             }
     in
     { init = init config
@@ -93,15 +93,14 @@ type alias SavedWith =
 
 
 init : Config msg -> Project -> ( EditProject, Cmd msg )
-init { toMsg } project =
+init { autoFocused } project =
     ( EditProject (Project.id project)
         (Project.title project)
         False
         SelectColor.initial
         (Project.cColor project)
     , Dom.focus autofocusDomId
-        |> Task.attempt AutoFocus
-        |> Cmd.map toMsg
+        |> Task.attempt autoFocused
     )
 
 
@@ -169,7 +168,7 @@ autofocusDomId =
 
 
 view : Config msg -> EditProject -> Html msg
-view { selectColor, canceled, saved, title, favorite } model =
+view { selectColor, canceled, saved, titleChanged, favoriteChanged } model =
     Dialog.UI.viewForm
         { submit = saved (toSavedWith model)
         , cancel = canceled
@@ -179,7 +178,7 @@ view { selectColor, canceled, saved, title, favorite } model =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = title
+                , changed = titleChanged
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
@@ -187,7 +186,7 @@ view { selectColor, canceled, saved, title, favorite } model =
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = favorite
+                , changed = favoriteChanged
                 }
             ]
         }
