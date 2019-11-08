@@ -20,6 +20,7 @@ import Html.Styled.Events exposing (onClick)
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
+import Ret exposing (Ret, RetCmd)
 import Route
 import Styles exposing (..)
 
@@ -83,6 +84,17 @@ type Msg
 
 update : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
 update config message model =
+    case message of
+        DNDList msg ->
+            DND.update config.dnd msg model.dnd
+                |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
+
+        Toggled ->
+            ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
+
+
+update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
+update2 config message ret =
     case message of
         DNDList msg ->
             DND.update config.dnd msg model.dnd

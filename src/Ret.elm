@@ -5,6 +5,10 @@ type alias Ret a x =
     { a : a, list : List x }
 
 
+type alias RetCmd a msg =
+    Ret a (Cmd msg)
+
+
 only : a -> Ret a x
 only a =
     Ret a []
@@ -47,3 +51,26 @@ add x ret =
 addEffect : (a -> x) -> Ret a x -> Ret a x
 addEffect func ret =
     ret |> add (func ret.a)
+
+
+type alias Lens s b =
+    { get : b -> s, set : s -> b -> b }
+
+
+createLens : ( b -> s, s -> b -> b ) -> Lens s b
+createLens ( get, set ) =
+    { get = get, set = set }
+
+
+over : Lens s b -> (s -> s) -> b -> b
+over lens func val =
+    lens.set (func <| lens.get val) val
+
+
+liftUpdate : (msg -> a -> ( a, Cmd msg )) -> (msg -> RetCmd a msg -> RetCmd a msg)
+liftUpdate func msg retCmd =
+    let
+        ( a, cmd ) =
+            func msg retCmd.a
+    in
+    only a |> addAll retCmd.list |> add cmd
