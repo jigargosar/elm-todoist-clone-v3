@@ -65,7 +65,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
                     Ret.updateSubF fields.dnd (Ret.liftElmUpdate config.dndSystem.update) msg
 
                 Toggled ->
-                    Ret.mapSub fields.collapsible EP.toggle
+                    Ret.mapSubF fields.collapsible EP.toggle
     in
     { initial =
         { collapsible = EP.expanded

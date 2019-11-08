@@ -105,6 +105,6 @@ updateOptionalF { get, set } subUpdateF msg ( big, bigC ) =
             ( big, bigC )
 
 
-mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x
-mapSub subLens func =
+mapSubF : Lens s b -> (s -> s) -> Ret b x -> Ret b x
+mapSubF subLens func =
     map (Lens.over subLens func)
