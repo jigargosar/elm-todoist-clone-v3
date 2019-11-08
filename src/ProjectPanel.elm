@@ -28,7 +28,7 @@ import Styles exposing (..)
 type alias System msg =
     { initial : ProjectPanel
     , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+    , update : Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
     , view : List Project -> ProjectPanel -> List (Html msg)
     , viewGhost : ProjectPanel -> List (Html msg)
     }
@@ -63,7 +63,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
         , dnd = dndSystem.initial
         }
     , subscriptions = fields.dnd.get >> dndSystem.subscriptions
-    , update = Ret.toElmUpdate (update2 config)
+    , update = update config
     , view = view config
     , viewGhost = viewGhost
     }
@@ -116,8 +116,8 @@ type alias DNDProjectModel =
     DNDList Project
 
 
-update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
-update2 config message =
+update : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
+update config message =
     case message of
         DNDList msg ->
             Ret.updateSub fields.dnd (Ret.liftUpdate config.dndSystem.update) msg
