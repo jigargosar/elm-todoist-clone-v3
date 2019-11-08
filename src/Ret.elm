@@ -50,8 +50,8 @@ toUpdateF func msg =
     andThen (func msg)
 
 
-toElmUpdate : (msg_ -> Ret a msg -> Ret a msg) -> msg_ -> a -> ( a, Cmd msg )
-toElmUpdate func msg a =
+fromUpdateF : (msg_ -> Ret a msg -> Ret a msg) -> msg_ -> a -> ( a, Cmd msg )
+fromUpdateF func msg a =
     only a |> func msg
 
 

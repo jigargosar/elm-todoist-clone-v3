@@ -107,8 +107,8 @@ subscriptions config dialog =
             Sub.none
 
 
-update2 : Config msg -> Msg -> Ret Dialog msg -> Ret Dialog msg
-update2 config message =
+updateF : Config msg -> Msg -> Ret Dialog msg -> Ret Dialog msg
+updateF config message =
     case message of
         SubMsg subMsg ->
             updateSub config subMsg
@@ -138,7 +138,7 @@ update2 config message =
 
 update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
 update config =
-    Ret.toElmUpdate (update2 config)
+    Ret.fromUpdateF (updateF config)
 
 
 updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
