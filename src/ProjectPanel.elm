@@ -77,6 +77,37 @@ createConfig { toMsg, addClicked, moreClicked, sorted } =
     }
 
 
+type alias CreateConfig msg =
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
+
+
+type alias System msg =
+    { initial : ProjectPanel
+    , subscriptions : ProjectPanel -> Sub msg
+    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+    , view : List Project -> ProjectPanel -> List (Html msg)
+    , viewGhost : ProjectPanel -> List (Html msg)
+    }
+
+
+system : CreateConfig msg -> System msg
+system configProps =
+    let
+        config =
+            createConfig configProps
+    in
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    , viewGhost = viewGhost
+    }
+
+
 type Msg
     = DNDList (DND.Msg Project)
     | Toggled
