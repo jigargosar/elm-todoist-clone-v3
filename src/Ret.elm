@@ -55,6 +55,11 @@ addEffect =
     Return.effect_
 
 
+addMsgEffect : (a -> x) -> Ret a x -> Ret a x
+addMsgEffect func =
+    Return.effect_ (func >> msgToCmd)
+
+
 toUpdateF : (msg -> a -> Ret a x) -> msg -> RetF a x
 toUpdateF func msg =
     andThen (func msg)

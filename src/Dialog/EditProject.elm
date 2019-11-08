@@ -82,6 +82,48 @@ subscriptions { toMsg } model =
         |> Sub.map toMsg
 
 
+toSavedWith : EditProject -> SavedWith
+toSavedWith model =
+    SavedWith model.projectId model.title model.favorite model.cColor
+
+
+updateF : Config msg -> Msg -> RetF EditProject msg
+updateF { saved, canceled, toMsg } message =
+    case message of
+        Save ->
+            Ret.addMsgEffect (toSavedWith >> saved)
+
+        Cancel ->
+            Ret.addMsg canceled
+
+        Title title ->
+            Ret.map (\model -> { model | title = title })
+
+        SelectColor msg ->
+            Ret.andThen
+                (\model ->
+                    SelectColor.update selectColorConfig msg model.selectColor
+                        |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
+                            (Cmd.map toMsg)
+                )
+
+        Favorite favorite ->
+            Ret.map (\model -> { model | favorite = favorite })
+
+        AutoFocus result ->
+            Ret.add
+                (case result of
+                    Err (Dom.NotFound domId) ->
+                        logError <| "autofocus failed: " ++ domId
+
+                    Ok () ->
+                        Cmd.none
+                )
+
+        CColorChanged cColor ->
+            Ret.map (\model -> { model | cColor = cColor })
+
+
 update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
 update { saved, canceled, toMsg } message model =
     case message of
