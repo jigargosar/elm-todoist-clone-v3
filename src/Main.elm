@@ -214,7 +214,7 @@ init flags url navKey =
             , isDrawerModalOpen = False
             , popup = Nothing
             , dialog = Dialog.initial
-            , projectPanel = ProjectPanel.initial
+            , projectPanel = projectPanelSystem.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
             }

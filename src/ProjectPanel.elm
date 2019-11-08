@@ -2,7 +2,6 @@ module ProjectPanel exposing
     ( Msg
     , ProjectPanel
     , System
-    , initial
     , subscriptions
     , system
     )
@@ -23,6 +22,50 @@ import Route
 import Styles exposing (..)
 
 
+
+-- SYSTEM
+
+
+type alias System msg =
+    { initial : ProjectPanel
+    , subscriptions : ProjectPanel -> Sub msg
+    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+    , view : List Project -> ProjectPanel -> List (Html msg)
+    , viewGhost : ProjectPanel -> List (Html msg)
+    }
+
+
+system :
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
+    -> System msg
+system { toMsg, addClicked, moreClicked, sorted } =
+    let
+        config =
+            { moreClicked = moreClicked
+            , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
+            , ep =
+                { toggled = toMsg Toggled
+                , title = "Projects"
+                , secondary = { iconName = "add", action = addClicked }
+                }
+            }
+    in
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = Ret.toElmUpdate (update2 config)
+    , view = view config
+    , viewGhost = viewGhost
+    }
+
+
+
+--
+
+
 type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
@@ -36,7 +79,7 @@ type alias Fields =
 
 
 initial : ProjectPanel
-initial =
+    initial =
     { collapsible = EP.expanded
     , dnd = DND.initial
     }
@@ -64,58 +107,6 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , dnd : DND.Config Project msg
     , ep : EP.Config msg
-    }
-
-
-type alias CreateConfig msg =
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
-
-
-type alias System msg =
-    { initial : ProjectPanel
-    , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
-    , view : List Project -> ProjectPanel -> List (Html msg)
-    , viewGhost : ProjectPanel -> List (Html msg)
-    }
-
-
-createConfig :
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
-    -> Config msg
-createConfig { toMsg, addClicked, moreClicked, sorted } =
-    let
-        ep =
-            { toggled = toMsg Toggled
-            , title = "Projects"
-            , secondary = { iconName = "add", action = addClicked }
-            }
-    in
-    { moreClicked = moreClicked
-    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
-    , ep = ep
-    }
-
-
-system : CreateConfig msg -> System msg
-system configProps =
-    let
-        config =
-            createConfig configProps
-    in
-    { initial = initial
-    , subscriptions = subscriptions config
-    , update = Ret.toElmUpdate (update2 config)
-    , view = view config
-    , viewGhost = viewGhost
     }
 
 
