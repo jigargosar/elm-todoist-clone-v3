@@ -67,10 +67,21 @@ over lens func val =
     lens.set (func <| lens.get val) val
 
 
-liftUpdate : (msg -> a -> ( a, Cmd msg )) -> (msg -> RetCmd a msg -> RetCmd a msg)
-liftUpdate func msg retCmd =
+liftUpdate :
+    (a
+     -> ( a, Cmd msg )
+    )
+    -> (RetCmd a msg -> RetCmd a msg)
+liftUpdate func retCmd =
     let
         ( a, cmd ) =
-            func msg retCmd.a
+            func retCmd.a
     in
     only a |> addAll retCmd.list |> add cmd
+
+
+toElmUpdate : (RetCmd a msg -> RetCmd a msg) -> (a -> ( a, Cmd msg ))
+toElmUpdate func a =
+    only a
+        |> func
+        |> batch

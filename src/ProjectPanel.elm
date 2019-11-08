@@ -97,11 +97,34 @@ update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel ms
 update2 config message ret =
     case message of
         DNDList msg ->
-            DND.update config.dnd msg model.dnd
-                |> Tuple.mapFirst (\dnd -> { model | dnd = dnd })
+            let
+                dndUpdate : RetCmd (DNDList Project) msg -> RetCmd (DNDList Project) msg
+                dndUpdate =
+                    Ret.liftUpdate (DND.update config.dnd msg)
+
+                dndRet : Ret (DNDList Project) msg
+                dndRet =
+                    Ret.only ret.a.dnd
+
+                dndRet2 : RetCmd (DNDList Project) msg
+                dndRet2 =
+                    dndUpdate dndRet
+
+                setDnd dnd m =
+                    { m | dnd = dnd }
+
+                fromDndToPP =
+                    Ret.map (\dnd -> setDnd dnd ret.a)
+            in
+            fromDndToPP dndRet2
 
         Toggled ->
-            ( { model | collapsible = EP.toggle model.collapsible }, Cmd.none )
+            ret
+
+
+update3 : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )
+update3 config message =
+    Ret.toElmUpdate (update2 config message)
 
 
 viewGhost : ProjectPanel -> List (Html msg)
