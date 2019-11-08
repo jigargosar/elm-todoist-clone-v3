@@ -21,9 +21,12 @@ map func { a, list } =
 
 
 andThen : (a -> ReturnRecord b x) -> ReturnRecord a x -> ReturnRecord b x
-andThen func { a, list } =
-    func a
-        |> addAll list
+andThen func ret =
+    let
+        { a, list } =
+            func ret.a
+    in
+    fromTuple ( a, ret.list ++ list )
 
 
 addAll : List x -> ReturnRecord a x -> ReturnRecord a x
