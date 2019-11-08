@@ -62,11 +62,7 @@ system { toMsg, addClicked, moreClicked, sorted } =
         { collapsible = EP.expanded
         , dnd = dndSystem.initial
         }
-    , subscriptions =
-        \model ->
-            Sub.batch
-                [ dndSystem.subscriptions model.dnd
-                ]
+    , subscriptions = fields.dnd.get >> dndSystem.subscriptions
     , update = Ret.toElmUpdate (update2 config)
     , view = view config
     , viewGhost = viewGhost
