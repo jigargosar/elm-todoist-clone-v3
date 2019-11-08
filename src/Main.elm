@@ -62,7 +62,7 @@ dialog =
         dialogConfig : Dialog.Config Msg
         dialogConfig =
             Dialog.createConfig
-                { toMsg = DialogMsg
+                { toMsg = SubMsg << DialogMsg
                 , projectAdded = AddProjectDialogSaved
                 , projectEdited = EditProjectDialogSaved
                 }
@@ -240,6 +240,7 @@ type SubMsg
     = ProjectPanel ProjectPanel.Msg
     | LabelPanel LabelPanel.Msg
     | FilterPanel FilterPanel.Msg
+    | DialogMsg Dialog.Msg
 
 
 type Msg
@@ -254,7 +255,6 @@ type Msg
     | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
-    | DialogMsg Dialog.Msg
     | DialogCanceled
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
     | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
@@ -348,9 +348,6 @@ update message model =
         DialogCanceled ->
             dialog.close model
 
-        DialogMsg msg ->
-            dialog.update msg model
-
         AddProjectDialogSaved savedWith ->
             dialog.close model
                 |> Return.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
@@ -435,6 +432,9 @@ updateSub message =
 
         FilterPanel msg ->
             Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
+
+        DialogMsg msg ->
+            Ret.liftUpdate dialog.update msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
