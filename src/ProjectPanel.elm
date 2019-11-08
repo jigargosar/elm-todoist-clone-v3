@@ -17,7 +17,6 @@ import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, text)
 import Html.Styled.Attributes as A exposing (href)
 import Html.Styled.Events exposing (onClick)
-import Lens
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
