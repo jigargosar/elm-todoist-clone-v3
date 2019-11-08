@@ -140,13 +140,13 @@ update config message model =
         SavedMsg savedMsg ->
             ret
                 |> Ret.map (always Closed)
-                |> Ret.add
+                |> Ret.addMsg
                     (case savedMsg of
                         AddProjectSaved savedWith ->
-                            config.projectAdded savedWith |> msgToCmd
+                            config.projectAdded savedWith
 
                         EditProjectSaved savedWith ->
-                            config.projectEdited savedWith |> msgToCmd
+                            config.projectEdited savedWith
                     )
                 |> Ret.batch
 
