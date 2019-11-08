@@ -79,7 +79,7 @@ type alias Fields =
 
 
 initial : ProjectPanel
-    initial =
+initial =
     { collapsible = EP.expanded
     , dnd = DND.initial
     }
