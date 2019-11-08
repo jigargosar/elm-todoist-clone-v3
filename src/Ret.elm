@@ -25,6 +25,11 @@ andThen =
     Return.andThen
 
 
+andThenAlways : Ret b x -> Ret a x -> Ret b x
+andThenAlways ret =
+    andThen (always ret)
+
+
 addAll : List (Cmd x) -> RetF a x
 addAll list_ =
     Return.command (Cmd.batch list_)

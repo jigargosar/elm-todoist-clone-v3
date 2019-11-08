@@ -114,8 +114,8 @@ updateF config message =
             updateSub config subMsg
 
         OpenAddProject idx ->
-            Ret.andThen (always <| config.addProject.initAt idx)
-                >> Ret.map AddProject
+            Ret.andThenAlways
+                (config.addProject.initAt idx |> Ret.map AddProject)
 
         OpenEditProject project ->
             Ret.andThen (always <| config.editProject.init project)
