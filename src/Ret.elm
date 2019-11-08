@@ -20,6 +20,11 @@ map =
     Tuple.mapFirst
 
 
+always : a -> Ret b x -> Ret a x
+always a =
+    map (Basics.always a)
+
+
 andThen : (a -> Ret b x) -> Ret a x -> Ret b x
 andThen =
     Return.andThen
@@ -27,7 +32,7 @@ andThen =
 
 andThenAlways : Ret b x -> Ret a x -> Ret b x
 andThenAlways ret =
-    andThen (always ret)
+    andThen (Basics.always ret)
 
 
 addAll : List (Cmd x) -> RetF a x

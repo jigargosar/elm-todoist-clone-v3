@@ -114,18 +114,18 @@ updateF config message =
             updateSub config subMsg
 
         OpenAddProject idx ->
-            Ret.andThenAlways
-                (config.addProject.initAt idx |> Ret.map AddProject)
+            Ret.andThenAlways (config.addProject.initAt idx)
+                >> Ret.map AddProject
 
         OpenEditProject project ->
-            Ret.andThen (always <| config.editProject.init project)
+            Ret.andThenAlways (config.editProject.init project)
                 >> Ret.map EditProject
 
         Canceled ->
-            Ret.map (always Closed)
+            Ret.always Closed
 
         SavedMsg savedMsg ->
-            Ret.map (always Closed)
+            Ret.always Closed
                 >> Ret.addMsg
                     (case savedMsg of
                         AddProjectSaved savedWith ->
@@ -145,11 +145,9 @@ updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
 updateSub config subMsg =
     case subMsg of
         AddProjectMsg msg ->
-            Ret.andThen
-                (Ret.updateOptional fields.addProject
-                    config.addProject.update
-                    msg
-                )
+            Ret.updateOptionalF fields.addProject
+                config.addProject.updateF
+                msg
 
         EditProjectMsg msg ->
             Ret.andThen

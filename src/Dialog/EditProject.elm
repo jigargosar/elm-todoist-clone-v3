@@ -10,6 +10,7 @@ import Html.Styled.Attributes as A exposing (autofocus)
 import Log exposing (logError)
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
+import Ret exposing (RetF)
 import Task
 
 
@@ -17,6 +18,7 @@ type alias System msg =
     { init : Project -> ( EditProject, Cmd msg )
     , subscriptions : EditProject -> Sub msg
     , update : Msg -> EditProject -> ( EditProject, Cmd msg )
+    , updateF : Msg -> RetF EditProject msg
     , view : EditProject -> Html msg
     }
 
@@ -26,6 +28,7 @@ system config =
     { init = init config
     , subscriptions = subscriptions config
     , update = update config
+    , updateF = Ret.toUpdateF (update config)
     , view = view config
     }
 
