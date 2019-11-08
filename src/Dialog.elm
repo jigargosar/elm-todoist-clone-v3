@@ -54,16 +54,19 @@ createConfig c =
 
         saved =
             c.toMsg << SavedMsg
+
+        toMsg =
+            c.toMsg << SubMsg
     in
     { addProject =
         AddProject.system
-            { toMsg = c.toMsg << AddProjectMsg
+            { toMsg = toMsg << AddProjectMsg
             , canceled = canceled
             , saved = saved << AddProjectSaved
             }
     , editProject =
         EditProject.system
-            { toMsg = c.toMsg << EditProjectMsg
+            { toMsg = toMsg << EditProjectMsg
             , canceled = canceled
             , saved = saved << EditProjectSaved
             }
@@ -77,9 +80,13 @@ type SavedMsg
     | EditProjectSaved EditProject.SavedWith
 
 
-type Msg
+type SubMsg
     = AddProjectMsg AddProject.Msg
     | EditProjectMsg EditProject.Msg
+
+
+type Msg
+    = SubMsg SubMsg
     | OpenAddProject Int
     | OpenEditProject Project
     | SavedMsg SavedMsg
@@ -125,21 +132,23 @@ update config message model =
             Ret.only model
     in
     case message of
-        AddProjectMsg msg ->
-            case model of
-                AddProject sub ->
-                    config.addProject.update msg sub
-                        |> Tuple.mapFirst AddProject
+        SubMsg subMsg ->
+            case subMsg of
+                AddProjectMsg msg ->
+                    case model of
+                        AddProject sub ->
+                            config.addProject.update msg sub
+                                |> Tuple.mapFirst AddProject
 
-                _ ->
-                    retT
+                        _ ->
+                            retT
 
-        EditProjectMsg msg ->
-            ret
-                |> Ret.updateOptional fields.editProject
-                    (Ret.liftUpdate config.editProject.update)
-                    msg
-                |> Ret.batch
+                EditProjectMsg msg ->
+                    ret
+                        |> Ret.updateOptional fields.editProject
+                            (Ret.liftUpdate config.editProject.update)
+                            msg
+                        |> Ret.batch
 
         OpenAddProject idx ->
             config.addProject.initAt idx
