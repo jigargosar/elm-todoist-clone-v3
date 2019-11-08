@@ -13,7 +13,6 @@ module Dialog exposing
 
 -- DIALOG
 
-import Basics.More exposing (msgToCmd)
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Html.Styled exposing (Html)
