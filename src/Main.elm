@@ -388,18 +388,7 @@ update message model =
             ( newModel, Cmd.none )
 
         SubMsg subMsg ->
-            case subMsg of
-                ProjectPanel msg ->
-                    Ret.updateSub fields.projectPanel projectPanelSystem.update msg ret
-                        |> Ret.batch
-
-                LabelPanel msg ->
-                    Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg ret
-                        |> Ret.batch
-
-                FilterPanel msg ->
-                    Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg ret
-                        |> Ret.batch
+            updateSub subMsg ret |> Ret.batch
 
         AddProjectClicked ->
             dialog.openAddProject 0 model
@@ -429,6 +418,23 @@ update message model =
             ( DB.mapFC (FC.updateSortOrder filterList) model
             , Cmd.none
             )
+
+
+type alias Return =
+    RetCmd Model Msg
+
+
+updateSub : SubMsg -> RetCmd Model Msg -> RetCmd Model Msg
+updateSub message =
+    case message of
+        ProjectPanel msg ->
+            Ret.updateSub fields.projectPanel projectPanelSystem.update msg
+
+        LabelPanel msg ->
+            Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
+
+        FilterPanel msg ->
+            Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )

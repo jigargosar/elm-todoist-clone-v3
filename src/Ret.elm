@@ -71,7 +71,7 @@ toElmUpdate func msg a =
         |> batch
 
 
-updateSub : Lens s b -> (msg -> Ret s x -> Ret s x) -> msg -> Ret b x -> Ret b x
+updateSub : Lens s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
 updateSub subLens subUpdate msg ret =
     let
         subRet =
