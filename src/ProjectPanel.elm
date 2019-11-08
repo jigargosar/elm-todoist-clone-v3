@@ -57,13 +57,22 @@ system { toMsg, addClicked, moreClicked, sorted } =
         dndSystem : DND.System Project msg
         dndSystem =
             DND.system { toMsg = toMsg << DNDList, sorted = sorted }
+
+        update : Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
+        update message =
+            case message of
+                DNDList msg ->
+                    Ret.updateSub fields.dnd (Ret.liftUpdate config.dndSystem.update) msg
+
+                Toggled ->
+                    Ret.mapSub fields.collapsible EP.toggle
     in
     { initial =
         { collapsible = EP.expanded
         , dnd = dndSystem.initial
         }
     , subscriptions = fields.dnd.get >> dndSystem.subscriptions
-    , update = update config
+    , update = update
     , view = view config
     , viewGhost = viewGhost
     }
@@ -114,16 +123,6 @@ type alias DNDProjectMsg =
 
 type alias DNDProjectModel =
     DNDList Project
-
-
-update : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
-update config message =
-    case message of
-        DNDList msg ->
-            Ret.updateSub fields.dnd (Ret.liftUpdate config.dndSystem.update) msg
-
-        Toggled ->
-            Ret.mapSub fields.collapsible EP.toggle
 
 
 viewGhost : ProjectPanel -> List (Html msg)
