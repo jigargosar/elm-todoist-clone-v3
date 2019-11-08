@@ -17,6 +17,7 @@ import ExpansionPanel as EP exposing (Collapsible)
 import Html.Styled exposing (Attribute, Html, text)
 import Html.Styled.Attributes as A exposing (href)
 import Html.Styled.Events exposing (onClick)
+import Lens
 import PanelsHelp
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -97,6 +98,10 @@ dndLens =
     Ret.createLens ( .dnd, \s b -> { b | dnd = s } )
 
 
+collapsibleLens =
+    Ret.createLens ( .collapsible, \s b -> { b | collapsible = s } )
+
+
 type alias DNDProjectMsg =
     DND.Msg Project
 
@@ -111,13 +116,13 @@ dndUpdate config =
 
 
 update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
-update2 config message ret =
+update2 config message =
     case message of
         DNDList msg ->
-            Ret.updateSub dndLens (dndUpdate config) msg ret
+            Ret.updateSub dndLens (dndUpdate config) msg
 
         Toggled ->
-            ret
+            Ret.mapSub collapsibleLens EP.toggle
 
 
 update3 : Config msg -> Msg -> ProjectPanel -> ( ProjectPanel, Cmd msg )

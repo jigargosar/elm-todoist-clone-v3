@@ -77,6 +77,11 @@ updateSub subLens subUpdate msg ret =
     fromTuple ( subLens.set subRet.a ret.a, ret.list ++ subRet.list )
 
 
+mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x
+mapSub subLens func =
+    map (over subLens func)
+
+
 
 -- Lens
 
