@@ -121,16 +121,11 @@ type alias DNDProjectModel =
     DNDList Project
 
 
-dndUpdate : Config msg -> DNDProjectMsg -> RetCmd DNDProjectModel msg -> RetCmd DNDProjectModel msg
-dndUpdate config =
-    Ret.liftUpdate (DND.update config.dnd)
-
-
 update2 : Config msg -> Msg -> RetCmd ProjectPanel msg -> RetCmd ProjectPanel msg
 update2 config message =
     case message of
         DNDList msg ->
-            Ret.updateSub fields.dnd (dndUpdate config) msg
+            Ret.updateSub fields.dnd (Ret.liftUpdate config.dndSystem.update) msg
 
         Toggled ->
             Ret.mapSub fields.collapsible EP.toggle
