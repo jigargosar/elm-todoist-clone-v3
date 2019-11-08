@@ -30,7 +30,7 @@ import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Return
+import Return as Ret
 import Route exposing (Route)
 import Task
 import Time
@@ -219,9 +219,9 @@ init flags url navKey =
             , filterPanel = FilterPanel.initial
             }
     in
-    Return.singleton initial
-        |> Return.andThen (initCollections flags)
-        |> Return.andThen (onUrlChanged url)
+    Ret.singleton initial
+        |> Ret.andThen (initCollections flags)
+        |> Ret.andThen (onUrlChanged url)
 
 
 initCollections : Flags -> DB a -> ( DB a, Cmd msg )
@@ -363,11 +363,11 @@ update message model =
 
         AddProjectDialogSaved savedWith ->
             dialog.close model
-                |> Return.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
+                |> Ret.command (Time.now |> Task.perform (AddProjectWithTS savedWith))
 
         EditProjectDialogSaved savedWith ->
             dialog.close model
-                |> Return.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
+                |> Ret.command (Time.now |> Task.perform (EditProjectWithTS savedWith))
 
         AddProjectWithTS { title, cColor, idx } ts ->
             let
