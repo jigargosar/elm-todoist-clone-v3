@@ -18,3 +18,14 @@ fromTuple ( a, list ) =
 map : (a -> b) -> ReturnRecord a x -> ReturnRecord b x
 map func { a, list } =
     fromTuple ( func a, list )
+
+
+andThen : (a -> ReturnRecord b x) -> ReturnRecord a x -> ReturnRecord b x
+andThen func { a, list } =
+    func a
+        |> addAll list
+
+
+addAll : List x -> ReturnRecord a x -> ReturnRecord a x
+addAll list_ { a, list } =
+    fromTuple ( a, list ++ list_ )
