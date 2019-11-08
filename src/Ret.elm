@@ -25,17 +25,17 @@ andThen =
     Return.andThen
 
 
-addAll : List (Cmd x) -> Ret a x -> Ret a x
+addAll : List (Cmd x) -> RetF a x
 addAll list_ =
     Return.command (Cmd.batch list_)
 
 
-add : Cmd x -> Ret a x -> Ret a x
+add : Cmd x -> RetF a x
 add =
     Return.command
 
 
-addMsg : msg -> Ret a msg -> Ret a msg
+addMsg : msg -> RetF a msg
 addMsg msg =
     add (msgToCmd msg)
 
