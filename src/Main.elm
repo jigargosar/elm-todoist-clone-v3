@@ -131,15 +131,6 @@ filterPanelConfig =
         }
 
 
-updateProjectPanel :
-    ProjectPanel.Msg
-    -> { a | projectPanel : ProjectPanel }
-    -> ( { a | projectPanel : ProjectPanel }, Cmd Msg )
-updateProjectPanel msg model =
-    Ret.toElmUpdate projectPanelSystem.update msg model.projectPanel
-        |> Tuple.mapFirst (\projectPanel -> { model | projectPanel = projectPanel })
-
-
 updateLabelPanel :
     LabelPanel.Msg
     -> { a | labelPanel : LabelPanel }
@@ -296,8 +287,12 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     let
-        ret =
+        retT =
             ( model, Cmd.none )
+
+        ret : Ret.RetCmd Model msg
+        ret =
+            Ret.only model
     in
     case message of
         NoOp ->
@@ -407,7 +402,8 @@ update message model =
             ( newModel, Cmd.none )
 
         ProjectPanel msg ->
-            updateProjectPanel msg model
+            Ret.updateSub fields.projectPanel projectPanelSystem.update msg ret
+                |> Ret.batch
 
         LabelPanel msg ->
             updateLabelPanel msg model
@@ -421,7 +417,7 @@ update message model =
         EditProjectClicked id ->
             projectById id model
                 |> Maybe.map (flip dialog.openEditProject model)
-                |> Maybe.withDefault ret
+                |> Maybe.withDefault retT
 
         AddLabelClicked ->
             ( model, Cmd.none )
