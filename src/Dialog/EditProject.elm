@@ -169,10 +169,10 @@ autofocusDomId =
 
 
 view : Config msg -> EditProject -> Html msg
-view { toMsg, selectColor } model =
+view { toMsg, selectColor, canceled } model =
     Dialog.UI.viewForm
         { submit = toMsg Save
-        , cancel = toMsg Cancel
+        , cancel = canceled
         , title = "Edit Project"
         , submitTitle = "Save"
         , content =
