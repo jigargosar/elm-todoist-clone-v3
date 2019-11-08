@@ -5,8 +5,8 @@ type alias ReturnRecord a x =
     { a : a, list : List x }
 
 
-empty : a -> ReturnRecord a x
-empty a =
+only : a -> ReturnRecord a x
+only a =
     ReturnRecord a []
 
 
@@ -39,6 +39,6 @@ add x =
     addAll [ x ]
 
 
-effect : (a -> x) -> ReturnRecord a x -> ReturnRecord a x
-effect func ret =
+addEffect : (a -> x) -> ReturnRecord a x -> ReturnRecord a x
+addEffect func ret =
     ret |> add (func ret.a)
