@@ -146,10 +146,7 @@ updateF config message =
 
         SelectColor msg ->
             Ret.andThen
-                (\model ->
-                    SelectColor.update config.selectColor msg model.selectColor
-                        |> Tuple.mapFirst (\selectColor -> { model | selectColor = selectColor })
-                )
+                (Ret.updateSub fields.selectColor (SelectColor.update config.selectColor) msg)
 
         AutoFocus result ->
             Ret.add
