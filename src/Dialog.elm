@@ -17,6 +17,7 @@ import Basics.More exposing (msgToCmd)
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Html.Styled exposing (Html)
+import Optional
 import Project exposing (Project)
 
 
@@ -168,3 +169,18 @@ view config dialog =
 
         Closed ->
             []
+
+
+fields =
+    { addProject =
+        Optional.fromTuple
+            ( \b ->
+                case b of
+                    AddProject s ->
+                        Just s
+
+                    _ ->
+                        Nothing
+            , \s _ -> AddProject s
+            )
+    }
