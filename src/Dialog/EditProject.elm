@@ -24,8 +24,37 @@ type alias System msg =
     }
 
 
-system : Config msg -> System msg
-system config =
+type alias Config msg =
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    , selectColor : SelectColor.Config msg
+    }
+
+
+system :
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    }
+    -> System msg
+system ({ saved, canceled, toMsg } as cc) =
+    let
+        selectColorConfig : SelectColor.Config msg
+        selectColorConfig =
+            { toMsg = toMsg << SelectColor
+            , domIdPrefix = "edit-project-dialog"
+            , changed = toMsg << CColor
+            }
+
+        config : Config msg
+        config =
+            { saved = saved
+            , canceled = canceled
+            , toMsg = toMsg
+            , selectColor = selectColorConfig
+            }
+    in
     { init = init config
     , subscriptions = subscriptions config
     , update = update config
@@ -79,17 +108,9 @@ type Msg
     | AutoFocus (Result Dom.Error ())
 
 
-type alias Config msg =
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
-    , canceled : msg
-    }
-
-
 subscriptions : Config msg -> EditProject -> Sub msg
-subscriptions { toMsg } model =
-    SelectColor.subscriptions selectColorConfig model.selectColor
-        |> Sub.map toMsg
+subscriptions config model =
+    SelectColor.subscriptions config.selectColor model.selectColor
 
 
 toSavedWith : EditProject -> SavedWith
@@ -98,7 +119,11 @@ toSavedWith model =
 
 
 updateF : Config msg -> Msg -> RetF EditProject msg
-updateF { saved, canceled, toMsg } message =
+updateF config message =
+    let
+        { saved, canceled, toMsg } =
+            config
+    in
     case message of
         Save ->
             Ret.addMsgEffect (toSavedWith >> saved)
@@ -118,9 +143,8 @@ updateF { saved, canceled, toMsg } message =
         SelectColor msg ->
             Ret.andThen
                 (\model ->
-                    SelectColor.update selectColorConfig msg model.selectColor
-                        |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
-                            (Cmd.map toMsg)
+                    SelectColor.update config.selectColor msg model.selectColor
+                        |> Tuple.mapFirst (\selectColor -> { model | selectColor = selectColor })
                 )
 
         AutoFocus result ->
@@ -135,39 +159,8 @@ updateF { saved, canceled, toMsg } message =
 
 
 update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
-update { saved, canceled, toMsg } message model =
-    case message of
-        Save ->
-            ( model
-            , SavedWith model.projectId model.title model.favorite model.cColor
-                |> saved
-                |> msgToCmd
-            )
-
-        Cancel ->
-            ( model, msgToCmd canceled )
-
-        Title title ->
-            ( { model | title = title }, Cmd.none )
-
-        SelectColor msg ->
-            SelectColor.update selectColorConfig msg model.selectColor
-                |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
-                    (Cmd.map toMsg)
-
-        Favorite favorite ->
-            ( { model | favorite = favorite }, Cmd.none )
-
-        AutoFocus result ->
-            case result of
-                Err (Dom.NotFound domId) ->
-                    ( model, logError <| "autofocus failed: " ++ domId )
-
-                Ok () ->
-                    ( model, Cmd.none )
-
-        CColor cColor ->
-            ( { model | cColor = cColor }, Cmd.none )
+update config =
+    Ret.fromUpdateF (updateF config)
 
 
 autofocusDomId : String
@@ -175,35 +168,26 @@ autofocusDomId =
     "edit-project-dialog-autofocus"
 
 
-selectColorConfig : SelectColor.Config Msg
-selectColorConfig =
-    { toMsg = SelectColor
-    , domIdPrefix = "edit-project-dialog"
-    , changed = CColor
-    }
-
-
 view : Config msg -> EditProject -> Html msg
-view { toMsg } model =
+view { toMsg, selectColor } model =
     Dialog.UI.viewForm
-        { submit = Save
-        , cancel = Cancel
+        { submit = toMsg Save
+        , cancel = toMsg Cancel
         , title = "Edit Project"
         , submitTitle = "Save"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = Title
+                , changed = toMsg << Title
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
-                (SelectColor.view selectColorConfig model.cColor model.selectColor)
+                (SelectColor.view selectColor model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = Favorite
+                , changed = toMsg << Favorite
                 }
             ]
         }
-        |> H.map toMsg
