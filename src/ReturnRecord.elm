@@ -15,6 +15,11 @@ fromTuple ( a, list ) =
     ReturnRecord a list
 
 
+batch : ReturnRecord a (Cmd msg) -> ( a, Cmd msg )
+batch { a, list } =
+    ( a, Cmd.batch list )
+
+
 map : (a -> b) -> ReturnRecord a x -> ReturnRecord b x
 map func { a, list } =
     fromTuple ( func a, list )
