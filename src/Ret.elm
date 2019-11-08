@@ -71,16 +71,13 @@ toElmUpdate func msg a =
     only a |> func msg
 
 
-updateSub : Lens s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
-updateSub smallLens subUpdate msg ret =
-    let
-        ( big, _ ) =
-            ret
-
-        ( small, smallC ) =
-            subUpdate msg (only (smallLens.get big))
-    in
-    Return.mapWith (smallLens.set small) smallC ret
+updateSubF : Lens s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x
+updateSubF smallLens subUpdate msg =
+    andThen
+        (\big ->
+            toElmUpdate subUpdate msg (smallLens.get big)
+                |> map (\small -> smallLens.set small big)
+        )
 
 
 updateOptional : Optional s b -> (msg -> RetCmd s x -> RetCmd s x) -> msg -> RetCmd b x -> RetCmd b x

@@ -417,13 +417,13 @@ updateSub : SubMsg -> RetCmd Model Msg -> RetCmd Model Msg
 updateSub message =
     case message of
         ProjectPanel msg ->
-            Ret.updateSub fields.projectPanel projectPanelSystem.update msg
+            Ret.updateSubF fields.projectPanel projectPanelSystem.update msg
 
         LabelPanel msg ->
-            Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
+            Ret.updateSubF fields.labelPanel (LabelPanel.update labelPanelConfig) msg
 
         FilterPanel msg ->
-            Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
+            Ret.updateSubF fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
         DialogMsg msg ->
             Ret.liftElmUpdate dialog.update msg
