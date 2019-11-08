@@ -109,7 +109,3 @@ updateOptional optional subUpdate msg ret =
 mapSub : Lens s b -> (s -> s) -> Ret b x -> Ret b x
 mapSub subLens func =
     map (Lens.over subLens func)
-
-
-
--- Lens
