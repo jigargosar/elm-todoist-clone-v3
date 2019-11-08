@@ -35,13 +35,13 @@ andThen func ret =
 
 
 addAll : List x -> ReturnRecord a x -> ReturnRecord a x
-addAll list_ { a, list } =
-    fromTuple ( a, list ++ list_ )
+addAll list_ ret =
+    { ret | list = list_ ++ ret.list }
 
 
 add : x -> ReturnRecord a x -> ReturnRecord a x
-add x =
-    addAll [ x ]
+add x ret =
+    { ret | list = x :: ret.list }
 
 
 addEffect : (a -> x) -> ReturnRecord a x -> ReturnRecord a x
