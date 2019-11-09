@@ -34,14 +34,38 @@ system :
     -> System msg
 system c =
     let
+        subSys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
+        subSys subM saveM =
+            { toMsg = c.toMsg << SubMsg << subM
+            , canceled = c.toMsg Canceled
+            , saved = c.toMsg << SavedMsg << saveM
+            }
+
+        config : Config msg
         config =
-            createConfig c
+            { addProject = AddProject.system <| subSys AddProjectMsg AddProjectSaved
+            , editProject = EditProject.system <| subSys EditProjectMsg EditProjectSaved
+            , projectAdded = c.projectAdded
+            , projectEdited = c.projectEdited
+            }
+
+        subscriptions : Dialog -> Sub msg
+        subscriptions dialog =
+            case dialog of
+                AddProject model ->
+                    config.addProject.subscriptions model
+
+                EditProject model ->
+                    config.editProject.subscriptions model
+
+                Closed ->
+                    Sub.none
 
         openMsg msg =
             c.toMsg << OpenMsg << msg
     in
     { initial = Closed
-    , subscriptions = subscriptions config
+    , subscriptions = subscriptions
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF (update config)
@@ -69,28 +93,6 @@ type alias Config msg =
     }
 
 
-createConfig :
-    { toMsg : Msg -> msg
-    , projectAdded : AddProject.SavedWith -> msg
-    , projectEdited : EditProject.SavedWith -> msg
-    }
-    -> Config msg
-createConfig c =
-    let
-        subSys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
-        subSys subM saveM =
-            { toMsg = c.toMsg << SubMsg << subM
-            , canceled = c.toMsg Canceled
-            , saved = c.toMsg << SavedMsg << saveM
-            }
-    in
-    { addProject = AddProject.system <| subSys AddProjectMsg AddProjectSaved
-    , editProject = EditProject.system <| subSys EditProjectMsg EditProjectSaved
-    , projectAdded = c.projectAdded
-    , projectEdited = c.projectEdited
-    }
-
-
 type SavedMsg
     = AddProjectSaved AddProject.SavedWith
     | EditProjectSaved EditProject.SavedWith
@@ -111,19 +113,6 @@ type Msg
     | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
-
-
-subscriptions : Config msg -> Dialog -> Sub msg
-subscriptions config dialog =
-    case dialog of
-        AddProject model ->
-            config.addProject.subscriptions model
-
-        EditProject model ->
-            config.editProject.subscriptions model
-
-        _ ->
-            Sub.none
 
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
