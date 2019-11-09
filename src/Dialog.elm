@@ -133,12 +133,12 @@ subscriptions config dialog =
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
 update config message model =
+    let
+        { addProject, editProject, projectAdded, projectEdited } =
+            config
+    in
     case message of
         SubMsg subMsg ->
-            let
-                { addProject, editProject, projectAdded, projectEdited } =
-                    config
-            in
             case ( subMsg, model ) of
                 ( AddProjectMsg msg, AddProject sub ) ->
                     addProject.update msg sub |> Ret.map AddProject
@@ -152,21 +152,17 @@ update config message model =
         OpenMsg msg ->
             case msg of
                 OpenAddProject idx ->
-                    config.addProject.initAt idx
+                    addProject.initAt idx
                         |> Ret.map AddProject
 
                 OpenEditProject project ->
-                    config.editProject.init project
+                    editProject.init project
                         |> Ret.map EditProject
 
         Canceled ->
             Ret.only Closed
 
         SavedMsg savedMsg ->
-            let
-                { addProject, editProject, projectAdded, projectEdited } =
-                    config
-            in
             Ret.only Closed
                 |> Ret.addMsg
                     (case savedMsg of
