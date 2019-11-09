@@ -270,10 +270,12 @@ update message model =
     in
     case message of
         NoOp ->
-            ( model, Cmd.none )
+            ret
+                |> identity
 
         LogError error ->
-            ( model, logError error )
+            ret
+                |> Ret.add (logError error)
 
         OnUrlRequest urlRequest ->
             case urlRequest of
