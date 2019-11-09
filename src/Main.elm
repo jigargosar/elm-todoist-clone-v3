@@ -22,6 +22,7 @@ import LabelPanel exposing (LabelPanel)
 import Layout
 import Lens
 import Log exposing (logDecodeError, logError)
+import Optional
 import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
@@ -174,6 +175,11 @@ fields =
     , projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
     , labelPanel = Lens.fromTuple ( .labelPanel, \s b -> { b | labelPanel = s } )
     , filterPanel = Lens.fromTuple ( .filterPanel, \s b -> { b | filterPanel = s } )
+    , popper =
+        Optional.fromTuple
+            ( .popup >> Maybe.map Tuple.second
+            , \s b -> { b | popup = Maybe.map (Tuple.mapSecond (always s)) b.popup }
+            )
     }
 
 
