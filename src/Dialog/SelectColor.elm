@@ -22,6 +22,14 @@ import Styles exposing (..)
 import Theme
 
 
+system config =
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view
+    }
+
+
 rollListIndexBy : Int -> List a -> Int -> Int
 rollListIndexBy offset list index =
     index + offset |> modBy (max 1 (List.length list))
