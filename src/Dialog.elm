@@ -40,7 +40,7 @@ system c =
         openMsg msg =
             c.toMsg << OpenMsg << msg
     in
-    { initial = initial
+    { initial = Closed
     , subscriptions = subscriptions config
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
@@ -111,11 +111,6 @@ type Msg
     | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
-
-
-initial : Dialog
-initial =
-    Closed
 
 
 subscriptions : Config msg -> Dialog -> Sub msg
