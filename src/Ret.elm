@@ -10,6 +10,10 @@ type alias Ret a x =
     ( a, Cmd x )
 
 
+type alias MaybeRet a x =
+    Maybe (Ret a x)
+
+
 only : a -> Ret a x
 only a =
     ( a, Cmd.none )
@@ -28,6 +32,16 @@ always a =
 andThen : (a -> Ret b x) -> Ret a x -> Ret b x
 andThen =
     Return.andThen
+
+
+andThenFilter : (a -> MaybeRet a x) -> RetF a x
+andThenFilter func (( m, c ) as ret) =
+    case func m of
+        Just ( m2, c2 ) ->
+            ( m2, Cmd.batch [ c, c2 ] )
+
+        Nothing ->
+            ret
 
 
 andThenAlways : Ret b x -> Ret a x -> Ret b x
