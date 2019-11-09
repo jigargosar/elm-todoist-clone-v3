@@ -4,12 +4,9 @@ module Dialog exposing
     , Msg
     , System
     , createConfig
-    , initial
     , openAddProject
     , openEditProject
-    , subscriptions
     , system
-    , view
     )
 
 -- DIALOG
@@ -117,6 +114,7 @@ openEditProject =
     OpenEditProject
 
 
+initial : Dialog
 initial =
     Closed
 
