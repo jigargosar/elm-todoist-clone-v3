@@ -154,8 +154,7 @@ updateF config message =
             Ret.setSub fields.favorite favorite
 
         SelectColor msg ->
-            Ret.andThen
-                (Ret.updateSub fields.selectColor selectColor.update msg)
+            Ret.updateSubF fields.selectColor selectColor.updateF msg
 
         AutoFocus result ->
             Ret.addError Log.focusError result

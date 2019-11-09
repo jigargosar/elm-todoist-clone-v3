@@ -19,6 +19,7 @@ import Html.Styled.Attributes as A exposing (class, css, tabindex)
 import Html.Styled.Events exposing (onClick, onMouseOver)
 import Key
 import Px
+import Ret exposing (Ret, RetF)
 import Return
 import Styles exposing (..)
 import Theme
@@ -27,7 +28,8 @@ import Theme
 type alias System msg =
     { initial : Model
     , subscriptions : Model -> Sub msg
-    , update : Msg -> Model -> ( Model, Cmd msg )
+    , update : Msg -> Model -> Ret Model msg
+    , updateF : Msg -> RetF Model msg
     , view : CColor -> Model -> Html msg
     }
 
@@ -37,6 +39,7 @@ system config =
     { initial = initial
     , subscriptions = subscriptions config
     , update = update config
+    , updateF = Ret.toUpdateF (update config)
     , view = view config
     }
 
