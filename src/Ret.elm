@@ -116,6 +116,10 @@ addMsg msg =
     add (msgToCmd msg)
 
 
+send =
+    msgToCmd
+
+
 addEffect : (a -> Cmd x) -> Ret a x -> Ret a x
 addEffect =
     Return.effect_

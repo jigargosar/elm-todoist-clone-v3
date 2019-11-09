@@ -152,26 +152,25 @@ update config message model =
         OpenMsg msg ->
             case msg of
                 OpenAddProject idx ->
-                    addProject.initAt idx
-                        |> Ret.map AddProject
+                    addProject.initAt idx |> Ret.map AddProject
 
                 OpenEditProject project ->
-                    editProject.init project
-                        |> Ret.map EditProject
+                    editProject.init project |> Ret.map EditProject
 
         Canceled ->
             Ret.only Closed
 
         SavedMsg savedMsg ->
-            Ret.only Closed
-                |> Ret.addMsg
-                    (case savedMsg of
-                        AddProjectSaved savedWith ->
-                            projectAdded savedWith
+            ( Closed
+            , Ret.send
+                (case savedMsg of
+                    AddProjectSaved savedWith ->
+                        projectAdded savedWith
 
-                        EditProjectSaved savedWith ->
-                            projectEdited savedWith
-                    )
+                    EditProjectSaved savedWith ->
+                        projectEdited savedWith
+                )
+            )
 
 
 view : Config msg -> Dialog -> List (Html msg)
