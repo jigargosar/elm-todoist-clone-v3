@@ -49,6 +49,15 @@ import Url exposing (Url)
 -- DIALOG
 
 
+dialogSystem : Dialog.System Msg
+dialogSystem =
+    Dialog.system
+        { toMsg = SubMsg << DialogMsg
+        , projectAdded = AddProjectDialogSaved
+        , projectEdited = EditProjectDialogSaved
+        }
+
+
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
@@ -62,14 +71,6 @@ dialog =
         dialogConfig : Dialog.Config Msg
         dialogConfig =
             Dialog.createConfig
-                { toMsg = SubMsg << DialogMsg
-                , projectAdded = AddProjectDialogSaved
-                , projectEdited = EditProjectDialogSaved
-                }
-
-        dialogSystem : Dialog.System Msg
-        dialogSystem =
-            Dialog.system
                 { toMsg = SubMsg << DialogMsg
                 , projectAdded = AddProjectDialogSaved
                 , projectEdited = EditProjectDialogSaved
