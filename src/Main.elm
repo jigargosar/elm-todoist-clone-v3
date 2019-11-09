@@ -351,11 +351,15 @@ update message model___ =
                 |> Ret.getNow (EditProjectWithTS savedWith)
 
         AddProjectWithTS { title, cColor, idx } ts ->
-            let
-                ( newProject, newModel ) =
-                    stepRandom (Project.generator title idx cColor ts) model___
-            in
-            ( DB.mapPC (PC.put newProject) newModel, Cmd.none )
+            ret
+                |> Ret.map
+                    (\model ->
+                        let
+                            ( newProject, newModel ) =
+                                stepRandom (Project.generator title idx cColor ts) model
+                        in
+                        DB.mapPC (PC.put newProject) newModel
+                    )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
             let
