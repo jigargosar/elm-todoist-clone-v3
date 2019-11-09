@@ -69,14 +69,6 @@ dialog :
     }
 dialog =
     let
-        dialogConfig : Dialog.Config Msg
-        dialogConfig =
-            Dialog.createConfig
-                { toMsg = SubMsg << DialogMsg
-                , projectAdded = AddProjectDialogSaved
-                , projectEdited = EditProjectDialogSaved
-                }
-
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg =
             Ret.fromUpdateF updateDialogF msg
