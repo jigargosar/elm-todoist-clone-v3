@@ -58,6 +58,11 @@ dialogSystem =
         }
 
 
+updateDialogF : Dialog.Msg -> RetF { a | dialog : Dialog } Msg
+updateDialogF msg =
+    Ret.updateSubF fields.dialog dialogSystem.updateF msg
+
+
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
@@ -76,14 +81,9 @@ dialog =
                 , projectEdited = EditProjectDialogSaved
                 }
 
-        updateDialogF : Dialog.Msg -> RetF { a | dialog : Dialog } Msg
-        updateDialogF msg =
-            Ret.updateSubF fields.dialog dialogSystem.updateF msg
-
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-        updateDialog msg model =
-            Ret.fromUpdateF dialogSystem.updateF msg model.dialog
-                |> Tuple.mapFirst (\dialog_ -> { model | dialog = dialog_ })
+        updateDialog msg =
+            Ret.fromUpdateF updateDialogF msg
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
