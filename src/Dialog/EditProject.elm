@@ -34,12 +34,10 @@ type alias System msg =
 
 
 type alias Config msg =
-    { saved : SavedWith -> msg
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
     , canceled : msg
-    , autoFocused : Result Dom.Error () -> msg
     , selectColor : SelectColor.System msg
-    , titleChanged : String -> msg
-    , favoriteChanged : Bool -> msg
     }
 
 
@@ -60,12 +58,10 @@ system { saved, canceled, toMsg } =
 
         config : Config msg
         config =
-            { saved = saved
+            { toMsg = toMsg
+            , saved = saved
             , canceled = canceled
-            , autoFocused = toMsg << AutoFocus
             , selectColor = SelectColor.system selectColorConfig
-            , titleChanged = toMsg << Title
-            , favoriteChanged = toMsg << Favorite
             }
     in
     { init = init config
@@ -103,13 +99,13 @@ type alias SavedWith =
 
 
 init : Config msg -> Project -> ( EditProject, Cmd msg )
-init { autoFocused } project =
+init { toMsg } project =
     ( EditProject (Project.id project)
         (Project.title project)
         False
         SelectColor.initial
         (Project.cColor project)
-    , Cmds.focus autofocusDomId autoFocused
+    , Cmds.focus autofocusDomId (toMsg << AutoFocus)
     )
 
 
@@ -164,7 +160,7 @@ autofocusDomId =
 
 
 view : Config msg -> EditProject -> Html msg
-view { selectColor, canceled, saved, titleChanged, favoriteChanged } model =
+view { selectColor, canceled, saved, toMsg } model =
     Dialog.UI.viewForm
         { submit = saved (toSavedWith model)
         , cancel = canceled
@@ -174,7 +170,7 @@ view { selectColor, canceled, saved, titleChanged, favoriteChanged } model =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = titleChanged
+                , changed = toMsg << Title
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
@@ -182,7 +178,7 @@ view { selectColor, canceled, saved, titleChanged, favoriteChanged } model =
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = favoriteChanged
+                , changed = toMsg << Favorite
                 }
             ]
         }
