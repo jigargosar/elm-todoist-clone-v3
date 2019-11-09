@@ -12,6 +12,7 @@ module Dialog.EditProject exposing
 
 import Browser.Dom as Dom
 import CColor exposing (CColor)
+import Cmds
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled exposing (Attribute, Html)
@@ -109,8 +110,7 @@ init { autoFocused } project =
         False
         SelectColor.initial
         (Project.cColor project)
-    , Dom.focus autofocusDomId
-        |> Task.attempt autoFocused
+    , Cmds.focus autofocusDomId autoFocused
     )
 
 
