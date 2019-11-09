@@ -162,7 +162,7 @@ update config message model =
 
         SavedMsg savedMsg ->
             ( Closed
-            , Ret.send
+            , Ret.toCmd
                 (case savedMsg of
                     AddProjectSaved savedWith ->
                         projectAdded savedWith

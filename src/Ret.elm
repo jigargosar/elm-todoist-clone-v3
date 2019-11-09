@@ -116,7 +116,7 @@ addMsg msg =
     add (msgToCmd msg)
 
 
-send =
+toCmd =
     msgToCmd
 
 
