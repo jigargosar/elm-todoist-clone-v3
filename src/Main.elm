@@ -327,17 +327,24 @@ update message model___ =
                     )
 
         PopupTriggered kind anchorId ->
-            Popper.init Popper anchorId "rootPopup"
-                |> Tuple.mapFirst (\popper -> { model___ | popup = Just ( kind, popper ) })
+            ret
+                |> Ret.andThen
+                    (\model ->
+                        Popper.init Popper anchorId "rootPopup"
+                            |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
+                    )
 
         ClosePopup ->
-            ( closePopup model___, Cmd.none )
+            ret
+                |> Ret.map closePopup
 
         PopupMsg msg ->
-            updateWithPopupKind (updatePopup msg) model___
+            ret
+                |> Ret.andThen (updateWithPopupKind (updatePopup msg))
 
         AddProjectDialogSaved savedWith ->
-            ( model___, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+            ret
+                |> Ret.add (Time.now |> Task.perform (AddProjectWithTS savedWith))
 
         EditProjectDialogSaved savedWith ->
             ( model___, Time.now |> Task.perform (EditProjectWithTS savedWith) )
