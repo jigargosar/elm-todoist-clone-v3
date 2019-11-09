@@ -58,11 +58,6 @@ dialogSystem =
         }
 
 
-updateDialogF : Dialog.Msg -> RetF { a | dialog : Dialog } Msg
-updateDialogF msg =
-    Ret.updateSubF fields.dialog dialogSystem.updateF msg
-
-
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
@@ -71,7 +66,7 @@ dialog =
     let
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg =
-            Ret.fromUpdateF updateDialogF msg
+            Ret.only >> Ret.updateSubF fields.dialog dialogSystem.updateF msg
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
