@@ -41,10 +41,16 @@ system c =
             , saved = c.toMsg << SavedMsg << saveM
             }
 
+        addProject =
+            AddProject.system <| subSys AddProjectMsg AddProjectSaved
+
+        editProject =
+            EditProject.system <| subSys EditProjectMsg EditProjectSaved
+
         config : Config msg
         config =
-            { addProject = AddProject.system <| subSys AddProjectMsg AddProjectSaved
-            , editProject = EditProject.system <| subSys EditProjectMsg EditProjectSaved
+            { addProject = addProject
+            , editProject = editProject
             , projectAdded = c.projectAdded
             , projectEdited = c.projectEdited
             }
@@ -53,10 +59,10 @@ system c =
         subscriptions dialog =
             case dialog of
                 AddProject model ->
-                    config.addProject.subscriptions model
+                    addProject.subscriptions model
 
                 EditProject model ->
-                    config.editProject.subscriptions model
+                    editProject.subscriptions model
 
                 Closed ->
                     Sub.none
