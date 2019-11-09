@@ -9,7 +9,6 @@ module Dialog exposing
     , openEditProject
     , subscriptions
     , system
-    , update
     , view
     )
 
@@ -162,11 +161,6 @@ updateF config message =
                         EditProjectSaved savedWith ->
                             config.projectEdited savedWith
                     )
-
-
-update : Config msg -> Msg -> Dialog -> ( Dialog, Cmd msg )
-update config =
-    Ret.fromUpdateF (updateF config)
 
 
 updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
