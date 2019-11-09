@@ -55,12 +55,20 @@ dialogSystem =
         }
 
 
+type alias HasDialog a =
+    { a | dialog : Dialog }
+
+
+updateDialog : Dialog.Msg -> HasDialog a -> ( HasDialog a, Cmd Msg )
+updateDialog msg =
+    Ret.only >> Ret.updateSubF fields.dialog dialogSystem.updateF msg
+
+
+dialog :
+    { openAddProject : Int -> HasDialog a -> ( HasDialog a, Cmd Msg )
+    , openEditProject : Project -> HasDialog a -> ( HasDialog a, Cmd Msg )
+    }
 dialog =
-    let
-        updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-        updateDialog msg =
-            Ret.only >> Ret.updateSubF fields.dialog dialogSystem.updateF msg
-    in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     }
