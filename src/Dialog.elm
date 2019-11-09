@@ -31,8 +31,17 @@ type alias System msg =
     }
 
 
-system : Config msg -> System msg
-system config =
+system :
+    { toMsg : Msg -> msg
+    , projectAdded : AddProject.SavedWith -> msg
+    , projectEdited : EditProject.SavedWith -> msg
+    }
+    -> System msg
+system c =
+    let
+        config =
+            createConfig c
+    in
     { initial = initial
     , subscriptions = subscriptions config
     , updateF = updateF config
