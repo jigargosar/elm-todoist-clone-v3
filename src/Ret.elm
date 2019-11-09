@@ -46,6 +46,16 @@ andThenF func =
     andThen (\m -> func m (only m))
 
 
+filterWith : (a -> Maybe b) -> (b -> a -> a) -> RetF a x
+filterWith func func2 ret =
+    case Tuple.first ret |> func of
+        Just b ->
+            ret |> map (func2 b)
+
+        Nothing ->
+            ret
+
+
 andThenFilter : (a -> MaybeRet a x) -> RetF a x
 andThenFilter func (( m, c ) as ret) =
     case func m of

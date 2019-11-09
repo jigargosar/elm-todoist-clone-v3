@@ -33,8 +33,6 @@ import Random
 import Ret exposing (Ret, RetF)
 import Return
 import Route exposing (Route)
-import Task
-import Time
 import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
 import TodoCollection as TC exposing (TodoCollection)
@@ -367,20 +365,15 @@ update message model___ =
                     Project.setTitle title
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
-
-                newModel =
-                    case projectById projectId model___ of
-                        Just project ->
-                            DB.mapPC
-                                (updateProject project
-                                    |> PC.put
-                                )
-                                model___
-
-                        Nothing ->
-                            model___
             in
-            ( newModel, Cmd.none )
+            ret
+                |> Ret.filterWith (projectById projectId)
+                    (\project ->
+                        DB.mapPC
+                            (updateProject project
+                                |> PC.put
+                            )
+                    )
 
         SubMsg subMsg ->
             ret
