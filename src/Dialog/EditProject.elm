@@ -1,4 +1,15 @@
-module Dialog.EditProject exposing (Config, EditProject, Msg, SavedWith, System, init, subscriptions, system, update, view)
+module Dialog.EditProject exposing
+    ( Config
+    , EditProject
+    , Msg
+    , SavedWith
+    , System
+    , init
+    , subscriptions
+    , system
+    , update
+    , view
+    )
 
 import Browser.Dom as Dom
 import CColor exposing (CColor)
