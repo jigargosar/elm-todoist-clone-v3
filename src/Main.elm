@@ -1,7 +1,6 @@
 module Main exposing (main)
 
 import Appbar
-import Basics.More exposing (flip)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DB exposing (DB)
@@ -265,9 +264,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     let
-        retT =
-            ( model, Cmd.none )
-
         ret : Ret.Ret Model msg
         ret =
             Ret.only model
@@ -372,7 +368,8 @@ update message model =
             ( newModel, Cmd.none )
 
         SubMsg subMsg ->
-            updateSub subMsg ret
+            ret
+                |> updateSub subMsg
 
         AddProjectClicked ->
             ret
@@ -383,25 +380,24 @@ update message model =
                 |> Ret.andThenFilterWith (projectById id) dialog.openEditProject
 
         AddLabelClicked ->
-            ( model, Cmd.none )
+            ret
+                |> identity
 
         AddFilterClicked ->
-            ( model, Cmd.none )
+            ret
+                |> identity
 
         ProjectOrderChanged projectList ->
-            ( DB.mapPC (PC.updateSortOrder projectList) model
-            , Cmd.none
-            )
+            ret
+                |> Ret.map (DB.mapPC (PC.updateSortOrder projectList))
 
         LabelOrderChanged labelList ->
-            ( DB.mapLC (LC.updateSortOrder labelList) model
-            , Cmd.none
-            )
+            ret
+                |> Ret.map (DB.mapLC (LC.updateSortOrder labelList))
 
         FilterOrderChanged filterList ->
-            ( DB.mapFC (FC.updateSortOrder filterList) model
-            , Cmd.none
-            )
+            ret
+                |> Ret.map (DB.mapFC (FC.updateSortOrder filterList))
 
 
 type alias Return =
