@@ -41,8 +41,8 @@ system c =
     , subscriptions = subscriptions config
     , openAddProject = c.toMsg << OpenAddProject
     , openEditProject = c.toMsg << OpenEditProject
-    , updateF = updateF config
-    , update = Ret.fromUpdateF (updateF config)
+    , updateF = Ret.toUpdateF (update config)
+    , update = update config
     , view = view config
     }
 
@@ -122,49 +122,6 @@ subscriptions config dialog =
 
         _ ->
             Sub.none
-
-
-updateF : Config msg -> Msg -> Ret Dialog msg -> Ret Dialog msg
-updateF config message =
-    case message of
-        SubMsg subMsg ->
-            updateSubF config subMsg
-
-        OpenAddProject idx ->
-            Ret.andThenAlways (config.addProject.initAt idx)
-                >> Ret.map AddProject
-
-        OpenEditProject project ->
-            Ret.andThenAlways (config.editProject.init project)
-                >> Ret.map EditProject
-
-        Canceled ->
-            Ret.always Closed
-
-        SavedMsg savedMsg ->
-            Ret.always Closed
-                >> Ret.addMsg
-                    (case savedMsg of
-                        AddProjectSaved savedWith ->
-                            config.projectAdded savedWith
-
-                        EditProjectSaved savedWith ->
-                            config.projectEdited savedWith
-                    )
-
-
-updateSubF : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
-updateSubF config subMsg =
-    case subMsg of
-        AddProjectMsg msg ->
-            Ret.updateOptionalF fields.addProject
-                config.addProject.updateF
-                msg
-
-        EditProjectMsg msg ->
-            Ret.updateOptionalF fields.editProject
-                config.editProject.updateF
-                msg
 
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
