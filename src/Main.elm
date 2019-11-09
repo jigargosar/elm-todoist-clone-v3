@@ -67,7 +67,6 @@ dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
     , update : Dialog.Msg -> { e | dialog : Dialog } -> ( { f | dialog : Dialog }, Cmd Msg )
-    , updateF : Dialog.Msg -> Ret { g | dialog : Dialog } Msg -> Ret { g | dialog : Dialog } Msg
     , view : { h | dialog : Dialog } -> List (Html Msg)
     , subscriptions : { i | dialog : Dialog } -> Sub Msg
     }
@@ -88,7 +87,6 @@ dialog =
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     , update = updateDialog
-    , updateF = updateDialogF
     , view = .dialog >> Dialog.view dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
