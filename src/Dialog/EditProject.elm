@@ -7,7 +7,6 @@ module Dialog.EditProject exposing
     , init
     , subscriptions
     , system
-    , update
     , view
     )
 
@@ -71,8 +70,8 @@ system { saved, canceled, toMsg } =
     in
     { init = init config
     , subscriptions = subscriptions config
-    , update = update config
-    , updateF = Ret.toUpdateF (update config)
+    , update = Ret.fromUpdateF (updateF config)
+    , updateF = updateF config
     , view = view config
     }
 
@@ -158,11 +157,6 @@ updateF config message =
 
         AutoFocus result ->
             Ret.addError Log.focusError result
-
-
-update : Config msg -> Msg -> EditProject -> ( EditProject, Cmd msg )
-update config =
-    Ret.fromUpdateF (updateF config)
 
 
 autofocusDomId : String

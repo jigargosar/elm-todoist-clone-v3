@@ -150,11 +150,9 @@ updateSub config subMsg =
                 msg
 
         EditProjectMsg msg ->
-            Ret.andThen
-                (Ret.updateOptional fields.editProject
-                    config.editProject.update
-                    msg
-                )
+            Ret.updateOptionalF fields.editProject
+                config.editProject.updateF
+                msg
 
 
 view : Config msg -> Dialog -> List (Html msg)
