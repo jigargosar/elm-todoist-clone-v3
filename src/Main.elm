@@ -66,8 +66,6 @@ updateDialogF msg =
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
-    , update : Dialog.Msg -> { e | dialog : Dialog } -> ( { f | dialog : Dialog }, Cmd Msg )
-    , view : { h | dialog : Dialog } -> List (Html Msg)
     , subscriptions : { i | dialog : Dialog } -> Sub Msg
     }
 dialog =
@@ -86,8 +84,6 @@ dialog =
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
-    , update = updateDialog
-    , view = .dialog >> Dialog.view dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
 
@@ -572,7 +568,7 @@ view model =
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
-                ++ dialog.view model
+                ++ dialogSystem.view model.dialog
                 ++ projectPanelSystem.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
