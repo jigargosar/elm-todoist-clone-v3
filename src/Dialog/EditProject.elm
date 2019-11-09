@@ -126,7 +126,7 @@ toSavedWith model =
 updateF : Config msg -> Msg -> RetF EditProject msg
 updateF config message =
     let
-        { saved, canceled } =
+        { saved, canceled, selectColor } =
             config
     in
     case message of
@@ -144,7 +144,7 @@ updateF config message =
 
         SelectColor msg ->
             Ret.andThen
-                (Ret.updateSub fields.selectColor (SelectColor.update config.selectColor) msg)
+                (Ret.updateSub fields.selectColor (SelectColor.update selectColor) msg)
 
         AutoFocus result ->
             Ret.addError Log.focusError result
