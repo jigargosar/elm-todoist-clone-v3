@@ -4,6 +4,8 @@ import Basics.More exposing (msgToCmd)
 import Lens exposing (Lens)
 import Optional exposing (Optional)
 import Return
+import Task
+import Time
 
 
 type alias Ret a x =
@@ -77,6 +79,16 @@ addAll list_ =
 add : Cmd x -> RetF a x
 add =
     Return.command
+
+
+perform : Task.Task Never a -> (a -> msg) -> Ret b msg -> Ret b msg
+perform task toMsg =
+    add (Task.perform toMsg task)
+
+
+getNow : (Time.Posix -> msg) -> Ret a msg -> Ret a msg
+getNow toMsg =
+    add (Task.perform toMsg Time.now)
 
 
 addMsg : msg -> RetF a msg

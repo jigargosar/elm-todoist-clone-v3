@@ -344,7 +344,7 @@ update message model___ =
 
         AddProjectDialogSaved savedWith ->
             ret
-                |> Ret.add (Time.now |> Task.perform (AddProjectWithTS savedWith))
+                |> Ret.getNow (AddProjectWithTS savedWith)
 
         EditProjectDialogSaved savedWith ->
             ( model___, Time.now |> Task.perform (EditProjectWithTS savedWith) )
