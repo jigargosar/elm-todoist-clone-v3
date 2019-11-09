@@ -33,18 +33,19 @@ system :
     -> System msg
 system c =
     let
-        subSys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
-        subSys subM saveM =
-            { toMsg = c.toMsg << SubMsg << subM
-            , canceled = c.toMsg Canceled
-            , saved = c.toMsg << SavedMsg << saveM
-            }
-
         addProject =
-            AddProject.system <| subSys AddProjectMsg AddProjectSaved
+            AddProject.system
+                { toMsg = c.toMsg << SubMsg << AddProjectMsg
+                , canceled = c.toMsg Canceled
+                , saved = c.toMsg << SavedMsg << AddProjectSaved
+                }
 
         editProject =
-            EditProject.system <| subSys EditProjectMsg EditProjectSaved
+            EditProject.system
+                { toMsg = c.toMsg << SubMsg << EditProjectMsg
+                , canceled = c.toMsg Canceled
+                , saved = c.toMsg << SavedMsg << EditProjectSaved
+                }
 
         subscriptions : Dialog -> Sub msg
         subscriptions dialog =
