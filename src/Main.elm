@@ -287,10 +287,10 @@ update message model___ =
                             Browser.Internal url ->
                                 let
                                     urlChanged =
-                                        url /= model___.url
+                                        url /= model.url
                                 in
                                 if urlChanged then
-                                    Ret.add (Nav.pushUrl model___.navKey (Url.toString url))
+                                    Ret.add (Nav.pushUrl model.navKey (Url.toString url))
 
                                 else
                                     identity
