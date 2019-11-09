@@ -59,14 +59,14 @@ type alias HasDialog a =
     { a | dialog : Dialog }
 
 
-updateDialog : Dialog.Msg -> HasDialog a -> ( HasDialog a, Cmd Msg )
+updateDialog : Dialog.Msg -> RetF Model Msg
 updateDialog msg =
-    Ret.only >> Ret.updateSubF fields.dialog dialogSystem.updateF msg
+    updateSub (DialogMsg msg)
 
 
 dialog :
-    { openAddProject : Int -> HasDialog a -> ( HasDialog a, Cmd Msg )
-    , openEditProject : Project -> HasDialog a -> ( HasDialog a, Cmd Msg )
+    { openAddProject : Int -> Ret Model Msg -> Ret Model Msg
+    , openEditProject : Project -> Ret Model Msg -> Ret Model Msg
     }
 dialog =
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
@@ -265,103 +265,84 @@ type Msg
     | FilterOrderChanged (List Filter)
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update message model___ =
-    let
-        ret : Ret.Ret Model msg
-        ret =
-            Ret.only model___
-    in
+updateF : Msg -> RetF Model Msg
+updateF message =
     case message of
         NoOp ->
-            ret
-                |> identity
+            identity
 
         LogError error ->
-            ret
-                |> Ret.add (logError error)
+            Ret.add (logError error)
 
         OnUrlRequest urlRequest ->
-            ret
-                |> Ret.andThenF
-                    (\model ->
-                        case urlRequest of
-                            Browser.Internal url ->
-                                let
-                                    urlChanged =
-                                        url /= model.url
-                                in
-                                if urlChanged then
-                                    Ret.add (Nav.pushUrl model.navKey (Url.toString url))
+            Ret.andThenF
+                (\model ->
+                    case urlRequest of
+                        Browser.Internal url ->
+                            let
+                                urlChanged =
+                                    url /= model.url
+                            in
+                            if urlChanged then
+                                Ret.add (Nav.pushUrl model.navKey (Url.toString url))
 
-                                else
-                                    identity
+                            else
+                                identity
 
-                            Browser.External href ->
-                                Ret.add (Nav.load href)
-                    )
+                        Browser.External href ->
+                            Ret.add (Nav.load href)
+                )
 
         OnUrlChange url ->
-            ret
-                |> Ret.andThen (onUrlChanged url)
+            Ret.andThen (onUrlChanged url)
 
         ToggleTodoCompleted todoId ->
-            ret
-                |> Ret.mapSub fields.todoCollection (TC.toggleCompleted todoId)
+            Ret.mapSub fields.todoCollection (TC.toggleCompleted todoId)
 
         OpenDrawerModal ->
-            ret
-                |> Ret.setSub fields.isDrawerModalOpen True
+            Ret.setSub fields.isDrawerModalOpen True
 
         CloseDrawerModal ->
-            ret
-                |> Ret.setSub fields.isDrawerModalOpen False
+            Ret.setSub fields.isDrawerModalOpen False
 
         Popper msg ->
-            ret
-                |> Ret.andThenFilterWith .popup
-                    (\( kind, popper ) model ->
-                        let
-                            ( newPopper, cmd ) =
-                                Popper.update Popper msg popper
-                        in
-                        ( { model | popup = Just ( kind, newPopper ) }, cmd )
-                    )
+            Ret.andThenFilterWith .popup
+                (\( kind, popper ) model ->
+                    let
+                        ( newPopper, cmd ) =
+                            Popper.update Popper msg popper
+                    in
+                    ( { model | popup = Just ( kind, newPopper ) }, cmd )
+                )
 
         PopupTriggered kind anchorId ->
-            ret
-                |> Ret.andThen
-                    (\model ->
-                        Popper.init Popper anchorId "rootPopup"
-                            |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
-                    )
+            Ret.andThen
+                (\model ->
+                    Popper.init Popper anchorId "rootPopup"
+                        |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
+                )
 
         ClosePopup ->
-            ret
-                |> Ret.map closePopup
+            Ret.map closePopup
 
         PopupMsg msg ->
-            ret
-                |> Ret.andThen (updateWithPopupKind (updatePopup msg))
+            Ret.andThen (updateWithPopupKind (updatePopup msg))
 
         AddProjectDialogSaved savedWith ->
-            ret
-                |> Ret.getNow (AddProjectWithTS savedWith)
+            Ret.getNow (AddProjectWithTS savedWith)
 
         EditProjectDialogSaved savedWith ->
-            ret
-                |> Ret.getNow (EditProjectWithTS savedWith)
+            Ret.getNow (EditProjectWithTS savedWith)
 
         AddProjectWithTS { title, cColor, idx } ts ->
-            ret
-                |> Ret.map
-                    (\model ->
-                        let
-                            ( newProject, newModel ) =
-                                stepRandom (Project.generator title idx cColor ts) model
-                        in
-                        DB.mapPC (PC.put newProject) newModel
-                    )
+            Ret.map
+                (\model ->
+                    let
+                        ( newProject, newModel ) =
+                            stepRandom (Project.generator title idx cColor ts) model
+                    in
+                    DB.mapPC (PC.put newProject) newModel
+                )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
             let
@@ -370,53 +351,44 @@ update message model___ =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            ret
-                |> Ret.filterWith (projectById projectId)
-                    (\project ->
-                        DB.mapPC
-                            (updateProject project
-                                |> PC.put
-                            )
-                    )
+            Ret.filterWith (projectById projectId)
+                (\project ->
+                    DB.mapPC
+                        (updateProject project
+                            |> PC.put
+                        )
+                )
 
         SubMsg subMsg ->
-            ret
-                |> updateSub subMsg
+            updateSub subMsg
 
         AddProjectClicked ->
-            ret
-                |> updateSub (DialogMsg <| Dialog.openAddProject 0)
+            updateSub (DialogMsg <| Dialog.openAddProject 0)
 
         EditProjectClicked id ->
-            ret
-                |> Ret.andThenFilterWith (projectById id) dialog.openEditProject
+            Ret.andThenFilterWithF (projectById id) dialog.openEditProject
 
         AddLabelClicked ->
-            ret
-                |> identity
+            identity
 
         AddFilterClicked ->
-            ret
-                |> identity
+            identity
 
         ProjectOrderChanged projectList ->
-            ret
-                |> Ret.map (DB.mapPC (PC.updateSortOrder projectList))
+            Ret.map (DB.mapPC (PC.updateSortOrder projectList))
 
         LabelOrderChanged labelList ->
-            ret
-                |> Ret.map (DB.mapLC (LC.updateSortOrder labelList))
+            Ret.map (DB.mapLC (LC.updateSortOrder labelList))
 
         FilterOrderChanged filterList ->
-            ret
-                |> Ret.map (DB.mapFC (FC.updateSortOrder filterList))
+            Ret.map (DB.mapFC (FC.updateSortOrder filterList))
 
 
 type alias Return =
     Ret Model Msg
 
 
-updateSub : SubMsg -> Ret Model Msg -> Ret Model Msg
+updateSub : SubMsg -> RetF Model Msg
 updateSub message =
     case message of
         ProjectPanel msg ->
@@ -478,25 +450,31 @@ updateProjectPopup projectId action model =
                 |> Maybe.map (Project.idx >> (+) offset)
                 |> Debug.log "idx"
                 |> Maybe.withDefault 0
+
+        ret =
+            Ret.only model
     in
     case action of
         PopupView.AddProjectBelow ->
-            dialog.openAddProject (projectIdxWithOffset 1) model
-                |> Tuple.mapFirst closePopup
+            ret
+                |> dialog.openAddProject (projectIdxWithOffset 1)
+                |> Ret.map closePopup
 
         PopupView.AddProjectAbove ->
-            dialog.openAddProject (projectIdxWithOffset 0) model
-                |> Tuple.mapFirst closePopup
+            ret
+                |> dialog.openAddProject (projectIdxWithOffset 0)
+                |> Ret.map closePopup
 
         PopupView.EditProject ->
-            (case maybeProject of
-                Just project ->
-                    dialog.openEditProject project model
+            ret
+                |> (case maybeProject of
+                        Just project ->
+                            dialog.openEditProject project
 
-                Nothing ->
-                    ( model, Cmd.none )
-            )
-                |> Tuple.mapFirst closePopup
+                        Nothing ->
+                            identity
+                   )
+                |> Ret.map closePopup
 
         _ ->
             ( model, Cmd.none )
@@ -739,7 +717,7 @@ main =
     Browser.application
         { init = init
         , view = view >> toUnstyled >> List.singleton >> Browser.Document "Todoist Clone"
-        , update = update
+        , update = Ret.fromUpdateF updateF
         , subscriptions = subscriptions
         , onUrlRequest = OnUrlRequest
         , onUrlChange = OnUrlChange
