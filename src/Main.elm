@@ -31,7 +31,7 @@ import ProjectCollection as PC exposing (ProjectCollection)
 import ProjectId exposing (ProjectId)
 import ProjectPanel exposing (ProjectPanel)
 import Random
-import Ret exposing (Ret)
+import Ret exposing (Ret, RetF)
 import Return
 import Route exposing (Route)
 import Task
@@ -50,11 +50,12 @@ import Url exposing (Url)
 
 
 dialog :
-    { openAddProject : Int -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-    , openEditProject : Project -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-    , update : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
-    , view : { a | dialog : Dialog } -> List (Html Msg)
-    , subscriptions : { a | dialog : Dialog } -> Sub Msg
+    { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
+    , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
+    , update : Dialog.Msg -> { e | dialog : Dialog } -> ( { f | dialog : Dialog }, Cmd Msg )
+    , updateF : Dialog.Msg -> Ret { g | dialog : Dialog } Msg -> Ret { g | dialog : Dialog } Msg
+    , view : { h | dialog : Dialog } -> List (Html Msg)
+    , subscriptions : { i | dialog : Dialog } -> Sub Msg
     }
 dialog =
     let
@@ -74,6 +75,10 @@ dialog =
                 , projectEdited = EditProjectDialogSaved
                 }
 
+        updateDialogF : Dialog.Msg -> RetF { a | dialog : Dialog } Msg
+        updateDialogF msg =
+            Ret.updateSubF fields.dialog dialogSystem.updateF msg
+
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg model =
             Ret.fromUpdateF dialogSystem.updateF msg model.dialog
@@ -82,6 +87,7 @@ dialog =
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
     , update = updateDialog
+    , updateF = updateDialogF
     , view = .dialog >> Dialog.view dialogConfig
     , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
@@ -181,7 +187,8 @@ type alias Model =
 
 
 fields =
-    { projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
+    { dialog = Lens.fromTuple ( .dialog, \s b -> { b | dialog = s } )
+    , projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
     , labelPanel = Lens.fromTuple ( .labelPanel, \s b -> { b | labelPanel = s } )
     , filterPanel = Lens.fromTuple ( .filterPanel, \s b -> { b | filterPanel = s } )
     }
