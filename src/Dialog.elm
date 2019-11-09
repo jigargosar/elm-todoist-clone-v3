@@ -2,11 +2,13 @@ module Dialog exposing
     ( Config
     , Dialog
     , Msg
+    , System
     , createConfig
     , initial
     , openAddProject
     , openEditProject
     , subscriptions
+    , system
     , update
     , view
     )
@@ -19,6 +21,23 @@ import Html.Styled exposing (Html)
 import Optional
 import Project exposing (Project)
 import Ret exposing (Ret)
+
+
+type alias System msg =
+    { initial : Dialog
+    , subscriptions : Dialog -> Sub msg
+    , updateF : Msg -> Ret Dialog msg -> Ret Dialog msg
+    , view : Dialog -> List (Html msg)
+    }
+
+
+system : Config msg -> System msg
+system config =
+    { initial = initial
+    , subscriptions = subscriptions config
+    , updateF = updateF config
+    , view = view config
+    }
 
 
 type Dialog
