@@ -33,6 +33,7 @@ system :
     -> System msg
 system c =
     let
+        addProject : AddProject.System msg
         addProject =
             AddProject.system
                 { toMsg = c.toMsg << SubMsg << AddProjectMsg
@@ -40,6 +41,7 @@ system c =
                 , saved = c.toMsg << SavedMsg << AddProjectSaved
                 }
 
+        editProject : EditProject.System msg
         editProject =
             EditProject.system
                 { toMsg = c.toMsg << SubMsg << EditProjectMsg
