@@ -180,13 +180,8 @@ fields =
             ( .popup >> Maybe.map Tuple.second
             , \s b -> { b | popup = Maybe.map (Tuple.mapSecond (always s)) b.popup }
             )
-    , popup = op
+    , popup = Optional.fromTuple ( .popup, \s b -> { b | popup = Just s } )
     }
-
-
-op : Optional ( Popup, Popper ) Model
-op =
-    Optional.fromTuple ( .popup, \s b -> { b | popup = Just s } )
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -318,12 +313,10 @@ updateF message =
             Ret.setSub fields.isDrawerModalOpen False
 
         PopupTriggered kind anchorId ->
-            Ret.updateOptionalF op
-                (\_ _ ->
-                    Popper.init popperConfig anchorId "rootPopup"
-                        |> Tuple.mapFirst (\popper -> ( kind, popper ))
+            Ret.initSub fields.popup
+                (Popper.init popperConfig anchorId "rootPopup"
+                    |> Tuple.mapFirst (\popper -> ( kind, popper ))
                 )
-                ()
 
         ClosePopup ->
             Ret.map closePopup

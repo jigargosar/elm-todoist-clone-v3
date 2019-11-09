@@ -178,8 +178,8 @@ type alias HasSetter x s b =
     }
 
 
-setSubF : { a | set : b -> c -> d } -> ( b, Cmd x ) -> Ret c x -> Ret d x
-setSubF { set } ( sub, subC ) =
+initSub : HasSetter xx s b -> ( s, Cmd x ) -> RetF b x
+initSub { set } ( sub, subC ) =
     andThen (\big -> ( set sub big, subC ))
 
 
