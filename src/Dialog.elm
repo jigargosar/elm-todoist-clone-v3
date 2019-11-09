@@ -67,6 +67,47 @@ system c =
                 Closed ->
                     Sub.none
 
+        update : Msg -> Dialog -> Ret Dialog msg
+        update message model =
+            let
+                { projectAdded, projectEdited } =
+                    config
+            in
+            case message of
+                SubMsg subMsg ->
+                    case ( subMsg, model ) of
+                        ( AddProjectMsg msg, AddProject sub ) ->
+                            addProject.update msg sub |> Ret.map AddProject
+
+                        ( EditProjectMsg msg, EditProject sub ) ->
+                            editProject.update msg sub |> Ret.map EditProject
+
+                        _ ->
+                            Ret.only model
+
+                OpenMsg msg ->
+                    case msg of
+                        OpenAddProject idx ->
+                            addProject.initAt idx |> Ret.map AddProject
+
+                        OpenEditProject project ->
+                            editProject.init project |> Ret.map EditProject
+
+                Canceled ->
+                    Ret.only Closed
+
+                SavedMsg savedMsg ->
+                    ( Closed
+                    , Ret.toCmd
+                        (case savedMsg of
+                            AddProjectSaved savedWith ->
+                                projectAdded savedWith
+
+                            EditProjectSaved savedWith ->
+                                projectEdited savedWith
+                        )
+                    )
+
         openMsg msg =
             c.toMsg << OpenMsg << msg
     in
@@ -74,8 +115,8 @@ system c =
     , subscriptions = subscriptions
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
-    , updateF = Ret.toUpdateF (update config)
-    , update = update config
+    , updateF = Ret.toUpdateF update
+    , update = update
     , view = view config
     }
 
@@ -119,48 +160,6 @@ type Msg
     | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
-
-
-update : Config msg -> Msg -> Dialog -> Ret Dialog msg
-update config message model =
-    let
-        { addProject, editProject, projectAdded, projectEdited } =
-            config
-    in
-    case message of
-        SubMsg subMsg ->
-            case ( subMsg, model ) of
-                ( AddProjectMsg msg, AddProject sub ) ->
-                    addProject.update msg sub |> Ret.map AddProject
-
-                ( EditProjectMsg msg, EditProject sub ) ->
-                    editProject.update msg sub |> Ret.map EditProject
-
-                _ ->
-                    Ret.only model
-
-        OpenMsg msg ->
-            case msg of
-                OpenAddProject idx ->
-                    addProject.initAt idx |> Ret.map AddProject
-
-                OpenEditProject project ->
-                    editProject.init project |> Ret.map EditProject
-
-        Canceled ->
-            Ret.only Closed
-
-        SavedMsg savedMsg ->
-            ( Closed
-            , Ret.toCmd
-                (case savedMsg of
-                    AddProjectSaved savedWith ->
-                        projectAdded savedWith
-
-                    EditProjectSaved savedWith ->
-                        projectEdited savedWith
-                )
-            )
 
 
 view : Config msg -> Dialog -> List (Html msg)
