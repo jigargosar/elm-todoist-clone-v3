@@ -10,7 +10,6 @@ module Dialog exposing
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Html.Styled exposing (Html)
-import Optional
 import Project exposing (Project)
 import Ret exposing (Ret)
 
@@ -47,14 +46,6 @@ system c =
         editProject =
             EditProject.system <| subSys EditProjectMsg EditProjectSaved
 
-        config : Config msg
-        config =
-            { addProject = addProject
-            , editProject = editProject
-            , projectAdded = c.projectAdded
-            , projectEdited = c.projectEdited
-            }
-
         subscriptions : Dialog -> Sub msg
         subscriptions dialog =
             case dialog of
@@ -69,10 +60,6 @@ system c =
 
         update : Msg -> Dialog -> Ret Dialog msg
         update message model =
-            let
-                { projectAdded, projectEdited } =
-                    config
-            in
             case message of
                 SubMsg subMsg ->
                     case ( subMsg, model ) of
@@ -101,12 +88,24 @@ system c =
                     , Ret.toCmd
                         (case savedMsg of
                             AddProjectSaved savedWith ->
-                                projectAdded savedWith
+                                c.projectAdded savedWith
 
                             EditProjectSaved savedWith ->
-                                projectEdited savedWith
+                                c.projectEdited savedWith
                         )
                     )
+
+        view : Dialog -> List (Html msg)
+        view dialog =
+            case dialog of
+                AddProject model ->
+                    [ addProject.view model ]
+
+                EditProject model ->
+                    [ editProject.view model ]
+
+                Closed ->
+                    []
 
         openMsg msg =
             c.toMsg << OpenMsg << msg
@@ -117,7 +116,7 @@ system c =
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF update
     , update = update
-    , view = view config
+    , view = view
     }
 
 
@@ -130,14 +129,6 @@ type Dialog
          | EditFilterDialog FilterId
       -}
     | Closed
-
-
-type alias Config msg =
-    { addProject : AddProject.System msg
-    , editProject : EditProject.System msg
-    , projectAdded : AddProject.SavedWith -> msg
-    , projectEdited : EditProject.SavedWith -> msg
-    }
 
 
 type SavedMsg
@@ -160,42 +151,3 @@ type Msg
     | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
-
-
-view : Config msg -> Dialog -> List (Html msg)
-view config dialog =
-    case dialog of
-        AddProject model ->
-            [ config.addProject.view model ]
-
-        EditProject model ->
-            [ config.editProject.view model ]
-
-        Closed ->
-            []
-
-
-fields =
-    { addProject =
-        Optional.fromTuple
-            ( \b ->
-                case b of
-                    AddProject s ->
-                        Just s
-
-                    _ ->
-                        Nothing
-            , \s _ -> AddProject s
-            )
-    , editProject =
-        Optional.fromTuple
-            ( \b ->
-                case b of
-                    EditProject s ->
-                        Just s
-
-                    _ ->
-                        Nothing
-            , \s _ -> EditProject s
-            )
-    }
