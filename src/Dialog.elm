@@ -4,8 +4,6 @@ module Dialog exposing
     , Msg
     , System
     , createConfig
-    , openAddProject
-    , openEditProject
     , system
     )
 
@@ -22,7 +20,10 @@ import Ret exposing (Ret)
 type alias System msg =
     { initial : Dialog
     , subscriptions : Dialog -> Sub msg
+    , openAddProject : Int -> msg
+    , openEditProject : Project -> msg
     , updateF : Msg -> Ret Dialog msg -> Ret Dialog msg
+    , update : Msg -> Dialog -> Ret Dialog msg
     , view : Dialog -> List (Html msg)
     }
 
@@ -40,7 +41,10 @@ system c =
     in
     { initial = initial
     , subscriptions = subscriptions config
+    , openAddProject = c.toMsg << OpenAddProject
+    , openEditProject = c.toMsg << OpenEditProject
     , updateF = updateF config
+    , update = Ret.fromUpdateF (updateF config)
     , view = view config
     }
 
@@ -104,16 +108,6 @@ type Msg
     | Canceled
 
 
-openAddProject : Int -> Msg
-openAddProject =
-    OpenAddProject
-
-
-openEditProject : Project -> Msg
-openEditProject =
-    OpenEditProject
-
-
 initial : Dialog
 initial =
     Closed
@@ -136,7 +130,7 @@ updateF : Config msg -> Msg -> Ret Dialog msg -> Ret Dialog msg
 updateF config message =
     case message of
         SubMsg subMsg ->
-            updateSub config subMsg
+            updateSubF config subMsg
 
         OpenAddProject idx ->
             Ret.andThenAlways (config.addProject.initAt idx)
@@ -161,8 +155,8 @@ updateF config message =
                     )
 
 
-updateSub : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
-updateSub config subMsg =
+updateSubF : Config msg -> SubMsg -> Ret Dialog msg -> Ret Dialog msg
+updateSubF config subMsg =
     case subMsg of
         AddProjectMsg msg ->
             Ret.updateOptionalF fields.addProject
@@ -173,6 +167,50 @@ updateSub config subMsg =
             Ret.updateOptionalF fields.editProject
                 config.editProject.updateF
                 msg
+
+
+update : Config msg -> Msg -> Dialog -> Ret Dialog msg
+update config message model =
+    case message of
+        SubMsg subMsg ->
+            updateSub config subMsg model
+
+        OpenAddProject idx ->
+            config.addProject.initAt idx
+                |> Ret.map AddProject
+
+        OpenEditProject project ->
+            config.editProject.init project
+                |> Ret.map EditProject
+
+        Canceled ->
+            Ret.only Closed
+
+        SavedMsg savedMsg ->
+            Ret.only Closed
+                |> Ret.addMsg
+                    (case savedMsg of
+                        AddProjectSaved savedWith ->
+                            config.projectAdded savedWith
+
+                        EditProjectSaved savedWith ->
+                            config.projectEdited savedWith
+                    )
+
+
+updateSub : Config msg -> SubMsg -> Dialog -> Ret Dialog msg
+updateSub config subMsg model =
+    case ( subMsg, model ) of
+        ( AddProjectMsg msg, AddProject sub ) ->
+            config.addProject.update msg sub
+                |> Ret.map AddProject
+
+        ( EditProjectMsg msg, EditProject sub ) ->
+            config.editProject.update msg sub
+                |> Ret.map EditProject
+
+        _ ->
+            Ret.only model
 
 
 view : Config msg -> Dialog -> List (Html msg)

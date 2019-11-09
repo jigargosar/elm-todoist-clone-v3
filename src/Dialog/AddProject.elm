@@ -19,7 +19,7 @@ import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Log exposing (logError)
-import Ret exposing (RetF)
+import Ret exposing (Ret, RetF)
 import Task
 
 
@@ -27,6 +27,7 @@ type alias System msg =
     { initAt : Int -> ( AddProject, Cmd msg )
     , subscriptions : AddProject -> Sub msg
     , updateF : Msg -> RetF AddProject msg
+    , update : Msg -> AddProject -> Ret AddProject msg
     , view : AddProject -> Html msg
     }
 
@@ -36,6 +37,7 @@ system config =
     { initAt = initAt config
     , subscriptions = subscriptions config
     , updateF = Ret.toUpdateF (update config)
+    , update = update config
     , view = view config
     }
 

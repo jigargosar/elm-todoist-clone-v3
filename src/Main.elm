@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Appbar
+import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DB exposing (DB)
@@ -54,25 +55,6 @@ dialogSystem =
         , projectAdded = AddProjectDialogSaved
         , projectEdited = EditProjectDialogSaved
         }
-
-
-type alias HasDialog a =
-    { a | dialog : Dialog }
-
-
-updateDialog : Dialog.Msg -> RetF Model Msg
-updateDialog msg =
-    updateSub (DialogMsg msg)
-
-
-dialog :
-    { openAddProject : Int -> Ret Model Msg -> Ret Model Msg
-    , openEditProject : Project -> Ret Model Msg -> Ret Model Msg
-    }
-dialog =
-    { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
-    , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
-    }
 
 
 
@@ -359,10 +341,10 @@ updateF message =
             updateSub subMsg
 
         AddProjectClicked ->
-            updateSub (DialogMsg <| Dialog.openAddProject 0)
+            openAddProjectCmd 0
 
         EditProjectClicked id ->
-            Ret.andThenFilterWithF (projectById id) dialog.openEditProject
+            openEditProjectCmd id
 
         AddLabelClicked ->
             identity
@@ -378,6 +360,25 @@ updateF message =
 
         FilterOrderChanged filterList ->
             Ret.map (DB.mapFC (FC.updateSortOrder filterList))
+
+
+openAddProjectCmd : Int -> RetF Model Msg
+openAddProjectCmd i =
+    Ret.addMsg (dialogSystem.openAddProject i)
+
+
+openEditProjectCmd : ProjectId -> RetF Model Msg
+openEditProjectCmd id =
+    Ret.addEffect
+        (\model ->
+            case projectById id model of
+                Just p ->
+                    dialogSystem.openEditProject p
+                        |> msgToCmd
+
+                Nothing ->
+                    Cmd.none
+        )
 
 
 type alias Return =
@@ -461,23 +462,17 @@ updateProjectPopup projectId action model =
     case action of
         PopupView.AddProjectBelow ->
             ret
-                |> dialog.openAddProject (projectIdxWithOffset 1)
+                |> openAddProjectCmd (projectIdxWithOffset 1)
                 |> Ret.map closePopup
 
         PopupView.AddProjectAbove ->
             ret
-                |> dialog.openAddProject (projectIdxWithOffset 0)
+                |> openAddProjectCmd (projectIdxWithOffset 0)
                 |> Ret.map closePopup
 
         PopupView.EditProject ->
             ret
-                |> (case maybeProject of
-                        Just project ->
-                            dialog.openEditProject project
-
-                        Nothing ->
-                            identity
-                   )
+                |> openEditProjectCmd projectId
                 |> Ret.map closePopup
 
         _ ->
