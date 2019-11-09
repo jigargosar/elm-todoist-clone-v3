@@ -66,7 +66,6 @@ updateDialogF msg =
 dialog :
     { openAddProject : Int -> { a | dialog : Dialog } -> ( { b | dialog : Dialog }, Cmd Msg )
     , openEditProject : Project -> { c | dialog : Dialog } -> ( { d | dialog : Dialog }, Cmd Msg )
-    , subscriptions : { i | dialog : Dialog } -> Sub Msg
     }
 dialog =
     let
@@ -84,7 +83,6 @@ dialog =
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
     , openEditProject = \project -> updateDialog (Dialog.openEditProject project)
-    , subscriptions = .dialog >> Dialog.subscriptions dialogConfig
     }
 
 
