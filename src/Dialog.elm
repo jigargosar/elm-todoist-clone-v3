@@ -199,15 +199,13 @@ update config message model =
 
 
 updateSub : Config msg -> SubMsg -> Dialog -> Ret Dialog msg
-updateSub config subMsg model =
+updateSub { addProject, editProject } subMsg model =
     case ( subMsg, model ) of
         ( AddProjectMsg msg, AddProject sub ) ->
-            config.addProject.update msg sub
-                |> Ret.map AddProject
+            addProject.update msg sub |> Ret.map AddProject
 
         ( EditProjectMsg msg, EditProject sub ) ->
-            config.editProject.update msg sub
-                |> Ret.map EditProject
+            editProject.update msg sub |> Ret.map EditProject
 
         _ ->
             Ret.only model
