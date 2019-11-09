@@ -26,7 +26,6 @@ import Task
 type alias System msg =
     { initAt : Int -> ( AddProject, Cmd msg )
     , subscriptions : AddProject -> Sub msg
-    , update : Msg -> AddProject -> ( AddProject, Cmd msg )
     , updateF : Msg -> RetF AddProject msg
     , view : AddProject -> Html msg
     }
@@ -36,7 +35,6 @@ system : Config msg -> System msg
 system config =
     { initAt = initAt config
     , subscriptions = subscriptions config
-    , update = update config
     , updateF = Ret.toUpdateF (update config)
     , view = view config
     }
