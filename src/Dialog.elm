@@ -171,7 +171,19 @@ update : Config msg -> Msg -> Dialog -> Ret Dialog msg
 update config message model =
     case message of
         SubMsg subMsg ->
-            updateSub config subMsg model
+            let
+                { addProject, editProject, projectAdded, projectEdited } =
+                    config
+            in
+            case ( subMsg, model ) of
+                ( AddProjectMsg msg, AddProject sub ) ->
+                    addProject.update msg sub |> Ret.map AddProject
+
+                ( EditProjectMsg msg, EditProject sub ) ->
+                    editProject.update msg sub |> Ret.map EditProject
+
+                _ ->
+                    Ret.only model
 
         OpenAddProject idx ->
             config.addProject.initAt idx
@@ -185,33 +197,19 @@ update config message model =
             Ret.only Closed
 
         SavedMsg savedMsg ->
-            updateSaved config savedMsg
+            let
+                { addProject, editProject, projectAdded, projectEdited } =
+                    config
+            in
+            Ret.only Closed
+                |> Ret.addMsg
+                    (case savedMsg of
+                        AddProjectSaved savedWith ->
+                            projectAdded savedWith
 
-
-updateSaved : Config msg -> SavedMsg -> Ret Dialog msg
-updateSaved { projectAdded, projectEdited } savedMsg =
-    Ret.only Closed
-        |> Ret.addMsg
-            (case savedMsg of
-                AddProjectSaved savedWith ->
-                    projectAdded savedWith
-
-                EditProjectSaved savedWith ->
-                    projectEdited savedWith
-            )
-
-
-updateSub : Config msg -> SubMsg -> Dialog -> Ret Dialog msg
-updateSub { addProject, editProject } subMsg model =
-    case ( subMsg, model ) of
-        ( AddProjectMsg msg, AddProject sub ) ->
-            addProject.update msg sub |> Ret.map AddProject
-
-        ( EditProjectMsg msg, EditProject sub ) ->
-            editProject.update msg sub |> Ret.map EditProject
-
-        _ ->
-            Ret.only model
+                        EditProjectSaved savedWith ->
+                            projectEdited savedWith
+                    )
 
 
 view : Config msg -> Dialog -> List (Html msg)
