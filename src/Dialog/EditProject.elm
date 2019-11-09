@@ -22,7 +22,6 @@ import Log
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Ret exposing (RetF)
-import Task
 
 
 type alias System msg =
