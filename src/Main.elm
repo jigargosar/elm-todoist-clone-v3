@@ -264,11 +264,11 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
+update message model___ =
     let
         ret : Ret.Ret Model msg
         ret =
-            Ret.only model
+            Ret.only model___
     in
     case message of
         NoOp ->
@@ -281,21 +281,23 @@ update message model =
 
         OnUrlRequest urlRequest ->
             ret
-                |> (case urlRequest of
-                        Browser.Internal url ->
-                            let
-                                urlChanged =
-                                    url /= model.url
-                            in
-                            if urlChanged then
-                                Ret.add (Nav.pushUrl model.navKey (Url.toString url))
+                |> Ret.andThenF
+                    (\model ->
+                        case urlRequest of
+                            Browser.Internal url ->
+                                let
+                                    urlChanged =
+                                        url /= model___.url
+                                in
+                                if urlChanged then
+                                    Ret.add (Nav.pushUrl model___.navKey (Url.toString url))
 
-                            else
-                                identity
+                                else
+                                    identity
 
-                        Browser.External href ->
-                            Ret.add (Nav.load href)
-                   )
+                            Browser.External href ->
+                                Ret.add (Nav.load href)
+                    )
 
         OnUrlChange url ->
             ret
@@ -314,37 +316,36 @@ update message model =
                 |> Ret.setSub fields.isDrawerModalOpen False
 
         Popper msg ->
-            case model.popup of
-                Just ( kind, popper ) ->
-                    let
-                        ( newPopper, cmd ) =
-                            Popper.update Popper msg popper
-                    in
-                    ( { model | popup = Just ( kind, newPopper ) }, cmd )
-
-                Nothing ->
-                    ( model, Cmd.none )
+            ret
+                |> Ret.andThenFilterWith .popup
+                    (\( kind, popper ) model ->
+                        let
+                            ( newPopper, cmd ) =
+                                Popper.update Popper msg popper
+                        in
+                        ( { model | popup = Just ( kind, newPopper ) }, cmd )
+                    )
 
         PopupTriggered kind anchorId ->
             Popper.init Popper anchorId "rootPopup"
-                |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
+                |> Tuple.mapFirst (\popper -> { model___ | popup = Just ( kind, popper ) })
 
         ClosePopup ->
-            ( closePopup model, Cmd.none )
+            ( closePopup model___, Cmd.none )
 
         PopupMsg msg ->
-            updateWithPopupKind (updatePopup msg) model
+            updateWithPopupKind (updatePopup msg) model___
 
         AddProjectDialogSaved savedWith ->
-            ( model, Time.now |> Task.perform (AddProjectWithTS savedWith) )
+            ( model___, Time.now |> Task.perform (AddProjectWithTS savedWith) )
 
         EditProjectDialogSaved savedWith ->
-            ( model, Time.now |> Task.perform (EditProjectWithTS savedWith) )
+            ( model___, Time.now |> Task.perform (EditProjectWithTS savedWith) )
 
         AddProjectWithTS { title, cColor, idx } ts ->
             let
                 ( newProject, newModel ) =
-                    stepRandom (Project.generator title idx cColor ts) model
+                    stepRandom (Project.generator title idx cColor ts) model___
             in
             ( DB.mapPC (PC.put newProject) newModel, Cmd.none )
 
@@ -356,16 +357,16 @@ update message model =
                         >> Project.setModifiedAt ts
 
                 newModel =
-                    case projectById projectId model of
+                    case projectById projectId model___ of
                         Just project ->
                             DB.mapPC
                                 (updateProject project
                                     |> PC.put
                                 )
-                                model
+                                model___
 
                         Nothing ->
-                            model
+                            model___
             in
             ( newModel, Cmd.none )
 

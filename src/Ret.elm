@@ -34,6 +34,16 @@ andThen =
     Return.andThen
 
 
+flatten : Ret (Ret a x) x -> Ret a x
+flatten =
+    andThen identity
+
+
+andThenF : (a -> RetF a x) -> RetF a x
+andThenF func =
+    andThen (\m -> func m (only m))
+
+
 andThenFilter : (a -> MaybeRet a x) -> RetF a x
 andThenFilter func (( m, c ) as ret) =
     case func m of
