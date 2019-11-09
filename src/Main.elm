@@ -375,7 +375,8 @@ update message model =
             updateSub subMsg ret
 
         AddProjectClicked ->
-            dialog.openAddProject 0 model
+            ret
+                |> updateSub (DialogMsg <| Dialog.openAddProject 0)
 
         EditProjectClicked id ->
             projectById id model
