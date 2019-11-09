@@ -22,7 +22,7 @@ import LabelPanel exposing (LabelPanel)
 import Layout
 import Lens
 import Log exposing (logDecodeError, logError)
-import Optional
+import Optional exposing (Optional)
 import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
@@ -180,7 +180,13 @@ fields =
             ( .popup >> Maybe.map Tuple.second
             , \s b -> { b | popup = Maybe.map (Tuple.mapSecond (always s)) b.popup }
             )
+    , popup = op
     }
+
+
+op : Optional ( Popup, Popper ) Model
+op =
+    Optional.fromTuple ( .popup, \s b -> { b | popup = Just s } )
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -312,11 +318,12 @@ updateF message =
             Ret.setSub fields.isDrawerModalOpen False
 
         PopupTriggered kind anchorId ->
-            Ret.andThen
-                (\model ->
+            Ret.updateOptionalF op
+                (\_ _ ->
                     Popper.init popperConfig anchorId "rootPopup"
-                        |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
+                        |> Tuple.mapFirst (\popper -> ( kind, popper ))
                 )
+                ()
 
         ClosePopup ->
             Ret.map closePopup

@@ -168,6 +168,21 @@ updateSubF { get, set } subUpdateF msg ( big, bigC ) =
             )
 
 
+type alias Setter s b =
+    s -> b -> b
+
+
+type alias HasSetter x s b =
+    { x
+        | set : Setter s b
+    }
+
+
+setSubF : { a | set : b -> c -> d } -> ( b, Cmd x ) -> Ret c x -> Ret d x
+setSubF { set } ( sub, subC ) =
+    andThen (\big -> ( set sub big, subC ))
+
+
 updateOptional : Optional s b -> (msg -> s -> Ret s x) -> msg -> b -> Ret b x
 updateOptional { get, set } subUpdate msg big =
     case get big of
