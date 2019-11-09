@@ -166,7 +166,9 @@ type alias Model =
 
 
 fields =
-    { dialog = Lens.fromTuple ( .dialog, \s b -> { b | dialog = s } )
+    { todoCollection = Lens.fromTuple ( .todoCollection, \s b -> { b | todoCollection = s } )
+    , isDrawerModalOpen = Lens.fromTuple ( .isDrawerModalOpen, \s b -> { b | isDrawerModalOpen = s } )
+    , dialog = Lens.fromTuple ( .dialog, \s b -> { b | dialog = s } )
     , projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
     , labelPanel = Lens.fromTuple ( .labelPanel, \s b -> { b | labelPanel = s } )
     , filterPanel = Lens.fromTuple ( .filterPanel, \s b -> { b | filterPanel = s } )
@@ -300,17 +302,16 @@ update message model =
                 |> Ret.andThen (onUrlChanged url)
 
         ToggleTodoCompleted todoId ->
-            let
-                newTodoCollection =
-                    TC.toggleCompleted todoId model.todoCollection
-            in
-            ( { model | todoCollection = newTodoCollection }, Cmd.none )
+            ret
+                |> Ret.mapSub fields.todoCollection (TC.toggleCompleted todoId)
 
         OpenDrawerModal ->
-            ( { model | isDrawerModalOpen = True }, Cmd.none )
+            ret
+                |> Ret.setSub fields.isDrawerModalOpen True
 
         CloseDrawerModal ->
-            ( { model | isDrawerModalOpen = False }, Cmd.none )
+            ret
+                |> Ret.setSub fields.isDrawerModalOpen False
 
         Popper msg ->
             case model.popup of
