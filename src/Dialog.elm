@@ -1,9 +1,7 @@
 module Dialog exposing
-    ( Config
-    , Dialog
+    ( Dialog
     , Msg
     , System
-    , createConfig
     , system
     )
 
@@ -76,15 +74,15 @@ createConfig :
     -> Config msg
 createConfig c =
     let
-        sys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
-        sys subM saveM =
+        subSys : (a -> SubMsg) -> (b -> SavedMsg) -> { toMsg : a -> msg, canceled : msg, saved : b -> msg }
+        subSys subM saveM =
             { toMsg = c.toMsg << SubMsg << subM
             , canceled = c.toMsg Canceled
             , saved = c.toMsg << SavedMsg << saveM
             }
     in
-    { addProject = AddProject.system <| sys AddProjectMsg AddProjectSaved
-    , editProject = EditProject.system <| sys EditProjectMsg EditProjectSaved
+    { addProject = AddProject.system <| subSys AddProjectMsg AddProjectSaved
+    , editProject = EditProject.system <| subSys EditProjectMsg EditProjectSaved
     , projectAdded = c.projectAdded
     , projectEdited = c.projectEdited
     }
