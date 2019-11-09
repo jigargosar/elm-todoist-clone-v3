@@ -223,7 +223,7 @@ subscriptions model =
     Sub.batch
         [ case model.popup of
             Just ( _, popper ) ->
-                Popper.subscriptions Popper popper
+                Popper.subscriptions popperConfig popper
 
             Nothing ->
                 Sub.none
@@ -243,6 +243,7 @@ type SubMsg
     | LabelPanel LabelPanel.Msg
     | FilterPanel FilterPanel.Msg
     | DialogMsg Dialog.Msg
+    | Popper Popper.Msg
 
 
 type Msg
@@ -254,7 +255,6 @@ type Msg
     | OpenDrawerModal
     | CloseDrawerModal
     | PopupTriggered Popup String
-    | Popper Popper.Msg
     | ClosePopup
     | PopupMsg PopupMsg
     | AddProjectDialogSaved Dialog.AddProject.SavedWith
@@ -311,13 +311,10 @@ updateF message =
         CloseDrawerModal ->
             Ret.setSub fields.isDrawerModalOpen False
 
-        Popper msg ->
-            Ret.updateOptionalF fields.popper (Popper.updateF Popper) msg
-
         PopupTriggered kind anchorId ->
             Ret.andThen
                 (\model ->
-                    Popper.init Popper anchorId "rootPopup"
+                    Popper.init popperConfig anchorId "rootPopup"
                         |> Tuple.mapFirst (\popper -> { model | popup = Just ( kind, popper ) })
                 )
 
@@ -387,6 +384,11 @@ type alias Return =
     Ret Model Msg
 
 
+popperConfig : Popper.Msg -> Msg
+popperConfig =
+    SubMsg << Popper
+
+
 updateSub : SubMsg -> RetF Model Msg
 updateSub message =
     case message of
@@ -401,6 +403,9 @@ updateSub message =
 
         DialogMsg msg ->
             Ret.updateSubF fields.dialog dialogSystem.updateF msg
+
+        Popper msg ->
+            Ret.updateOptionalF fields.popper (Popper.updateF popperConfig) msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
