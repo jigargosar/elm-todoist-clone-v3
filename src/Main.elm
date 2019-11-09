@@ -312,14 +312,7 @@ updateF message =
             Ret.setSub fields.isDrawerModalOpen False
 
         Popper msg ->
-            Ret.andThenFilterWith .popup
-                (\( kind, popper ) model ->
-                    let
-                        ( newPopper, cmd ) =
-                            Popper.update Popper msg popper
-                    in
-                    ( { model | popup = Just ( kind, newPopper ) }, cmd )
-                )
+            Ret.updateOptionalF fields.popper (Popper.updateF Popper) msg
 
         PopupTriggered kind anchorId ->
             Ret.andThen
