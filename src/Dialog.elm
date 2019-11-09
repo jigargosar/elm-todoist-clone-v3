@@ -36,11 +36,14 @@ system c =
     let
         config =
             createConfig c
+
+        openMsg msg =
+            c.toMsg << OpenMsg << msg
     in
     { initial = initial
     , subscriptions = subscriptions config
-    , openAddProject = c.toMsg << OpenAddProject
-    , openEditProject = c.toMsg << OpenEditProject
+    , openAddProject = openMsg OpenAddProject
+    , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF (update config)
     , update = update config
     , view = view config
@@ -98,10 +101,14 @@ type SubMsg
     | EditProjectMsg EditProject.Msg
 
 
+type OpenMsg
+    = OpenAddProject Int
+    | OpenEditProject Project
+
+
 type Msg
     = SubMsg SubMsg
-    | OpenAddProject Int
-    | OpenEditProject Project
+    | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
 
@@ -142,13 +149,15 @@ update config message model =
                 _ ->
                     Ret.only model
 
-        OpenAddProject idx ->
-            config.addProject.initAt idx
-                |> Ret.map AddProject
+        OpenMsg msg ->
+            case msg of
+                OpenAddProject idx ->
+                    config.addProject.initAt idx
+                        |> Ret.map AddProject
 
-        OpenEditProject project ->
-            config.editProject.init project
-                |> Ret.map EditProject
+                OpenEditProject project ->
+                    config.editProject.init project
+                        |> Ret.map EditProject
 
         Canceled ->
             Ret.only Closed
