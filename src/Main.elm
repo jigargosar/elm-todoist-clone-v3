@@ -442,7 +442,7 @@ updateSub message =
             Ret.updateSubF fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
         DialogMsg msg ->
-            Ret.toUpdateF dialog.update msg
+            Ret.updateSubF fields.dialog dialogSystem.updateF msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
