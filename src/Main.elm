@@ -66,6 +66,14 @@ dialog =
                 , projectEdited = EditProjectDialogSaved
                 }
 
+        dialogSystem : Dialog.System Msg
+        dialogSystem =
+            Dialog.system
+                { toMsg = SubMsg << DialogMsg
+                , projectAdded = AddProjectDialogSaved
+                , projectEdited = EditProjectDialogSaved
+                }
+
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg model =
             Dialog.update dialogConfig msg model.dialog
