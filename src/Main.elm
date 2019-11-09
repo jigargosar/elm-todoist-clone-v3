@@ -236,7 +236,7 @@ subscriptions model =
         , projectPanelSystem.subscriptions model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
-        , dialog.subscriptions model
+        , dialogSystem.subscriptions model.dialog
         ]
 
 
