@@ -187,15 +187,20 @@ update config message model =
             Ret.only Closed
 
         SavedMsg savedMsg ->
-            Ret.only Closed
-                |> Ret.addMsg
-                    (case savedMsg of
-                        AddProjectSaved savedWith ->
-                            config.projectAdded savedWith
+            updateSaved config savedMsg
 
-                        EditProjectSaved savedWith ->
-                            config.projectEdited savedWith
-                    )
+
+updateSaved : Config msg -> SavedMsg -> Ret Dialog msg
+updateSaved { projectAdded, projectEdited } savedMsg =
+    Ret.only Closed
+        |> Ret.addMsg
+            (case savedMsg of
+                AddProjectSaved savedWith ->
+                    projectAdded savedWith
+
+                EditProjectSaved savedWith ->
+                    projectEdited savedWith
+            )
 
 
 updateSub : Config msg -> SubMsg -> Dialog -> Ret Dialog msg
