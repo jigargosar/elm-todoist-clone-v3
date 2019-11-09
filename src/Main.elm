@@ -379,19 +379,8 @@ update message model =
                 |> updateSub (DialogMsg <| Dialog.openAddProject 0)
 
         EditProjectClicked id ->
-            let
-                _ =
-                    ret
-                        |> Ret.andThen
-                            (\m ->
-                                projectById id m
-                                    |> Maybe.map (flip dialog.openEditProject m)
-                                    |> Maybe.withDefault retT
-                            )
-            in
-            projectById id model
-                |> Maybe.map (flip dialog.openEditProject model)
-                |> Maybe.withDefault retT
+            ret
+                |> Ret.andThenFilterWith (projectById id) dialog.openEditProject
 
         AddLabelClicked ->
             ( model, Cmd.none )

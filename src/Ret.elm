@@ -44,6 +44,16 @@ andThenFilter func (( m, c ) as ret) =
             ret
 
 
+andThenFilterWith : (a -> Maybe s) -> (s -> a -> Ret a x) -> RetF a x
+andThenFilterWith func1 func2 ret =
+    case Tuple.first ret |> func1 of
+        Just s ->
+            ret |> andThen (func2 s)
+
+        Nothing ->
+            ret
+
+
 andThenAlways : Ret b x -> Ret a x -> Ret b x
 andThenAlways ret =
     andThen (Basics.always ret)
