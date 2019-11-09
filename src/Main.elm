@@ -278,27 +278,26 @@ update message model =
                 |> Ret.add (logError error)
 
         OnUrlRequest urlRequest ->
-            case urlRequest of
-                Browser.Internal url ->
-                    let
-                        urlChanged =
-                            url /= model.url
-                    in
-                    ( model
-                    , if urlChanged then
-                        Nav.pushUrl model.navKey (Url.toString url)
+            ret
+                |> (case urlRequest of
+                        Browser.Internal url ->
+                            let
+                                urlChanged =
+                                    url /= model.url
+                            in
+                            if urlChanged then
+                                Ret.add (Nav.pushUrl model.navKey (Url.toString url))
 
-                      else
-                        Cmd.none
-                    )
+                            else
+                                identity
 
-                Browser.External href ->
-                    ( model
-                    , Nav.load href
-                    )
+                        Browser.External href ->
+                            Ret.add (Nav.load href)
+                   )
 
         OnUrlChange url ->
-            onUrlChanged url model
+            ret
+                |> Ret.andThen (onUrlChanged url)
 
         ToggleTodoCompleted todoId ->
             let
