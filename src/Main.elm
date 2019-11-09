@@ -76,7 +76,7 @@ dialog =
 
         updateDialog : Dialog.Msg -> { a | dialog : Dialog } -> ( { a | dialog : Dialog }, Cmd Msg )
         updateDialog msg model =
-            Dialog.update dialogConfig msg model.dialog
+            Ret.fromUpdateF dialogSystem.updateF msg model.dialog
                 |> Tuple.mapFirst (\dialog_ -> { model | dialog = dialog_ })
     in
     { openAddProject = \idx -> updateDialog (Dialog.openAddProject idx)
