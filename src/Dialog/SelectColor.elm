@@ -2,9 +2,11 @@ module Dialog.SelectColor exposing
     ( Config
     , Model
     , Msg
+    , System
     , initial
     , inputDomId
     , subscriptions
+    , system
     , update
     , view
     )
@@ -22,11 +24,20 @@ import Styles exposing (..)
 import Theme
 
 
+type alias System msg =
+    { initial : Model
+    , subscriptions : Model -> Sub msg
+    , update : Msg -> Model -> ( Model, Cmd msg )
+    , view : CColor -> Model -> Html msg
+    }
+
+
+system : Config msg -> System msg
 system config =
     { initial = initial
     , subscriptions = subscriptions config
     , update = update config
-    , view = view
+    , view = view config
     }
 
 
