@@ -82,12 +82,7 @@ system c =
                     case msg of
                         OpenAddProject idx ->
                             addProject.initAt2 idx
-                                |> Tuple.mapBoth AddProject
-                                    (\domId ->
-                                        Dom.focus domId
-                                            |> Task.attempt Focused
-                                            |> Cmd.map c.toMsg
-                                    )
+                                |> Tuple.mapBoth AddProject (Focus.cmd (c.toMsg << Focused))
 
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject

@@ -1,5 +1,6 @@
-port module Focus exposing (FocusResult, attempt, logError, logIfError, onFocusOrClickOutside, registerOnFocusOrClickOutSide, unRegisterOnFocusOrClickOutSide)
+port module Focus exposing (FocusResult, attempt, cmd, logError, logIfError, onFocusOrClickOutside, registerOnFocusOrClickOutSide, unRegisterOnFocusOrClickOutSide)
 
+import Basics.More exposing (flip)
 import Browser.Dom as Dom
 import Log
 import Task
@@ -12,6 +13,11 @@ type alias FocusResult =
 attempt : String -> (FocusResult -> msg) -> Cmd msg
 attempt domId msg =
     Dom.focus domId |> Task.attempt msg
+
+
+cmd : (FocusResult -> msg) -> String -> Cmd msg
+cmd =
+    flip attempt
 
 
 logError : Dom.Error -> Cmd msg
