@@ -34,7 +34,7 @@ system :
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> System msg
-system { toMsg, projectAdded, projectEdited } =
+system ({ toMsg, projectAdded, projectEdited } as configParams) =
     let
         editProject : EditProject.System msg
         editProject =
@@ -97,6 +97,10 @@ system { toMsg, projectAdded, projectEdited } =
 
         openMsg msg =
             toMsg << OpenMsg << msg
+
+        config : Config msg
+        config =
+            createConfig configParams
     in
     { initial = Closed
     , subscriptions = subscriptions toMsg
@@ -104,7 +108,7 @@ system { toMsg, projectAdded, projectEdited } =
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF update
     , update = update
-    , view = view toMsg
+    , view = view config
     }
 
 
@@ -218,16 +222,18 @@ subscriptions toMsg dialog =
         |> Sub.map toMsg
 
 
-view : (Msg -> msg) -> Dialog -> Html msg
-view toMsg dialog =
-    (case dialog of
+view : Config msg -> Dialog -> Html msg
+view config dialog =
+    let
+        { addProject, editProject, toMsg } =
+            config
+    in
+    case dialog of
         AddProject model ->
-            AddProject.view addProjectConfig model
+            addProject.view model
 
         EditProject model ->
-            EditProject.view editProjectConfig model
+            editProject.view model
 
         Closed ->
             H.text ""
-    )
-        |> H.map toMsg
