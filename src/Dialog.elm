@@ -9,6 +9,7 @@ module Dialog exposing
 
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
+import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
 import Project exposing (Project)
 import Ret exposing (Ret)
@@ -83,6 +84,9 @@ system c =
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject
 
+                Focused _ ->
+                    ( model, Cmd.none )
+
                 Canceled ->
                     Ret.only Closed
 
@@ -154,3 +158,4 @@ type Msg
     | OpenMsg OpenMsg
     | SavedMsg SavedMsg
     | Canceled
+    | Focused FocusResult
