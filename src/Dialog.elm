@@ -86,7 +86,7 @@ system c =
                     in
                     case msg of
                         OpenAddProject idx ->
-                            addProject.initAt2 idx
+                            addProject.initAt idx
                                 |> Tuple.mapBoth AddProject focusCmd
 
                         OpenEditProject project ->

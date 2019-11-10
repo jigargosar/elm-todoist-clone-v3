@@ -4,7 +4,6 @@ module Dialog.AddProject exposing
     , Msg
     , SavedWith
     , System
-    , initAt
     , subscriptions
     , system
     , update
@@ -24,8 +23,7 @@ import Task
 
 
 type alias System msg =
-    { initAt2 : Int -> ( AddProject, String )
-    , initAt : Int -> ( AddProject, Cmd msg )
+    { initAt : Int -> ( AddProject, String )
     , subscriptions : AddProject -> Sub msg
     , updateF : Msg -> RetF AddProject msg
     , update : Msg -> AddProject -> Ret AddProject msg
@@ -35,8 +33,7 @@ type alias System msg =
 
 system : Config msg -> System msg
 system config =
-    { initAt = initAt config
-    , initAt2 = initAt2
+    { initAt = initAt2
     , subscriptions = subscriptions config
     , updateF = Ret.toUpdateF (update config)
     , update = update config
@@ -59,15 +56,6 @@ type alias SavedWith =
     , cColor : CColor
     , idx : Int
     }
-
-
-initAt : Config msg -> Int -> ( AddProject, Cmd msg )
-initAt { toMsg } idx =
-    ( AddProject "" False SelectColor.initial CColor.default idx
-    , Dom.focus autofocusDomId
-        |> Task.attempt AutoFocus
-        |> Cmd.map toMsg
-    )
 
 
 initAt2 : Int -> ( AddProject, String )
