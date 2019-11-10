@@ -6,8 +6,8 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import DB exposing (DB)
 import Dialog exposing (Dialog)
-import Dialog.AddProject
-import Dialog.EditProject
+import Dialog.AddProject as AddProject
+import Dialog.EditProject as EditProject
 import Drawer
 import Filter exposing (Filter)
 import FilterCollection as FC exposing (FilterCollection)
@@ -240,10 +240,10 @@ type Msg
     | PopupTriggered Popup String
     | ClosePopup
     | PopupMsg PopupMsg
-    | AddProjectDialogSaved Dialog.AddProject.SavedWith
-    | AddProjectWithTS Dialog.AddProject.SavedWith Timestamp
-    | EditProjectDialogSaved Dialog.EditProject.SavedWith
-    | EditProjectWithTS Dialog.EditProject.SavedWith Timestamp
+    | AddProjectDialogSaved AddProject.SavedWith
+    | AddProjectWithTS AddProject.SavedWith Timestamp
+    | EditProjectDialogSaved EditProject.SavedWith
+    | EditProjectWithTS EditProject.SavedWith Timestamp
     | AddProjectClicked
     | EditProjectClicked ProjectId
     | AddLabelClicked
