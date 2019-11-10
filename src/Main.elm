@@ -4,7 +4,6 @@ import Appbar
 import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import DB exposing (DB)
 import Dialog exposing (Dialog)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
@@ -15,13 +14,14 @@ import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
 import InboxOrProject exposing (InboxOrProject)
+import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
 import LabelCollection as LC exposing (LabelCollection)
 import LabelId exposing (LabelId)
 import LabelPanel exposing (LabelPanel)
 import Layout
-import Lens
+import Lens exposing (Lens)
 import Log exposing (logDecodeError, logError)
 import Optional exposing (Optional)
 import Page.NotFound
@@ -41,6 +41,7 @@ import TodoCollection as TC exposing (TodoCollection)
 import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
+import Tuple2
 import Url exposing (Url)
 
 
@@ -153,6 +154,8 @@ type alias Model =
 fields =
     { tc = Lens.fromTuple ( .todoCollection, \s b -> { b | todoCollection = s } )
     , pc = Lens.fromTuple ( .projectCollection, \s b -> { b | projectCollection = s } )
+    , lc = Lens.fromTuple ( .labelCollection, \s b -> { b | labelCollection = s } )
+    , fc = Lens.fromTuple ( .filterCollection, \s b -> { b | filterCollection = s } )
     , isDrawerModalOpen = Lens.fromTuple ( .isDrawerModalOpen, \s b -> { b | isDrawerModalOpen = s } )
     , dialog = Lens.fromTuple ( .dialog, \s b -> { b | dialog = s } )
     , projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
@@ -192,10 +195,28 @@ init flags url navKey =
         |> Return.andThen (onUrlChanged url)
 
 
-initCollections : Flags -> DB a -> ( DB a, Cmd msg )
-initCollections flags model =
-    DB.init flags model
-        |> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
+initCollections : Flags -> Model -> Ret Model Msg
+initCollections flags =
+    Tuple2.pairTo []
+        >> handleDecodeResult fields.tc (TC.fromEncodedList flags.todoList)
+        >> handleDecodeResult fields.pc (PC.fromEncodedList flags.projectList)
+        >> handleDecodeResult fields.lc (LC.fromEncodedList flags.labelList)
+        >> handleDecodeResult fields.fc (FC.fromEncodedList flags.filterList)
+        >> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
+
+
+handleDecodeResult :
+    Lens s big
+    -> Result JD.Error s
+    -> ( big, List JD.Error )
+    -> ( big, List JD.Error )
+handleDecodeResult lens result ( big, errors ) =
+    case result of
+        Ok small ->
+            ( lens.set small big, errors )
+
+        Err error ->
+            ( big, error :: errors )
 
 
 
@@ -320,7 +341,7 @@ updateF message =
                         ( newProject, newModel ) =
                             stepRandom (Project.generator title idx cColor ts) model
                     in
-                    DB.mapPC (PC.put newProject) newModel
+                    Lens.over fields.pc (PC.put newProject) newModel
                 )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
@@ -348,13 +369,13 @@ updateF message =
             identity
 
         ProjectOrderChanged projectList ->
-            Ret.map (DB.mapPC (PC.updateSortOrder projectList))
+            Ret.mapSub fields.pc (PC.updateSortOrder projectList)
 
         LabelOrderChanged labelList ->
-            Ret.map (DB.mapLC (LC.updateSortOrder labelList))
+            Ret.mapSub fields.lc (LC.updateSortOrder labelList)
 
         FilterOrderChanged filterList ->
-            Ret.map (DB.mapFC (FC.updateSortOrder filterList))
+            Ret.mapSub fields.fc (FC.updateSortOrder filterList)
 
 
 openAddProjectCmd : Int -> RetF Model Msg
