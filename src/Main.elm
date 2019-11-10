@@ -331,12 +331,20 @@ updateF message =
             in
             Ret.map
                 (\model ->
-                    projectById projectId model
-                        |> Maybe.map
-                            (\project ->
-                                DB.mapPC (PC.put (updateProject project)) model
-                            )
-                        |> Maybe.withDefault model
+                    let
+                        putProject project =
+                            DB.mapPC (PC.put project) model
+
+                        updatedProject =
+                            projectById projectId model
+                                |> Maybe.map updateProject
+                    in
+                    case updatedProject of
+                        Just project ->
+                            model
+
+                        Nothing ->
+                            model
                 )
 
         SubMsg subMsg ->

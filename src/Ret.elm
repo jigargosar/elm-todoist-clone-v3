@@ -26,6 +26,11 @@ map =
     Tuple.mapFirst
 
 
+mapWith : (a -> b) -> (b -> a -> a) -> RetF a x
+mapWith func func2 =
+    map (\a -> func2 (func a) a)
+
+
 mapBoth =
     flip Return.mapBoth
 
