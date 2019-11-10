@@ -61,9 +61,7 @@ initAt2 idx =
 
 
 type Msg
-    = Save
-    | Cancel
-    | Title String
+    = Title String
     | SelectColor SelectColor.Msg
     | CColorChanged CColor
     | Favorite Bool
@@ -85,16 +83,6 @@ subscriptions { toMsg } model =
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
 update { saved, canceled, toMsg } message model =
     case message of
-        Save ->
-            ( model
-            , SavedWith model.title model.favorite model.cColor model.idx
-                |> saved
-                |> msgToCmd
-            )
-
-        Cancel ->
-            ( model, msgToCmd canceled )
-
         Title title ->
             ( { model | title = title }, Cmd.none )
 
