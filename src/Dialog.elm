@@ -103,7 +103,7 @@ system ({ toMsg, projectAdded, projectEdited } as configParams) =
             createConfig configParams
     in
     { initial = Closed
-    , subscriptions = subscriptions toMsg
+    , subscriptions = subscriptions config
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF update
@@ -207,25 +207,27 @@ type Msg
     | Focused FocusResult
 
 
-subscriptions : (Msg -> msg) -> Dialog -> Sub msg
-subscriptions toMsg dialog =
-    (case dialog of
+subscriptions : Config msg -> Dialog -> Sub msg
+subscriptions config dialog =
+    let
+        { addProject, editProject } =
+            config
+    in
+    case dialog of
         AddProject model ->
-            AddProject.subscriptions addProjectConfig model
+            addProject.subscriptions model
 
         EditProject model ->
-            EditProject.subscriptions editProjectConfig model
+            editProject.subscriptions model
 
         Closed ->
             Sub.none
-    )
-        |> Sub.map toMsg
 
 
 view : Config msg -> Dialog -> Html msg
 view config dialog =
     let
-        { addProject, editProject, toMsg } =
+        { addProject, editProject } =
             config
     in
     case dialog of
