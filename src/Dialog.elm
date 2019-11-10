@@ -163,15 +163,17 @@ type Msg
 
 subscriptions : (Msg -> msg) -> Dialog -> Sub msg
 subscriptions toMsg dialog =
-    case dialog of
+    (case dialog of
         AddProject model ->
-            AddProject.subscriptions addProjectConfig model |> Sub.map toMsg
+            AddProject.subscriptions addProjectConfig model
 
         EditProject model ->
-            EditProject.subscriptions editProjectConfig model |> Sub.map toMsg
+            EditProject.subscriptions editProjectConfig model
 
         Closed ->
             Sub.none
+    )
+        |> Sub.map toMsg
 
 
 view : (Msg -> msg) -> Dialog -> Html msg
