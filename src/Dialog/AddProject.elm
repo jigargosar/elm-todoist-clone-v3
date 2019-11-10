@@ -72,6 +72,11 @@ type alias AddProject =
     }
 
 
+fields =
+    { selectColor = Lens.fromTuple ( .selectColor, \s b -> { b | selectColor = s } )
+    }
+
+
 type alias SavedWith =
     { title : String
     , favorite : Bool
@@ -98,11 +103,6 @@ type Msg
 subscriptions : Config msg -> AddProject -> Sub msg
 subscriptions { toMsg, selectColorSys } model =
     selectColorSys.subscriptions model.selectColor
-
-
-fields =
-    { selectColor = Lens.fromTuple ( .selectColor, \s b -> { b | selectColor = s } )
-    }
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
