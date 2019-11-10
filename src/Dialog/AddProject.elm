@@ -11,21 +11,17 @@ module Dialog.AddProject exposing
     )
 
 import Basics.More exposing (msgToCmd)
-import Browser.Dom as Dom
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
-import Log exposing (logError)
 import Ret exposing (Ret, RetF)
-import Task
 
 
 type alias System msg =
     { initAt : Int -> ( AddProject, String )
     , subscriptions : AddProject -> Sub msg
-    , updateF : Msg -> RetF AddProject msg
     , update : Msg -> AddProject -> Ret AddProject msg
     , view : AddProject -> Html msg
     }
@@ -35,7 +31,6 @@ system : Config msg -> System msg
 system config =
     { initAt = initAt2
     , subscriptions = subscriptions config
-    , updateF = Ret.toUpdateF (update config)
     , update = update config
     , view = view config
     }
@@ -72,7 +67,6 @@ type Msg
     | SelectColor SelectColor.Msg
     | CColorChanged CColor
     | Favorite Bool
-    | AutoFocus (Result Dom.Error ())
 
 
 type alias Config msg =
@@ -111,14 +105,6 @@ update { saved, canceled, toMsg } message model =
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
-
-        AutoFocus result ->
-            case result of
-                Err (Dom.NotFound domId) ->
-                    ( model, logError <| "autofocus failed: " ++ domId )
-
-                Ok () ->
-                    ( model, Cmd.none )
 
         CColorChanged cColor ->
             ( { model | cColor = cColor }, Cmd.none )
