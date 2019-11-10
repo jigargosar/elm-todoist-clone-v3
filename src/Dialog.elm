@@ -144,7 +144,6 @@ createConfig { toMsg, projectAdded, projectEdited } =
         canceledMsg =
             toMsg Canceled
 
-        editProject : EditProject.System msg
         editProject =
             EditProject.system
                 { toMsg = subMsg EditProjectMsg
