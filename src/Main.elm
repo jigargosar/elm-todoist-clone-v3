@@ -197,26 +197,26 @@ init flags url navKey =
 
 initCollections : Flags -> Model -> Ret Model Msg
 initCollections flags =
+    let
+        handleDecodeErrors :
+            Lens s big
+            -> Result JD.Error s
+            -> ( big, List JD.Error )
+            -> ( big, List JD.Error )
+        handleDecodeErrors lens result ( big, errors ) =
+            case result of
+                Ok small ->
+                    ( lens.set small big, errors )
+
+                Err error ->
+                    ( big, error :: errors )
+    in
     Tuple2.pairTo []
-        >> handleDecodeResult fields.tc (TC.fromEncodedList flags.todoList)
-        >> handleDecodeResult fields.pc (PC.fromEncodedList flags.projectList)
-        >> handleDecodeResult fields.lc (LC.fromEncodedList flags.labelList)
-        >> handleDecodeResult fields.fc (FC.fromEncodedList flags.filterList)
+        >> handleDecodeErrors fields.tc (TC.fromEncodedList flags.todoList)
+        >> handleDecodeErrors fields.pc (PC.fromEncodedList flags.projectList)
+        >> handleDecodeErrors fields.lc (LC.fromEncodedList flags.labelList)
+        >> handleDecodeErrors fields.fc (FC.fromEncodedList flags.filterList)
         >> Tuple.mapSecond (List.map logDecodeError >> Cmd.batch)
-
-
-handleDecodeResult :
-    Lens s big
-    -> Result JD.Error s
-    -> ( big, List JD.Error )
-    -> ( big, List JD.Error )
-handleDecodeResult lens result ( big, errors ) =
-    case result of
-        Ok small ->
-            ( lens.set small big, errors )
-
-        Err error ->
-            ( big, error :: errors )
 
 
 
