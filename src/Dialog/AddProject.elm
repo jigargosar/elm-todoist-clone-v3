@@ -10,7 +10,6 @@ module Dialog.AddProject exposing
     , view
     )
 
-import Basics.More exposing (msgToCmd)
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
@@ -35,13 +34,6 @@ type alias Config msg =
     }
 
 
-type alias Context msg =
-    { toMsg : Msg -> msg
-    , canceled : msg
-    , savedWithCmd : SavedWith -> Cmd msg
-    }
-
-
 selectColorConfig =
     { toMsg = SelectColor
     , domIdPrefix = "add-project-dialog"
@@ -51,18 +43,10 @@ selectColorConfig =
 
 system : Config msg -> System msg
 system config =
-    let
-        ctx : Context msg
-        ctx =
-            { canceled = config.canceled
-            , toMsg = config.toMsg
-            , savedWithCmd = config.saved >> msgToCmd
-            }
-    in
     { initAt = initAt
-    , subscriptions = subscriptions ctx
-    , update = update ctx
-    , view = view ctx
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
     }
 
 
@@ -103,14 +87,14 @@ type Msg
     | Saved
 
 
-subscriptions : Context msg -> AddProject -> Sub msg
+subscriptions : Config msg -> AddProject -> Sub msg
 subscriptions { toMsg } model =
     SelectColor.subscriptions selectColorConfig model.selectColor
         |> Sub.map toMsg
 
 
-update : Context msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { toMsg, savedWithCmd } message model =
+update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
+update { toMsg, saved } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
@@ -128,7 +112,8 @@ update { toMsg, savedWithCmd } message model =
         Saved ->
             ( model
             , SavedWith model.title model.favorite model.cColor model.idx
-                |> savedWithCmd
+                |> saved
+                |> Ret.toCmd
             )
 
 
@@ -138,7 +123,7 @@ autofocusDomId =
 
 
 view :
-    Context msg
+    Config msg
     -> AddProject
     -> Html msg
 view { toMsg, canceled } model =
