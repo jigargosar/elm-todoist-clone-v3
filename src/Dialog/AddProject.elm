@@ -19,6 +19,30 @@ import Lens
 import Ret exposing (Ret, RetF)
 
 
+
+--system : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> System msg
+
+
+type alias System msg =
+    { initAt : Int -> ( AddProject, String )
+    , subscriptions : AddProject -> Sub msg
+    , update : Msg -> AddProject -> ( AddProject, Cmd msg )
+    , view : AddProject -> Html msg
+    }
+
+
+system : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> System msg
+system =
+    createConfig
+        >> (\config ->
+                { initAt = initAt
+                , subscriptions = subscriptions config
+                , update = update config
+                , view = view config
+                }
+           )
+
+
 type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
