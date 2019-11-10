@@ -48,7 +48,7 @@ system c =
             , canceled = c.canceled
             }
     in
-    { initAt = initAt2
+    { initAt = initAt
     , subscriptions = subscriptions config
     , update = update config
     , view = view config
@@ -72,8 +72,8 @@ type alias SavedWith =
     }
 
 
-initAt2 : Int -> ( AddProject, String )
-initAt2 idx =
+initAt : Int -> ( AddProject, String )
+initAt idx =
     ( AddProject "" False SelectColor.initial CColor.default idx
     , autofocusDomId
     )
