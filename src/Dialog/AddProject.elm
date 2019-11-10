@@ -10,6 +10,7 @@ module Dialog.AddProject exposing
     , view
     )
 
+import Basics.More exposing (msgToCmd)
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
@@ -35,8 +36,13 @@ type alias Config msg =
 
 
 type alias Context msg =
-    { config : Config msg
-    , sys : { selectColor : SelectColor.System msg }
+    { titleChanged : String -> msg
+    , favoriteChanged : Bool -> msg
+    , cColorChanged : CColor -> msg
+    , saved : msg
+    , canceled : msg
+    , savedWithCmd : SavedWith -> Cmd msg
+    , selectColorSys : SelectColor.System msg
     }
 
 
@@ -45,15 +51,18 @@ system config =
     let
         ctx : Context msg
         ctx =
-            { config = config
-            , sys =
-                { selectColor =
-                    SelectColor.system
-                        { toMsg = config.toMsg << SelectColor
-                        , domIdPrefix = "add-project-dialog"
-                        , changed = config.toMsg << CColorChanged
-                        }
-                }
+            { canceled = config.canceled
+            , titleChanged = config.toMsg << Title
+            , favoriteChanged = config.toMsg << Favorite
+            , cColorChanged = config.toMsg << CColorChanged
+            , saved = config.toMsg Saved
+            , savedWithCmd = config.saved >> msgToCmd
+            , selectColorSys =
+                SelectColor.system
+                    { toMsg = config.toMsg << SelectColor
+                    , domIdPrefix = "add-project-dialog"
+                    , changed = config.toMsg << CColorChanged
+                    }
             }
     in
     { initAt = initAt
@@ -101,18 +110,18 @@ type Msg
 
 
 subscriptions : Context msg -> AddProject -> Sub msg
-subscriptions { sys } model =
-    sys.selectColor.subscriptions model.selectColor
+subscriptions { selectColorSys } model =
+    selectColorSys.subscriptions model.selectColor
 
 
 update : Context msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { config, sys } message model =
+update { savedWithCmd, selectColorSys } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor sys.selectColor.update msg model
+            Ret.updateSub fields.selectColor selectColorSys.update msg model
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -122,10 +131,8 @@ update { config, sys } message model =
 
         Saved ->
             ( model
-            , Ret.toCmd
-                (SavedWith model.title model.favorite model.cColor model.idx
-                    |> config.saved
-                )
+            , SavedWith model.title model.favorite model.cColor model.idx
+                |> savedWithCmd
             )
 
 
@@ -134,30 +141,35 @@ autofocusDomId =
     "add-project-dialog-autofocus"
 
 
-view : Context msg -> AddProject -> Html msg
-view { config, sys } model =
-    let
-        { toMsg, canceled } =
-            config
-    in
+view :
+    { a
+        | saved : msg
+        , canceled : msg
+        , titleChanged : String -> msg
+        , selectColorSys : SelectColor.System msg
+        , favoriteChanged : Bool -> msg
+    }
+    -> AddProject
+    -> Html msg
+view ctx model =
     Dialog.UI.viewForm
-        { submit = toMsg Saved
-        , cancel = config.canceled
+        { submit = ctx.saved
+        , cancel = ctx.canceled
         , title = "Add Project"
         , submitTitle = "Add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = toMsg << Title
+                , changed = ctx.titleChanged
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
-                (sys.selectColor.view model.cColor model.selectColor)
+                (ctx.selectColorSys.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = toMsg << Favorite
+                , changed = ctx.favoriteChanged
                 }
             ]
         }
