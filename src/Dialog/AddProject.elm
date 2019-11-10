@@ -26,8 +26,28 @@ type alias System msg =
     }
 
 
-system : Config msg -> System msg
-system config =
+type alias Config msg =
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    }
+
+
+system :
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    }
+    -> System msg
+system c =
+    let
+        config : Config msg
+        config =
+            { toMsg = c.toMsg
+            , saved = c.saved
+            , canceled = c.canceled
+            }
+    in
     { initAt = initAt2
     , subscriptions = subscriptions config
     , update = update config
@@ -64,13 +84,6 @@ type Msg
     | SelectColor SelectColor.Msg
     | CColorChanged CColor
     | Favorite Bool
-
-
-type alias Config msg =
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
-    , canceled : msg
-    }
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
