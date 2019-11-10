@@ -1,6 +1,6 @@
 module Ret exposing (..)
 
-import Basics.More exposing (msgToCmd)
+import Basics.More exposing (flip, msgToCmd)
 import Lens exposing (Lens)
 import Optional exposing (Optional)
 import Return
@@ -24,6 +24,10 @@ only a =
 map : (a -> b) -> Ret a x -> Ret b x
 map =
     Tuple.mapFirst
+
+
+mapBoth =
+    flip Return.mapBoth
 
 
 always : a -> Ret b x -> Ret a x

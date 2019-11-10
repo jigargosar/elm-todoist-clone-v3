@@ -44,6 +44,9 @@ system :
     -> System msg
 system c =
     let
+        toMsg =
+            c.toMsg
+
         addProject : AddProject.System msg
         addProject =
             AddProject.system
@@ -78,7 +81,8 @@ system c =
                 SubMsg subMsg ->
                     case ( subMsg, model ) of
                         ( AddProjectMsg msg, AddProject sub ) ->
-                            addProject.update msg sub |> Ret.map AddProject
+                            AddProject.update addProjectConfig msg sub
+                                |> Ret.mapBoth AddProject toMsg
 
                         ( EditProjectMsg msg, EditProject sub ) ->
                             editProject.update msg sub |> Ret.map EditProject
