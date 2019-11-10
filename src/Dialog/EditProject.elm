@@ -4,6 +4,7 @@ module Dialog.EditProject exposing
     , Msg
     , SavedWith
     , System
+    , createConfig
     , init
     , subscriptions
     , system
@@ -33,6 +34,21 @@ type alias System msg =
     }
 
 
+system : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> System msg
+system configParams =
+    let
+        config : Config msg
+        config =
+            createConfig configParams
+    in
+    { init = init config
+    , subscriptions = subscriptions config
+    , update = Ret.fromUpdateF (updateF config)
+    , updateF = updateF config
+    , view = view config
+    }
+
+
 type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
@@ -41,13 +57,8 @@ type alias Config msg =
     }
 
 
-system :
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
-    , canceled : msg
-    }
-    -> System msg
-system { saved, canceled, toMsg } =
+createConfig : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> Config msg
+createConfig { toMsg, saved, canceled } =
     let
         selectColorConfig : SelectColor.Config msg
         selectColorConfig =
@@ -55,20 +66,11 @@ system { saved, canceled, toMsg } =
             , domIdPrefix = "edit-project-dialog"
             , changed = toMsg << CColor
             }
-
-        config : Config msg
-        config =
-            { toMsg = toMsg
-            , saved = saved
-            , canceled = canceled
-            , selectColor = SelectColor.system selectColorConfig
-            }
     in
-    { init = init config
-    , subscriptions = subscriptions config
-    , update = Ret.fromUpdateF (updateF config)
-    , updateF = updateF config
-    , view = view config
+    { toMsg = toMsg
+    , saved = saved
+    , canceled = canceled
+    , selectColor = SelectColor.system selectColorConfig
     }
 
 

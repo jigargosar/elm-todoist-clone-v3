@@ -28,14 +28,6 @@ type alias System msg =
     }
 
 
-addProjectConfig =
-    AddProject.createConfig
-        { toMsg = SubMsg << AddProjectMsg
-        , canceled = Canceled
-        , saved = SavedMsg << AddProjectSaved
-        }
-
-
 system :
     { toMsg : Msg -> msg
     , projectAdded : AddProject.SavedWith -> msg
@@ -54,18 +46,6 @@ system c =
                 , canceled = toMsg Canceled
                 , saved = toMsg << SavedMsg << EditProjectSaved
                 }
-
-        subscriptions : Dialog -> Sub msg
-        subscriptions dialog =
-            case dialog of
-                AddProject model ->
-                    AddProject.subscriptions addProjectConfig model |> Sub.map toMsg
-
-                EditProject model ->
-                    editProject.subscriptions model
-
-                Closed ->
-                    Sub.none
 
         update : Msg -> Dialog -> Ret Dialog msg
         update message model =
@@ -134,13 +114,29 @@ system c =
             c.toMsg << OpenMsg << msg
     in
     { initial = Closed
-    , subscriptions = subscriptions
+    , subscriptions = subscriptions toMsg
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF update
     , update = update
     , view = view
     }
+
+
+addProjectConfig =
+    AddProject.createConfig
+        { toMsg = SubMsg << AddProjectMsg
+        , canceled = Canceled
+        , saved = SavedMsg << AddProjectSaved
+        }
+
+
+editProjectConfig =
+    EditProject.createConfig
+        { toMsg = SubMsg << EditProjectMsg
+        , canceled = Canceled
+        , saved = SavedMsg << EditProjectSaved
+        }
 
 
 type Dialog
@@ -175,3 +171,16 @@ type Msg
     | SavedMsg SavedMsg
     | Canceled
     | Focused FocusResult
+
+
+subscriptions : (Msg -> msg) -> Dialog -> Sub msg
+subscriptions toMsg dialog =
+    case dialog of
+        AddProject model ->
+            AddProject.subscriptions addProjectConfig model |> Sub.map toMsg
+
+        EditProject model ->
+            EditProject.subscriptions editProjectConfig model |> Sub.map toMsg
+
+        Closed ->
+            Sub.none
