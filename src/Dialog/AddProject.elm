@@ -14,7 +14,7 @@ import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled exposing (Attribute, Html)
-import Html.Styled.Attributes as A exposing (autofocus)
+import Html.Styled.Attributes as A
 import Lens
 import Ret exposing (Ret, RetF)
 
