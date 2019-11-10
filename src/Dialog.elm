@@ -1,8 +1,13 @@
 module Dialog exposing
-    ( Dialog
+    ( Config
+    , Dialog
     , Msg
     , System
+    , createConfig
+    , subscriptions
     , system
+    , update
+    , view
     )
 
 -- DIALOG
@@ -34,7 +39,7 @@ system :
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> System msg
-system ({ toMsg, projectAdded, projectEdited } as configParams) =
+system ({ toMsg } as configParams) =
     let
         openMsg msg =
             toMsg << OpenMsg << msg
