@@ -10,7 +10,6 @@ module Dialog.AddProject exposing
     , view
     )
 
-import Basics.More exposing (msgToCmd)
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
