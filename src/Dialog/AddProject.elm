@@ -40,9 +40,7 @@ type alias Context msg =
     }
 
 
-system :
-    Config msg
-    -> System msg
+system : Config msg -> System msg
 system config =
     let
         ctx : Context msg
