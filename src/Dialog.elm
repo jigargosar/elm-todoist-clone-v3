@@ -34,11 +34,8 @@ system :
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> System msg
-system c =
+system { toMsg, projectAdded, projectEdited } =
     let
-        toMsg =
-            c.toMsg
-
         editProject : EditProject.System msg
         editProject =
             EditProject.system
@@ -65,7 +62,7 @@ system c =
                 OpenMsg msg ->
                     let
                         focusCmd =
-                            Focus.cmd (c.toMsg << Focused)
+                            Focus.cmd (toMsg << Focused)
                     in
                     case msg of
                         OpenAddProject idx ->
@@ -91,15 +88,15 @@ system c =
                     , Ret.toCmd
                         (case savedMsg of
                             AddProjectSaved savedWith ->
-                                c.projectAdded savedWith
+                                projectAdded savedWith
 
                             EditProjectSaved savedWith ->
-                                c.projectEdited savedWith
+                                projectEdited savedWith
                         )
                     )
 
         openMsg msg =
-            c.toMsg << OpenMsg << msg
+            toMsg << OpenMsg << msg
     in
     { initial = Closed
     , subscriptions = subscriptions toMsg
