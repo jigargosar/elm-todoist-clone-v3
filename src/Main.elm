@@ -329,12 +329,14 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.filterMap (projectById projectId)
-                (\project ->
-                    DB.mapPC
-                        (updateProject project
-                            |> PC.put
-                        )
+            Ret.map
+                (\model ->
+                    projectById projectId model
+                        |> Maybe.map
+                            (\project ->
+                                DB.mapPC (PC.put (updateProject project)) model
+                            )
+                        |> Maybe.withDefault model
                 )
 
         SubMsg subMsg ->
