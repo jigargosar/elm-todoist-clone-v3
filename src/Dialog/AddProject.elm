@@ -141,14 +141,10 @@ view :
     Context msg
     -> AddProject
     -> Html msg
-view ctx model =
-    let
-        toMsg =
-            ctx.toMsg
-    in
+view { toMsg, canceled } model =
     Dialog.UI.viewForm
         { submit = toMsg Saved
-        , cancel = ctx.canceled
+        , cancel = canceled
         , title = "Add Project"
         , submitTitle = "Add"
         , content =
