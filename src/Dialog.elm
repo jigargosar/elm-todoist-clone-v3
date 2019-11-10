@@ -79,10 +79,14 @@ system c =
                             Ret.only model
 
                 OpenMsg msg ->
+                    let
+                        focusCmd =
+                            Focus.cmd (c.toMsg << Focused)
+                    in
                     case msg of
                         OpenAddProject idx ->
                             addProject.initAt2 idx
-                                |> Tuple.mapBoth AddProject (Focus.cmd (c.toMsg << Focused))
+                                |> Tuple.mapBoth AddProject focusCmd
 
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject
