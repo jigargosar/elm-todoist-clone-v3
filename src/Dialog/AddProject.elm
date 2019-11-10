@@ -31,7 +31,7 @@ type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
     , canceled : msg
-    , selectColor : SelectColor.System msg
+    , selectColorSys : SelectColor.System msg
     }
 
 
@@ -48,7 +48,7 @@ system c =
             { toMsg = c.toMsg
             , saved = c.saved
             , canceled = c.canceled
-            , selectColor =
+            , selectColorSys =
                 SelectColor.system
                     { toMsg = c.toMsg << SelectColor
                     , domIdPrefix = "add-project-dialog"
@@ -95,8 +95,8 @@ type Msg
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
-subscriptions { toMsg, selectColor } model =
-    selectColor.subscriptions model.selectColor
+subscriptions { toMsg, selectColorSys } model =
+    selectColorSys.subscriptions model.selectColor
 
 
 fields =
@@ -105,13 +105,13 @@ fields =
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { toMsg, selectColor } message model =
+update { toMsg, selectColorSys } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor selectColor.update msg model
+            Ret.updateSub fields.selectColor selectColorSys.update msg model
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -126,7 +126,7 @@ autofocusDomId =
 
 
 view : Config msg -> AddProject -> Html msg
-view { toMsg, saved, canceled, selectColor } model =
+view { toMsg, saved, canceled, selectColorSys } model =
     Dialog.UI.viewForm
         { submit =
             SavedWith model.title model.favorite model.cColor model.idx
@@ -142,7 +142,7 @@ view { toMsg, saved, canceled, selectColor } model =
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
-                (selectColor.view model.cColor model.selectColor)
+                (selectColorSys.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
