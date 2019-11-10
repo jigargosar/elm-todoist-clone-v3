@@ -151,7 +151,8 @@ type alias Model =
 
 
 fields =
-    { todoCollection = Lens.fromTuple ( .todoCollection, \s b -> { b | todoCollection = s } )
+    { tc = Lens.fromTuple ( .todoCollection, \s b -> { b | todoCollection = s } )
+    , pc = Lens.fromTuple ( .projectCollection, \s b -> { b | projectCollection = s } )
     , isDrawerModalOpen = Lens.fromTuple ( .isDrawerModalOpen, \s b -> { b | isDrawerModalOpen = s } )
     , dialog = Lens.fromTuple ( .dialog, \s b -> { b | dialog = s } )
     , projectPanel = Lens.fromTuple ( .projectPanel, \s b -> { b | projectPanel = s } )
@@ -286,7 +287,7 @@ updateF message =
             Ret.andThen (onUrlChanged url)
 
         ToggleTodoCompleted todoId ->
-            Ret.mapSub fields.todoCollection (TC.toggleCompleted todoId)
+            Ret.mapSub fields.tc (TC.toggleCompleted todoId)
 
         OpenDrawerModal ->
             Ret.setSub fields.isDrawerModalOpen True
@@ -329,7 +330,7 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.mapSub DB.pc (PC.updateById projectId updateProject)
+            Ret.mapSub fields.pc (PC.updateById projectId updateProject)
 
         SubMsg subMsg ->
             updateSub subMsg
