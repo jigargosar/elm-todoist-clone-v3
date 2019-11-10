@@ -329,23 +329,7 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.map
-                (\model ->
-                    let
-                        putProject project =
-                            DB.mapPC (PC.put project) model
-
-                        updatedProject =
-                            projectById projectId model
-                                |> Maybe.map updateProject
-                    in
-                    case updatedProject of
-                        Just project ->
-                            model
-
-                        Nothing ->
-                            model
-                )
+            Ret.mapSub DB.pc (PC.updateById projectId updateProject)
 
         SubMsg subMsg ->
             updateSub subMsg

@@ -1,4 +1,4 @@
-module DB exposing (DB, Flags, init, mapFC, mapLC, mapPC, mapTC)
+module DB exposing (DB, Flags, init, mapFC, mapLC, mapPC, mapTC, pc)
 
 import FilterCollection as FC exposing (FilterCollection)
 import Json.Decode as JD

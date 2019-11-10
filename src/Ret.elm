@@ -26,9 +26,9 @@ map =
     Tuple.mapFirst
 
 
-mapWith : (a -> b) -> (b -> a -> a) -> RetF a x
-mapWith func func2 =
-    map (\a -> func2 (func a) a)
+andThenIgnoreNothing : (a -> Maybe (Ret b x)) -> Ret b x -> Ret a x -> Ret b x
+andThenIgnoreNothing func ret =
+    andThen (func >> Maybe.withDefault ret)
 
 
 mapBoth =
