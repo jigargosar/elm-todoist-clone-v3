@@ -24,7 +24,7 @@ type alias System msg =
     , openEditProject : Project -> msg
     , updateF : Msg -> Ret Dialog msg -> Ret Dialog msg
     , update : Msg -> Dialog -> Ret Dialog msg
-    , view : Dialog -> List (Html msg)
+    , view : Dialog -> Html msg
     }
 
 
@@ -98,18 +98,6 @@ system c =
                         )
                     )
 
-        view : Dialog -> List (Html msg)
-        view dialog =
-            case dialog of
-                AddProject model ->
-                    [ AddProject.view addProjectConfig model |> H.map toMsg ]
-
-                EditProject model ->
-                    [ editProject.view model ]
-
-                Closed ->
-                    []
-
         openMsg msg =
             c.toMsg << OpenMsg << msg
     in
@@ -119,7 +107,7 @@ system c =
     , openEditProject = openMsg OpenEditProject
     , updateF = Ret.toUpdateF update
     , update = update
-    , view = view
+    , view = view toMsg
     }
 
 
@@ -184,3 +172,18 @@ subscriptions toMsg dialog =
 
         Closed ->
             Sub.none
+
+
+view : (Msg -> msg) -> Dialog -> Html msg
+view toMsg dialog =
+    (case dialog of
+        AddProject model ->
+            AddProject.view addProjectConfig model
+
+        EditProject model ->
+            EditProject.view editProjectConfig model
+
+        Closed ->
+            H.text ""
+    )
+        |> H.map toMsg

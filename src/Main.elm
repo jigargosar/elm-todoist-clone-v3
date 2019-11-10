@@ -538,7 +538,7 @@ view model =
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
-                ++ dialogSystem.view model.dialog
+                ++ [ dialogSystem.view model.dialog ]
                 ++ projectPanelSystem.viewGhost model.projectPanel
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
