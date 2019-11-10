@@ -81,7 +81,7 @@ subscriptions { toMsg } model =
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { saved, canceled, toMsg } message model =
+update { toMsg } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
