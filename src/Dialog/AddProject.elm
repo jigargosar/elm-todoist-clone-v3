@@ -3,10 +3,8 @@ module Dialog.AddProject exposing
     , Config
     , Msg
     , SavedWith
-    , System
     , initAt
     , subscriptions
-    , system
     , update
     , view
     )
@@ -20,14 +18,6 @@ import Lens
 import Ret exposing (Ret, RetF)
 
 
-type alias System msg =
-    { initAt : Int -> ( AddProject, String )
-    , subscriptions : AddProject -> Sub msg
-    , update : Msg -> AddProject -> Ret AddProject msg
-    , view : AddProject -> Html msg
-    }
-
-
 type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
@@ -39,15 +29,6 @@ selectColorConfig =
     { toMsg = SelectColor
     , domIdPrefix = "add-project-dialog"
     , changed = CColorChanged
-    }
-
-
-system : Config msg -> System msg
-system config =
-    { initAt = initAt
-    , subscriptions = subscriptions config
-    , update = update config
-    , view = view config
     }
 
 
