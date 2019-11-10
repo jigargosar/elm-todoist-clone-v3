@@ -7,12 +7,14 @@ module Dialog exposing
 
 -- DIALOG
 
+import Browser.Dom as Dom
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
 import Project exposing (Project)
 import Ret exposing (Ret)
+import Task
 
 
 type alias System msg =
@@ -79,7 +81,13 @@ system c =
                 OpenMsg msg ->
                     case msg of
                         OpenAddProject idx ->
-                            addProject.initAt idx |> Ret.map AddProject
+                            addProject.initAt2 idx
+                                |> Tuple.mapBoth AddProject
+                                    (\domId ->
+                                        Dom.focus domId
+                                            |> Task.attempt Focused
+                                            |> Cmd.map c.toMsg
+                                    )
 
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject
