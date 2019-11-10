@@ -35,6 +35,12 @@ type alias Config msg =
     }
 
 
+type alias Context msg =
+    { config : Config msg
+    , sys : { selectColor : SelectColor.System msg }
+    }
+
+
 system :
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
