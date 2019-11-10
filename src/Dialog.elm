@@ -12,6 +12,7 @@ import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Focus exposing (FocusResult)
 import Html.Styled exposing (Html)
+import Log
 import Project exposing (Project)
 import Ret exposing (Ret)
 import Task
@@ -91,8 +92,13 @@ system c =
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject
 
-                Focused _ ->
-                    ( model, Cmd.none )
+                Focused result ->
+                    case result of
+                        Err (Dom.NotFound domId) ->
+                            ( model, Log.logError <| "dialog focus failed: " ++ domId )
+
+                        Ok () ->
+                            ( model, Cmd.none )
 
                 Canceled ->
                     Ret.only Closed
