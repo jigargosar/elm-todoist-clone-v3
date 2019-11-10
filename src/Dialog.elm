@@ -120,14 +120,6 @@ addProjectConfig =
         }
 
 
-editProjectConfig =
-    EditProject.createConfig
-        { toMsg = SubMsg << EditProjectMsg
-        , canceled = Canceled
-        , saved = SavedMsg << EditProjectSaved
-        }
-
-
 type alias Config msg =
     { toMsg : Msg -> msg
     , addProject : AddProject.System msg
