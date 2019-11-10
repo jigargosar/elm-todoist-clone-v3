@@ -36,22 +36,17 @@ system :
     -> System msg
 system ({ toMsg, projectAdded, projectEdited } as configParams) =
     let
-        editProject : EditProject.System msg
-        editProject =
-            EditProject.system
-                { toMsg = toMsg << SubMsg << EditProjectMsg
-                , canceled = toMsg Canceled
-                , saved = toMsg << SavedMsg << EditProjectSaved
-                }
-
         update : Msg -> Dialog -> Ret Dialog msg
         update message model =
+            let
+                { editProject, addProject } =
+                    config
+            in
             case message of
                 SubMsg subMsg ->
                     case ( subMsg, model ) of
                         ( AddProjectMsg msg, AddProject sub ) ->
-                            AddProject.update addProjectConfig msg sub
-                                |> Ret.mapBoth AddProject toMsg
+                            addProject.update msg sub |> Ret.map AddProject
 
                         ( EditProjectMsg msg, EditProject sub ) ->
                             editProject.update msg sub |> Ret.map EditProject
@@ -66,8 +61,7 @@ system ({ toMsg, projectAdded, projectEdited } as configParams) =
                     in
                     case msg of
                         OpenAddProject idx ->
-                            AddProject.initAt idx
-                                |> Tuple.mapBoth AddProject focusCmd
+                            addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
 
                         OpenEditProject project ->
                             editProject.init project |> Ret.map EditProject
