@@ -92,6 +92,7 @@ type Msg
     | SelectColor SelectColor.Msg
     | CColorChanged CColor
     | Favorite Bool
+    | Saved
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
@@ -105,7 +106,7 @@ fields =
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { toMsg, selectColorSys } message model =
+update { toMsg, selectColorSys, saved } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
@@ -119,6 +120,14 @@ update { toMsg, selectColorSys } message model =
         CColorChanged cColor ->
             ( { model | cColor = cColor }, Cmd.none )
 
+        Saved ->
+            ( model
+            , Ret.toCmd
+                (SavedWith model.title model.favorite model.cColor model.idx
+                    |> saved
+                )
+            )
+
 
 autofocusDomId : String
 autofocusDomId =
@@ -128,9 +137,7 @@ autofocusDomId =
 view : Config msg -> AddProject -> Html msg
 view { toMsg, saved, canceled, selectColorSys } model =
     Dialog.UI.viewForm
-        { submit =
-            SavedWith model.title model.favorite model.cColor model.idx
-                |> saved
+        { submit = toMsg Saved
         , cancel = canceled
         , title = "Add Project"
         , submitTitle = "Add"
