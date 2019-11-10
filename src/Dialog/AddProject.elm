@@ -13,8 +13,9 @@ module Dialog.AddProject exposing
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
-import Html.Styled as H exposing (Attribute, Html)
+import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
+import Lens
 import Ret exposing (Ret, RetF)
 
 
@@ -94,21 +95,23 @@ type Msg
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
-subscriptions { toMsg } model =
-    SelectColor.subscriptions selectColorConfig model.selectColor
-        |> Sub.map toMsg
+subscriptions { toMsg, selectColor } model =
+    selectColor.subscriptions model.selectColor
+
+
+fields =
+    { selectColor = Lens.fromTuple ( .selectColor, \s b -> { b | selectColor = s } )
+    }
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { toMsg } message model =
+update { toMsg, selectColor } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            SelectColor.update selectColorConfig msg model.selectColor
-                |> Tuple.mapBoth (\selectColor -> { model | selectColor = selectColor })
-                    (Cmd.map toMsg)
+            Ret.updateSub fields.selectColor selectColor.update msg model
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -120,14 +123,6 @@ update { toMsg } message model =
 autofocusDomId : String
 autofocusDomId =
     "add-project-dialog-autofocus"
-
-
-selectColorConfig : SelectColor.Config Msg
-selectColorConfig =
-    { toMsg = SelectColor
-    , domIdPrefix = "add-project-dialog"
-    , changed = CColorChanged
-    }
 
 
 view : Config msg -> AddProject -> Html msg
