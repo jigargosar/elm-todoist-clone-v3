@@ -36,59 +36,6 @@ system :
     -> System msg
 system ({ toMsg, projectAdded, projectEdited } as configParams) =
     let
-        update : Msg -> Dialog -> Ret Dialog msg
-        update message model =
-            let
-                { editProject, addProject } =
-                    config
-            in
-            case message of
-                SubMsg subMsg ->
-                    case ( subMsg, model ) of
-                        ( AddProjectMsg msg, AddProject sub ) ->
-                            addProject.update msg sub |> Ret.map AddProject
-
-                        ( EditProjectMsg msg, EditProject sub ) ->
-                            editProject.update msg sub |> Ret.map EditProject
-
-                        _ ->
-                            Ret.only model
-
-                OpenMsg msg ->
-                    let
-                        focusCmd =
-                            Focus.cmd (toMsg << Focused)
-                    in
-                    case msg of
-                        OpenAddProject idx ->
-                            addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
-
-                        OpenEditProject project ->
-                            editProject.init project |> Ret.map EditProject
-
-                Focused result ->
-                    case result of
-                        Err (Dom.NotFound domId) ->
-                            ( model, Log.logError <| "dialog focus failed: " ++ domId )
-
-                        Ok () ->
-                            ( model, Cmd.none )
-
-                Canceled ->
-                    Ret.only Closed
-
-                SavedMsg savedMsg ->
-                    ( Closed
-                    , Ret.toCmd
-                        (case savedMsg of
-                            AddProjectSaved savedWith ->
-                                projectAdded savedWith
-
-                            EditProjectSaved savedWith ->
-                                projectEdited savedWith
-                        )
-                    )
-
         openMsg msg =
             toMsg << OpenMsg << msg
 
@@ -100,24 +47,18 @@ system ({ toMsg, projectAdded, projectEdited } as configParams) =
     , subscriptions = subscriptions config
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
-    , updateF = Ret.toUpdateF update
-    , update = update
+    , updateF = Ret.toUpdateF (update config)
+    , update = update config
     , view = view config
     }
-
-
-addProjectConfig =
-    AddProject.createConfig
-        { toMsg = SubMsg << AddProjectMsg
-        , canceled = Canceled
-        , saved = SavedMsg << AddProjectSaved
-        }
 
 
 type alias Config msg =
     { toMsg : Msg -> msg
     , addProject : AddProject.System msg
+    , projectAdded : AddProject.SavedWith -> msg
     , editProject : EditProject.System msg
+    , projectEdited : EditProject.SavedWith -> msg
     }
 
 
@@ -153,8 +94,10 @@ createConfig { toMsg, projectAdded, projectEdited } =
                 }
     in
     { toMsg = toMsg
-    , editProject = editProject
+    , projectAdded = projectAdded
     , addProject = addProject
+    , editProject = editProject
+    , projectEdited = projectEdited
     }
 
 
@@ -207,6 +150,60 @@ subscriptions config dialog =
 
         Closed ->
             Sub.none
+
+
+update : Config msg -> Msg -> Dialog -> Ret Dialog msg
+update config message model =
+    let
+        { toMsg, editProject, addProject } =
+            config
+    in
+    case message of
+        SubMsg subMsg ->
+            case ( subMsg, model ) of
+                ( AddProjectMsg msg, AddProject sub ) ->
+                    addProject.update msg sub |> Ret.map AddProject
+
+                ( EditProjectMsg msg, EditProject sub ) ->
+                    editProject.update msg sub |> Ret.map EditProject
+
+                _ ->
+                    Ret.only model
+
+        OpenMsg msg ->
+            let
+                focusCmd =
+                    Focus.cmd (toMsg << Focused)
+            in
+            case msg of
+                OpenAddProject idx ->
+                    addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
+
+                OpenEditProject project ->
+                    editProject.init project |> Ret.map EditProject
+
+        Focused result ->
+            case result of
+                Err (Dom.NotFound domId) ->
+                    ( model, Log.logError <| "dialog focus failed: " ++ domId )
+
+                Ok () ->
+                    ( model, Cmd.none )
+
+        Canceled ->
+            Ret.only Closed
+
+        SavedMsg savedMsg ->
+            ( Closed
+            , Ret.toCmd
+                (case savedMsg of
+                    AddProjectSaved savedWith ->
+                        config.projectAdded savedWith
+
+                    EditProjectSaved savedWith ->
+                        config.projectEdited savedWith
+                )
+            )
 
 
 view : Config msg -> Dialog -> Html msg
