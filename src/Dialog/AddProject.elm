@@ -14,7 +14,7 @@ import Basics.More exposing (msgToCmd)
 import CColor exposing (CColor)
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
-import Html.Styled exposing (Attribute, Html)
+import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A
 import Lens
 import Ret exposing (Ret, RetF)
@@ -39,7 +39,13 @@ type alias Context msg =
     { toMsg : Msg -> msg
     , canceled : msg
     , savedWithCmd : SavedWith -> Cmd msg
-    , selectColorSys : SelectColor.System msg
+    }
+
+
+selectColorConfig =
+    { toMsg = SelectColor
+    , domIdPrefix = "add-project-dialog"
+    , changed = CColorChanged
     }
 
 
@@ -51,12 +57,6 @@ system config =
             { canceled = config.canceled
             , toMsg = config.toMsg
             , savedWithCmd = config.saved >> msgToCmd
-            , selectColorSys =
-                SelectColor.system
-                    { toMsg = config.toMsg << SelectColor
-                    , domIdPrefix = "add-project-dialog"
-                    , changed = config.toMsg << CColorChanged
-                    }
             }
     in
     { initAt = initAt
@@ -104,18 +104,20 @@ type Msg
 
 
 subscriptions : Context msg -> AddProject -> Sub msg
-subscriptions { selectColorSys } model =
-    selectColorSys.subscriptions model.selectColor
+subscriptions { toMsg } model =
+    SelectColor.subscriptions selectColorConfig model.selectColor
+        |> Sub.map toMsg
 
 
 update : Context msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { savedWithCmd, selectColorSys } message model =
+update { toMsg, savedWithCmd } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor selectColorSys.update msg model
+            Ret.updateSub fields.selectColor (SelectColor.update selectColorConfig) msg model
+                |> Ret.mapCmd toMsg
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -153,15 +155,16 @@ view ctx model =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = toMsg << Title
+                , changed = Title
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
-                (ctx.selectColorSys.view model.cColor model.selectColor)
+                (SelectColor.view selectColorConfig model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = toMsg << Favorite
+                , changed = Favorite
                 }
             ]
+                |> List.map (H.map toMsg)
         }

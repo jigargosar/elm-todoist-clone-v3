@@ -150,6 +150,10 @@ updateSub { get, set } subUpdate msg big =
         |> map (\small -> set small big)
 
 
+mapCmd =
+    Return.mapCmd
+
+
 mapSub : Lens s b -> (s -> s) -> RetF b x
 mapSub subLens func =
     map (Lens.over subLens func)
