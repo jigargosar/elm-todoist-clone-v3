@@ -139,7 +139,7 @@ view { toMsg, saved, canceled, selectColorSys } model =
                 { labelText = "Project name"
                 , value = model.title
                 , changed = toMsg << Title
-                , attrs = [ A.id autofocusDomId, autofocus True ]
+                , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
                 (selectColorSys.view model.cColor model.selectColor)
