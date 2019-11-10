@@ -11,11 +11,10 @@ import Browser.Dom as Dom
 import Dialog.AddProject as AddProject exposing (AddProject)
 import Dialog.EditProject as EditProject exposing (EditProject)
 import Focus exposing (FocusResult)
-import Html.Styled exposing (Html)
+import Html.Styled as H exposing (Html)
 import Log
 import Project exposing (Project)
 import Ret exposing (Ret)
-import Task
 
 
 type alias System msg =
@@ -47,14 +46,6 @@ system c =
         toMsg =
             c.toMsg
 
-        addProject : AddProject.System msg
-        addProject =
-            AddProject.system
-                { toMsg = c.toMsg << SubMsg << AddProjectMsg
-                , canceled = c.toMsg Canceled
-                , saved = c.toMsg << SavedMsg << AddProjectSaved
-                }
-
         editProject : EditProject.System msg
         editProject =
             EditProject.system
@@ -67,7 +58,7 @@ system c =
         subscriptions dialog =
             case dialog of
                 AddProject model ->
-                    addProject.subscriptions model
+                    AddProject.subscriptions addProjectConfig model |> Sub.map toMsg
 
                 EditProject model ->
                     editProject.subscriptions model
@@ -97,7 +88,7 @@ system c =
                     in
                     case msg of
                         OpenAddProject idx ->
-                            addProject.initAt idx
+                            AddProject.initAt idx
                                 |> Tuple.mapBoth AddProject focusCmd
 
                         OpenEditProject project ->
@@ -130,7 +121,7 @@ system c =
         view dialog =
             case dialog of
                 AddProject model ->
-                    [ addProject.view model ]
+                    [ AddProject.view addProjectConfig model |> H.map toMsg ]
 
                 EditProject model ->
                     [ editProject.view model ]
