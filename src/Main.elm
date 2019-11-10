@@ -329,7 +329,7 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.filterWith (projectById projectId)
+            Ret.filterMap (projectById projectId)
                 (\project ->
                     DB.mapPC
                         (updateProject project

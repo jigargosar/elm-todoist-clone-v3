@@ -50,8 +50,8 @@ andThenF func =
     andThen (\m -> func m (only m))
 
 
-filterWith : (a -> Maybe b) -> (b -> a -> a) -> RetF a x
-filterWith func func2 ret =
+filterMap : (a -> Maybe b) -> (b -> a -> a) -> RetF a x
+filterMap func func2 ret =
     case Tuple.first ret |> func of
         Just b ->
             ret |> map (func2 b)
