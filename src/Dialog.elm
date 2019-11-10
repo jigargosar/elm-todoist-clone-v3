@@ -124,6 +124,33 @@ editProjectConfig =
         }
 
 
+type alias Config msg =
+    { toMsg : Msg -> msg
+    , editProject : EditProject.System msg
+    }
+
+
+createConfig :
+    { toMsg : Msg -> msg
+    , projectAdded : AddProject.SavedWith -> msg
+    , projectEdited : EditProject.SavedWith -> msg
+    }
+    -> Config msg
+createConfig { toMsg, projectAdded, projectEdited } =
+    let
+        editProject : EditProject.System msg
+        editProject =
+            EditProject.system
+                { toMsg = toMsg << SubMsg << EditProjectMsg
+                , canceled = toMsg Canceled
+                , saved = toMsg << SavedMsg << EditProjectSaved
+                }
+    in
+    { toMsg = toMsg
+    , editProject = editProject
+    }
+
+
 type Dialog
     = AddProject AddProject
     | EditProject EditProject
