@@ -30,6 +30,7 @@ type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
     , canceled : msg
+    , selectColor : SelectColor.System msg
     }
 
 
@@ -46,6 +47,12 @@ system c =
             { toMsg = c.toMsg
             , saved = c.saved
             , canceled = c.canceled
+            , selectColor =
+                SelectColor.system
+                    { toMsg = c.toMsg << SelectColor
+                    , domIdPrefix = "add-project-dialog"
+                    , changed = c.toMsg << CColorChanged
+                    }
             }
     in
     { initAt = initAt
@@ -124,7 +131,7 @@ selectColorConfig =
 
 
 view : Config msg -> AddProject -> Html msg
-view { toMsg, saved, canceled } model =
+view { toMsg, saved, canceled, selectColor } model =
     Dialog.UI.viewForm
         { submit =
             SavedWith model.title model.favorite model.cColor model.idx
@@ -140,9 +147,7 @@ view { toMsg, saved, canceled } model =
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
-                (SelectColor.view selectColorConfig model.cColor model.selectColor
-                    |> H.map toMsg
-                )
+                (selectColor.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
