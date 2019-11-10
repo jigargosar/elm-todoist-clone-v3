@@ -126,6 +126,7 @@ editProjectConfig =
 
 type alias Config msg =
     { toMsg : Msg -> msg
+    , addProject : AddProject.System msg
     , editProject : EditProject.System msg
     }
 
@@ -138,16 +139,33 @@ createConfig :
     -> Config msg
 createConfig { toMsg, projectAdded, projectEdited } =
     let
+        subMsg msg =
+            toMsg << SubMsg << msg
+
+        savedMsg msg =
+            toMsg << SavedMsg << msg
+
+        canceledMsg =
+            toMsg Canceled
+
         editProject : EditProject.System msg
         editProject =
             EditProject.system
-                { toMsg = toMsg << SubMsg << EditProjectMsg
-                , canceled = toMsg Canceled
-                , saved = toMsg << SavedMsg << EditProjectSaved
+                { toMsg = subMsg EditProjectMsg
+                , canceled = canceledMsg
+                , saved = savedMsg EditProjectSaved
+                }
+
+        addProject =
+            AddProject.system
+                { toMsg = subMsg AddProjectMsg
+                , canceled = canceledMsg
+                , saved = savedMsg AddProjectSaved
                 }
     in
     { toMsg = toMsg
     , editProject = editProject
+    , addProject = addProject
     }
 
 
