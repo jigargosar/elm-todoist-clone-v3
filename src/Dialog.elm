@@ -29,6 +29,13 @@ type alias System msg =
     }
 
 
+addProjectConfig =
+    { toMsg = SubMsg << AddProjectMsg
+    , canceled = Canceled
+    , saved = SavedMsg << AddProjectSaved
+    }
+
+
 system :
     { toMsg : Msg -> msg
     , projectAdded : AddProject.SavedWith -> msg

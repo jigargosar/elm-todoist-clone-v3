@@ -4,6 +4,7 @@ module Dialog.AddProject exposing
     , Msg
     , SavedWith
     , System
+    , initAt
     , subscriptions
     , system
     , update
