@@ -124,26 +124,29 @@ selectColorConfig =
 
 
 view : Config msg -> AddProject -> Html msg
-view { toMsg } model =
+view { toMsg, saved, canceled } model =
     Dialog.UI.viewForm
-        { submit = Save
-        , cancel = Cancel
+        { submit =
+            SavedWith model.title model.favorite model.cColor model.idx
+                |> saved
+        , cancel = canceled
         , title = "Add Project"
         , submitTitle = "Add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = Title
+                , changed = toMsg << Title
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
-                (SelectColor.view selectColorConfig model.cColor model.selectColor)
+                (SelectColor.view selectColorConfig model.cColor model.selectColor
+                    |> H.map toMsg
+                )
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = Favorite
+                , changed = toMsg << Favorite
                 }
             ]
         }
-        |> H.map toMsg
