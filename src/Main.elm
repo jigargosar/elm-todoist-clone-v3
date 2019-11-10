@@ -330,7 +330,7 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.mapSub fields.pc (PC.updateById projectId updateProject)
+            Ret.mapSub fields.pc (PC.update projectId updateProject)
 
         SubMsg subMsg ->
             updateSub subMsg

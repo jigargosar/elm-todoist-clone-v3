@@ -5,7 +5,7 @@ module ProjectCollection exposing
     , initial
     , put
     , sorted
-    , updateById
+    , update
     , updateSortOrder
     )
 
@@ -98,6 +98,6 @@ put project model =
     updateSortOrder (pre ++ project :: post) model
 
 
-updateById : ProjectId -> (Project -> Project) -> ProjectCollection -> ProjectCollection
-updateById id func =
+update : ProjectId -> (Project -> Project) -> ProjectCollection -> ProjectCollection
+update id func =
     map (dict.update id (Maybe.map func))
