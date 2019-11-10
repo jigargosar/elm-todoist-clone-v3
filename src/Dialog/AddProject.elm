@@ -24,7 +24,8 @@ import Task
 
 
 type alias System msg =
-    { initAt : Int -> ( AddProject, Cmd msg )
+    { initAt2 : Int -> ( AddProject, String )
+    , initAt : Int -> ( AddProject, Cmd msg )
     , subscriptions : AddProject -> Sub msg
     , updateF : Msg -> RetF AddProject msg
     , update : Msg -> AddProject -> Ret AddProject msg
@@ -35,6 +36,7 @@ type alias System msg =
 system : Config msg -> System msg
 system config =
     { initAt = initAt config
+    , initAt2 = initAt2
     , subscriptions = subscriptions config
     , updateF = Ret.toUpdateF (update config)
     , update = update config
@@ -65,6 +67,13 @@ initAt { toMsg } idx =
     , Dom.focus autofocusDomId
         |> Task.attempt AutoFocus
         |> Cmd.map toMsg
+    )
+
+
+initAt2 : Int -> ( AddProject, String )
+initAt2 idx =
+    ( AddProject "" False SelectColor.initial CColor.default idx
+    , autofocusDomId
     )
 
 
