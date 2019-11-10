@@ -36,10 +36,7 @@ type alias Config msg =
 
 
 type alias Context msg =
-    { titleChanged : String -> msg
-    , favoriteChanged : Bool -> msg
-    , cColorChanged : CColor -> msg
-    , saved : msg
+    { toMsg : Msg -> msg
     , canceled : msg
     , savedWithCmd : SavedWith -> Cmd msg
     , selectColorSys : SelectColor.System msg
@@ -52,10 +49,7 @@ system config =
         ctx : Context msg
         ctx =
             { canceled = config.canceled
-            , titleChanged = config.toMsg << Title
-            , favoriteChanged = config.toMsg << Favorite
-            , cColorChanged = config.toMsg << CColorChanged
-            , saved = config.toMsg Saved
+            , toMsg = config.toMsg
             , savedWithCmd = config.saved >> msgToCmd
             , selectColorSys =
                 SelectColor.system
@@ -142,18 +136,16 @@ autofocusDomId =
 
 
 view :
-    { a
-        | saved : msg
-        , canceled : msg
-        , titleChanged : String -> msg
-        , selectColorSys : SelectColor.System msg
-        , favoriteChanged : Bool -> msg
-    }
+    Context msg
     -> AddProject
     -> Html msg
 view ctx model =
+    let
+        toMsg =
+            ctx.toMsg
+    in
     Dialog.UI.viewForm
-        { submit = ctx.saved
+        { submit = toMsg Saved
         , cancel = ctx.canceled
         , title = "Add Project"
         , submitTitle = "Add"
@@ -161,7 +153,7 @@ view ctx model =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = ctx.titleChanged
+                , changed = toMsg << Title
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
@@ -169,7 +161,7 @@ view ctx model =
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = ctx.favoriteChanged
+                , changed = toMsg << Favorite
                 }
             ]
         }
