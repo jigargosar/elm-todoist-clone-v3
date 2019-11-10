@@ -29,10 +29,11 @@ type alias System msg =
 
 
 addProjectConfig =
-    { toMsg = SubMsg << AddProjectMsg
-    , canceled = Canceled
-    , saved = SavedMsg << AddProjectSaved
-    }
+    AddProject.createConfig
+        { toMsg = SubMsg << AddProjectMsg
+        , canceled = Canceled
+        , saved = SavedMsg << AddProjectSaved
+        }
 
 
 system :
@@ -49,9 +50,9 @@ system c =
         editProject : EditProject.System msg
         editProject =
             EditProject.system
-                { toMsg = c.toMsg << SubMsg << EditProjectMsg
-                , canceled = c.toMsg Canceled
-                , saved = c.toMsg << SavedMsg << EditProjectSaved
+                { toMsg = toMsg << SubMsg << EditProjectMsg
+                , canceled = toMsg Canceled
+                , saved = toMsg << SavedMsg << EditProjectSaved
                 }
 
         subscriptions : Dialog -> Sub msg
