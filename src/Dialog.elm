@@ -60,9 +60,7 @@ system ({ toMsg } as configParams) =
 
 type alias Config msg =
     { toMsg : Msg -> msg
-    , addProject : AddProject.System Msg
     , projectAdded : AddProject.SavedWith -> msg
-    , editProject : EditProject.System Msg
     , projectEdited : EditProject.SavedWith -> msg
     }
 
@@ -73,28 +71,24 @@ createConfig :
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> Config msg
-createConfig { toMsg, projectAdded, projectEdited } =
-    let
-        editProject =
-            EditProject.system
-                { toMsg = SubMsg << EditProjectMsg
-                , canceled = Canceled
-                , saved = SavedMsg << EditProjectSaved
-                }
+createConfig =
+    identity
 
-        addProject =
-            AddProject.system
-                { toMsg = SubMsg << AddProjectMsg
-                , canceled = Canceled
-                , saved = SavedMsg << AddProjectSaved
-                }
-    in
-    { toMsg = toMsg
-    , projectAdded = projectAdded
-    , addProject = addProject
-    , editProject = editProject
-    , projectEdited = projectEdited
-    }
+
+editProject =
+    EditProject.system
+        { toMsg = SubMsg << EditProjectMsg
+        , canceled = Canceled
+        , saved = SavedMsg << EditProjectSaved
+        }
+
+
+addProject =
+    AddProject.system
+        { toMsg = SubMsg << AddProjectMsg
+        , canceled = Canceled
+        , saved = SavedMsg << AddProjectSaved
+        }
 
 
 type Dialog
@@ -134,7 +128,7 @@ type Msg
 subscriptions : Config msg -> Dialog -> Sub msg
 subscriptions config dialog =
     let
-        { toMsg, addProject, editProject } =
+        { toMsg } =
             config
     in
     (case dialog of
@@ -151,11 +145,7 @@ subscriptions config dialog =
 
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
-update config message model =
-    let
-        { toMsg, editProject, addProject } =
-            config
-    in
+update ({ toMsg } as config) message model =
     case message of
         SubMsg subMsg ->
             (case ( subMsg, model ) of
@@ -207,11 +197,7 @@ update config message model =
 
 
 view : Config msg -> Dialog -> Html msg
-view config dialog =
-    let
-        { toMsg, addProject, editProject } =
-            config
-    in
+view { toMsg } dialog =
     (case dialog of
         AddProject model ->
             addProject.view model
