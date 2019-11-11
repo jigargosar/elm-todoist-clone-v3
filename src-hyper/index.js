@@ -1,8 +1,7 @@
 import 'tachyons'
-import { h, app } from 'hyperapp'
-
-import validate from 'aproba'
+import { app } from 'hyperapp'
 import nanoid from 'nanoid'
+import { div } from './html'
 
 const INC = state => {
   return state.ct + 1
@@ -26,27 +25,13 @@ app({
 
 function view(state) {
   return div({}, [
-    h1({}, state.ct),
-    button({ onClick: DEC }, '-'),
-    button({ onClick: INC }, '+'),
     div({ class: 'f2 pa2 flex' }, 'Projects'),
     state.pl.map(viewPrj),
   ])
 }
 
 function viewPrj(prj) {
-  return div({ class: 'ph3 pv2' }, [prj.title])
+  return div({ class: 'ph3 pv1 lh-copy' }, [prj.title])
 }
 
 // HELPERS
-
-const div = createEl('div')
-const h1 = createEl('h1')
-const button = createEl('button')
-
-function createEl(name) {
-  validate('S', arguments)
-  return function(props = {}, ...children) {
-    return h(name, props, ...children)
-  }
-}
