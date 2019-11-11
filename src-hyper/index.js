@@ -17,7 +17,7 @@ function createPrj(title) {
 app({
   init: {
     ct: 0,
-    pl: ['p1', 'p2', 'p3'].map(createPrj),
+    pl: ['Build gate', 'Exam Prep', 'Clone App'].map(createPrj),
   },
   view,
   node: document.getElementById('app'),
@@ -28,6 +28,7 @@ function view(state) {
     h1({}, state.ct),
     button({ onClick: DEC }, '-'),
     button({ onClick: INC }, '+'),
+    div({},)
   ])
 }
 
@@ -39,8 +40,7 @@ const button = createEl('button')
 
 function createEl(name) {
   validate('S', arguments)
-  return function(props = {}, children = []) {
-    validate('O*', arguments)
-    return h(name, props, children)
+  return function(props = {}, ...children) {
+    return h(name, props, ...children)
   }
 }
