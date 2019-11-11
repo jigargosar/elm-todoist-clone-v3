@@ -12,6 +12,14 @@ const DEC = state => {
   return state.ct + 1
 }
 
+const DRAG_START = (state, { event, prj }) => {
+  event.preventDefault()
+  return {
+    ...state,
+    drag: { prj, start: { x: event.pageX, y: event.pageY } },
+  }
+}
+
 function createPrj(title) {
   return { id: 'prj-' + nanoid(), title }
 }
@@ -38,7 +46,12 @@ function viewPrj(prj) {
       {
         class: 'cur-move h2 w2 flex items-center justify-center',
         draggable: true,
-        onDragstart: [identity ,console.log]
+        onDragstart: [
+          DRAG_START,
+          function(event) {
+            return { event, prj }
+          },
+        ],
       },
       [i({ class: 'gray material-icons' }, 'folder')],
     ),
