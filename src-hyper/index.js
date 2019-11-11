@@ -3,8 +3,8 @@ import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
-import { isNil, tap } from 'ramda'
-import { onMouseMove, onMouseUp, preventDefault } from '@hyperapp/events'
+import { isNil } from 'ramda'
+import { onMouseMove, onMouseUp } from '@hyperapp/events'
 
 const DRAG_START = (state, { event, prj }) => {
   event.preventDefault()
