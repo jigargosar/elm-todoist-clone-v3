@@ -1,6 +1,7 @@
 import { h, app } from 'hyperapp'
 
 import validate from 'aproba'
+import nanoid from 'nanoid'
 
 const INC = state => {
   return state.ct + 1
@@ -10,7 +11,7 @@ const DEC = state => {
 }
 
 function createPrj(title) {
-  return { title }
+  return { id: 'prj-' + nanoid(), title }
 }
 
 app({
