@@ -26,7 +26,7 @@ const button = createEl('button')
 function createEl(name) {
   validate('S', arguments)
   return function(props = {}, children = []) {
-    validate('OA', arguments)
+    validate('O*', arguments)
     return h(name, props, children)
   }
 }
