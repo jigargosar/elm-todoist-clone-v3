@@ -3,7 +3,7 @@ import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
-import { isNil } from 'ramda'
+import { isNil, tap } from 'ramda'
 import { onMouseMove, onMouseUp, preventDefault } from '@hyperapp/events'
 
 const DRAG_START = (state, { event, prj }) => {
