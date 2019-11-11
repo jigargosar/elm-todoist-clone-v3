@@ -75,6 +75,7 @@ createConfig =
     identity
 
 
+editProject : EditProject.System Msg
 editProject =
     EditProject.system
         { toMsg = SubMsg << EditProjectMsg
@@ -83,6 +84,7 @@ editProject =
         }
 
 
+addProject : AddProject.System Msg
 addProject =
     AddProject.system
         { toMsg = SubMsg << AddProjectMsg

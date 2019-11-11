@@ -4,7 +4,6 @@ module Dialog.AddProject exposing
     , Msg
     , SavedWith
     , System
-    , createConfig
     , initAt
     , subscriptions
     , system
@@ -29,16 +28,13 @@ type alias System msg =
     }
 
 
-system : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> System msg
-system =
-    createConfig
-        >> (\config ->
-                { initAt = initAt
-                , subscriptions = subscriptions config
-                , update = update config
-                , view = view config
-                }
-           )
+system : Config msg -> System msg
+system config =
+    { initAt = initAt
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    }
 
 
 type alias Config msg =
@@ -55,11 +51,6 @@ selectColor =
         , domIdPrefix = "add-project-dialog"
         , changed = CColor
         }
-
-
-createConfig : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> Config msg
-createConfig =
-    identity
 
 
 type alias AddProject =
