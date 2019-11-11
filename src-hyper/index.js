@@ -1,7 +1,7 @@
 import 'tachyons'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
-import { div } from './html'
+import { div, i } from './html'
 
 const INC = state => {
   return state.ct + 1
@@ -31,7 +31,10 @@ function view(state) {
 }
 
 function viewPrj(prj) {
-  return div({ class: 'ph3 pv1 lh-copy' }, [prj.title])
+  return div({ class: 'ph3 pv1 lh-copy' }, [
+    i({ class: 'material-icons' }, 'folder'),
+    prj.title,
+  ])
 }
 
 // HELPERS
