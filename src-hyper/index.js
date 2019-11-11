@@ -4,7 +4,7 @@ import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
 import { identity, isNil } from 'ramda'
-import { onMouseMove } from '@hyperapp/events'
+import { onMouseMove, onMouseUp } from '@hyperapp/events'
 
 const INC = state => {
   return state.ct + 1
@@ -35,11 +35,16 @@ app({
   node: document.getElementById('app'),
   subscriptions: function(state) {
     return [
-      !isNil(state.drag) &&
+      !isNil(state.drag) && [
         onMouseMove(function(state, event) {
-          console.log(event)
+          console.log('dragging')
           return state
         }),
+        onMouseUp(function(state, event) {
+          console.log('drag complete')
+          return { ...state, drag: null }
+        }),
+      ],
     ]
   },
 })
