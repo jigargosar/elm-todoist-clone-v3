@@ -157,6 +157,24 @@ subscriptions config dialog =
             Sub.none
 
 
+updateAddProject func model =
+    case model of
+        AddProject sub ->
+            func sub |> Ret.map AddProject
+
+        _ ->
+            Ret.only model
+
+
+getAddProject model =
+    case model of
+        AddProject sub ->
+            Just sub
+
+        _ ->
+            Nothing
+
+
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
 update config message model =
     let
@@ -182,7 +200,7 @@ update config message model =
             in
             case msg of
                 OpenAddProject idx ->
-                    addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
+                    AddProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
 
                 OpenEditProject project ->
                     editProject.init project |> Tuple.mapBoth EditProject focusCmd
