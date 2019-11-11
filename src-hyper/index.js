@@ -6,18 +6,31 @@ import { a, div, i } from './html'
 import { identity, isNil } from 'ramda'
 import { onMouseMove, onMouseUp } from '@hyperapp/events'
 
-const INC = state => {
-  return state.ct + 1
-}
-const DEC = state => {
-  return state.ct + 1
-}
-
 const DRAG_START = (state, { event, prj }) => {
   event.preventDefault()
+  const pos = { x: event.pageX, y: event.pageY }
   return {
     ...state,
-    drag: { prj, start: { x: event.pageX, y: event.pageY } },
+    drag: { prj, start: pos, current: pos },
+  }
+}
+
+const DRAG_MOVE = (state, { event }) => {
+  const drag = state.drag
+  if (isNil(drag)) return state
+  const pos = { x: event.pageX, y: event.pageY }
+  return {
+    ...state,
+    drag: { ...drag, current: pos },
+  }
+}
+
+const DRAG_COMPLETE = (state, { event }) => {
+  const drag = state.drag
+  if (isNil(drag)) return state
+  return {
+    ...state,
+    drag: null,
   }
 }
 
@@ -33,21 +46,20 @@ app({
   },
   view,
   node: document.getElementById('app'),
-  subscriptions: function(state) {
-    return [
-      !isNil(state.drag) && [
-        onMouseMove(function(state, event) {
-          console.log('dragging')
-          return state
-        }),
-        onMouseUp(function(state, event) {
-          console.log('drag complete')
-          return { ...state, drag: null }
-        }),
-      ],
-    ]
-  },
+  subscriptions,
 })
+
+function subscriptions(state) {
+  return [
+    !isNil(state.drag) && [
+      onMouseMove(DRAG_MOVE),
+      onMouseUp(function(state, event) {
+        console.log('drag complete')
+        return { ...state, drag: null }
+      }),
+    ],
+  ]
+}
 
 function view(state) {
   return div({}, [
