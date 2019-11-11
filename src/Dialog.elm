@@ -19,7 +19,7 @@ import Focus exposing (FocusResult)
 import Html.Styled as H exposing (Html)
 import Log
 import Project exposing (Project)
-import Ret exposing (Ret)
+import Ret exposing (Ret, RetF)
 
 
 type alias System msg =
@@ -185,7 +185,7 @@ update config message model =
                     addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
 
                 OpenEditProject project ->
-                    editProject.init project |> Ret.map EditProject
+                    editProject.init project |> Tuple.mapBoth EditProject focusCmd
 
         Focused result ->
             case result of
@@ -209,6 +209,63 @@ update config message model =
                         config.projectEdited savedWith
                 )
             )
+
+
+updateF : Config msg -> Msg -> RetF Dialog msg
+updateF config message =
+    let
+        { toMsg, editProject, addProject } =
+            config
+    in
+    case message of
+        SubMsg subMsg ->
+            Ret.andThen
+                (\model ->
+                    case ( subMsg, model ) of
+                        ( AddProjectMsg msg, AddProject sub ) ->
+                            addProject.update msg sub |> Ret.map AddProject
+
+                        ( EditProjectMsg msg, EditProject sub ) ->
+                            editProject.update msg sub |> Ret.map EditProject
+
+                        _ ->
+                            Ret.only model
+                )
+
+        OpenMsg msg ->
+            Ret.andThenAlways
+                (let
+                    focusCmd =
+                        Focus.cmd (toMsg << Focused)
+
+                    mapAndFocus tag =
+                        Tuple.mapBoth tag focusCmd
+                 in
+                 case msg of
+                    OpenAddProject idx ->
+                        addProject.initAt idx |> mapAndFocus AddProject
+
+                    OpenEditProject project ->
+                        editProject.init project |> mapAndFocus EditProject
+                )
+
+        Focused result ->
+            Ret.addError (\(Dom.NotFound domId) -> Log.logError <| "dialog focus failed: " ++ domId)
+                result
+
+        Canceled ->
+            Ret.always Closed
+
+        SavedMsg savedMsg ->
+            Ret.always Closed
+                >> Ret.addMsg
+                    (case savedMsg of
+                        AddProjectSaved savedWith ->
+                            config.projectAdded savedWith
+
+                        EditProjectSaved savedWith ->
+                            config.projectEdited savedWith
+                    )
 
 
 view : Config msg -> Dialog -> Html msg

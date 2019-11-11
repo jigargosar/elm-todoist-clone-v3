@@ -11,22 +11,19 @@ module Dialog.EditProject exposing
     , view
     )
 
-import Browser.Dom as Dom
 import CColor exposing (CColor)
-import Cmds
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Lens
-import Log
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Ret exposing (RetF)
 
 
 type alias System msg =
-    { init : Project -> ( EditProject, Cmd msg )
+    { init : Project -> ( EditProject, String )
     , subscriptions : EditProject -> Sub msg
     , update : Msg -> EditProject -> ( EditProject, Cmd msg )
     , updateF : Msg -> RetF EditProject msg
@@ -100,14 +97,14 @@ type alias SavedWith =
     }
 
 
-init : Config msg -> Project -> ( EditProject, Cmd msg )
+init : Config msg -> Project -> ( EditProject, String )
 init { toMsg } project =
     ( EditProject (Project.id project)
         (Project.title project)
         False
         SelectColor.initial
         (Project.cColor project)
-    , Cmds.focus autofocusDomId (toMsg << AutoFocus)
+    , autofocusDomId
     )
 
 
@@ -117,7 +114,6 @@ type Msg
     | SelectColor SelectColor.Msg
     | CColor CColor
     | Favorite Bool
-    | AutoFocus (Result Dom.Error ())
 
 
 subscriptions : Config msg -> EditProject -> Sub msg
@@ -151,9 +147,6 @@ updateF config message =
 
         SelectColor msg ->
             Ret.updateSubF fields.selectColor selectColor.updateF msg
-
-        AutoFocus result ->
-            Ret.addError Log.focusError result
 
 
 autofocusDomId : String
