@@ -3,8 +3,8 @@ import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
-import { identity, isNil } from 'ramda'
-import { onMouseMove, onMouseUp } from '@hyperapp/events'
+import { isNil } from 'ramda'
+import { onMouseMove, onMouseUp, preventDefault } from '@hyperapp/events'
 
 const DRAG_START = (state, { event, prj }) => {
   event.preventDefault()
@@ -15,7 +15,7 @@ const DRAG_START = (state, { event, prj }) => {
   }
 }
 
-const DRAG_MOVE = (state, { event }) => {
+const DRAG_MOVE = (state, event) => {
   const drag = state.drag
   if (isNil(drag)) return state
   const pos = { x: event.pageX, y: event.pageY }
@@ -25,7 +25,7 @@ const DRAG_MOVE = (state, { event }) => {
   }
 }
 
-const DRAG_COMPLETE = (state, { event }) => {
+const DRAG_COMPLETE = state => {
   const drag = state.drag
   if (isNil(drag)) return state
   return {
@@ -53,10 +53,7 @@ function subscriptions(state) {
   return [
     !isNil(state.drag) && [
       onMouseMove(DRAG_MOVE),
-      onMouseUp(function(state, event) {
-        console.log('drag complete')
-        return { ...state, drag: null }
-      }),
+      onMouseUp(DRAG_COMPLETE),
     ],
   ]
 }
