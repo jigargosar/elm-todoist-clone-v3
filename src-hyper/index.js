@@ -1,4 +1,5 @@
 import 'tachyons'
+import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { div, i } from './html'
