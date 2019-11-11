@@ -19,7 +19,7 @@ app({
     ct: 0,
     pl: ['p1', 'p2', 'p3'].map(createPrj),
   },
-  view: view,
+  view,
   node: document.getElementById('app'),
 })
 
