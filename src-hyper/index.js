@@ -10,17 +10,18 @@ app({
   init: 0,
   view: state =>
     div({}, [
-      h('h1', {}, state),
-      h('button', { onClick: DEC }, '-'),
-      h('button', { onClick: INC }, '+'),
+      h1({}, state),
+      button({ onClick: DEC }, '-'),
+      button({ onClick: INC }, '+'),
     ]),
   node: document.getElementById('app'),
 })
 
-
 // HELPERS
 
 const div = createEl('div')
+const h1 = createEl('h1')
+const button = createEl('button')
 
 function createEl(name) {
   validate('S', arguments)
