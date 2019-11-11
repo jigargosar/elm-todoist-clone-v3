@@ -28,6 +28,7 @@ app({
   init: {
     ct: 0,
     pl: ['Build gate', 'Exam Prep', 'Clone App'].map(createPrj),
+    drag: null,
   },
   view,
   node: document.getElementById('app'),
