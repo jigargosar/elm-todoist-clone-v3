@@ -5,7 +5,6 @@ import validate from 'aproba'
 const INC = state => state + 1
 const DEC = state => state + 1
 
-
 app({
   init: 0,
   view: state =>
