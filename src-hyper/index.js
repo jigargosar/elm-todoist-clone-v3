@@ -10,8 +10,6 @@ const div = function(props = {}, children = []) {
   return h('div', props, children)
 }
 
-console.log(div)
-
 app({
   init: 0,
   view: state =>
