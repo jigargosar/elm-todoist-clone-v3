@@ -2,19 +2,26 @@ import { h, app } from 'hyperapp'
 
 import validate from 'aproba'
 
-const INC = state => state + 1
-const DEC = state => state + 1
+const INC = state => {
+  return state.ct + 1
+}
+const DEC = state => {
+  return state.ct + 1
+}
 
 app({
-  init: 0,
-  view: state =>
-    div({}, [
-      h1({}, state),
-      button({ onClick: DEC }, '-'),
-      button({ onClick: INC }, '+'),
-    ]),
+  init: {ct:0},
+  view: view,
   node: document.getElementById('app'),
 })
+
+function view(state) {
+  return div({}, [
+    h1({}, state.ct),
+    button({ onClick: DEC }, '-'),
+    button({ onClick: INC }, '+'),
+  ])
+}
 
 // HELPERS
 
