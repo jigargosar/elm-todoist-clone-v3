@@ -18,12 +18,14 @@
   ],
   "scripts": {
     "start_": "webpack-dev-server",
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "hyper": "parcel src-hyper/index.html"
   },
   "keywords": [],
   "author": "Jigar Gosar <jigar.gosar@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "hyperapp": "^2.0.3",
     "nanoid": "^2.1.6",
     "ramda": "^0.26.1",
     "spectre.css": "^0.5.8",
