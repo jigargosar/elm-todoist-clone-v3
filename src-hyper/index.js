@@ -29,8 +29,13 @@ function view(state) {
     h1({}, state.ct),
     button({ onClick: DEC }, '-'),
     button({ onClick: INC }, '+'),
-    h1({ class: 'flex' }, 'Projects'),
+    div({ class: 'f2 pa2 flex' }, 'Projects'),
+    state.pl.map(viewPrj),
   ])
+}
+
+function viewPrj(prj) {
+  return div({ class: 'ph3 pv2' }, [prj.title])
 }
 
 // HELPERS
