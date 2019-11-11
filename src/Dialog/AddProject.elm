@@ -21,10 +21,6 @@ import Lens
 import Ret exposing (Ret, RetF)
 
 
-
---system : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> System msg
-
-
 type alias System msg =
     { initAt : Int -> ( AddProject, String )
     , subscriptions : AddProject -> Sub msg
@@ -49,24 +45,22 @@ type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
     , canceled : msg
-    , selectColor : SelectColor.System msg
     }
 
 
 createConfig : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> Config msg
 createConfig { saved, canceled, toMsg } =
-    let
-        selectColorConfig : SelectColor.Config msg
-        selectColorConfig =
-            { toMsg = toMsg << SelectColor
-            , domIdPrefix = "add-project-dialog"
-            , changed = toMsg << CColor
-            }
-    in
     { toMsg = toMsg
     , saved = saved
     , canceled = canceled
-    , selectColor = SelectColor.system selectColorConfig
+    }
+
+
+scConfig : SelectColor.Config Msg
+scConfig =
+    { toMsg = SelectColor
+    , domIdPrefix = "add-project-dialog"
+    , changed = CColor
     }
 
 
@@ -105,11 +99,12 @@ type Msg
     | CColor CColor
     | Favorite Bool
     | Save
+    | Cancel
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
-subscriptions { toMsg, selectColor } model =
-    selectColor.subscriptions model.selectColor
+subscriptions { toMsg } model =
+    SelectColor.subscriptions scConfig model.selectColor |> Sub.map toMsg
 
 
 toSavedWith model =
@@ -117,13 +112,14 @@ toSavedWith model =
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { saved, selectColor } message model =
+update { toMsg, saved, canceled } message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor selectColor.update msg model
+            Ret.updateSub fields.selectColor (SelectColor.update scConfig) msg model
+                |> Ret.mapCmd toMsg
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -134,6 +130,9 @@ update { saved, selectColor } message model =
         Save ->
             ( model, Ret.toCmd (toSavedWith model |> saved) )
 
+        Cancel ->
+            ( model, Ret.toCmd canceled )
+
 
 autofocusDomId : String
 autofocusDomId =
@@ -141,25 +140,26 @@ autofocusDomId =
 
 
 view : Config msg -> AddProject -> Html msg
-view { toMsg, canceled, selectColor } model =
+view { toMsg } model =
     Dialog.UI.viewForm
-        { submit = toMsg Save
-        , cancel = canceled
+        { submit = Save
+        , cancel = Cancel
         , title = "Add Project"
         , submitTitle = "Add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = toMsg << Title
+                , changed = Title
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
-                (selectColor.view model.cColor model.selectColor)
+                (SelectColor.view scConfig model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = toMsg << Favorite
+                , changed = Favorite
                 }
             ]
         }
+        |> H.map toMsg
