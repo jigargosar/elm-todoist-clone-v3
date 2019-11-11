@@ -1,3 +1,4 @@
+import 'tachyons'
 import { h, app } from 'hyperapp'
 
 import validate from 'aproba'
@@ -28,10 +29,7 @@ function view(state) {
     h1({}, state.ct),
     button({ onClick: DEC }, '-'),
     button({ onClick: INC }, '+'),
-    h1({class: 'flex', style:{display:'flex',flex:'row'}},
-      'Projects'
-
-    )
+    h1({ class: 'flex' }, 'Projects'),
   ])
 }
 
