@@ -49,11 +49,8 @@ type alias Config msg =
 
 
 createConfig : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> Config msg
-createConfig { saved, canceled, toMsg } =
-    { toMsg = toMsg
-    , saved = saved
-    , canceled = canceled
-    }
+createConfig =
+    identity
 
 
 scConfig : SelectColor.Config Msg
