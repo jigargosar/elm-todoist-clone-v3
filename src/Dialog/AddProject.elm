@@ -48,17 +48,18 @@ type alias Config msg =
     }
 
 
+selectColor : SelectColor.System Msg
+selectColor =
+    SelectColor.system
+        { toMsg = SelectColor
+        , domIdPrefix = "add-project-dialog"
+        , changed = CColor
+        }
+
+
 createConfig : { toMsg : Msg -> msg, saved : SavedWith -> msg, canceled : msg } -> Config msg
 createConfig =
     identity
-
-
-scConfig : SelectColor.Config Msg
-scConfig =
-    { toMsg = SelectColor
-    , domIdPrefix = "add-project-dialog"
-    , changed = CColor
-    }
 
 
 type alias AddProject =
@@ -101,7 +102,7 @@ type Msg
 
 subscriptions : Config msg -> AddProject -> Sub msg
 subscriptions { toMsg } model =
-    SelectColor.subscriptions scConfig model.selectColor |> Sub.map toMsg
+    selectColor.subscriptions model.selectColor |> Sub.map toMsg
 
 
 toSavedWith model =
@@ -115,7 +116,7 @@ update { toMsg, saved, canceled } message model =
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor (SelectColor.update scConfig) msg model
+            Ret.updateSub fields.selectColor selectColor.update msg model
                 |> Ret.mapCmd toMsg
 
         Favorite favorite ->
@@ -151,7 +152,7 @@ view { toMsg } model =
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
-                (SelectColor.view scConfig model.cColor model.selectColor)
+                (selectColor.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
