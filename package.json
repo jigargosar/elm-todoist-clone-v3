@@ -26,7 +26,9 @@
   "license": "ISC",
   "dependencies": {
     "hyperapp": "^2.0.3",
+    "hyperapp-fx": "^2.0.0-beta.1",
     "nanoid": "^2.1.6",
+    "picostyle": "^2.2.0",
     "ramda": "^0.26.1",
     "spectre.css": "^0.5.8",
     "tachyons": "^4.11.1"
