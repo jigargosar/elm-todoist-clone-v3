@@ -28,7 +28,10 @@ function view(state) {
     h1({}, state.ct),
     button({ onClick: DEC }, '-'),
     button({ onClick: INC }, '+'),
-    div({},)
+    h1({class: 'flex', style:{display:'flex',flex:'row'}},
+      'Projects'
+
+    )
   ])
 }
 
