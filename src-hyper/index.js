@@ -3,6 +3,7 @@ import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
+import { identity } from 'ramda'
 
 const INC = state => {
   return state.ct + 1
@@ -33,10 +34,21 @@ function view(state) {
 
 function viewPrj(prj) {
   return div({ class: 'ph3 flex' }, [
-    div({ class: 'cur-move h2 w2 flex items-center justify-center' }, [
-      i({ class: 'gray material-icons' }, 'folder'),
-    ]),
-    a({ href:"#", class: 'link input-reset color-inherit ph1 flex items-center' }, prj.title),
+    div(
+      {
+        class: 'cur-move h2 w2 flex items-center justify-center',
+        draggable: true,
+        onDragstart: [identity ,console.log]
+      },
+      [i({ class: 'gray material-icons' }, 'folder')],
+    ),
+    a(
+      {
+        href: '#',
+        class: 'link input-reset color-inherit ph1 flex items-center',
+      },
+      prj.title,
+    ),
   ])
 }
 
