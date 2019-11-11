@@ -3,7 +3,8 @@ import './index.css'
 import { app } from 'hyperapp'
 import nanoid from 'nanoid'
 import { a, div, i } from './html'
-import { identity } from 'ramda'
+import { identity, isNil } from 'ramda'
+import { onMouseMove } from '@hyperapp/events'
 
 const INC = state => {
   return state.ct + 1
@@ -32,6 +33,15 @@ app({
   },
   view,
   node: document.getElementById('app'),
+  subscriptions: function(state) {
+    return [
+      !isNil(state.drag) &&
+        onMouseMove(function(state, ...args) {
+          console.log('args', ...args)
+          return state
+        }),
+    ]
+  },
 })
 
 function view(state) {

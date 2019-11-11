@@ -25,6 +25,7 @@
   "author": "Jigar Gosar <jigar.gosar@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@hyperapp/events": "0.0.3",
     "aproba": "^2.0.0",
     "hyperapp": "^2.0.3",
     "hyperapp-fx": "^2.0.0-beta.1",
