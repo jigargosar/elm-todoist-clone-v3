@@ -5,10 +5,6 @@ import validate from 'aproba'
 const INC = state => state + 1
 const DEC = state => state + 1
 
-const div = function(props = {}, children = []) {
-  validate('OA', arguments)
-  return h('div', props, children)
-}
 
 app({
   init: 0,
@@ -20,3 +16,16 @@ app({
     ]),
   node: document.getElementById('app'),
 })
+
+
+// HELPERS
+
+const div = createEl('div')
+
+function createEl(name) {
+  validate('S', arguments)
+  return function(props = {}, children = []) {
+    validate('OA', arguments)
+    return h(name, props, children)
+  }
+}
