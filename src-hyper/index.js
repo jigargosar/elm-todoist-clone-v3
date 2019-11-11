@@ -32,9 +32,11 @@ function view(state) {
 }
 
 function viewPrj(prj) {
-  return div({ class: 'ph3 pv1 lh-copy' }, [
-    i({ class: 'material-icons' }, 'folder'),
-    prj.title,
+  return div({ class: 'ph3 lh-copy flex h2' }, [
+    div({ class: 'flex items-center' }, [
+      i({ class: 'v-mid material-icons' }, 'folder'),
+    ]),
+    div({ class: 'flex items-center' }, prj.title),
   ])
 }
 
