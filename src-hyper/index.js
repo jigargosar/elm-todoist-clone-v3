@@ -26,7 +26,7 @@ app({
 
 function view(state) {
   return div({}, [
-    div({ class: 'f2 pa2 flex' }, 'Projects'),
+    div({ class: 'f2 lh-copy ph2 flex' }, 'Projects'),
     state.pl.map(viewPrj),
   ])
 }
