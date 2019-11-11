@@ -75,6 +75,10 @@ type alias SavedWith =
     }
 
 
+toSavedWith model =
+    SavedWith model.title model.favorite model.cColor model.idx
+
+
 initAt : Int -> ( AddProject, String )
 initAt idx =
     ( AddProject "" False SelectColor.initial CColor.default idx
@@ -94,10 +98,6 @@ type Msg
 subscriptions : Config msg -> AddProject -> Sub msg
 subscriptions { toMsg } model =
     selectColor.subscriptions model.selectColor |> Sub.map toMsg
-
-
-toSavedWith model =
-    SavedWith model.title model.favorite model.cColor model.idx
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
