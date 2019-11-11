@@ -9,8 +9,15 @@ const DEC = state => {
   return state.ct + 1
 }
 
+function createPrj(title) {
+  return { title }
+}
+
 app({
-  init: {ct:0},
+  init: {
+    ct: 0,
+    pl: ['p1', 'p2', 'p3'].map(createPrj),
+  },
   view: view,
   node: document.getElementById('app'),
 })
