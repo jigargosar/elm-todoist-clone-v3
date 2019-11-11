@@ -36,8 +36,8 @@ app({
   subscriptions: function(state) {
     return [
       !isNil(state.drag) &&
-        onMouseMove(function(state, ...args) {
-          console.log('args', ...args)
+        onMouseMove(function(state, event) {
+          console.log(event)
           return state
         }),
     ]
