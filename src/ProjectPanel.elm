@@ -9,7 +9,7 @@ import Css
 import DNDList as DND exposing (DNDList)
 import DrawerUI
 import ExpansionPanel as EP exposing (Collapsible)
-import Html.Styled exposing (Attribute, Html, text)
+import Html.Styled as H exposing (Attribute, Html, text)
 import Html.Styled.Attributes as A exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Lens exposing (Lens)
@@ -34,48 +34,20 @@ type alias System msg =
     }
 
 
-system :
-    { toMsg : Msg -> msg
-    , addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
-    }
-    -> System msg
-system { toMsg, addClicked, moreClicked, sorted } =
-    let
-        config : Config msg
-        config =
-            { moreClicked = moreClicked
-            , ep =
-                { toggled = toMsg Toggled
-                , title = "Projects"
-                , secondary = { iconName = "add", action = addClicked }
-                }
-            , dndSystem = dndSystem
-            }
-
-        dndSystem : DND.System Project msg
-        dndSystem =
-            DND.system { toMsg = toMsg << DNDList, sorted = sorted }
-
-        update : Msg -> ProjectPanel -> Ret ProjectPanel msg
-        update message model =
-            case message of
-                DNDList msg ->
-                    Ret.updateSub fields.dnd config.dndSystem.update msg model
-
-                Toggled ->
-                    ( Lens.over fields.collapsible EP.toggle model, Cmd.none )
-    in
-    { initial =
-        { collapsible = EP.expanded
-        , dnd = dndSystem.initial
-        }
-    , subscriptions = fields.dnd.get >> dndSystem.subscriptions
-    , update = update
+system : Config msg -> System msg
+system config =
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = update config
     , view = view config
     , viewGhost = viewGhost
     }
+
+
+subscriptions : Config msg -> ProjectPanel -> Sub msg
+subscriptions { toMsg } model =
+    dndSystem.subscriptions model.dnd
+        |> Sub.map toMsg
 
 
 
@@ -85,6 +57,25 @@ system { toMsg, addClicked, moreClicked, sorted } =
 type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
+    }
+
+
+dndSystem : DND.System Project Msg
+dndSystem =
+    DND.system { toMsg = DNDList, sorted = Sorted }
+
+
+ep =
+    { toggled = Toggled
+    , title = "Projects"
+    , secondary = { iconName = "add", action = AddClicked }
+    }
+
+
+initial : ProjectPanel
+initial =
+    { collapsible = EP.expanded
+    , dnd = dndSystem.initial
     }
 
 
@@ -106,15 +97,19 @@ fields =
 
 
 type alias Config msg =
-    { moreClicked : ProjectId -> String -> msg
-    , ep : EP.Config msg
-    , dndSystem : DND.System Project msg
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
     }
 
 
 type Msg
     = DNDList (DND.Msg Project)
     | Toggled
+    | Sorted (List Project)
+    | AddClicked
+    | MoreClicked ProjectId String
 
 
 type alias DNDProjectMsg =
@@ -123,6 +118,26 @@ type alias DNDProjectMsg =
 
 type alias DNDProjectModel =
     DNDList Project
+
+
+update : Config msg -> Msg -> ProjectPanel -> Ret ProjectPanel msg
+update { toMsg, sorted, addClicked, moreClicked } message model =
+    case message of
+        DNDList msg ->
+            Ret.updateSub fields.dnd dndSystem.update msg model
+                |> Ret.mapCmd toMsg
+
+        Toggled ->
+            ( Lens.over fields.collapsible EP.toggle model, Cmd.none )
+
+        Sorted projectList ->
+            ( model, Ret.toCmd (sorted projectList) )
+
+        AddClicked ->
+            ( model, Ret.toCmd addClicked )
+
+        MoreClicked projectId domId ->
+            ( model, Ret.toCmd (moreClicked projectId domId) )
 
 
 viewGhost : ProjectPanel -> List (Html msg)
@@ -143,26 +158,24 @@ viewGhost { dnd } =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view config projectList state =
-    EP.viewHeader config.ep state.collapsible
+view { toMsg } projectList state =
+    (EP.viewHeader ep state.collapsible
         :: EP.viewContent
             (\_ ->
-                viewItems config
+                viewItems
                     projectList
                     state.dnd
             )
             state.collapsible
+    )
+        |> List.map (H.map toMsg)
 
 
-viewItems :
-    Config msg
-    -> List Project
-    -> DNDList Project
-    -> List (Html msg)
-viewItems config projectList dnd =
+viewItems : List Project -> DNDList Project -> List (Html Msg)
+viewItems projectList dnd =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            config.dndSystem.view projectList dnd
+            dndSystem.view projectList dnd
     in
     List.map
         (\project ->
@@ -179,7 +192,7 @@ viewItems config projectList dnd =
                 , handleAttrs = dragStartAttrs project domId
                 , moreAttrs =
                     [ A.id moreDomId
-                    , onClick (config.moreClicked (Project.id project) moreDomId)
+                    , onClick (MoreClicked (Project.id project) moreDomId)
                     ]
                 }
                 project
