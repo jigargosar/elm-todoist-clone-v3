@@ -26,6 +26,37 @@ import Route
 import Styles exposing (..)
 
 
+type alias System msg =
+    { initial : ProjectPanel
+    , subscriptions : ProjectPanel -> Sub msg
+    , update : Msg -> ProjectPanel -> Ret ProjectPanel msg
+    , view : List Project -> ProjectPanel -> List (Html msg)
+    , viewGhost : List Project -> ProjectPanel -> List (Html msg)
+    }
+
+
+system :
+    (Msg -> msg)
+    ->
+        { addClicked : msg
+        , moreClicked : ProjectId -> String -> msg
+        , sorted : List Project -> msg
+        }
+    -> System msg
+system toMsg configParams =
+    createConfig toMsg configParams |> systemHelp
+
+
+systemHelp : Config msg -> System msg
+systemHelp config =
+    { initial = initial
+    , subscriptions = subscriptions config
+    , update = update config
+    , view = view config
+    , viewGhost = view config
+    }
+
+
 type alias ProjectPanel =
     { collapsible : Collapsible
     , dnd : DNDList Project
