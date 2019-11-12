@@ -530,22 +530,20 @@ viewProjectPanel pc panel =
     }
 
 
-labelPanelView :
-    { a | labelCollection : LabelCollection, labelPanel : LabelPanel }
-    -> List (Html Msg)
-labelPanelView model =
-    LabelPanel.view labelPanelConfig
-        (LC.sorted model.labelCollection)
-        model.labelPanel
+viewLabelPanel : LabelCollection -> LabelPanel -> PanelView
+viewLabelPanel lc panel =
+    { content = LabelPanel.view labelPanelConfig (LC.sorted lc) panel
+    , ghost = LabelPanel.viewGhost panel
+    }
 
 
-filterPanelView :
+viewFilterPanel :
     { a
         | filterCollection : FilterCollection
         , filterPanel : FilterPanel
     }
     -> List (Html Msg)
-filterPanelView model =
+viewFilterPanel model =
     FilterPanel.view filterPanelConfig
         (FC.sorted model.filterCollection)
         model.filterPanel
@@ -556,20 +554,23 @@ view model =
     let
         projectPanelView =
             viewProjectPanel model.projectCollection model.projectPanel
+
+        labelPanelView =
+            viewLabelPanel model.labelCollection model.labelPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
             Drawer.prefixNavItemsView
                 ++ projectPanelView.content
-                ++ labelPanelView model
-                ++ filterPanelView model
+                ++ labelPanelView.content
+                ++ viewFilterPanel model
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
                 ++ [ dialogSystem.view model.dialog ]
                 ++ projectPanelView.ghost
-                ++ LabelPanel.viewGhost model.labelPanel
+                ++ labelPanelView.ghost
                 ++ FilterPanel.viewGhost model.filterPanel
         }
         model.isDrawerModalOpen
