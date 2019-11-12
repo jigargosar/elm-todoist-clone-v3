@@ -301,7 +301,7 @@ updateF message =
             Ret.andThen (onUrlChanged url)
 
         ToggleTodoCompleted todoId ->
-            Ret.mapSub fields.tc (TC.toggleCompleted todoId)
+            Ret.mapSubF fields.tc (TC.toggleCompleted todoId)
 
         OpenDrawerModal ->
             Ret.setSub fields.isDrawerModalOpen True
@@ -344,7 +344,7 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.mapSub fields.pc (PC.update projectId updateProject)
+            Ret.mapSubF fields.pc (PC.update projectId updateProject)
 
         SubMsg subMsg ->
             Ret.andThen (updateSub subMsg)
@@ -362,13 +362,13 @@ updateF message =
             identity
 
         ProjectOrderChanged projectList ->
-            Ret.mapSub fields.pc (PC.updateSortOrder projectList)
+            Ret.mapSubF fields.pc (PC.updateSortOrder projectList)
 
         LabelOrderChanged labelList ->
-            Ret.mapSub fields.lc (LC.updateSortOrder labelList)
+            Ret.mapSubF fields.lc (LC.updateSortOrder labelList)
 
         FilterOrderChanged filterList ->
-            Ret.mapSub fields.fc (FC.updateSortOrder filterList)
+            Ret.mapSubF fields.fc (FC.updateSortOrder filterList)
 
 
 openAddProjectCmd : Int -> RetF Model Msg

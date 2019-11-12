@@ -28,7 +28,6 @@ import Styles exposing (..)
 type alias System msg =
     { initial : ProjectPanel
     , subscriptions : ProjectPanel -> Sub msg
-    , updateF : Msg -> Ret ProjectPanel msg -> Ret ProjectPanel msg
     , update : Msg -> ProjectPanel -> Ret ProjectPanel msg
     , view : List Project -> ProjectPanel -> List (Html msg)
     , viewGhost : ProjectPanel -> List (Html msg)
@@ -59,22 +58,21 @@ system { toMsg, addClicked, moreClicked, sorted } =
         dndSystem =
             DND.system { toMsg = toMsg << DNDList, sorted = sorted }
 
-        updateF : Msg -> Ret ProjectPanel msg -> Ret ProjectPanel msg
-        updateF message =
+        update : Msg -> ProjectPanel -> Ret ProjectPanel msg
+        update message model =
             case message of
                 DNDList msg ->
-                    Ret.updateSubF fields.dnd (Ret.toUpdateF config.dndSystem.update) msg
+                    Ret.updateSub fields.dnd config.dndSystem.update msg model
 
                 Toggled ->
-                    Ret.mapSub fields.collapsible EP.toggle
+                    ( Lens.over fields.collapsible EP.toggle model, Cmd.none )
     in
     { initial =
         { collapsible = EP.expanded
         , dnd = dndSystem.initial
         }
     , subscriptions = fields.dnd.get >> dndSystem.subscriptions
-    , updateF = updateF
-    , update = Ret.fromUpdateF updateF
+    , update = update
     , view = view config
     , viewGhost = viewGhost
     }

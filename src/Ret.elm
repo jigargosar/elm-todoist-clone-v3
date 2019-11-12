@@ -163,8 +163,8 @@ mapCmd =
     Return.mapCmd
 
 
-mapSub : Lens s b -> (s -> s) -> RetF b x
-mapSub subLens func =
+mapSubF : Lens s b -> (s -> s) -> RetF b x
+mapSubF subLens func =
     map (Lens.over subLens func)
 
 
