@@ -4,7 +4,6 @@ import Appbar
 import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
@@ -77,15 +76,13 @@ type PopupMsg
 -- PANELS
 
 
-projectPanelSystem : ProjectPanel.System Msg
-projectPanelSystem =
-    ProjectPanel.system
-        (ProjectPanel.createConfig (SubMsg << ProjectPanel)
-            { addClicked = AddProjectClicked
-            , moreClicked = ProjectMoreMenu >> PopupTriggered
-            , sorted = ProjectOrderChanged
-            }
-        )
+projectPanelConfig : ProjectPanel.Config Msg
+projectPanelConfig =
+    ProjectPanel.createConfig (SubMsg << ProjectPanel)
+        { addClicked = AddProjectClicked
+        , moreClicked = ProjectMoreMenu >> PopupTriggered
+        , sorted = ProjectOrderChanged
+        }
 
 
 labelPanelConfig : LabelPanel.Config Msg
@@ -185,7 +182,7 @@ init flags url navKey =
             , isDrawerModalOpen = False
             , popup = Nothing
             , dialog = dialogSystem.initial
-            , projectPanel = projectPanelSystem.initial
+            , projectPanel = ProjectPanel.initial
             , labelPanel = LabelPanel.initial
             , filterPanel = FilterPanel.initial
             }
@@ -227,7 +224,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , projectPanelSystem.subscriptions model.projectPanel
+        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         , dialogSystem.subscriptions model.dialog
@@ -405,7 +402,7 @@ updateSub : SubMsg -> Model -> Ret Model Msg
 updateSub message =
     case message of
         ProjectPanel msg ->
-            Ret.updateSub fields.projectPanel projectPanelSystem.update msg
+            Ret.updateSub fields.projectPanel (ProjectPanel.update projectPanelConfig) msg
 
         LabelPanel msg ->
             Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
@@ -527,8 +524,8 @@ type alias PanelView =
 
 viewProjectPanel : ProjectCollection -> ProjectPanel -> PanelView
 viewProjectPanel pc panel =
-    { content = projectPanelSystem.view (PC.sorted pc) panel
-    , ghost = projectPanelSystem.viewGhost panel
+    { content = ProjectPanel.view projectPanelConfig (PC.sorted pc) panel
+    , ghost = ProjectPanel.viewGhost panel
     }
 
 

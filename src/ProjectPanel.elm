@@ -1,11 +1,15 @@
 module ProjectPanel exposing
-    ( Msg(..)
+    ( Config
+    , Msg(..)
     , ProjectPanel
     , System
     , createConfig
-    , dndMsg
+    , initial
+    , subscriptions
     , system
-    , toggled
+    , update
+    , view
+    , viewGhost
     )
 
 import Css
@@ -103,23 +107,13 @@ createConfig :
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
     { moreClicked = moreClicked
-    , dnd = { toMsg = toMsg << dndMsg, sorted = sorted }
+    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
     , ep =
-        { toggled = toMsg toggled
+        { toggled = toMsg Toggled
         , title = "Projects"
         , secondary = { iconName = "add", action = addClicked }
         }
     }
-
-
-toggled : Msg
-toggled =
-    Toggled
-
-
-dndMsg : DND.Msg Project -> Msg
-dndMsg =
-    DNDList
 
 
 type Msg
