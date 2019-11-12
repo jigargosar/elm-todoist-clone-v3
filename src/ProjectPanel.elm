@@ -162,9 +162,7 @@ view { toMsg } projectList state =
     (EP.viewHeader epConfig state.collapsible
         :: EP.viewContent
             (\_ ->
-                viewItems
-                    projectList
-                    state.dnd
+                viewItems projectList state.dnd
             )
             state.collapsible
     )
