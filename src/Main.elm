@@ -79,21 +79,13 @@ type PopupMsg
 
 projectPanelSystem : ProjectPanel.System Msg
 projectPanelSystem =
-    let
-        toMsg =
-            SubMsg << ProjectPanel
-    in
     ProjectPanel.system
-        { addClicked = AddProjectClicked
-        , moreClicked = ProjectMoreMenu >> PopupTriggered
-        , sorted = ProjectOrderChanged
-        , dnd = { toMsg = toMsg << ProjectPanel.dndMsg, sorted = ProjectOrderChanged }
-        , ep =
-            { toggled = toMsg ProjectPanel.toggled
-            , title = "Projects"
-            , secondary = { iconName = "add", action = AddProjectClicked }
+        (ProjectPanel.createConfig (SubMsg << ProjectPanel)
+            { addClicked = AddProjectClicked
+            , moreClicked = ProjectMoreMenu >> PopupTriggered
+            , sorted = ProjectOrderChanged
             }
-        }
+        )
 
 
 labelPanelConfig : LabelPanel.Config Msg

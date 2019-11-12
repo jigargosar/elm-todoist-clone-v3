@@ -2,6 +2,7 @@ module ProjectPanel exposing
     ( Msg(..)
     , ProjectPanel
     , System
+    , createConfig
     , dndMsg
     , system
     , toggled
@@ -86,11 +87,28 @@ fields =
 
 
 type alias Config msg =
-    { addClicked : msg
-    , moreClicked : ProjectId -> String -> msg
-    , sorted : List Project -> msg
+    { moreClicked : ProjectId -> String -> msg
     , ep : EP.Config msg
     , dnd : DND.Config Project msg
+    }
+
+
+createConfig :
+    (Msg -> msg)
+    ->
+        { addClicked : msg
+        , moreClicked : ProjectId -> String -> msg
+        , sorted : List Project -> msg
+        }
+    -> Config msg
+createConfig toMsg { addClicked, moreClicked, sorted } =
+    { moreClicked = moreClicked
+    , dnd = { toMsg = toMsg << dndMsg, sorted = sorted }
+    , ep =
+        { toggled = toMsg toggled
+        , title = "Projects"
+        , secondary = { iconName = "add", action = addClicked }
+        }
     }
 
 
