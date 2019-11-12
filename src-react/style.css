@@ -1,0 +1,100 @@
+.sans-serif {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+}
+
+/* General Utilities */
+.hover-overflow-y,
+.hover-overflow-y:hover {
+  overflow-y: hidden;
+}
+
+.hover-overflow-y:hover {
+  overflow-y: auto;
+}
+
+.select-none {
+  user-select: none;
+}
+
+/* App specific functional styles*/
+
+body,
+html {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  height: 100%;
+  /*font-size: 20px;*/
+  line-height: 1.5;
+  box-sizing: border-box;
+
+}
+
+body {
+  background: hsl(0, 0%, 100%);
+  color: hsl(218, 16%, 27%);
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', sans-serif;
+  /*font-size: 0.8rem;*/
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+:root {
+  --header-height: 50px;
+  --sidebar-width: 266px;
+  --app-width: 922px;
+}
+
+.bg-body {
+  background-color: hsl(0, 0%, 98%);
+}
+.b--main {
+  border-color: hsl(0, 0%, 95%);
+}
+
+.h-header {
+  height: var(--header-height);
+}
+
+.w-sidebar {
+  width: var(--sidebar-width);
+}
+
+.max-w-app {
+  max-width: var(--app-width);
+}
+.top-sidebar {
+  top: var(--header-height);
+}
+.pt-main {
+  padding-top: var(--header-height);
+}
+
+.ml-main {
+  margin-left: var(--sidebar-width);
+}
+
+@media screen and (min-width: 30em) {
+  .ml-main-ns {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+.hover_parent .show_on_parent_hover:focus {
+  visibility: visible;
+}
+.hover_parent .show_on_parent_hover {
+  visibility: hidden;
+}
+
+.hover_parent:hover .show_on_parent_hover {
+  visibility: visible;
+}
+
+*,
+::after,
+::before {
+  box-sizing: inherit;
+}
