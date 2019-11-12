@@ -60,18 +60,6 @@ type alias ProjectPanel =
     }
 
 
-dndSystem : DND.System Project Msg
-dndSystem =
-    DND.system { toMsg = DNDList, sorted = Sorted }
-
-
-epConfig =
-    { toggled = Toggled
-    , title = "Projects"
-    , secondary = { iconName = "add", action = AddClicked }
-    }
-
-
 initial : ProjectPanel
 initial =
     { collapsible = EP.expanded
@@ -101,6 +89,18 @@ type alias Config msg =
     , addClicked : msg
     , moreClicked : ProjectId -> String -> msg
     , sorted : List Project -> msg
+    }
+
+
+dndSystem : DND.System Project Msg
+dndSystem =
+    DND.system { toMsg = DNDList, sorted = Sorted }
+
+
+epConfig =
+    { toggled = Toggled
+    , title = "Projects"
+    , secondary = { iconName = "add", action = AddClicked }
     }
 
 
