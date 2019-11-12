@@ -27,7 +27,6 @@ type alias System msg =
     , subscriptions : Dialog -> Sub msg
     , openAddProject : Int -> msg
     , openEditProject : Project -> msg
-    , updateF : Msg -> Ret Dialog msg -> Ret Dialog msg
     , update : Msg -> Dialog -> Ret Dialog msg
     , view : Dialog -> Html msg
     }
@@ -52,7 +51,6 @@ system ({ toMsg } as configParams) =
     , subscriptions = subscriptions config
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
-    , updateF = Ret.toUpdateF (update config)
     , update = update config
     , view = view config
     }
