@@ -76,9 +76,9 @@ type PopupMsg
 -- PANELS
 
 
-projectPanelConfig : ProjectPanel.Config Msg
-projectPanelConfig =
-    ProjectPanel.createConfig (SubMsg << ProjectPanel)
+projectPanelSys : ProjectPanel.System Msg
+projectPanelSys =
+    ProjectPanel.system (SubMsg << ProjectPanel)
         { addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
@@ -224,7 +224,7 @@ subscriptions model =
 
             Nothing ->
                 Sub.none
-        , ProjectPanel.subscriptions projectPanelConfig model.projectPanel
+        , projectPanelSys.subscriptions model.projectPanel
         , LabelPanel.subscriptions labelPanelConfig model.labelPanel
         , FilterPanel.subscriptions filterPanelConfig model.filterPanel
         , dialogSystem.subscriptions model.dialog
@@ -402,7 +402,7 @@ updateSub : SubMsg -> Model -> Ret Model Msg
 updateSub message =
     case message of
         ProjectPanel msg ->
-            Ret.updateSub fields.projectPanel (ProjectPanel.update projectPanelConfig) msg
+            Ret.updateSub fields.projectPanel projectPanelSys.update msg
 
         LabelPanel msg ->
             Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
@@ -524,7 +524,7 @@ type alias PanelView =
 
 viewProjectPanel : ProjectCollection -> ProjectPanel -> PanelView
 viewProjectPanel pc panel =
-    { content = ProjectPanel.view projectPanelConfig (PC.sorted pc) panel
+    { content = projectPanelSys.view (PC.sorted pc) panel
     , ghost = ProjectPanel.viewGhost panel
     }
 

@@ -2,9 +2,11 @@ module ProjectPanel exposing
     ( Config
     , Msg(..)
     , ProjectPanel
+    , System
     , createConfig
     , initial
     , subscriptions
+    , system
     , update
     , view
     , viewGhost
