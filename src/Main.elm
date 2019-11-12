@@ -4,6 +4,7 @@ import Appbar
 import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import DNDList
 import Dialog exposing (Dialog)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
@@ -78,11 +79,21 @@ type PopupMsg
 
 projectPanelSystem : ProjectPanel.System Msg
 projectPanelSystem =
+    let
+        toMsg =
+            SubMsg << ProjectPanel
+    in
     ProjectPanel.system
-        { toMsg = SubMsg << ProjectPanel
+        { toMsg = toMsg
         , addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
+        , dnd = { toMsg = toMsg << ProjectPanel.dndMsg, sorted = ProjectOrderChanged }
+        , ep =
+            { toggled = toMsg ProjectPanel.toggled
+            , title = "Projects"
+            , secondary = { iconName = "add", action = AddProjectClicked }
+            }
         }
 
 
