@@ -14,7 +14,6 @@ import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
 import Html.Styled as H exposing (Attribute, Html, div, text, toUnstyled)
 import InboxOrProject exposing (InboxOrProject)
-import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Label exposing (Label)
 import LabelCollection as LC exposing (LabelCollection)
@@ -24,7 +23,6 @@ import Layout
 import Lens exposing (Lens)
 import Log exposing (logDecodeError, logError)
 import Optional exposing (Optional)
-import Page.NotFound
 import Popper exposing (Popper)
 import PopupView
 import Project exposing (Project)
@@ -561,7 +559,7 @@ viewRoute : Route -> Model -> List (Html Msg)
 viewRoute route model =
     case route of
         Route.NotFound url ->
-            Page.NotFound.view url
+            [ div [] [ text <| "NotFound: " ++ Url.toString url ] ]
 
         Route.Root ->
             viewRoute Route.Inbox model
