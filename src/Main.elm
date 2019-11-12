@@ -519,31 +519,45 @@ onUrlChanged url model =
 -- VIEW
 
 
+projectPanelView :
+    { a | projectCollection : ProjectCollection, projectPanel : ProjectPanel }
+    -> List (Html Msg)
+projectPanelView model =
+    projectPanelSystem.view
+        (PC.sorted model.projectCollection)
+        model.projectPanel
+
+
+labelPanelView :
+    { a | labelCollection : LabelCollection, labelPanel : LabelPanel }
+    -> List (Html Msg)
+labelPanelView model =
+    LabelPanel.view labelPanelConfig
+        (LC.sorted model.labelCollection)
+        model.labelPanel
+
+
+filterPanelView :
+    { a
+        | filterCollection : FilterCollection
+        , filterPanel : FilterPanel
+    }
+    -> List (Html Msg)
+filterPanelView model =
+    FilterPanel.view filterPanelConfig
+        (FC.sorted model.filterCollection)
+        model.filterPanel
+
+
 view : Model -> Html Msg
 view model =
-    let
-        projectPanelView =
-            projectPanelSystem.view
-                (PC.sorted model.projectCollection)
-                model.projectPanel
-
-        labelPanelView =
-            LabelPanel.view labelPanelConfig
-                (LC.sorted model.labelCollection)
-                model.labelPanel
-
-        filterPanelView =
-            FilterPanel.view filterPanelConfig
-                (FC.sorted model.filterCollection)
-                model.filterPanel
-    in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
             Drawer.prefixNavItemsView
-                ++ projectPanelView
-                ++ labelPanelView
-                ++ filterPanelView
+                ++ projectPanelView model
+                ++ labelPanelView model
+                ++ filterPanelView model
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
