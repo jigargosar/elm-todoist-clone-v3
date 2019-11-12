@@ -98,8 +98,8 @@ type alias DNDProjectModel =
 
 
 subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config model =
-    DND.subscriptions config.dnd model.dnd
+subscriptions { dndSys } model =
+    dndSys.subscriptions model.dnd
 
 
 update : Config msg -> Msg -> ProjectPanel -> Ret ProjectPanel msg
