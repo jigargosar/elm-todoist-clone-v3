@@ -537,16 +537,11 @@ viewLabelPanel lc panel =
     }
 
 
-viewFilterPanel :
-    { a
-        | filterCollection : FilterCollection
-        , filterPanel : FilterPanel
+viewFilterPanel : FilterCollection -> FilterPanel -> PanelView
+viewFilterPanel fc panel =
+    { content = FilterPanel.view filterPanelConfig (FC.sorted fc) panel
+    , ghost = FilterPanel.viewGhost panel
     }
-    -> List (Html Msg)
-viewFilterPanel model =
-    FilterPanel.view filterPanelConfig
-        (FC.sorted model.filterCollection)
-        model.filterPanel
 
 
 view : Model -> Html Msg
@@ -557,6 +552,9 @@ view model =
 
         labelPanelView =
             viewLabelPanel model.labelCollection model.labelPanel
+
+        filterPanelView =
+            viewFilterPanel model.filterCollection model.filterPanel
     in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
@@ -564,14 +562,14 @@ view model =
             Drawer.prefixNavItemsView
                 ++ projectPanelView.content
                 ++ labelPanelView.content
-                ++ viewFilterPanel model
+                ++ filterPanelView.content
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
                 ++ [ dialogSystem.view model.dialog ]
                 ++ projectPanelView.ghost
                 ++ labelPanelView.ghost
-                ++ FilterPanel.viewGhost model.filterPanel
+                ++ filterPanelView.ghost
         }
         model.isDrawerModalOpen
 
