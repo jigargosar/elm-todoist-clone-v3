@@ -50,7 +50,7 @@ import Url exposing (Url)
 dialogSystem : Dialog.System Msg
 dialogSystem =
     Dialog.system
-        { toMsg = SubMsg << DialogMsg
+        { toMsg = SubMsg << Dialog
         , projectAdded = AddProjectDialogSaved
         , projectEdited = EditProjectDialogSaved
         }
@@ -240,7 +240,7 @@ type SubMsg
     = ProjectPanel ProjectPanel.Msg
     | LabelPanel LabelPanel.Msg
     | FilterPanel FilterPanel.Msg
-    | DialogMsg Dialog.Msg
+    | Dialog Dialog.Msg
     | Popper Popper.Msg
 
 
@@ -400,22 +400,22 @@ popperConfig =
 
 
 updateSub : SubMsg -> Model -> Ret Model Msg
-updateSub message model =
+updateSub message =
     case message of
         ProjectPanel msg ->
-            Ret.updateSub fields.projectPanel projectPanelSystem.update msg model
+            Ret.updateSub fields.projectPanel projectPanelSystem.update msg
 
         LabelPanel msg ->
-            Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg model
+            Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
 
         FilterPanel msg ->
-            Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg model
+            Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
-        DialogMsg msg ->
-            Ret.updateSub fields.dialog dialogSystem.update msg model
+        Dialog msg ->
+            Ret.updateSub fields.dialog dialogSystem.update msg
 
         Popper msg ->
-            Ret.updateOptional fields.popper (Popper.update popperConfig) msg model
+            Ret.updateOptional fields.popper (Popper.update popperConfig) msg
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )
