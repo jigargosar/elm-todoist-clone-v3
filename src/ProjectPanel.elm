@@ -56,6 +56,7 @@ type alias Config msg =
     { moreClicked : ProjectId -> String -> msg
     , ep : EP.Config msg
     , dnd : DND.Config Project msg
+    , dndSys : DND.System Project msg
     }
 
 
@@ -68,8 +69,13 @@ createConfig :
         }
     -> Config msg
 createConfig toMsg { addClicked, moreClicked, sorted } =
+    let
+        dndConfig =
+            { toMsg = toMsg << DNDList, sorted = sorted }
+    in
     { moreClicked = moreClicked
-    , dnd = { toMsg = toMsg << DNDList, sorted = sorted }
+    , dnd = dndConfig
+    , dndSys = DND.system dndConfig
     , ep =
         { toggled = toMsg Toggled
         , title = "Projects"
@@ -97,10 +103,10 @@ subscriptions config model =
 
 
 update : Config msg -> Msg -> ProjectPanel -> Ret ProjectPanel msg
-update config message model =
+update { dndSys } message model =
     case message of
         DNDList msg ->
-            Ret.updateSub fields.dnd (DND.update config.dnd) msg model
+            Ret.updateSub fields.dnd dndSys.update msg model
 
         Toggled ->
             ( Lens.over fields.collapsible EP.toggle model, Cmd.none )
@@ -134,10 +140,10 @@ view config projectList state =
 
 
 viewItems : Config msg -> List Project -> DNDList Project -> List (Html msg)
-viewItems config projectList dnd =
+viewItems { dndSys, moreClicked } projectList dnd =
     let
         { dragStartAttrs, dragOverAttrs, isBeingDragged, items } =
-            DND.view config.dnd projectList dnd
+            dndSys.view projectList dnd
     in
     List.map
         (\project ->
@@ -154,7 +160,7 @@ viewItems config projectList dnd =
                 , handleAttrs = dragStartAttrs project domId
                 , moreAttrs =
                     [ A.id moreDomId
-                    , onClick (config.moreClicked (Project.id project) moreDomId)
+                    , onClick (moreClicked (Project.id project) moreDomId)
                     ]
                 }
                 project
