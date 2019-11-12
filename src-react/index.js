@@ -181,7 +181,7 @@ function App() {
       </Button>
       <List>
         {projectList.map(p => (
-          <ListItem key={p.id}>
+          <ListItem key={p.id} button>
             <ListItemIcon>
               <Icon style={{ color: p.color }}>folder</Icon>
             </ListItemIcon>
