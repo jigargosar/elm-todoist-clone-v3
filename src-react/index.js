@@ -53,6 +53,7 @@ const allHues = {
 }
 
 const colors500 = mapObjIndexed(prop('500'), allHues)
+
 const colors500List = values(colors500)
 
 const nanoid = require('nanoid')
