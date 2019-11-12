@@ -98,6 +98,7 @@ const mockProjectList = [
   modifiedAt: Date.now(),
   hue: Math.round(Math.random() * 360),
   cColor: randomCColor(),
+  color: randomColor500(),
   idx,
 }))
 
@@ -114,6 +115,7 @@ const mockLabelList = ['to-read', 'medical', 'quick-ref'].map(
     modifiedAt: Date.now(),
     hue: Math.round(Math.random() * 360),
     cColor: randomCColor(),
+    color: randomColor500(),
     idx,
   }),
 )
@@ -134,6 +136,7 @@ const mockFilterList = [
   modifiedAt: Date.now(),
   hue: Math.round(Math.random() * 360),
   cColor: randomCColor(),
+  color: randomColor500(),
   idx,
 }))
 
@@ -180,7 +183,7 @@ function App() {
         {projectList.map(p => (
           <ListItem key={p.id}>
             <ListItemIcon>
-              <Icon style={{ color: randomColor500() }}>folder</Icon>
+              <Icon style={{ color: p.color }}>folder</Icon>
             </ListItemIcon>
             <ListItemText>{p.title}</ListItemText>
           </ListItem>
