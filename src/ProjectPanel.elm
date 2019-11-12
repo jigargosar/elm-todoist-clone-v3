@@ -86,8 +86,7 @@ fields =
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg
-    , addClicked : msg
+    { addClicked : msg
     , moreClicked : ProjectId -> String -> msg
     , sorted : List Project -> msg
     , ep : EP.Config msg
@@ -146,8 +145,8 @@ viewGhost { dnd } =
 
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
-view ({ toMsg, ep } as config) projectList state =
-    EP.viewHeader ep state.collapsible
+view config projectList state =
+    EP.viewHeader config.ep state.collapsible
         :: EP.viewContent
             (\_ ->
                 viewItems config projectList state.dnd

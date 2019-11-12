@@ -84,8 +84,7 @@ projectPanelSystem =
             SubMsg << ProjectPanel
     in
     ProjectPanel.system
-        { toMsg = toMsg
-        , addClicked = AddProjectClicked
+        { addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
         , dnd = { toMsg = toMsg << ProjectPanel.dndMsg, sorted = ProjectOrderChanged }
