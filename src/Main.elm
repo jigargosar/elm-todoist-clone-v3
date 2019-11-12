@@ -519,13 +519,15 @@ onUrlChanged url model =
 -- VIEW
 
 
-projectPanelView :
-    { a | projectCollection : ProjectCollection, projectPanel : ProjectPanel }
-    -> List (Html Msg)
-projectPanelView model =
-    projectPanelSystem.view
-        (PC.sorted model.projectCollection)
-        model.projectPanel
+type alias PanelView =
+    { content : List (Html Msg), ghost : List (Html Msg) }
+
+
+viewProjectPanel : ProjectCollection -> ProjectPanel -> PanelView
+viewProjectPanel pc panel =
+    { content = projectPanelSystem.view (PC.sorted pc) panel
+    , ghost = projectPanelSystem.viewGhost panel
+    }
 
 
 labelPanelView :
@@ -551,18 +553,22 @@ filterPanelView model =
 
 view : Model -> Html Msg
 view model =
+    let
+        projectPanelView =
+            viewProjectPanel model.projectCollection model.projectPanel
+    in
     Layout.view { closeDrawerModal = CloseDrawerModal }
         { appbar = Appbar.view { menuClicked = OpenDrawerModal }
         , drawer =
             Drawer.prefixNavItemsView
-                ++ projectPanelView model
+                ++ projectPanelView.content
                 ++ labelPanelView model
                 ++ filterPanelView model
         , main = viewRoute (Route.fromUrl model.url) model
         , modal =
             popupView model
                 ++ [ dialogSystem.view model.dialog ]
-                ++ projectPanelSystem.viewGhost model.projectPanel
+                ++ projectPanelView.ghost
                 ++ LabelPanel.viewGhost model.labelPanel
                 ++ FilterPanel.viewGhost model.filterPanel
         }
