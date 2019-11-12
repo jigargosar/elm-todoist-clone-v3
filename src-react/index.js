@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import ReactDOM from 'react-dom'
-import { mapObjIndexed, prop, times } from 'ramda'
+import { mapObjIndexed, prop, times, values } from 'ramda'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ListItem from '@material-ui/core/ListItem'
 import List from '@material-ui/core/List'
@@ -52,7 +52,8 @@ const allHues = {
   yellow,
 }
 
-const colors500 = mapObjIndexed(prop('500'),allHues)
+const colors500 = mapObjIndexed(prop('500'), allHues)
+const colors500List = values(colors500)
 
 const nanoid = require('nanoid')
 
@@ -161,6 +162,11 @@ times(assignRandomLabelsToRandomTodo, 7)
   },
 })*/
 
+function randomColor500() {
+  const idx = Math.floor(Math.random() * colors500List.length)
+  return colors500List[idx]
+}
+
 function App() {
   const projectList = mockProjectList
   return (
@@ -173,7 +179,7 @@ function App() {
         {projectList.map(p => (
           <ListItem key={p.id}>
             <ListItemIcon>
-              <Icon style={{ color: colors500.red }}>folder</Icon>
+              <Icon style={{ color: randomColor500() }}>folder</Icon>
             </ListItemIcon>
             <ListItemText>{p.title}</ListItemText>
           </ListItem>
