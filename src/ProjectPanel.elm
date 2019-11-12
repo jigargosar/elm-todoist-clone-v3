@@ -2,11 +2,9 @@ module ProjectPanel exposing
     ( Config
     , Msg(..)
     , ProjectPanel
-    , System
     , createConfig
     , initial
     , subscriptions
-    , system
     , update
     , view
     , viewGhost
@@ -26,38 +24,6 @@ import ProjectId exposing (ProjectId)
 import Ret exposing (Ret)
 import Route
 import Styles exposing (..)
-
-
-
--- SYSTEM
-
-
-type alias System msg =
-    { initial : ProjectPanel
-    , subscriptions : ProjectPanel -> Sub msg
-    , update : Msg -> ProjectPanel -> Ret ProjectPanel msg
-    , view : List Project -> ProjectPanel -> List (Html msg)
-    , viewGhost : ProjectPanel -> List (Html msg)
-    }
-
-
-system : Config msg -> System msg
-system config =
-    { initial = initial
-    , subscriptions = subscriptions config
-    , update = update config
-    , view = view config
-    , viewGhost = viewGhost
-    }
-
-
-subscriptions : Config msg -> ProjectPanel -> Sub msg
-subscriptions config model =
-    DND.subscriptions config.dnd model.dnd
-
-
-
---
 
 
 type alias ProjectPanel =
@@ -84,10 +50,6 @@ fields =
     { collapsible = Lens.fromTuple ( .collapsible, \s b -> { b | collapsible = s } )
     , dnd = Lens.fromTuple ( .dnd, \s b -> { b | dnd = s } )
     }
-
-
-
--- PROJECT PANEL UPDATE
 
 
 type alias Config msg =
@@ -127,6 +89,11 @@ type alias DNDProjectMsg =
 
 type alias DNDProjectModel =
     DNDList Project
+
+
+subscriptions : Config msg -> ProjectPanel -> Sub msg
+subscriptions config model =
+    DND.subscriptions config.dnd model.dnd
 
 
 update : Config msg -> Msg -> ProjectPanel -> Ret ProjectPanel msg
