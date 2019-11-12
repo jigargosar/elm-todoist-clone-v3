@@ -65,7 +65,7 @@ dndSystem =
     DND.system { toMsg = DNDList, sorted = Sorted }
 
 
-ep =
+epConfig =
     { toggled = Toggled
     , title = "Projects"
     , secondary = { iconName = "add", action = AddClicked }
@@ -159,7 +159,7 @@ viewGhost { dnd } =
 
 view : Config msg -> List Project -> ProjectPanel -> List (Html msg)
 view { toMsg } projectList state =
-    (EP.viewHeader ep state.collapsible
+    (EP.viewHeader epConfig state.collapsible
         :: EP.viewContent
             (\_ ->
                 viewItems
