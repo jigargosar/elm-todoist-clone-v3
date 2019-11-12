@@ -347,7 +347,7 @@ updateF message =
             Ret.mapSub fields.pc (PC.update projectId updateProject)
 
         SubMsg subMsg ->
-            updateSub subMsg
+            Ret.andThen (updateSub subMsg)
 
         AddProjectClicked ->
             openAddProjectCmd 0
@@ -399,23 +399,23 @@ popperConfig =
     SubMsg << Popper
 
 
-updateSub : SubMsg -> RetF Model Msg
-updateSub message =
+updateSub : SubMsg -> Model -> Ret Model Msg
+updateSub message model =
     case message of
         ProjectPanel msg ->
-            Ret.updateSubF fields.projectPanel projectPanelSystem.update msg
+            Ret.updateSub fields.projectPanel projectPanelSystem.update msg model
 
         LabelPanel msg ->
-            Ret.updateSubF fields.labelPanel (LabelPanel.update labelPanelConfig) msg
+            Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg model
 
         FilterPanel msg ->
-            Ret.updateSubF fields.filterPanel (FilterPanel.update filterPanelConfig) msg
+            Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg model
 
         DialogMsg msg ->
-            Ret.updateSubF fields.dialog dialogSystem.updateF msg
+            Ret.updateSub fields.dialog dialogSystem.update msg model
 
         Popper msg ->
-            Ret.updateOptionalF fields.popper (Popper.updateF popperConfig) msg
+            Ret.updateOptional fields.popper (Popper.update popperConfig) msg model
 
 
 stepRandom : Random.Generator a -> { b | seed : Random.Seed } -> ( a, { b | seed : Random.Seed } )

@@ -1,4 +1,4 @@
-module Popper exposing (Msg, Popper, init, styles, subscriptions, update, updateF)
+module Popper exposing (Msg, Popper, init, styles, subscriptions, update)
 
 import Browser.Dom as Dom exposing (Element)
 import Browser.Events
@@ -51,11 +51,6 @@ subscriptions toMsg (Popper internal) =
 
             Nothing ->
                 Sub.none
-
-
-updateF : (Msg -> msg) -> Msg -> RetF Popper msg
-updateF toMsg =
-    Ret.toUpdateF (update toMsg)
 
 
 update : (Msg -> msg) -> Msg -> Popper -> ( Popper, Cmd msg )

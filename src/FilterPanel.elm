@@ -88,8 +88,8 @@ type Msg
     | Toggled
 
 
-elmUpdate : Config msg -> Msg -> FilterPanel -> ( FilterPanel, Cmd msg )
-elmUpdate config message (FilterPanel state) =
+update : Config msg -> Msg -> FilterPanel -> ( FilterPanel, Cmd msg )
+update config message (FilterPanel state) =
     case message of
         DNDList msg ->
             DND.update config.dnd msg state.dnd
@@ -97,11 +97,6 @@ elmUpdate config message (FilterPanel state) =
 
         Toggled ->
             ( FilterPanel { state | collapsible = EP.toggle state.collapsible }, Cmd.none )
-
-
-update : Config msg -> Msg -> Ret FilterPanel msg -> Ret FilterPanel msg
-update config =
-    elmUpdate config |> Ret.toUpdateF
 
 
 viewGhost : FilterPanel -> List (Html msg)
