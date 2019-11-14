@@ -33,7 +33,7 @@ type alias System msg =
     , subscriptions : ProjectPanel -> Sub msg
     , update : Msg -> ProjectPanel -> Ret ProjectPanel msg
     , view : List Project -> ProjectPanel -> List (Html msg)
-    , viewGhost : List Project -> ProjectPanel -> List (Html msg)
+    , viewGhost : ProjectPanel -> List (Html msg)
     }
 
 
@@ -53,7 +53,7 @@ system configParams =
     , subscriptions = subscriptions config
     , update = update config
     , view = view config
-    , viewGhost = view config
+    , viewGhost = viewGhost
     }
 
 
