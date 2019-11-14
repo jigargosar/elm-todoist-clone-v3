@@ -24,6 +24,7 @@ import Lens exposing (Lens)
 import Log exposing (logDecodeError, logError)
 import Optional exposing (Optional)
 import Popper exposing (Popper)
+import Popup
 import PopupView
 import Project exposing (Project)
 import ProjectCollection as PC exposing (ProjectCollection)
@@ -58,21 +59,6 @@ dialogSystem =
 
 
 -- POPUP
-
-
-type Popup
-    = ProjectMoreMenu ProjectId
-    | LabelMoreMenu LabelId
-    | FilterMoreMenu FilterId
-
-
-type PopupMsg
-    = ProjectMoreMenuMsg PopupView.ProjectMenuItem
-    | LabelMoreMenuMsg PopupView.LabelMenuItem
-    | FilterMoreMenuMsg PopupView.FilterMenuItem
-
-
-
 -- PANELS
 
 
@@ -81,7 +67,7 @@ projectPanelSys =
     ProjectPanel.system
         { toMsg = SubMsg << ProjectPanel
         , addClicked = AddProjectClicked
-        , moreClicked = ProjectMoreMenu >> PopupTriggered
+        , moreClicked = Popup.ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
         }
 
@@ -91,7 +77,7 @@ labelPanelConfig =
     LabelPanel.createConfig
         { toMsg = SubMsg << LabelPanel
         , addClicked = AddLabelClicked
-        , moreClicked = LabelMoreMenu >> PopupTriggered
+        , moreClicked = Popup.LabelMoreMenu >> PopupTriggered
         , sorted = LabelOrderChanged
         }
 
@@ -101,7 +87,7 @@ filterPanelConfig =
     FilterPanel.createConfig
         { toMsg = SubMsg << FilterPanel
         , addClicked = AddFilterClicked
-        , moreClicked = PopupTriggered << FilterMoreMenu
+        , moreClicked = PopupTriggered << Popup.FilterMoreMenu
         , sorted = FilterOrderChanged
         }
 
@@ -141,7 +127,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , popup : Maybe ( Popup, Popper )
+    , popup : Maybe ( Popup.Popup, Popper )
     , dialog : Dialog
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
@@ -252,9 +238,9 @@ type Msg
     | ToggleTodoCompleted TodoId
     | OpenDrawerModal
     | CloseDrawerModal
-    | PopupTriggered Popup String
+    | PopupTriggered Popup.Popup String
     | ClosePopup
-    | PopupMsg PopupMsg
+    | PopupMsg Popup.PopupMsg
     | AddProjectDialogSaved AddProject.SavedWith
     | AddProjectWithTS AddProject.SavedWith Timestamp
     | EditProjectDialogSaved EditProject.SavedWith
@@ -427,7 +413,7 @@ stepRandom generator model =
     ( generated, { model | seed = newSeed } )
 
 
-updateWithPopupKind : (Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
+updateWithPopupKind : (Popup.Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
 updateWithPopupKind func model =
     case model.popup of
         Just ( popup, _ ) ->
@@ -437,16 +423,16 @@ updateWithPopupKind func model =
             ( model, Cmd.none )
 
 
-updatePopup : PopupMsg -> Popup -> Model -> ( Model, Cmd Msg )
+updatePopup : Popup.PopupMsg -> Popup.Popup -> Model -> ( Model, Cmd Msg )
 updatePopup message popup model =
     case ( popup, message ) of
-        ( ProjectMoreMenu projectId, ProjectMoreMenuMsg action ) ->
+        ( Popup.ProjectMoreMenu projectId, Popup.ProjectMoreMenuMsg action ) ->
             updateProjectPopup projectId action model
 
-        ( LabelMoreMenu labelId, LabelMoreMenuMsg action ) ->
+        ( Popup.LabelMoreMenu labelId, Popup.LabelMoreMenuMsg action ) ->
             updateLabelPopup labelId action model
 
-        ( FilterMoreMenu filterId, FilterMoreMenuMsg action ) ->
+        ( Popup.FilterMoreMenu filterId, Popup.FilterMoreMenuMsg action ) ->
             updateFilterPopup filterId action model
 
         _ ->
@@ -725,7 +711,7 @@ popupView model =
 
         Just ( popup, popper ) ->
             let
-                viewHelp : List (Html msg) -> (msg -> PopupMsg) -> List (Html Msg)
+                viewHelp : List (Html msg) -> (msg -> Popup.PopupMsg) -> List (Html Msg)
                 viewHelp content toMsg =
                     PopupView.container
                         { onClose = ClosePopup
@@ -735,14 +721,14 @@ popupView model =
                         popper
             in
             case popup of
-                ProjectMoreMenu _ ->
-                    viewHelp PopupView.projectContent ProjectMoreMenuMsg
+                Popup.ProjectMoreMenu _ ->
+                    viewHelp PopupView.projectContent Popup.ProjectMoreMenuMsg
 
-                LabelMoreMenu _ ->
-                    viewHelp PopupView.labelContent LabelMoreMenuMsg
+                Popup.LabelMoreMenu _ ->
+                    viewHelp PopupView.labelContent Popup.LabelMoreMenuMsg
 
-                FilterMoreMenu _ ->
-                    viewHelp PopupView.filterContent FilterMoreMenuMsg
+                Popup.FilterMoreMenu _ ->
+                    viewHelp PopupView.filterContent Popup.FilterMoreMenuMsg
 
 
 
