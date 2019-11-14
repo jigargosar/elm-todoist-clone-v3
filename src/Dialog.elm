@@ -58,6 +58,7 @@ system ({ toMsg } as configParams) =
 
 type alias Config msg =
     { toMsg : Msg -> msg
+    , focusCmd : String -> Cmd msg
     , projectAdded : AddProject.SavedWith -> msg
     , projectEdited : EditProject.SavedWith -> msg
     , apSys : AddProject.System msg
@@ -73,6 +74,7 @@ createConfig :
     -> Config msg
 createConfig { toMsg, projectAdded, projectEdited } =
     { toMsg = toMsg
+    , focusCmd = Focus.cmd (toMsg << Focused)
     , projectAdded = projectAdded
     , projectEdited = projectEdited
     , apSys =
@@ -88,24 +90,6 @@ createConfig { toMsg, projectAdded, projectEdited } =
             , saved = toMsg << SavedMsg << EditProjectSaved
             }
     }
-
-
-editProject : EditProject.System Msg
-editProject =
-    EditProject.system
-        { toMsg = SubMsg << EditProjectMsg
-        , canceled = Canceled
-        , saved = SavedMsg << EditProjectSaved
-        }
-
-
-addProject : AddProject.System Msg
-addProject =
-    AddProject.system
-        { toMsg = SubMsg << AddProjectMsg
-        , canceled = Canceled
-        , saved = SavedMsg << AddProjectSaved
-        }
 
 
 type Dialog
@@ -143,51 +127,43 @@ type Msg
 
 
 subscriptions : Config msg -> Dialog -> Sub msg
-subscriptions config dialog =
-    let
-        { toMsg } =
-            config
-    in
-    (case dialog of
+subscriptions c dialog =
+    case dialog of
         AddProject model ->
-            addProject.subscriptions model
+            c.apSys.subscriptions model
 
         EditProject model ->
-            editProject.subscriptions model
+            c.epSys.subscriptions model
 
         Closed ->
             Sub.none
-    )
-        |> Sub.map toMsg
 
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
-update config message model =
+update c message model =
     case message of
         SubMsg subMsg ->
-            (case ( subMsg, model ) of
+            case ( subMsg, model ) of
                 ( AddProjectMsg msg, AddProject sub ) ->
-                    addProject.update msg sub |> Ret.map AddProject
+                    c.apSys.update msg sub |> Ret.map AddProject
 
                 ( EditProjectMsg msg, EditProject sub ) ->
-                    editProject.update msg sub |> Ret.map EditProject
+                    c.epSys.update msg sub |> Ret.map EditProject
 
                 _ ->
                     Ret.only model
-            )
-                |> Ret.mapCmd config.toMsg
 
         OpenMsg msg ->
             let
                 focusCmd =
-                    Focus.cmd (config.toMsg << Focused)
+                    Focus.cmd (c.toMsg << Focused)
             in
             case msg of
                 OpenAddProject idx ->
-                    addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
+                    c.apSys.initAt idx |> Tuple.mapBoth AddProject focusCmd
 
                 OpenEditProject project ->
-                    editProject.init project |> Tuple.mapBoth EditProject focusCmd
+                    c.epSys.init project |> Tuple.mapBoth EditProject focusCmd
 
         Focused result ->
             case result of
@@ -205,24 +181,22 @@ update config message model =
             , Ret.toCmd
                 (case savedMsg of
                     AddProjectSaved savedWith ->
-                        config.projectAdded savedWith
+                        c.projectAdded savedWith
 
                     EditProjectSaved savedWith ->
-                        config.projectEdited savedWith
+                        c.projectEdited savedWith
                 )
             )
 
 
 view : Config msg -> Dialog -> Html msg
-view { toMsg } dialog =
-    (case dialog of
+view c dialog =
+    case dialog of
         AddProject model ->
-            addProject.view model
+            c.apSys.view model
 
         EditProject model ->
-            editProject.view model
+            c.epSys.view model
 
         Closed ->
             H.text ""
-    )
-        |> H.map toMsg
