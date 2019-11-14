@@ -59,8 +59,8 @@ system ({ toMsg } as configParams) =
 type alias Config msg =
     { toMsg : Msg -> msg
     , focusCmd : String -> Cmd msg
-    , projectAdded : AddProject.SavedWith -> msg
-    , projectEdited : EditProject.SavedWith -> msg
+    , projectAddedCmd : AddProject.SavedWith -> Cmd msg
+    , projectEditedCmd : EditProject.SavedWith -> Cmd msg
     , apSys : AddProject.System msg
     , epSys : EditProject.System msg
     }
@@ -75,19 +75,19 @@ createConfig :
 createConfig { toMsg, projectAdded, projectEdited } =
     { toMsg = toMsg
     , focusCmd = Focus.cmd (toMsg << Focused)
-    , projectAdded = projectAdded
-    , projectEdited = projectEdited
+    , projectAddedCmd = Ret.toCmd << projectAdded
+    , projectEditedCmd = Ret.toCmd << projectEdited
     , apSys =
         AddProject.system
             { toMsg = toMsg << SubMsg << AddProjectMsg
             , canceled = toMsg Canceled
-            , saved = toMsg << SavedMsg << AddProjectSaved
+            , saved = toMsg << AddProjectSaved
             }
     , epSys =
         EditProject.system
             { toMsg = toMsg << SubMsg << EditProjectMsg
             , canceled = toMsg Canceled
-            , saved = toMsg << SavedMsg << EditProjectSaved
+            , saved = toMsg << EditProjectSaved
             }
     }
 
@@ -103,11 +103,6 @@ type Dialog
     | Closed
 
 
-type SavedMsg
-    = AddProjectSaved AddProject.SavedWith
-    | EditProjectSaved EditProject.SavedWith
-
-
 type SubMsg
     = AddProjectMsg AddProject.Msg
     | EditProjectMsg EditProject.Msg
@@ -121,7 +116,8 @@ type OpenMsg
 type Msg
     = SubMsg SubMsg
     | OpenMsg OpenMsg
-    | SavedMsg SavedMsg
+    | AddProjectSaved AddProject.SavedWith
+    | EditProjectSaved EditProject.SavedWith
     | Canceled
     | Focused FocusResult
 
@@ -176,17 +172,11 @@ update c message model =
         Canceled ->
             Ret.only Closed
 
-        SavedMsg savedMsg ->
-            ( Closed
-            , Ret.toCmd
-                (case savedMsg of
-                    AddProjectSaved savedWith ->
-                        c.projectAdded savedWith
+        AddProjectSaved savedWith ->
+            ( Closed, c.projectAddedCmd savedWith )
 
-                    EditProjectSaved savedWith ->
-                        c.projectEdited savedWith
-                )
-            )
+        EditProjectSaved savedWith ->
+            ( Closed, c.projectEditedCmd savedWith )
 
 
 view : Config msg -> Dialog -> Html msg
