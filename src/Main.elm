@@ -367,9 +367,9 @@ update message model =
             ( Lens.over fields.fc (FC.updateSortOrder filterList) model, Cmd.none )
 
 
-openAddProjectDialog : Int -> RetF Model Msg
-openAddProjectDialog i =
-    Ret.addMsg (dialogSystem.openAddProject i)
+openAddProjectDialog : Int -> Model -> Ret Model Msg
+openAddProjectDialog i model =
+    ( model, Ret.toCmd (dialogSystem.openAddProject i) )
 
 
 openEditProjectDialog : ProjectId -> Model -> Ret Model Msg
