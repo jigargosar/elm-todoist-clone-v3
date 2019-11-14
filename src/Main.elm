@@ -269,73 +269,69 @@ type Msg
     | FilterOrderChanged (List Filter)
 
 
-updateF : Msg -> RetF Model Msg
-updateF message =
+update : Msg -> Model -> Ret Model Msg
+update message model =
+    let
+        noOp =
+            ( model, Cmd.none )
+    in
     case message of
         NoOp ->
-            identity
+            noOp
 
         LogError error ->
-            Ret.add (logError error)
+            ( model, logError error )
 
         OnUrlRequest urlRequest ->
-            Ret.andThenF
-                (\model ->
-                    case urlRequest of
-                        Browser.Internal url ->
-                            let
-                                urlChanged =
-                                    url /= model.url
-                            in
-                            if urlChanged then
-                                Ret.add (Nav.pushUrl model.navKey (Url.toString url))
+            case urlRequest of
+                Browser.Internal url ->
+                    let
+                        urlChanged =
+                            url /= model.url
+                    in
+                    if urlChanged then
+                        ( model, Nav.pushUrl model.navKey (Url.toString url) )
 
-                            else
-                                identity
+                    else
+                        noOp
 
-                        Browser.External href ->
-                            Ret.add (Nav.load href)
-                )
+                Browser.External href ->
+                    ( model, Nav.load href )
 
         OnUrlChange url ->
-            Ret.andThen (onUrlChanged url)
+            onUrlChanged url model
 
         ToggleTodoCompleted todoId ->
-            Ret.mapSubF fields.tc (TC.toggleCompleted todoId)
+            ( Lens.over fields.tc (TC.toggleCompleted todoId) model, Cmd.none )
 
         OpenDrawerModal ->
-            Ret.setSub fields.isDrawerModalOpen True
+            ( fields.isDrawerModalOpen.set True model, Cmd.none )
 
         CloseDrawerModal ->
-            Ret.setSub fields.isDrawerModalOpen False
+            ( fields.isDrawerModalOpen.set False model, Cmd.none )
 
         PopupTriggered kind anchorId ->
-            Ret.initSub fields.popup
-                (Popper.init popperConfig anchorId "rootPopup"
-                    |> Tuple.mapFirst (\popper -> ( kind, popper ))
-                )
+            Popper.init popperConfig anchorId "rootPopup"
+                |> Tuple.mapFirst (\popper -> fields.popup.set ( kind, popper ) model)
 
         ClosePopup ->
-            Ret.map closePopup
+            ( closePopup model, Cmd.none )
 
         PopupMsg msg ->
-            Ret.andThen (updateWithPopupKind (updatePopup msg))
+            updateWithPopupKind (updatePopup msg) model
 
         AddProjectDialogSaved savedWith ->
-            Ret.getNow (AddProjectWithTS savedWith)
+            noOp |> Ret.getNow (AddProjectWithTS savedWith)
 
         EditProjectDialogSaved savedWith ->
-            Ret.getNow (EditProjectWithTS savedWith)
+            noOp |> Ret.getNow (EditProjectWithTS savedWith)
 
         AddProjectWithTS { title, cColor, idx } ts ->
-            Ret.map
-                (\model ->
-                    let
-                        ( newProject, newModel ) =
-                            stepRandom (Project.generator title idx cColor ts) model
-                    in
-                    Lens.over fields.pc (PC.put newProject) newModel
-                )
+            let
+                ( newProject, newModel ) =
+                    stepRandom (Project.generator title idx cColor ts) model
+            in
+            ( Lens.over fields.pc (PC.put newProject) newModel, Cmd.none )
 
         EditProjectWithTS { projectId, title, cColor } ts ->
             let
@@ -344,31 +340,31 @@ updateF message =
                         >> Project.setCColor cColor
                         >> Project.setModifiedAt ts
             in
-            Ret.mapSubF fields.pc (PC.update projectId updateProject)
+            ( Lens.over fields.pc (PC.update projectId updateProject) model, Cmd.none )
 
         SubMsg subMsg ->
-            Ret.andThen (updateSub subMsg)
+            updateSub subMsg model
 
         AddProjectClicked ->
-            openAddProjectCmd 0
+            noOp |> openAddProjectCmd 0
 
         EditProjectClicked id ->
-            openEditProjectCmd id
+            noOp |> openEditProjectCmd id
 
         AddLabelClicked ->
-            identity
+            noOp
 
         AddFilterClicked ->
-            identity
+            noOp
 
         ProjectOrderChanged projectList ->
-            Ret.mapSubF fields.pc (PC.updateSortOrder projectList)
+            ( Lens.over fields.pc (PC.updateSortOrder projectList) model, Cmd.none )
 
         LabelOrderChanged labelList ->
-            Ret.mapSubF fields.lc (LC.updateSortOrder labelList)
+            ( Lens.over fields.lc (LC.updateSortOrder labelList) model, Cmd.none )
 
         FilterOrderChanged filterList ->
-            Ret.mapSubF fields.fc (FC.updateSortOrder filterList)
+            ( Lens.over fields.fc (FC.updateSortOrder filterList) model, Cmd.none )
 
 
 openAddProjectCmd : Int -> RetF Model Msg
@@ -754,7 +750,7 @@ main =
     Browser.application
         { init = init
         , view = view >> toUnstyled >> List.singleton >> Browser.Document "Todoist Clone"
-        , update = Ret.fromUpdateF updateF
+        , update = update
         , subscriptions = subscriptions
         , onUrlRequest = OnUrlRequest
         , onUrlChange = OnUrlChange
