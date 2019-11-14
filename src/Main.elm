@@ -346,10 +346,10 @@ update message model =
             updateSub subMsg model
 
         AddProjectClicked ->
-            noOp |> openAddProjectCmd 0
+            noOp |> openAddProjectDialog 0
 
         EditProjectClicked id ->
-            noOp |> openEditProjectCmd id
+            openEditProjectDialog id model
 
         AddLabelClicked ->
             noOp
@@ -367,23 +367,22 @@ update message model =
             ( Lens.over fields.fc (FC.updateSortOrder filterList) model, Cmd.none )
 
 
-openAddProjectCmd : Int -> RetF Model Msg
-openAddProjectCmd i =
+openAddProjectDialog : Int -> RetF Model Msg
+openAddProjectDialog i =
     Ret.addMsg (dialogSystem.openAddProject i)
 
 
-openEditProjectCmd : ProjectId -> RetF Model Msg
-openEditProjectCmd id =
-    Ret.addEffect
-        (\model ->
-            case projectById id model of
-                Just p ->
-                    dialogSystem.openEditProject p
-                        |> msgToCmd
+openEditProjectDialog : ProjectId -> Model -> Ret Model Msg
+openEditProjectDialog id model =
+    ( model
+    , case projectById id model of
+        Just p ->
+            dialogSystem.openEditProject p
+                |> msgToCmd
 
-                Nothing ->
-                    Cmd.none
-        )
+        Nothing ->
+            Cmd.none
+    )
 
 
 type alias Return =
@@ -467,17 +466,16 @@ updateProjectPopup projectId action model =
     case action of
         PopupView.AddProjectBelow ->
             ret
-                |> openAddProjectCmd (projectIdxWithOffset 1)
+                |> openAddProjectDialog (projectIdxWithOffset 1)
                 |> Ret.map closePopup
 
         PopupView.AddProjectAbove ->
             ret
-                |> openAddProjectCmd (projectIdxWithOffset 0)
+                |> openAddProjectDialog (projectIdxWithOffset 0)
                 |> Ret.map closePopup
 
         PopupView.EditProject ->
-            ret
-                |> openEditProjectCmd projectId
+            openEditProjectDialog projectId model
                 |> Ret.map closePopup
 
         _ ->
