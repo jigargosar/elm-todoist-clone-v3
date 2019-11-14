@@ -347,7 +347,7 @@ update message model =
             updateSub subMsg model
 
         AddProjectClicked ->
-            noOp |> openAddProjectDialog 0
+            openAddProjectDialog 0 model
 
         EditProjectClicked id ->
             openEditProjectDialog id model
@@ -462,13 +462,11 @@ updateProjectPopup projectId action model =
     in
     case action of
         PopupView.AddProjectBelow ->
-            ret
-                |> openAddProjectDialog (projectIdxWithOffset 1)
+            openAddProjectDialog (projectIdxWithOffset 1) model
                 |> Ret.map closePopup
 
         PopupView.AddProjectAbove ->
-            ret
-                |> openAddProjectDialog (projectIdxWithOffset 0)
+            openAddProjectDialog (projectIdxWithOffset 0) model
                 |> Ret.map closePopup
 
         PopupView.EditProject ->
