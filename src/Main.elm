@@ -5,9 +5,10 @@ import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
-import Dialog.AddProject
-import Dialog.EditProject
+import Dialog.AddProject as AddProject
+import Dialog.EditProject as EditProject
 import Drawer
+import Filter exposing (Filter)
 import FilterCollection as FC exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
@@ -21,10 +22,8 @@ import LabelPanel exposing (LabelPanel)
 import Layout
 import Lens exposing (Lens)
 import Log exposing (logDecodeError, logError)
-import Msg exposing (..)
 import Optional exposing (Optional)
 import Popper exposing (Popper)
-import Popup
 import PopupView
 import Project exposing (Project)
 import ProjectCollection as PC exposing (ProjectCollection)
@@ -34,8 +33,10 @@ import Random
 import Ret exposing (Ret, RetF)
 import Return
 import Route exposing (Route)
+import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
 import TodoCollection as TC exposing (TodoCollection)
+import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
 import Tuple2
@@ -57,15 +58,30 @@ dialogSystem =
 
 
 -- POPUP
+
+
+type Popup
+    = ProjectMoreMenu ProjectId
+    | LabelMoreMenu LabelId
+    | FilterMoreMenu FilterId
+
+
+type PopupMsg
+    = ProjectMoreMenuMsg PopupView.ProjectMenuItem
+    | LabelMoreMenuMsg PopupView.LabelMenuItem
+    | FilterMoreMenuMsg PopupView.FilterMenuItem
+
+
+
 -- PANELS
 
 
 projectPanelSys : ProjectPanel.System Msg
 projectPanelSys =
     ProjectPanel.system
-        { toMsg = SubMsg << Msg.ProjectPanel
+        { toMsg = SubMsg << ProjectPanel
         , addClicked = AddProjectClicked
-        , moreClicked = Popup.ProjectMoreMenu >> PopupTriggered
+        , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
         }
 
@@ -73,9 +89,9 @@ projectPanelSys =
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
     LabelPanel.createConfig
-        { toMsg = SubMsg << Msg.LabelPanel
+        { toMsg = SubMsg << LabelPanel
         , addClicked = AddLabelClicked
-        , moreClicked = Popup.LabelMoreMenu >> PopupTriggered
+        , moreClicked = LabelMoreMenu >> PopupTriggered
         , sorted = LabelOrderChanged
         }
 
@@ -83,9 +99,9 @@ labelPanelConfig =
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
     FilterPanel.createConfig
-        { toMsg = SubMsg << Msg.FilterPanel
+        { toMsg = SubMsg << FilterPanel
         , addClicked = AddFilterClicked
-        , moreClicked = PopupTriggered << Popup.FilterMoreMenu
+        , moreClicked = PopupTriggered << FilterMoreMenu
         , sorted = FilterOrderChanged
         }
 
@@ -125,7 +141,7 @@ type alias Model =
     , labelCollection : LabelCollection
     , filterCollection : FilterCollection
     , isDrawerModalOpen : Bool
-    , popup : Maybe ( Popup.Popup, Popper )
+    , popup : Maybe ( Popup, Popper )
     , dialog : Dialog
     , projectPanel : ProjectPanel
     , labelPanel : LabelPanel
@@ -218,6 +234,39 @@ subscriptions model =
 
 
 -- UPDATE
+
+
+type SubMsg
+    = ProjectPanel ProjectPanel.Msg
+    | LabelPanel LabelPanel.Msg
+    | FilterPanel FilterPanel.Msg
+    | Dialog Dialog.Msg
+    | Popper Popper.Msg
+
+
+type Msg
+    = NoOp
+    | LogError String
+    | OnUrlRequest UrlRequest
+    | OnUrlChange Url
+    | ToggleTodoCompleted TodoId
+    | OpenDrawerModal
+    | CloseDrawerModal
+    | PopupTriggered Popup String
+    | ClosePopup
+    | PopupMsg PopupMsg
+    | AddProjectDialogSaved AddProject.SavedWith
+    | AddProjectWithTS AddProject.SavedWith Timestamp
+    | EditProjectDialogSaved EditProject.SavedWith
+    | EditProjectWithTS EditProject.SavedWith Timestamp
+    | AddProjectClicked
+    | EditProjectClicked ProjectId
+    | AddLabelClicked
+    | AddFilterClicked
+    | SubMsg SubMsg
+    | ProjectOrderChanged (List Project)
+    | LabelOrderChanged (List Label)
+    | FilterOrderChanged (List Filter)
 
 
 updateF : Msg -> RetF Model Msg
@@ -353,19 +402,19 @@ popperConfig =
 updateSub : SubMsg -> Model -> Ret Model Msg
 updateSub message =
     case message of
-        Msg.ProjectPanel msg ->
+        ProjectPanel msg ->
             Ret.updateSub fields.projectPanel projectPanelSys.update msg
 
-        Msg.LabelPanel msg ->
+        LabelPanel msg ->
             Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
 
-        Msg.FilterPanel msg ->
+        FilterPanel msg ->
             Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
-        Msg.Dialog msg ->
+        Dialog msg ->
             Ret.updateSub fields.dialog dialogSystem.update msg
 
-        Msg.Popper msg ->
+        Popper msg ->
             Ret.updateOptional fields.popper (Popper.update popperConfig) msg
 
 
@@ -378,7 +427,7 @@ stepRandom generator model =
     ( generated, { model | seed = newSeed } )
 
 
-updateWithPopupKind : (Popup.Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
+updateWithPopupKind : (Popup -> Model -> ( Model, Cmd Msg )) -> Model -> ( Model, Cmd Msg )
 updateWithPopupKind func model =
     case model.popup of
         Just ( popup, _ ) ->
@@ -388,16 +437,16 @@ updateWithPopupKind func model =
             ( model, Cmd.none )
 
 
-updatePopup : Popup.PopupMsg -> Popup.Popup -> Model -> ( Model, Cmd Msg )
+updatePopup : PopupMsg -> Popup -> Model -> ( Model, Cmd Msg )
 updatePopup message popup model =
     case ( popup, message ) of
-        ( Popup.ProjectMoreMenu projectId, Popup.ProjectMoreMenuMsg action ) ->
+        ( ProjectMoreMenu projectId, ProjectMoreMenuMsg action ) ->
             updateProjectPopup projectId action model
 
-        ( Popup.LabelMoreMenu labelId, Popup.LabelMoreMenuMsg action ) ->
+        ( LabelMoreMenu labelId, LabelMoreMenuMsg action ) ->
             updateLabelPopup labelId action model
 
-        ( Popup.FilterMoreMenu filterId, Popup.FilterMoreMenuMsg action ) ->
+        ( FilterMoreMenu filterId, FilterMoreMenuMsg action ) ->
             updateFilterPopup filterId action model
 
         _ ->
@@ -676,7 +725,7 @@ popupView model =
 
         Just ( popup, popper ) ->
             let
-                viewHelp : List (Html msg) -> (msg -> Popup.PopupMsg) -> List (Html Msg)
+                viewHelp : List (Html msg) -> (msg -> PopupMsg) -> List (Html Msg)
                 viewHelp content toMsg =
                     PopupView.container
                         { onClose = ClosePopup
@@ -686,14 +735,14 @@ popupView model =
                         popper
             in
             case popup of
-                Popup.ProjectMoreMenu _ ->
-                    viewHelp PopupView.projectContent Popup.ProjectMoreMenuMsg
+                ProjectMoreMenu _ ->
+                    viewHelp PopupView.projectContent ProjectMoreMenuMsg
 
-                Popup.LabelMoreMenu _ ->
-                    viewHelp PopupView.labelContent Popup.LabelMoreMenuMsg
+                LabelMoreMenu _ ->
+                    viewHelp PopupView.labelContent LabelMoreMenuMsg
 
-                Popup.FilterMoreMenu _ ->
-                    viewHelp PopupView.filterContent Popup.FilterMoreMenuMsg
+                FilterMoreMenu _ ->
+                    viewHelp PopupView.filterContent FilterMoreMenuMsg
 
 
 
