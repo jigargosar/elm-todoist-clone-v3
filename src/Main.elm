@@ -696,13 +696,23 @@ inboxTodoListView lc todoCollection =
         :: List.map viewTodo todoList
 
 
-todoListByLabelIdView : LabelId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
+todoListByLabelIdView :
+    LabelId
+    -> ProjectCollection
+    -> LabelCollection
+    -> TodoCollection
+    -> List (Html Msg)
 todoListByLabelIdView id pc lc tc =
     div [] [ text "label: ", text <| LabelId.toString id ]
         :: viewTodoListHelp pc lc (TC.withLabelId id tc)
 
 
-todoListByFilterIdView : FilterId -> ProjectCollection -> LabelCollection -> TodoCollection -> List (Html Msg)
+todoListByFilterIdView :
+    FilterId
+    -> ProjectCollection
+    -> LabelCollection
+    -> TodoCollection
+    -> List (Html Msg)
 todoListByFilterIdView _ pc lc todoCollection =
     viewTodoListHelp pc lc (TC.sortedByIdx todoCollection)
 
