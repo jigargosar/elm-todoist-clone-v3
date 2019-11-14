@@ -145,7 +145,7 @@ subscriptions config dialog =
 
 
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
-update ({ toMsg } as config) message model =
+update config message model =
     case message of
         SubMsg subMsg ->
             (case ( subMsg, model ) of
@@ -158,12 +158,12 @@ update ({ toMsg } as config) message model =
                 _ ->
                     Ret.only model
             )
-                |> Ret.mapCmd toMsg
+                |> Ret.mapCmd config.toMsg
 
         OpenMsg msg ->
             let
                 focusCmd =
-                    Focus.cmd (toMsg << Focused)
+                    Focus.cmd (config.toMsg << Focused)
             in
             case msg of
                 OpenAddProject idx ->
