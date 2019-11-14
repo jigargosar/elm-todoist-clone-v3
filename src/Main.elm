@@ -525,7 +525,7 @@ type alias PanelView =
 viewProjectPanel : ProjectCollection -> ProjectPanel -> PanelView
 viewProjectPanel pc panel =
     { content = projectPanelSys.view (PC.sorted pc) panel
-    , ghost = ProjectPanel.viewGhost panel
+    , ghost = projectPanelSys.viewGhost panel
     }
 
 
