@@ -370,7 +370,7 @@ update message model =
 
 openAddProjectDialog : Int -> Model -> Ret Model Msg
 openAddProjectDialog i model =
-    ( model, Ret.toCmd (dialogSystem.openAddProject i) )
+    ( model, Cmds.fromMsg (dialogSystem.openAddProject i) )
 
 
 openEditProjectDialog : ProjectId -> Model -> Ret Model Msg
