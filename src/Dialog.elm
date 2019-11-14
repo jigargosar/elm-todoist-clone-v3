@@ -48,9 +48,9 @@ system ({ toMsg } as configParams) =
             createConfig configParams
     in
     { initial = Closed
-    , subscriptions = subscriptions config
     , openAddProject = openMsg OpenAddProject
     , openEditProject = openMsg OpenEditProject
+    , subscriptions = subscriptions config
     , update = update config
     , view = view config
     }
