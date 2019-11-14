@@ -4,6 +4,7 @@ import Appbar
 import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Cmds
 import Dialog exposing (Dialog)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
@@ -375,13 +376,9 @@ openAddProjectDialog i model =
 openEditProjectDialog : ProjectId -> Model -> Ret Model Msg
 openEditProjectDialog id model =
     ( model
-    , case projectById id model of
-        Just p ->
-            dialogSystem.openEditProject p
-                |> msgToCmd
-
-        Nothing ->
-            Cmd.none
+    , projectById id model
+        |> Maybe.map dialogSystem.openEditProject
+        |> Cmds.fromMaybeMsg
     )
 
 
