@@ -40,16 +40,13 @@ system :
     -> System msg
 system ({ toMsg } as configParams) =
     let
-        openMsg msg =
-            toMsg << OpenMsg << msg
-
         config : Config msg
         config =
             createConfig configParams
     in
     { initial = Closed
-    , openAddProject = openMsg OpenAddProject
-    , openEditProject = openMsg OpenEditProject
+    , openAddProject = toMsg << OpenAddProject
+    , openEditProject = toMsg << OpenEditProject
     , subscriptions = subscriptions config
     , update = update config
     , view = view config
@@ -103,15 +100,11 @@ type Dialog
     | Closed
 
 
-type OpenMsg
-    = OpenAddProject Int
-    | OpenEditProject Project
-
-
 type Msg
     = AddProjectMsg AddProject.Msg
     | EditProjectMsg EditProject.Msg
-    | OpenMsg OpenMsg
+    | OpenAddProject Int
+    | OpenEditProject Project
     | AddProjectSaved AddProject.SavedWith
     | EditProjectSaved EditProject.SavedWith
     | Canceled
@@ -150,17 +143,11 @@ update c message model =
                 _ ->
                     Ret.only model
 
-        OpenMsg msg ->
-            let
-                focusCmd =
-                    Focus.cmd (c.toMsg << Focused)
-            in
-            case msg of
-                OpenAddProject idx ->
-                    c.apSys.initAt idx |> Tuple.mapBoth AddProject focusCmd
+        OpenAddProject idx ->
+            c.apSys.initAt idx |> Tuple.mapBoth AddProject c.focusCmd
 
-                OpenEditProject project ->
-                    c.epSys.init project |> Tuple.mapBoth EditProject focusCmd
+        OpenEditProject project ->
+            c.epSys.init project |> Tuple.mapBoth EditProject c.focusCmd
 
         Focused result ->
             case result of
