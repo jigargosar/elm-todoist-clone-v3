@@ -38,19 +38,17 @@ type alias System msg =
 
 
 system :
-    (Msg -> msg)
-    ->
-        { addClicked : msg
-        , moreClicked : ProjectId -> String -> msg
-        , sorted : List Project -> msg
-        }
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
     -> System msg
-system toMsg configParams =
-    createConfig toMsg configParams |> systemHelp
-
-
-systemHelp : Config msg -> System msg
-systemHelp config =
+system configParams =
+    let
+        config =
+            createConfig configParams
+    in
     { initial = initial
     , subscriptions = subscriptions config
     , update = update config
@@ -94,14 +92,13 @@ type alias Config msg =
 
 
 createConfig :
-    (Msg -> msg)
-    ->
-        { addClicked : msg
-        , moreClicked : ProjectId -> String -> msg
-        , sorted : List Project -> msg
-        }
+    { toMsg : Msg -> msg
+    , addClicked : msg
+    , moreClicked : ProjectId -> String -> msg
+    , sorted : List Project -> msg
+    }
     -> Config msg
-createConfig toMsg { addClicked, moreClicked, sorted } =
+createConfig { toMsg, addClicked, moreClicked, sorted } =
     let
         dndConfig =
             { toMsg = toMsg << DNDList, sorted = sorted }
