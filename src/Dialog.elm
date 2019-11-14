@@ -60,6 +60,8 @@ type alias Config msg =
     { toMsg : Msg -> msg
     , projectAdded : AddProject.SavedWith -> msg
     , projectEdited : EditProject.SavedWith -> msg
+    , apSys : AddProject.System msg
+    , epSys : EditProject.System msg
     }
 
 
@@ -69,8 +71,23 @@ createConfig :
     , projectEdited : EditProject.SavedWith -> msg
     }
     -> Config msg
-createConfig =
-    identity
+createConfig { toMsg, projectAdded, projectEdited } =
+    { toMsg = toMsg
+    , projectAdded = projectAdded
+    , projectEdited = projectEdited
+    , apSys =
+        AddProject.system
+            { toMsg = toMsg << SubMsg << AddProjectMsg
+            , canceled = toMsg Canceled
+            , saved = toMsg << SavedMsg << AddProjectSaved
+            }
+    , epSys =
+        EditProject.system
+            { toMsg = toMsg << SubMsg << EditProjectMsg
+            , canceled = toMsg Canceled
+            , saved = toMsg << SavedMsg << EditProjectSaved
+            }
+    }
 
 
 editProject : EditProject.System Msg
