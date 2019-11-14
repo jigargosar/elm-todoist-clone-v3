@@ -5,10 +5,9 @@ import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Dialog exposing (Dialog)
-import Dialog.AddProject as AddProject
-import Dialog.EditProject as EditProject
+import Dialog.AddProject
+import Dialog.EditProject
 import Drawer
-import Filter exposing (Filter)
 import FilterCollection as FC exposing (FilterCollection)
 import FilterId exposing (FilterId)
 import FilterPanel exposing (FilterPanel)
@@ -22,6 +21,7 @@ import LabelPanel exposing (LabelPanel)
 import Layout
 import Lens exposing (Lens)
 import Log exposing (logDecodeError, logError)
+import Msg exposing (..)
 import Optional exposing (Optional)
 import Popper exposing (Popper)
 import Popup
@@ -34,10 +34,8 @@ import Random
 import Ret exposing (Ret, RetF)
 import Return
 import Route exposing (Route)
-import Timestamp exposing (Timestamp)
 import Todo exposing (Todo)
 import TodoCollection as TC exposing (TodoCollection)
-import TodoId exposing (TodoId)
 import TodoProject
 import TodoUI
 import Tuple2
@@ -65,7 +63,7 @@ dialogSystem =
 projectPanelSys : ProjectPanel.System Msg
 projectPanelSys =
     ProjectPanel.system
-        { toMsg = SubMsg << ProjectPanel
+        { toMsg = SubMsg << Msg.ProjectPanel
         , addClicked = AddProjectClicked
         , moreClicked = Popup.ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
@@ -75,7 +73,7 @@ projectPanelSys =
 labelPanelConfig : LabelPanel.Config Msg
 labelPanelConfig =
     LabelPanel.createConfig
-        { toMsg = SubMsg << LabelPanel
+        { toMsg = SubMsg << Msg.LabelPanel
         , addClicked = AddLabelClicked
         , moreClicked = Popup.LabelMoreMenu >> PopupTriggered
         , sorted = LabelOrderChanged
@@ -85,7 +83,7 @@ labelPanelConfig =
 filterPanelConfig : FilterPanel.Config Msg
 filterPanelConfig =
     FilterPanel.createConfig
-        { toMsg = SubMsg << FilterPanel
+        { toMsg = SubMsg << Msg.FilterPanel
         , addClicked = AddFilterClicked
         , moreClicked = PopupTriggered << Popup.FilterMoreMenu
         , sorted = FilterOrderChanged
@@ -222,39 +220,6 @@ subscriptions model =
 -- UPDATE
 
 
-type SubMsg
-    = ProjectPanel ProjectPanel.Msg
-    | LabelPanel LabelPanel.Msg
-    | FilterPanel FilterPanel.Msg
-    | Dialog Dialog.Msg
-    | Popper Popper.Msg
-
-
-type Msg
-    = NoOp
-    | LogError String
-    | OnUrlRequest UrlRequest
-    | OnUrlChange Url
-    | ToggleTodoCompleted TodoId
-    | OpenDrawerModal
-    | CloseDrawerModal
-    | PopupTriggered Popup.Popup String
-    | ClosePopup
-    | PopupMsg Popup.PopupMsg
-    | AddProjectDialogSaved AddProject.SavedWith
-    | AddProjectWithTS AddProject.SavedWith Timestamp
-    | EditProjectDialogSaved EditProject.SavedWith
-    | EditProjectWithTS EditProject.SavedWith Timestamp
-    | AddProjectClicked
-    | EditProjectClicked ProjectId
-    | AddLabelClicked
-    | AddFilterClicked
-    | SubMsg SubMsg
-    | ProjectOrderChanged (List Project)
-    | LabelOrderChanged (List Label)
-    | FilterOrderChanged (List Filter)
-
-
 updateF : Msg -> RetF Model Msg
 updateF message =
     case message of
@@ -388,19 +353,19 @@ popperConfig =
 updateSub : SubMsg -> Model -> Ret Model Msg
 updateSub message =
     case message of
-        ProjectPanel msg ->
+        Msg.ProjectPanel msg ->
             Ret.updateSub fields.projectPanel projectPanelSys.update msg
 
-        LabelPanel msg ->
+        Msg.LabelPanel msg ->
             Ret.updateSub fields.labelPanel (LabelPanel.update labelPanelConfig) msg
 
-        FilterPanel msg ->
+        Msg.FilterPanel msg ->
             Ret.updateSub fields.filterPanel (FilterPanel.update filterPanelConfig) msg
 
-        Dialog msg ->
+        Msg.Dialog msg ->
             Ret.updateSub fields.dialog dialogSystem.update msg
 
-        Popper msg ->
+        Msg.Popper msg ->
             Ret.updateOptional fields.popper (Popper.update popperConfig) msg
 
 
