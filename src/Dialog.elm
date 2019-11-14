@@ -79,13 +79,13 @@ createConfig { toMsg, projectAdded, projectEdited } =
     , projectEditedCmd = Ret.toCmd << projectEdited
     , apSys =
         AddProject.system
-            { toMsg = toMsg << SubMsg << AddProjectMsg
+            { toMsg = toMsg << AddProjectMsg
             , canceled = toMsg Canceled
             , saved = toMsg << AddProjectSaved
             }
     , epSys =
         EditProject.system
-            { toMsg = toMsg << SubMsg << EditProjectMsg
+            { toMsg = toMsg << EditProjectMsg
             , canceled = toMsg Canceled
             , saved = toMsg << EditProjectSaved
             }
@@ -103,18 +103,14 @@ type Dialog
     | Closed
 
 
-type SubMsg
-    = AddProjectMsg AddProject.Msg
-    | EditProjectMsg EditProject.Msg
-
-
 type OpenMsg
     = OpenAddProject Int
     | OpenEditProject Project
 
 
 type Msg
-    = SubMsg SubMsg
+    = AddProjectMsg AddProject.Msg
+    | EditProjectMsg EditProject.Msg
     | OpenMsg OpenMsg
     | AddProjectSaved AddProject.SavedWith
     | EditProjectSaved EditProject.SavedWith
@@ -138,12 +134,17 @@ subscriptions c dialog =
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
 update c message model =
     case message of
-        SubMsg subMsg ->
-            case ( subMsg, model ) of
-                ( AddProjectMsg msg, AddProject sub ) ->
+        AddProjectMsg msg ->
+            case model of
+                AddProject sub ->
                     c.apSys.update msg sub |> Ret.map AddProject
 
-                ( EditProjectMsg msg, EditProject sub ) ->
+                _ ->
+                    Ret.only model
+
+        EditProjectMsg msg ->
+            case model of
+                EditProject sub ->
                     c.epSys.update msg sub |> Ret.map EditProject
 
                 _ ->
