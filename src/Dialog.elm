@@ -167,7 +167,7 @@ update config message model =
             in
             case msg of
                 OpenAddProject idx ->
-                    AddProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
+                    addProject.initAt idx |> Tuple.mapBoth AddProject focusCmd
 
                 OpenEditProject project ->
                     editProject.init project |> Tuple.mapBoth EditProject focusCmd
