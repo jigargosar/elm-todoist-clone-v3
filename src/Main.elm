@@ -78,8 +78,9 @@ type PopupMsg
 
 projectPanelSys : ProjectPanel.System Msg
 projectPanelSys =
-    ProjectPanel.system (SubMsg << ProjectPanel)
-        { addClicked = AddProjectClicked
+    ProjectPanel.system
+        { toMsg = SubMsg << ProjectPanel
+        , addClicked = AddProjectClicked
         , moreClicked = ProjectMoreMenu >> PopupTriggered
         , sorted = ProjectOrderChanged
         }
