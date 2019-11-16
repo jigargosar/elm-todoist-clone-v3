@@ -1,7 +1,7 @@
-module UI.Modal exposing (container, overlay)
+module UI.Modal exposing (container, form, overlay)
 
 import Css exposing (..)
-import Html.Styled exposing (Attribute, Html, div)
+import Html.Styled as H exposing (Attribute, Html, div)
 import Html.Styled.Attributes exposing (class, css)
 
 
@@ -18,3 +18,12 @@ overlay attrs =
             :: attrs
         )
         []
+
+
+form : List (Attribute msg) -> List (Html msg) -> Html msg
+form attrs =
+    H.form
+        (class "modal-content box"
+            :: css [ displayFlex, flexDirection column, padding zero ]
+            :: attrs
+        )

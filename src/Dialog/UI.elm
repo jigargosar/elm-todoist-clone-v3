@@ -111,10 +111,8 @@ viewForm { submit, submitTitle, cancel, title, content } =
     in
     UI.Modal.container
         [ UI.Modal.overlay []
-        , H.form
-            [ A.class "modal-content box"
-            , css [ flex, flexColumn, pa0 ]
-            , Key.onKeyDown [ Key.escape cancel ]
+        , UI.Modal.form
+            [ Key.onKeyDown [ Key.escape cancel ]
             , onSubmit submit
             ]
             [ header
