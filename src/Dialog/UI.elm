@@ -9,7 +9,7 @@ module Dialog.UI exposing
     , viewForm
     )
 
-import Css
+import Css exposing (pct)
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
@@ -111,12 +111,13 @@ viewForm { submit, submitTitle, cancel, title, content } =
     in
     UI.Modal.view
         [ H.form
-            [ A.class "box"
+            [ A.class "modal-content box"
+            , css [ flex, flexColumn, pa0 ]
             , Key.onKeyDown [ Key.escape cancel ]
             , onSubmit submit
             ]
             [ header
-            , div [ css [ ph 3 ] ] content
+            , div [ css [ ph 3, Css.overflowY Css.scroll ] ] content
             , footer
             ]
         ]
