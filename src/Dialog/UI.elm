@@ -92,11 +92,7 @@ viewForm : FormContainer msg -> Html msg
 viewForm { submit, submitTitle, cancel, title, content } =
     let
         formAttrs =
-            [ css
-                [ bgWhite
-                , Styles.boRad 3
-                ]
-            , A.class "shadow-1"
+            [ A.class "box"
             , Key.onKeyDown [ Key.escape cancel ]
             , onSubmit submit
             ]
