@@ -3,7 +3,8 @@ import { append, equals, isEmpty, reject, times, uniq } from 'ramda'
 
 const nanoid = require('nanoid')
 const Module = require('./Main.elm')
-// require('tachyons')
+require('tachyons')
+require('bulma')
 require('./style.css')
 
 
