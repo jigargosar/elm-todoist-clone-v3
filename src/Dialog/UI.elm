@@ -102,10 +102,10 @@ viewForm { submit, submitTitle, cancel, title, content } =
                 ]
 
         footerContainer =
-            div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
+            div [ css [ flex, flexRowReverse, pa 3, bo_t, boColor <| Theme.borderGray ] ]
 
         mainContainer =
-            div [ css [ ph 3, Css.overflowY Css.scroll ] ]
+            div [ css [ ph 3, Css.overflowY Css.auto ] ]
     in
     UI.Modal.container
         [ UI.Modal.overlay []
