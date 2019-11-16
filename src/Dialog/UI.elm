@@ -95,7 +95,6 @@ viewForm { submit, submitTitle, cancel, title, content } =
             [ css
                 [ bgWhite
                 , Styles.boRad 3
-                , w_ 300
                 ]
             , A.class "shadow-1"
             , Key.onKeyDown [ Key.escape cancel ]

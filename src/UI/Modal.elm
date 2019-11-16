@@ -9,5 +9,13 @@ view : List (Html msg) -> Html msg
 view content =
     div [ class "modal is-active" ]
         [ div [ css [ backgroundColor (hsla 0 0 0 0.2) ], class "modal-background" ] []
-        , div [ class "modal-content" ] content
+        , div
+            [ css
+                [ width (px 300), maxWidth (pct 100)
+
+                {- , height (pct 200) -}
+                ]
+            , class "modal-content"
+            ]
+            content
         ]
