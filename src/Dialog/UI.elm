@@ -91,7 +91,7 @@ type alias FormContainer msg =
 viewForm : FormContainer msg -> Html msg
 viewForm { submit, submitTitle, cancel, title, content } =
     let
-        header =
+        headerContainer =
             div
                 [ css
                     [ Css.fontSize Css.larger
@@ -101,8 +101,11 @@ viewForm { submit, submitTitle, cancel, title, content } =
                     ]
                 ]
 
-        footer =
+        footerContainer =
             div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
+
+        mainContainer =
+            div [ css [ ph 3, Css.overflowY Css.scroll ] ]
     in
     UI.Modal.container
         [ UI.Modal.overlay []
@@ -110,9 +113,9 @@ viewForm { submit, submitTitle, cancel, title, content } =
             [ Key.onKeyDown [ Key.escape cancel ]
             , onSubmit submit
             ]
-            [ header [ text title ]
-            , div [ css [ ph 3, Css.overflowY Css.scroll ] ] content
-            , footer
+            [ headerContainer [ text title ]
+            , mainContainer content
+            , footerContainer
                 [ btnSubmit submitTitle submit
                 , span [ css [ hidden ] ] [ text "_" ]
                 , btnCancel cancel
