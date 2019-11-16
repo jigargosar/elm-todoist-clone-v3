@@ -109,8 +109,9 @@ viewForm { submit, submitTitle, cancel, title, content } =
                 , btnCancel cancel
                 ]
     in
-    UI.Modal.view
-        [ H.form
+    UI.Modal.container
+        [ UI.Modal.overlay []
+        , H.form
             [ A.class "modal-content box"
             , css [ flex, flexColumn, pa0 ]
             , Key.onKeyDown [ Key.escape cancel ]
