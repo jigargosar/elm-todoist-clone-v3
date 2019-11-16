@@ -18,6 +18,7 @@ import Px as PX
 import Style
 import Styles exposing (..)
 import Theme
+import UI.Modal
 
 
 type alias InputConfig msg =
