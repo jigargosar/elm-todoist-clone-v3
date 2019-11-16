@@ -91,12 +91,6 @@ type alias FormContainer msg =
 viewForm : FormContainer msg -> Html msg
 viewForm { submit, submitTitle, cancel, title, content } =
     let
-        formAttrs =
-            [ A.class "box"
-            , Key.onKeyDown [ Key.escape cancel ]
-            , onSubmit submit
-            ]
-
         header =
             div
                 [ css
@@ -108,12 +102,6 @@ viewForm { submit, submitTitle, cancel, title, content } =
                 ]
                 [ text title ]
 
-        formContent =
-            [ header
-            , div [ css [ ph 3 ] ] content
-            , footer
-            ]
-
         footer =
             div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
                 [ btnSubmit submitTitle submit
@@ -121,7 +109,17 @@ viewForm { submit, submitTitle, cancel, title, content } =
                 , btnCancel cancel
                 ]
     in
-    UI.Modal.view [ H.form formAttrs formContent ]
+    UI.Modal.view
+        [ H.form
+            [ A.class "box"
+            , Key.onKeyDown [ Key.escape cancel ]
+            , onSubmit submit
+            ]
+            [ header
+            , div [ css [ ph 3 ] ] content
+            , footer
+            ]
+        ]
 
 
 btnSubmit title action =
