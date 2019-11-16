@@ -28,6 +28,7 @@
     "@hyperapp/events": "0.0.3",
     "@material-ui/core": "^4.6.0",
     "aproba": "^2.0.0",
+    "bulma": "^0.8.0",
     "hyperapp": "^2.0.3",
     "hyperapp-fx": "^2.0.0-beta.1",
     "nanoid": "^2.1.6",
