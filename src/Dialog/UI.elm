@@ -100,14 +100,9 @@ viewForm { submit, submitTitle, cancel, title, content } =
                     , boColor <| Theme.borderGray
                     ]
                 ]
-                [ text title ]
 
         footer =
             div [ css [ flex, flexRowReverse, PX.p2 12 12, bo_t, boColor <| Theme.borderGray ] ]
-                [ btnSubmit submitTitle submit
-                , span [ css [ hidden ] ] [ text "_" ]
-                , btnCancel cancel
-                ]
     in
     UI.Modal.container
         [ UI.Modal.overlay []
@@ -115,9 +110,13 @@ viewForm { submit, submitTitle, cancel, title, content } =
             [ Key.onKeyDown [ Key.escape cancel ]
             , onSubmit submit
             ]
-            [ header
+            [ header [ text title ]
             , div [ css [ ph 3, Css.overflowY Css.scroll ] ] content
             , footer
+                [ btnSubmit submitTitle submit
+                , span [ css [ hidden ] ] [ text "_" ]
+                , btnCancel cancel
+                ]
             ]
         ]
 
