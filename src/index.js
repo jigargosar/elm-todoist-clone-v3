@@ -137,6 +137,13 @@ customElements.define(
       super()
       console.log('autofocus created')
     }
+    // noinspection JSUnusedGlobalSymbols
+    connectedCallback() {
+      const nullableEl = this.querySelector('[autofocus=true]')
+      if (!isNil(nullableEl)) {
+        nullableEl.focus()
+      }
+    }
   },
 )
 
