@@ -3,6 +3,7 @@ module Main exposing (main)
 import Appbar
 import Basics.More exposing (msgToCmd)
 import Browser exposing (UrlRequest)
+import Browser.Events
 import Browser.Navigation as Nav
 import Cmds
 import Dialog exposing (Dialog)
