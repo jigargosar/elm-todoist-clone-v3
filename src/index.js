@@ -1,5 +1,5 @@
 import ports from './ports'
-import { append, equals, isEmpty, reject, times, uniq } from 'ramda'
+import { append, equals, isEmpty, isNil, reject, times, uniq } from 'ramda'
 
 const nanoid = require('nanoid')
 const Module = require('./Main.elm')
@@ -113,8 +113,11 @@ document.addEventListener(
   'focus',
   function(event) {
     console.log('onFocus activeElement', document.activeElement, event)
+    if (!isNil(nullableActiveElementOnDocumentBlur)) {
+      nullableActiveElementOnDocumentBlur.focus()
+    }
   },
-  { capture: true, passive: false },
+  { capture: true, passive: true },
 )
 
 document.addEventListener(
@@ -123,7 +126,7 @@ document.addEventListener(
     console.log('onBlur activeElement', document.activeElement, event)
     nullableActiveElementOnDocumentBlur = document.activeElement
   },
-  { capture: true, passive: false },
+  { capture: true, passive: true },
 )
 
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
