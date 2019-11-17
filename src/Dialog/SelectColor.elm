@@ -249,17 +249,16 @@ view ({ toMsg } as config) cColor model =
 viewInput : Config msg -> CColor -> Model -> Html Msg
 viewInput config cColor model =
     let
-        keydownDecoders =
-            [ Key.enter
-            , Key.space
-            , Key.arrowDown
-            ]
-                |> List.map (apply ( OpenDropdown, True ))
-
         attrsWhenDropdownClosed =
             case model of
                 Closed ->
-                    [ Key.preventDefaultOnKeyDown keydownDecoders
+                    [ [ Key.enter
+                      , Key.space
+                      , Key.arrowDown
+                      , Key.arrowUp
+                      ]
+                        |> List.map (apply ( OpenDropdown, True ))
+                        |> Key.preventDefaultOnKeyDown
                     , onClick OpenDropdown
                     , tabindex 0
                     ]
