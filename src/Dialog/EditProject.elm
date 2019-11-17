@@ -19,7 +19,7 @@ import Html.Styled.Attributes as A exposing (autofocus)
 import Lens
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
-import Ret exposing (RetF)
+import Ret exposing (Ret, RetF)
 
 
 type alias System msg =
@@ -39,7 +39,7 @@ system configParams =
     in
     { init = init config
     , subscriptions = subscriptions config
-    , update = Ret.fromUpdateF (updateF config)
+    , update = update config
     , view = view config
     }
 
@@ -130,23 +130,23 @@ toSavedWith model =
     SavedWith model.projectId model.title model.favorite model.cColor
 
 
-updateF : Config msg -> Msg -> RetF Model msg
-updateF c message =
+update : Config msg -> Msg -> Model -> Ret Model msg
+update c message model =
     case message of
         Submit ->
-            Ret.addEffect (toSavedWith >> c.emitSaved)
+            ( model, toSavedWith model |> c.emitSaved )
 
         Title title ->
-            Ret.setSub fields.title title
+            ( fields.title.set title model, Cmd.none )
 
         CColor cColor ->
-            Ret.setSub fields.cColor cColor
+            ( fields.cColor.set cColor model, Cmd.none )
 
         Favorite favorite ->
-            Ret.setSub fields.favorite favorite
+            ( fields.favorite.set favorite model, Cmd.none )
 
         SelectColor msg ->
-            Ret.andThen (Ret.updateSub fields.selectColor c.selectColor.update msg)
+            Ret.updateSub fields.selectColor c.selectColor.update msg model
 
 
 autofocusDomId : String
