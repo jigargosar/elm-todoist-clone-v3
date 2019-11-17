@@ -4,11 +4,8 @@ module Dialog.AddProject exposing
     , Msg
     , SavedWith
     , System
-    , initAt
-    , subscriptions
+    , createConfig
     , system
-    , update
-    , view
     )
 
 import CColor exposing (CColor)
@@ -28,8 +25,17 @@ type alias System msg =
     }
 
 
-system : Config msg -> System msg
-system config =
+system :
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    }
+    -> System msg
+system cp =
+    let
+        config =
+            createConfig cp
+    in
     { initAt = initAt
     , subscriptions = subscriptions config
     , update = update config
@@ -41,6 +47,21 @@ type alias Config msg =
     { toMsg : Msg -> msg
     , saved : SavedWith -> msg
     , canceled : msg
+    , onSubmit : msg
+    }
+
+
+createConfig :
+    { toMsg : Msg -> msg
+    , saved : SavedWith -> msg
+    , canceled : msg
+    }
+    -> Config msg
+createConfig { toMsg, saved, canceled } =
+    { toMsg = toMsg
+    , saved = saved
+    , canceled = canceled
+    , onSubmit = toMsg Save
     }
 
 
