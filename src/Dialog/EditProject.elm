@@ -5,13 +5,13 @@ module Dialog.EditProject exposing
     , SavedWith
     , System
     , createConfig
-    , init
     , subscriptions
     , system
     , view
     )
 
 import CColor exposing (CColor)
+import Cmds
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
 import Html.Styled exposing (Attribute, Html)
@@ -45,10 +45,12 @@ system configParams =
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
-    , canceled : msg
-    , selectColor : SelectColor.System msg
+    { selectColor : SelectColor.System msg
+    , onCancel : msg
+    , onSubmit : msg
+    , onTitle : String -> msg
+    , onFav : Bool -> msg
+    , emitSaved : SavedWith -> Cmd msg
     }
 
 
@@ -62,10 +64,12 @@ createConfig { toMsg, saved, canceled } =
             , changed = toMsg << CColor
             }
     in
-    { toMsg = toMsg
-    , saved = saved
-    , canceled = canceled
-    , selectColor = SelectColor.system selectColorConfig
+    { selectColor = SelectColor.system selectColorConfig
+    , onCancel = canceled
+    , onSubmit = toMsg Submit
+    , onTitle = toMsg << Title
+    , onFav = toMsg << Favorite
+    , emitSaved = Cmds.fromMsg << saved
     }
 
 
@@ -96,7 +100,7 @@ type alias SavedWith =
 
 
 init : Config msg -> Project -> ( Model, String )
-init { toMsg } project =
+init _ project =
     ( Model (Project.id project)
         (Project.title project)
         False
@@ -107,7 +111,7 @@ init { toMsg } project =
 
 
 type Msg
-    = Save
+    = Submit
     | Title String
     | SelectColor SelectColor.Msg
     | CColor CColor
@@ -125,14 +129,10 @@ toSavedWith model =
 
 
 updateF : Config msg -> Msg -> RetF Model msg
-updateF config message =
-    let
-        { saved, canceled, selectColor } =
-            config
-    in
+updateF c message =
     case message of
-        Save ->
-            Ret.addMsgEffect (toSavedWith >> saved)
+        Submit ->
+            Ret.addEffect (toSavedWith >> c.emitSaved)
 
         Title title ->
             Ret.setSub fields.title title
@@ -144,7 +144,7 @@ updateF config message =
             Ret.setSub fields.favorite favorite
 
         SelectColor msg ->
-            Ret.updateSubF fields.selectColor selectColor.updateF msg
+            Ret.updateSubF fields.selectColor c.selectColor.updateF msg
 
 
 autofocusDomId : String
@@ -153,25 +153,25 @@ autofocusDomId =
 
 
 view : Config msg -> Model -> Html msg
-view { selectColor, canceled, saved, toMsg } model =
+view c model =
     Dialog.UI.viewForm
-        { submit = saved (toSavedWith model)
-        , cancel = canceled
+        { submit = c.onSubmit
+        , cancel = c.onCancel
         , title = "Edit Project"
         , submitTitle = "Save"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = toMsg << Title
+                , changed = c.onTitle
                 , attrs = [ A.id autofocusDomId, autofocus True ]
                 }
             , Dialog.UI.labeled "Project color"
-                (selectColor.view model.cColor model.selectColor)
+                (c.selectColor.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = toMsg << Favorite
+                , changed = c.onFav
                 }
             ]
         }
