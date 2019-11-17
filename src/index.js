@@ -130,6 +130,16 @@ document.addEventListener(
   { capture: true, passive: true },
 )
 
+customElements.define(
+  'autofocus-on-connect',
+  class extends HTMLElement {
+    constructor() {
+      super()
+      console.log('autofocus created')
+    }
+  },
+)
+
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
   ['onFocusOrClickOutside'],
