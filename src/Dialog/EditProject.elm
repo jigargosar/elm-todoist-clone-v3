@@ -51,6 +51,7 @@ type alias Config msg =
     , onTitle : String -> msg
     , onFav : Bool -> msg
     , emitSaved : SavedWith -> Cmd msg
+    , onSavedWith : SavedWith -> msg
     }
 
 
@@ -70,6 +71,7 @@ createConfig { toMsg, saved, canceled } =
     , onTitle = toMsg << Title
     , onFav = toMsg << Favorite
     , emitSaved = Cmds.fromMsg << saved
+    , onSavedWith = saved
     }
 
 
