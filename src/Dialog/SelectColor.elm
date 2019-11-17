@@ -292,7 +292,6 @@ viewDropdown config highlightIndex =
             , top_0
             , boAll
             , boColor Theme.borderGray
-            , z_ 1
             ]
         , Key.onKeyDownCustom
             [ Key.escape (Key.stopBoth CloseDropdownAndRestoreFocus)
