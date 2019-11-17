@@ -255,7 +255,6 @@ viewInput config cColor model =
                     [ [ Key.enter
                       , Key.space
                       , Key.arrowDown
-                      , Key.arrowUp
                       ]
                         |> List.map (apply ( OpenDropdown, True ))
                         |> Key.preventDefaultOnKeyDown
@@ -295,11 +294,11 @@ viewDropdown config highlightIndex =
             , boColor Theme.borderGray
             , z_ 1
             ]
-        , Key.stopPropagationOnKeyDown
-            [ Key.escape ( CloseDropdownAndRestoreFocus, True )
-            , Key.enter ( SelectHighlighted, True )
-            , Key.arrowUp ( HighlightPrevious, True )
-            , Key.arrowDown ( HighlightNext, True )
+        , Key.onKeyDownCustom
+            [ Key.escape (Key.stopBoth CloseDropdownAndRestoreFocus)
+            , Key.enter (Key.stopBoth SelectHighlighted)
+            , Key.arrowUp (Key.stopBoth HighlightPrevious)
+            , Key.arrowDown (Key.stopBoth HighlightNext)
             ]
         , tabindex 0
         ]
