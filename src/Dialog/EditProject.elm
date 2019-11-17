@@ -26,7 +26,6 @@ type alias System msg =
     { init : Project -> ( Model, String )
     , subscriptions : Model -> Sub msg
     , update : Msg -> Model -> ( Model, Cmd msg )
-    , updateF : Msg -> RetF Model msg
     , view : Model -> Html msg
     }
 
@@ -41,7 +40,6 @@ system configParams =
     { init = init config
     , subscriptions = subscriptions config
     , update = Ret.fromUpdateF (updateF config)
-    , updateF = updateF config
     , view = view config
     }
 
