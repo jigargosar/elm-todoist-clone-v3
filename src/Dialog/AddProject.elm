@@ -97,6 +97,7 @@ type alias SavedWith =
     }
 
 
+toSavedWith : AddProject -> SavedWith
 toSavedWith model =
     SavedWith model.title model.favorite model.cColor model.idx
 
