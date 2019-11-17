@@ -103,11 +103,12 @@ type alias SavedWith =
 
 init : Config msg -> Project -> ( Model, String )
 init _ project =
-    ( Model (Project.id project)
-        (Project.title project)
-        False
-        SelectColor.initial
-        (Project.cColor project)
+    ( { projectId = Project.id project
+      , title = Project.title project
+      , favorite = False
+      , selectColor = SelectColor.initial
+      , cColor = Project.cColor project
+      }
     , autofocusDomId
     )
 
