@@ -9,12 +9,11 @@ module Dialog.UI exposing
     , viewForm
     )
 
-import Css exposing (pct)
+import Css
 import Html.Styled as H exposing (Attribute, Html, button, div, label, span, text)
 import Html.Styled.Attributes as A exposing (css, type_, value)
 import Html.Styled.Events as E exposing (onClick, onInput, onSubmit)
 import Key
-import Px as PX
 import Style
 import Styles exposing (..)
 import Theme
