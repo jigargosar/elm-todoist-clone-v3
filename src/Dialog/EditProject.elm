@@ -14,7 +14,7 @@ import CColor exposing (CColor)
 import Cmds
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
-import Html.Styled exposing (Attribute, Html)
+import Html.Styled as H exposing (Attribute, Html)
 import Html.Styled.Attributes as A exposing (autofocus)
 import Lens
 import Project exposing (Project)
@@ -163,12 +163,15 @@ view c model =
         , title = "Edit Project"
         , submitTitle = "Save"
         , content =
-            [ Dialog.UI.input
-                { labelText = "Project name"
-                , value = model.title
-                , changed = c.onTitle
-                , attrs = [ A.id autofocusDomId, autofocus True ]
-                }
+            [ H.node "autofocus-on-connect"
+                []
+                [ Dialog.UI.input
+                    { labelText = "Project name"
+                    , value = model.title
+                    , changed = c.onTitle
+                    , attrs = [ autofocus True ]
+                    }
+                ]
             , Dialog.UI.labeled "Project color"
                 (c.selectColor.view model.cColor model.selectColor)
             , Dialog.UI.checkbox

@@ -558,7 +558,6 @@ view model =
                 ++ projectPanelView.ghost
                 ++ labelPanelView.ghost
                 ++ filterPanelView.ghost
-                ++ [ H.node "autofocus-on-connect" [] [ div [] [] ] ]
         }
         model.isDrawerModalOpen
 
