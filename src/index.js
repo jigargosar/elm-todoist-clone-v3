@@ -109,6 +109,8 @@ const app = Module.Elm.Main.init({
   },
 })
 
+document.addEventListener("focus", console.log, {capture:true, passive:true})
+
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
   ["onFocusOrClickOutside"],
