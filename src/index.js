@@ -115,6 +115,7 @@ document.addEventListener(
     console.log('onFocus activeElement', document.activeElement, event)
     if (!isNil(nullableActiveElementOnDocumentBlur)) {
       nullableActiveElementOnDocumentBlur.focus()
+      nullableActiveElementOnDocumentBlur = null
     }
   },
   { capture: true, passive: true },
