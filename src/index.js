@@ -7,7 +7,6 @@ require('tachyons')
 require('bulma')
 require('./style.css')
 
-
 function randomCColor() {
   return Math.round(Math.random() * 6)
 }
@@ -109,11 +108,25 @@ const app = Module.Elm.Main.init({
   },
 })
 
-document.addEventListener("focus", console.log, {capture:true, passive:true})
+document.addEventListener(
+  'focus',
+  function(event) {
+    console.log('onFocus activeElement', document.activeElement, event)
+  },
+  { capture: true, passive: false },
+)
+
+document.addEventListener(
+  'blur',
+  function() {
+    console.log('onBlur activeElement', document.activeElement)
+  },
+  { capture: true, passive: false },
+)
 
 const monitorFocusOrClickOutside = MonitorFocusOrClickOutside()
 const pubs = ports(
-  ["onFocusOrClickOutside"],
+  ['onFocusOrClickOutside'],
   {
     logError: err => console.error('Elm Error', err),
     registerOnFocusOrClickOutSide: domId =>
@@ -128,14 +141,15 @@ console.debug(pubs)
 function MonitorFocusOrClickOutside() {
   let domIdList = []
   const listener = e => {
-    if(isEmpty(domIdList)) return
+    if (isEmpty(domIdList)) return
     const target = e.target
     // console.log(target, e.path, domIdList)
     domIdList.forEach(domId => {
       const monitorEl = document.getElementById(domId)
       if (
         monitorEl &&
-        (monitorEl !== target && !monitorEl.contains(target))
+        monitorEl !== target &&
+        !monitorEl.contains(target)
       ) {
         pubs.onFocusOrClickOutside(domId)
       }
