@@ -146,7 +146,7 @@ updateF c message =
             Ret.setSub fields.favorite favorite
 
         SelectColor msg ->
-            Ret.updateSubF fields.selectColor c.selectColor.updateF msg
+            Ret.andThen (Ret.updateSub fields.selectColor c.selectColor.update msg)
 
 
 autofocusDomId : String

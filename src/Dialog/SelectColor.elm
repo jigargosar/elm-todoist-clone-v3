@@ -29,7 +29,6 @@ type alias System msg =
     { initial : Model
     , subscriptions : Model -> Sub msg
     , update : Msg -> Model -> Ret Model msg
-    , updateF : Msg -> RetF Model msg
     , view : CColor -> Model -> Html msg
     }
 
@@ -39,7 +38,6 @@ system config =
     { initial = initial
     , subscriptions = subscriptions config
     , update = update config
-    , updateF = Ret.toUpdateF (update config)
     , view = view config
     }
 
