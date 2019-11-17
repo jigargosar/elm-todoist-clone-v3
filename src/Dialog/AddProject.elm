@@ -9,9 +9,10 @@ module Dialog.AddProject exposing
     )
 
 import CColor exposing (CColor)
+import Cmds
 import Dialog.SelectColor as SelectColor
 import Dialog.UI
-import Html.Styled as H exposing (Attribute, Html)
+import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Attributes as A
 import Lens
 import Ret exposing (Ret, RetF)
@@ -44,10 +45,12 @@ system cp =
 
 
 type alias Config msg =
-    { toMsg : Msg -> msg
-    , saved : SavedWith -> msg
-    , canceled : msg
-    , onSubmit : msg
+    { onSubmit : msg
+    , onCancel : msg
+    , onTitle : String -> msg
+    , onFav : Bool -> msg
+    , selectColor : SelectColor.System msg
+    , emitSaved : SavedWith -> Cmd msg
     }
 
 
@@ -58,20 +61,18 @@ createConfig :
     }
     -> Config msg
 createConfig { toMsg, saved, canceled } =
-    { toMsg = toMsg
-    , saved = saved
-    , canceled = canceled
-    , onSubmit = toMsg Save
+    { onSubmit = toMsg Save
+    , onCancel = canceled
+    , onTitle = toMsg << Title
+    , onFav = toMsg << Favorite
+    , selectColor =
+        SelectColor.system
+            { toMsg = toMsg << SelectColor
+            , domIdPrefix = "add-project-dialog"
+            , changed = toMsg << CColor
+            }
+    , emitSaved = Cmds.fromMsg << saved
     }
-
-
-selectColor : SelectColor.System Msg
-selectColor =
-    SelectColor.system
-        { toMsg = SelectColor
-        , domIdPrefix = "add-project-dialog"
-        , changed = CColor
-        }
 
 
 type alias AddProject =
@@ -113,23 +114,21 @@ type Msg
     | CColor CColor
     | Favorite Bool
     | Save
-    | Cancel
 
 
 subscriptions : Config msg -> AddProject -> Sub msg
-subscriptions { toMsg } model =
-    selectColor.subscriptions model.selectColor |> Sub.map toMsg
+subscriptions c model =
+    c.selectColor.subscriptions model.selectColor
 
 
 update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
-update { toMsg, saved, canceled } message model =
+update c message model =
     case message of
         Title title ->
             ( { model | title = title }, Cmd.none )
 
         SelectColor msg ->
-            Ret.updateSub fields.selectColor selectColor.update msg model
-                |> Ret.mapCmd toMsg
+            Ret.updateSub fields.selectColor c.selectColor.update msg model
 
         Favorite favorite ->
             ( { model | favorite = favorite }, Cmd.none )
@@ -138,10 +137,7 @@ update { toMsg, saved, canceled } message model =
             ( { model | cColor = cColor }, Cmd.none )
 
         Save ->
-            ( model, Ret.toCmd (toSavedWith model |> saved) )
-
-        Cancel ->
-            ( model, Ret.toCmd canceled )
+            ( model, toSavedWith model |> c.emitSaved )
 
 
 autofocusDomId : String
@@ -150,26 +146,25 @@ autofocusDomId =
 
 
 view : Config msg -> AddProject -> Html msg
-view { toMsg } model =
+view c model =
     Dialog.UI.viewForm
-        { submit = Save
-        , cancel = Cancel
+        { submit = c.onSubmit
+        , cancel = c.onCancel
         , title = "Add Project"
         , submitTitle = "Add"
         , content =
             [ Dialog.UI.input
                 { labelText = "Project name"
                 , value = model.title
-                , changed = Title
+                , changed = c.onTitle
                 , attrs = [ A.id autofocusDomId ]
                 }
             , Dialog.UI.labeled "Project color"
-                (selectColor.view model.cColor model.selectColor)
+                (c.selectColor.view model.cColor model.selectColor)
             , Dialog.UI.checkbox
                 { labelText = "Add to favorites"
                 , value = model.favorite
-                , changed = Favorite
+                , changed = c.onFav
                 }
             ]
         }
-        |> H.map toMsg
