@@ -13,8 +13,8 @@ module Dialog exposing
 -- DIALOG
 
 import Browser.Dom as Dom
-import Dialog.AddProject as AddProject exposing (AddProject)
-import Dialog.EditProject as EditProject exposing (EditProject)
+import Dialog.AddProject as AddProject
+import Dialog.EditProject as EditProject
 import Focus exposing (FocusResult)
 import Html.Styled as H exposing (Html)
 import Log
@@ -90,8 +90,8 @@ createConfig { toMsg, projectAdded, projectEdited } =
 
 
 type Dialog
-    = AddProject AddProject
-    | EditProject EditProject
+    = AddProject AddProject.Model
+    | EditProject EditProject.Model
       {- | AddLabelDialog
          | EditLabelDialog LabelId
          | AddFilterDialog

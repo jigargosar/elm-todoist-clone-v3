@@ -1,6 +1,6 @@
 module Dialog.EditProject exposing
     ( Config
-    , EditProject
+    , Model
     , Msg
     , SavedWith
     , System
@@ -23,11 +23,11 @@ import Ret exposing (RetF)
 
 
 type alias System msg =
-    { init : Project -> ( EditProject, String )
-    , subscriptions : EditProject -> Sub msg
-    , update : Msg -> EditProject -> ( EditProject, Cmd msg )
-    , updateF : Msg -> RetF EditProject msg
-    , view : EditProject -> Html msg
+    { init : Project -> ( Model, String )
+    , subscriptions : Model -> Sub msg
+    , update : Msg -> Model -> ( Model, Cmd msg )
+    , updateF : Msg -> RetF Model msg
+    , view : Model -> Html msg
     }
 
 
@@ -71,7 +71,7 @@ createConfig { toMsg, saved, canceled } =
     }
 
 
-type alias EditProject =
+type alias Model =
     { projectId : ProjectId
     , title : String
     , favorite : Bool
@@ -97,9 +97,9 @@ type alias SavedWith =
     }
 
 
-init : Config msg -> Project -> ( EditProject, String )
+init : Config msg -> Project -> ( Model, String )
 init { toMsg } project =
-    ( EditProject (Project.id project)
+    ( Model (Project.id project)
         (Project.title project)
         False
         SelectColor.initial
@@ -116,17 +116,17 @@ type Msg
     | Favorite Bool
 
 
-subscriptions : Config msg -> EditProject -> Sub msg
+subscriptions : Config msg -> Model -> Sub msg
 subscriptions config model =
     config.selectColor.subscriptions model.selectColor
 
 
-toSavedWith : EditProject -> SavedWith
+toSavedWith : Model -> SavedWith
 toSavedWith model =
     SavedWith model.projectId model.title model.favorite model.cColor
 
 
-updateF : Config msg -> Msg -> RetF EditProject msg
+updateF : Config msg -> Msg -> RetF Model msg
 updateF config message =
     let
         { saved, canceled, selectColor } =
@@ -154,7 +154,7 @@ autofocusDomId =
     "edit-project-dialog-autofocus"
 
 
-view : Config msg -> EditProject -> Html msg
+view : Config msg -> Model -> Html msg
 view { selectColor, canceled, saved, toMsg } model =
     Dialog.UI.viewForm
         { submit = saved (toSavedWith model)

@@ -1,6 +1,6 @@
 module Dialog.AddProject exposing
-    ( AddProject
-    , Config
+    ( Config
+    , Model
     , Msg
     , SavedWith
     , System
@@ -19,10 +19,10 @@ import Ret exposing (Ret, RetF)
 
 
 type alias System msg =
-    { initAt : Int -> ( AddProject, String )
-    , subscriptions : AddProject -> Sub msg
-    , update : Msg -> AddProject -> ( AddProject, Cmd msg )
-    , view : AddProject -> Html msg
+    { initAt : Int -> ( Model, String )
+    , subscriptions : Model -> Sub msg
+    , update : Msg -> Model -> ( Model, Cmd msg )
+    , view : Model -> Html msg
     }
 
 
@@ -75,7 +75,7 @@ createConfig { toMsg, saved, canceled } =
     }
 
 
-type alias AddProject =
+type alias Model =
     { title : String
     , favorite : Bool
     , selectColor : SelectColor.Model
@@ -97,14 +97,14 @@ type alias SavedWith =
     }
 
 
-toSavedWith : AddProject -> SavedWith
+toSavedWith : Model -> SavedWith
 toSavedWith model =
     SavedWith model.title model.favorite model.cColor model.idx
 
 
-initAt : Int -> ( AddProject, String )
+initAt : Int -> ( Model, String )
 initAt idx =
-    ( AddProject "" False SelectColor.initial CColor.default idx
+    ( Model "" False SelectColor.initial CColor.default idx
     , autofocusDomId
     )
 
@@ -117,12 +117,12 @@ type Msg
     | Save
 
 
-subscriptions : Config msg -> AddProject -> Sub msg
+subscriptions : Config msg -> Model -> Sub msg
 subscriptions c model =
     c.selectColor.subscriptions model.selectColor
 
 
-update : Config msg -> Msg -> AddProject -> ( AddProject, Cmd msg )
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
 update c message model =
     case message of
         Title title ->
@@ -146,7 +146,7 @@ autofocusDomId =
     "add-project-dialog-autofocus"
 
 
-view : Config msg -> AddProject -> Html msg
+view : Config msg -> Model -> Html msg
 view c model =
     Dialog.UI.viewForm
         { submit = c.onSubmit
