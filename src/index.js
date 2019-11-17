@@ -108,6 +108,7 @@ const app = Module.Elm.Main.init({
   },
 })
 
+let nullableActiveElementOnDocumentBlur = null
 document.addEventListener(
   'focus',
   function(event) {
@@ -118,8 +119,9 @@ document.addEventListener(
 
 document.addEventListener(
   'blur',
-  function() {
-    console.log('onBlur activeElement', document.activeElement)
+  function(event) {
+    console.log('onBlur activeElement', document.activeElement, event)
+    nullableActiveElementOnDocumentBlur = document.activeElement
   },
   { capture: true, passive: false },
 )
