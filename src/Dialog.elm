@@ -17,8 +17,10 @@ import CColor exposing (CColor)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
 import Dialog.SelectColor as SelectColor
+import Dialog.UI
 import Focus exposing (FocusResult)
 import Html.Styled as H exposing (Html)
+import Html.Styled.Attributes exposing (autofocus)
 import Log
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
@@ -123,6 +125,7 @@ type alias EPModel =
 
 type Msg
     = AddProjectMsg AddProject.Msg
+    | APMsg APMsg
     | EditProjectMsg EditProject.Msg
     | OpenAddProject Int
     | OpenEditProject Project
@@ -138,6 +141,7 @@ type APMsg
     | AP_CColor CColor
     | AP_Favorite Bool
     | AP_Save
+    | AP_Cancel
 
 
 type EPMsg
@@ -168,6 +172,14 @@ update c message model =
             case model of
                 AddProject sub ->
                     c.apSys.update msg sub |> Ret.map AddProject
+
+                _ ->
+                    Ret.only model
+
+        APMsg msg ->
+            case model of
+                AddProject sub ->
+                    updateAddProject c msg sub
 
                 _ ->
                     Ret.only model
@@ -204,11 +216,75 @@ update c message model =
             ( Closed, c.projectEditedCmd savedWith )
 
 
+apSelectColorConfig =
+    { toMsg = AP_SelectColor
+    , domIdPrefix = "add-project-dialog"
+    , changed = AP_CColor
+    }
+
+
+updateAddProject : Config msg -> APMsg -> APModel -> ( Dialog, Cmd msg )
+updateAddProject c message model =
+    case message of
+        AP_Title title ->
+            ( { model | title = title } |> AddProject, Cmd.none )
+
+        AP_SelectColor msg ->
+            let
+                ( selectColor, cmd ) =
+                    SelectColor.update apSelectColorConfig msg model.selectColor
+            in
+            ( { model | selectColor = selectColor } |> AddProject, cmd |> Cmd.map (c.toMsg << APMsg) )
+
+        AP_Favorite favorite ->
+            ( { model | favorite = favorite } |> AddProject, Cmd.none )
+
+        AP_CColor cColor ->
+            ( { model | cColor = cColor } |> AddProject, Cmd.none )
+
+        AP_Save ->
+            let
+                savedWith =
+                    AddProject.SavedWith model.title model.favorite model.cColor model.idx
+            in
+            --( model, toSavedWith model |> c.emitSaved )
+            ( Closed, c.projectAddedCmd savedWith )
+
+        AP_Cancel ->
+            ( Closed, Cmd.none )
+
+
+viewAddProject : Config msg -> APModel -> Html msg
+viewAddProject c model =
+    Dialog.UI.viewForm
+        { submit = AP_Save
+        , cancel = AP_Cancel
+        , title = "Add Project"
+        , submitTitle = "Add"
+        , content =
+            [ Dialog.UI.input
+                { labelText = "Project name"
+                , value = model.title
+                , changed = AP_Title
+                , attrs = [ autofocus True ]
+                }
+            , Dialog.UI.labeled "Project color"
+                (SelectColor.view apSelectColorConfig model.cColor model.selectColor)
+            , Dialog.UI.checkbox
+                { labelText = "Add to favorites"
+                , value = model.favorite
+                , changed = AP_Favorite
+                }
+            ]
+        }
+        |> H.map (c.toMsg << APMsg)
+
+
 view : Config msg -> Dialog -> Html msg
 view c dialog =
     case dialog of
         AddProject model ->
-            c.apSys.view model
+            viewAddProject c model
 
         EditProject model ->
             c.epSys.view model
