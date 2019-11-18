@@ -156,7 +156,8 @@ subscriptions : Config msg -> Dialog -> Sub msg
 subscriptions c dialog =
     case dialog of
         AddProject model ->
-            c.apSys.subscriptions model
+            SelectColor.subscriptions apSelectColorConfig model.selectColor
+                |> Sub.map (c.toMsg << APMsg)
 
         EditProject model ->
             c.epSys.subscriptions model
@@ -193,7 +194,7 @@ update c message model =
                     Ret.only model
 
         OpenAddProject idx ->
-            c.apSys.initAt idx |> Tuple.mapBoth AddProject c.focusCmd
+            ( initAddProject idx |> AddProject, Cmd.none )
 
         OpenEditProject project ->
             c.epSys.init project |> Tuple.mapBoth EditProject c.focusCmd
@@ -221,6 +222,11 @@ apSelectColorConfig =
     , domIdPrefix = "add-project-dialog"
     , changed = AP_CColor
     }
+
+
+initAddProject : Int -> APModel
+initAddProject idx =
+    APModel "" False SelectColor.initial CColor.default idx
 
 
 updateAddProject : Config msg -> APMsg -> APModel -> ( Dialog, Cmd msg )
