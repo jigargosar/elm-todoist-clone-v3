@@ -244,8 +244,8 @@ updateAddProject c message model =
             ( Closed, Cmd.none )
 
 
-viewAddProject : Config msg -> APModel -> Html msg
-viewAddProject c model =
+viewAddProject : APModel -> Html APMsg
+viewAddProject model =
     Dialog.UI.viewForm
         { submit = AP_Save
         , cancel = AP_Cancel
@@ -267,14 +267,14 @@ viewAddProject c model =
                 }
             ]
         }
-        |> H.map (c.toMsg << APMsg)
 
 
 view : Config msg -> Dialog -> Html msg
 view c dialog =
     case dialog of
         AddProject model ->
-            viewAddProject c model
+            viewAddProject model
+                |> H.map (c.toMsg << APMsg)
 
         EditProject model ->
             c.epSys.view model
