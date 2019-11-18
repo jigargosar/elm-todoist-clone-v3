@@ -13,12 +13,15 @@ module Dialog exposing
 -- DIALOG
 
 import Browser.Dom as Dom
+import CColor exposing (CColor)
 import Dialog.AddProject as AddProject
 import Dialog.EditProject as EditProject
+import Dialog.SelectColor as SelectColor
 import Focus exposing (FocusResult)
 import Html.Styled as H exposing (Html)
 import Log
 import Project exposing (Project)
+import ProjectId exposing (ProjectId)
 import Ret exposing (Ret, RetF)
 
 
@@ -90,14 +93,32 @@ createConfig { toMsg, projectAdded, projectEdited } =
 
 
 type Dialog
-    = AddProject AddProject.Model
-    | EditProject EditProject.Model
+    = AddProject APModel
+    | EditProject EPModel
       {- | AddLabelDialog
          | EditLabelDialog LabelId
          | AddFilterDialog
          | EditFilterDialog FilterId
       -}
     | Closed
+
+
+type alias APModel =
+    { title : String
+    , favorite : Bool
+    , selectColor : SelectColor.Model
+    , cColor : CColor
+    , idx : Int
+    }
+
+
+type alias EPModel =
+    { projectId : ProjectId
+    , title : String
+    , favorite : Bool
+    , selectColor : SelectColor.Model
+    , cColor : CColor
+    }
 
 
 type Msg
