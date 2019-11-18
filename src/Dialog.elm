@@ -132,6 +132,22 @@ type Msg
     | Focused FocusResult
 
 
+type APMsg
+    = AP_Title String
+    | AP_SelectColor SelectColor.Msg
+    | AP_CColor CColor
+    | AP_Favorite Bool
+    | AP_Save
+
+
+type EPMsg
+    = EP_Submit
+    | EP_Title String
+    | EP_SelectColor SelectColor.Msg
+    | EP_CColor CColor
+    | EP_Favorite Bool
+
+
 subscriptions : Config msg -> Dialog -> Sub msg
 subscriptions c dialog =
     case dialog of
