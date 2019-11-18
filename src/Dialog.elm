@@ -25,6 +25,7 @@ import Log
 import Project exposing (Project)
 import ProjectId exposing (ProjectId)
 import Ret exposing (Ret, RetF)
+import Tuple3
 
 
 type alias System msg =
@@ -163,8 +164,21 @@ update c message model =
     case message of
         APMsg msg ->
             case model of
-                AddProject sub ->
-                    updateAddProject c msg sub
+                AddProject apModel ->
+                    let
+                        ( newModel, cmd, out ) =
+                            updateAddProject msg apModel
+                                |> Tuple3.mapAllThree AddProject (Cmd.map (c.toMsg << APMsg)) identity
+                    in
+                    case out of
+                        APO_SAVE savedWith ->
+                            ( Closed, c.projectAddedCmd savedWith )
+
+                        APO_None ->
+                            ( newModel, cmd )
+
+                        APO_Cancel ->
+                            ( Closed, cmd )
 
                 _ ->
                     Ret.only model
@@ -213,35 +227,50 @@ initAddProject idx =
     APModel "" False SelectColor.initial CColor.default idx
 
 
-updateAddProject : Config msg -> APMsg -> APModel -> ( Dialog, Cmd msg )
-updateAddProject c message model =
+type APOut
+    = APO_SAVE AddProject.SavedWith
+    | APO_None
+    | APO_Cancel
+
+
+updateAddProject : APMsg -> APModel -> ( APModel, Cmd APMsg, APOut )
+updateAddProject message model =
+    let
+        only model_ =
+            ( model_, Cmd.none, APO_None )
+
+        return2 ( model_, cmd ) =
+            ( model_, cmd, APO_None )
+
+        out outMsg =
+            ( model, Cmd.none, outMsg )
+    in
     case message of
         AP_Title title ->
-            ( { model | title = title } |> AddProject, Cmd.none )
+            only { model | title = title }
 
         AP_SelectColor msg ->
             let
                 ( selectColor, cmd ) =
                     SelectColor.update apSelectColorConfig msg model.selectColor
             in
-            ( { model | selectColor = selectColor } |> AddProject, cmd |> Cmd.map (c.toMsg << APMsg) )
+            return2 ( { model | selectColor = selectColor }, cmd )
 
         AP_Favorite favorite ->
-            ( { model | favorite = favorite } |> AddProject, Cmd.none )
+            only { model | favorite = favorite }
 
         AP_CColor cColor ->
-            ( { model | cColor = cColor } |> AddProject, Cmd.none )
+            only { model | cColor = cColor }
 
         AP_Save ->
             let
                 savedWith =
                     AddProject.SavedWith model.title model.favorite model.cColor model.idx
             in
-            --( model, toSavedWith model |> c.emitSaved )
-            ( Closed, c.projectAddedCmd savedWith )
+            out (APO_SAVE savedWith)
 
         AP_Cancel ->
-            ( Closed, Cmd.none )
+            out APO_Cancel
 
 
 viewAddProject : APModel -> Html APMsg
