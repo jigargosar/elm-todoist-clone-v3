@@ -63,7 +63,6 @@ type alias Config msg =
     , focusCmd : String -> Cmd msg
     , projectAddedCmd : AddProject.SavedWith -> Cmd msg
     , projectEditedCmd : EditProject.SavedWith -> Cmd msg
-    , apSys : AddProject.System msg
     , epSys : EditProject.System msg
     }
 
@@ -79,12 +78,6 @@ createConfig { toMsg, projectAdded, projectEdited } =
     , focusCmd = Focus.cmd (toMsg << Focused)
     , projectAddedCmd = Ret.toCmd << projectAdded
     , projectEditedCmd = Ret.toCmd << projectEdited
-    , apSys =
-        AddProject.system
-            { toMsg = toMsg << AddProjectMsg
-            , canceled = toMsg Canceled
-            , saved = toMsg << AddProjectSaved
-            }
     , epSys =
         EditProject.system
             { toMsg = toMsg << EditProjectMsg
@@ -124,8 +117,7 @@ type alias EPModel =
 
 
 type Msg
-    = AddProjectMsg AddProject.Msg
-    | APMsg APMsg
+    = APMsg APMsg
     | EditProjectMsg EditProject.Msg
     | OpenAddProject Int
     | OpenEditProject Project
@@ -169,14 +161,6 @@ subscriptions c dialog =
 update : Config msg -> Msg -> Dialog -> Ret Dialog msg
 update c message model =
     case message of
-        AddProjectMsg msg ->
-            case model of
-                AddProject sub ->
-                    c.apSys.update msg sub |> Ret.map AddProject
-
-                _ ->
-                    Ret.only model
-
         APMsg msg ->
             case model of
                 AddProject sub ->
